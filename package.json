@@ -1,0 +1,68 @@
+{
+  "name": "minigame-std",
+  "description": "Mini Game Standard Development Library.",
+  "author": "jiang115jie@gmail.com",
+  "license": "GPL-3.0",
+  "version": "1.0.0",
+  "source": "./src/std/mod.ts",
+  "main": "./dist/main.cjs",
+  "module": "./dist/main.mjs",
+  "types": "./dist/types.d.ts",
+  "exports": "./src/std/mod.ts",
+  "files": [
+    "LICENSE",
+    "README.md",
+    "README.cn.md",
+    "package.json",
+    "src",
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "check": "npx tsc --noEmit",
+    "lint": "npx eslint src/",
+    "prebuild": "npx rimraf dist && npm run check && npm run lint",
+    "build": "npx rollup --config rollup.config.mjs",
+    "test": "bun test --preload ./tests/setup.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JiangJie/minigame-std.git"
+  },
+  "keywords": [
+    "minigame",
+    "mina",
+    "std",
+    "encode",
+    "decode",
+    "fetch",
+    "request",
+    "fs",
+    "event",
+    "onerror",
+    "unhandledrejection",
+    "socket",
+    "base64",
+    "storage",
+    "clipboard"
+  ],
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@typescript-eslint/eslint-plugin": "^7.8.0",
+    "@typescript-eslint/parser": "^7.8.0",
+    "eslint": "^8.57.0",
+    "rimraf": "^5.0.7",
+    "rollup": "^4.17.2",
+    "rollup-plugin-dts": "^6.1.0",
+    "rollup-plugin-esbuild": "^6.1.1",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@happy-js/happy-opfs": "npm:@jsr/happy-js__happy-opfs@^1.0.7",
+    "@happy-js/happy-rusty": "npm:@jsr/happy-js__happy-rusty@^1.0.7",
+    "@happy-ts/fetch-t": "npm:@jsr/happy-ts__fetch-t@^1.0.4",
+    "@std/path": "npm:@jsr/std__path@^0.224.0",
+    "minigame-api-typings": "^3.8.4"
+  }
+}
