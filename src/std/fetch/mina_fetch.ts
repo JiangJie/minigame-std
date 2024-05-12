@@ -50,7 +50,14 @@ export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> | 
                 }
             },
             fail(err) {
-                resolve(Err(new Error(err.errMsg)));
+                const { errMsg } = err;
+                const error = new Error(errMsg);
+
+                if (errMsg.includes('abort')) {
+                    error.name = 'AbortError';
+                }
+
+                resolve(Err(error));
             },
         };
 
