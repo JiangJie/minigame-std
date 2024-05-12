@@ -90,4 +90,4 @@ wx.encode({
 
 由于工具的局限性，测试用例并不能覆盖所有功能。
 
-小游戏平台的测试请转到[minigame-std-demo]()
+小游戏平台的测试用例请转到 [minigame-std-demo](https://github.com/JiangJie/minigame-std-demo)。
