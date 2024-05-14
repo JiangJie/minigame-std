@@ -1,1 +1,1 @@
-export { getTargetType, isWeb, isWx, type TargetType } from './target.ts';
+export { getTargetType, isDevtools, isWeb, isWx, type TargetType } from './target.ts';

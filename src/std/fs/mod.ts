@@ -179,5 +179,5 @@ export function readTextFile(filePath: string): AsyncIOResult<string> {
  * @returns
  */
 export async function uploadFile(filePath: string, fileUrl: string, requestInit?: RequestInit): AsyncIOResult<boolean> {
-    return isMinaEnv() ? minaUploadFile(fileUrl, filePath, requestInit?.headers) : webUploadFile(fileUrl, filePath, requestInit);
+    return isMinaEnv() ? minaUploadFile(filePath, fileUrl, requestInit?.headers) : webUploadFile(filePath, fileUrl, requestInit);
 }

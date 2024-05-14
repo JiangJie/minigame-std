@@ -19,7 +19,7 @@ export async function getItem(key: string): Promise<Option<string>> {
     assertString(key);
 
     try {
-        const res = await wx.getStorage({
+        const res = await wx.getStorage<string>({
             key,
         });
         return Some(res.data);

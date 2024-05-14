@@ -1,4 +1,6 @@
-export type TargetType = 'wx' | 'web';
+import { getDeviceInfo } from './device.ts';
+
+export type TargetType = 'wx' | 'web' | 'devtools';
 
 /**
  * 获取运行平台类型
@@ -25,4 +27,12 @@ export function isWx(): boolean {
  */
 export function isWeb(): boolean {
     return getTargetType() === 'web';
+}
+
+/**
+ * 判断是否在小游戏开发者工具环境
+ * @returns {boolean} true - 小游戏开发者工具; false - 其他
+ */
+export function isDevtools(): boolean {
+    return isWx() && getDeviceInfo().platform === 'devtools';
 }

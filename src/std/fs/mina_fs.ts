@@ -1,8 +1,8 @@
 import { basename, dirname } from '@std/path/posix';
 import { NOT_FOUND_ERROR, assertAbsolutePath, type ExistsOptions, type WriteOptions } from 'happy-opfs';
 import { Err, Ok, type AsyncIOResult } from 'happy-rusty';
-import { assertSafeUrl } from '../assert/assertions.ts';
-import { type ReadFileContent, type ReadOptions, type WriteFileContent } from './fs_define.ts';
+import { assertSafeUrl, assertString } from '../assert/assertions.ts';
+import type { FileEncoding, ReadFileContent, ReadOptions, WriteFileContent } from './fs_define.ts';
 
 /**
  * for tree shake
@@ -27,8 +27,16 @@ function getRootPath(): string {
  * @param path 相对USER_DATA_PATH的相对路径，也必须以`/`开头
  */
 function getAbsolutePath(path: string): string {
+    assertString(path);
+
+    const rootPath = getRootPath();
+
+    if (path.startsWith(rootPath)) {
+        return path;
+    }
+
     assertAbsolutePath(path);
-    return getRootPath() + path;
+    return rootPath + path;
 }
 
 /**
@@ -97,10 +105,17 @@ export function readFile(filePath: string): AsyncIOResult<ArrayBuffer>;
 export function readFile<T extends ReadFileContent>(filePath: string, options?: ReadOptions): AsyncIOResult<T> {
     const absPath = getAbsolutePath(filePath);
 
+    // NOTE: 想要读取ArrayBuffer就不能传encoding，
+    // 如果传了'binary'，读出来的是字符串
+    let encoding: FileEncoding | undefined = options?.encoding;
+    if (!encoding || encoding === 'binary') {
+        encoding = undefined;
+    }
+
     return new Promise((resolve) => {
         getFs().readFile({
             filePath: absPath,
-            encoding: options?.encoding ?? 'binary',
+            encoding,
             success(res): void {
                 resolve(Ok(res.data as T));
             },
