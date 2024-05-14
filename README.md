@@ -1,5 +1,10 @@
 # 小游戏“标准开发库”
 
+[![NPM version](http://img.shields.io/npm/v/minigame-std.svg)](https://npmjs.org/package/minigame-std)
+[![JSR Version](https://jsr.io/badges/@happy-js/minigame-std)](https://jsr.io/@happy-js/minigame-std)
+[![JSR Score](https://jsr.io/badges/@happy-js/minigame-std/score)](https://jsr.io/@happy-js/minigame-std/score)
+[![Build Status](https://github.com/jiangjie/minigame-std/actions/workflows/test.yml/badge.svg)](https://github.com/jiangjie/minigame-std/actions/workflows/test.yml)
+
 > [!NOTE]
 > 这不是任何一家小游戏平台的官方项目。
 
