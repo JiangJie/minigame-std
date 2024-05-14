@@ -9,7 +9,7 @@
     // Bundler mode
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
-    // "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": true,
     "noEmit": true,
 
     // Best practices
