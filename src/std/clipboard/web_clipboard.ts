@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Err, Ok, type AsyncResult } from '@happy-js/happy-rusty';
+import { Err, Ok, type AsyncResult } from 'happy-rusty';
 import { assertString } from '../assert/assertions.ts';
 
 export async function writeText(data: string): AsyncResult<boolean, DOMException> {

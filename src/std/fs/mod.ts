@@ -11,8 +11,8 @@ import {
     stat as webStat,
     uploadFile as webUploadFile,
     writeFile as webWriteFile,
-} from '@happy-js/happy-opfs';
-import { Ok, type AsyncIOResult, type Result } from '@happy-js/happy-rusty';
+} from 'happy-opfs';
+import { Ok, type AsyncIOResult, type Result } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts' with { type: 'macros' };
 import type { WriteFileContent } from './fs_define.ts';
 import {

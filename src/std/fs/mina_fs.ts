@@ -1,6 +1,6 @@
-import { NOT_FOUND_ERROR, assertAbsolutePath, type ExistsOptions, type WriteOptions } from '@happy-js/happy-opfs';
-import { Err, Ok, type AsyncIOResult } from '@happy-js/happy-rusty';
 import { basename, dirname } from '@std/path/posix';
+import { NOT_FOUND_ERROR, assertAbsolutePath, type ExistsOptions, type WriteOptions } from 'happy-opfs';
+import { Err, Ok, type AsyncIOResult } from 'happy-rusty';
 import { assertSafeUrl } from '../assert/assertions.ts';
 import { type ReadFileContent, type ReadOptions, type WriteFileContent } from './fs_define.ts';
 

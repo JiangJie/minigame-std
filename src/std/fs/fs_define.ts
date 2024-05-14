@@ -1,4 +1,4 @@
-import type { ReadFileContent as OPFSReadFileContent, WriteFileContent as OPFSWriteFileContent } from '@happy-js/happy-opfs';
+import type { ReadFileContent as OPFSReadFileContent, WriteFileContent as OPFSWriteFileContent } from 'happy-opfs';
 
 /**
  * file content type for write, support `ArrayBuffer` `TypedArray` `string`.

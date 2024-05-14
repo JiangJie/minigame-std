@@ -1,4 +1,4 @@
-import { None, Some, type Option } from '@happy-js/happy-rusty';
+import { None, Some, type Option } from 'happy-rusty';
 import { assertString } from '../assert/assertions.ts';
 
 export function setItem(key: string, data: string): Promise<void> {

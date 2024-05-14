@@ -1,4 +1,4 @@
-import { Err, Ok, type Result } from '@happy-js/happy-rusty';
+import { Err, Ok, type Result } from 'happy-rusty';
 import { assertSafeSocketUrl } from '../assert/assertions.ts';
 import type { ISocket, SocketListenerMap } from './socket_define.ts';
 

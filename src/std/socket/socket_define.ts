@@ -1,4 +1,4 @@
-import type { Result } from '@happy-js/happy-rusty';
+import type { Result } from 'happy-rusty';
 
 export interface SocketListenerMap {
     open(): void;

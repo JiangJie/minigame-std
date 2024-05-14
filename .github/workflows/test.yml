@@ -1,0 +1,34 @@
+# This workflow will run tests using bun and then upload the coverage reports to Codecov.
+
+name: Run Tests
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        uses: actions/setup-node@v4
+        with:
+          node-version: latest
+      - run: npm install pnpm -g
+      - run: pnpm install
+
+      - name: Run test cases
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+      - run: pnpm test
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

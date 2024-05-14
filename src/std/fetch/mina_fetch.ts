@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Err, Ok, type Result } from '@happy-js/happy-rusty';
 import type { FetchTask } from '@happy-ts/fetch-t';
+import { Err, Ok, type Result } from 'happy-rusty';
 import { assertSafeUrl } from '../assert/assertions.ts';
 import type { MinaFetchInit, MinaFetchResponse } from './fetch_defines.ts';
 

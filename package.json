@@ -11,19 +11,18 @@
   "files": [
     "LICENSE",
     "README.md",
-    "README.cn.md",
     "package.json",
     "src",
     "dist"
   ],
   "sideEffects": false,
   "scripts": {
-    "check": "npx tsc --noEmit",
-    "lint": "npx eslint src/",
-    "prebuild": "npx rimraf dist && npm run check && npm run lint",
-    "build": "npx rollup --config rollup.config.mjs",
+    "check": "pnpm exec tsc --noEmit",
+    "lint": "pnpm exec eslint src/",
+    "prebuild": "pnpm exec rimraf dist && pnpm run check && pnpm run lint",
+    "build": "pnpm exec rollup --config rollup.config.mjs",
     "test": "bun test --preload ./tests/setup.ts",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "pnpm run build"
   },
   "repository": {
     "type": "git",
@@ -48,8 +47,8 @@
   ],
   "devDependencies": {
     "@jest/globals": "^29.7.0",
-    "@typescript-eslint/eslint-plugin": "^7.8.0",
-    "@typescript-eslint/parser": "^7.8.0",
+    "@typescript-eslint/eslint-plugin": "^7.9.0",
+    "@typescript-eslint/parser": "^7.9.0",
     "eslint": "^8.57.0",
     "rimraf": "^5.0.7",
     "rollup": "^4.17.2",
@@ -58,10 +57,11 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "@happy-js/happy-opfs": "npm:@jsr/happy-js__happy-opfs@^1.0.7",
-    "@happy-js/happy-rusty": "npm:@jsr/happy-js__happy-rusty@^1.0.7",
-    "@happy-ts/fetch-t": "npm:@jsr/happy-ts__fetch-t@^1.0.4",
+    "@happy-ts/fetch-t": "^1.0.7",
     "@std/path": "npm:@jsr/std__path@^0.224.0",
+    "happy-opfs": "^1.0.8",
+    "happy-rusty": "^1.0.9",
     "minigame-api-typings": "^3.8.4"
-  }
+  },
+  "packageManager": "pnpm@9.1.1+sha512.14e915759c11f77eac07faba4d019c193ec8637229e62ec99eefb7cf3c3b75c64447882b7c485142451ee3a6b408059cdfb7b7fa0341b975f12d0f7629c71195"
 }

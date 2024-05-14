@@ -1,5 +1,5 @@
-import type { AsyncResult } from '@happy-js/happy-rusty';
 import type { FetchInit } from '@happy-ts/fetch-t';
+import type { AsyncResult } from 'happy-rusty';
 
 export type MinaFetchResponse<T> = AsyncResult<T, Error>;
 

@@ -6,7 +6,6 @@
     "include": [
       "LICENSE",
       "README.md",
-      "README.cn.md",
       "package.json",
       "jsr.json",
       "src"
