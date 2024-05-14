@@ -7,21 +7,27 @@ on:
       - main
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
-      - uses: oven-sh/setup-bun@v1
+          node-version: latest
+      - run: npm install pnpm -g
+      - run: pnpm install
+
+      - name: Run test cases
+        uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
-      - run: npm ci
-      - run: npm test
+      - run: pnpm test
 
   publish-jsr:
-    needs: build
+    needs: test
     runs-on: ubuntu-latest
 
     permissions:
@@ -29,6 +35,13 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: npm ci
-      # - run: npx jsr publish
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Publish JSR
+        uses: actions/setup-node@v4
+        with:
+          node-version: latest
+      - run: npm install jsr -g
+      # TODO
+      # - run: jsr publish
