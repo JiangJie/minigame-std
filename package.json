@@ -57,7 +57,7 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "@happy-ts/fetch-t": "^1.0.7",
+    "@happy-ts/fetch-t": "^1.0.8",
     "@std/path": "npm:@jsr/std__path@^0.224.0",
     "happy-opfs": "^1.0.8",
     "happy-rusty": "^1.0.9",
