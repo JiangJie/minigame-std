@@ -1,1 +1,2 @@
-export { getTargetType, isDevtools, isWeb, isWx, type TargetType } from './target.ts';
+export { getDeviceInfo } from './device.ts';
+export { getTargetType, isMiniGame, isMiniGameDevtools, isMiniGameRuntime, isWeb, type TargetType } from './target.ts';

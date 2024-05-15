@@ -1,6 +1,6 @@
 import { getDeviceInfo } from './device.ts';
 
-export type TargetType = 'wx' | 'web' | 'devtools';
+export type TargetType = 'minigame' | 'web';
 
 /**
  * 获取运行平台类型
@@ -8,16 +8,32 @@ export type TargetType = 'wx' | 'web' | 'devtools';
  * @returns {TargetType}
  */
 export function getTargetType(): TargetType {
-    return 'wx' in globalThis ? 'wx' : 'web';
+    return 'wx' in globalThis ? 'minigame' : 'web';
 }
 
 /**
- * 判断是否在微信小游戏环境
+ * 判断是否在小游戏环境
  *
- * @returns {boolean} true - 微信小游戏; false - 其他
+ * @returns {boolean} true - 小游戏; false - 其他
  */
-export function isWx(): boolean {
-    return getTargetType() === 'wx';
+export function isMiniGame(): boolean {
+    return getTargetType() === 'minigame';
+}
+
+/**
+ * 判断是否在小游戏真机环境
+ * @returns {boolean} true - 小游戏真机环境; false - 其他
+ */
+export function isMiniGameRuntime(): boolean {
+    return isMiniGame() && getDeviceInfo().platform !== 'devtools';
+}
+
+/**
+ * 判断是否在小游戏开发者工具环境
+ * @returns {boolean} true - 小游戏开发者工具; false - 其他
+ */
+export function isMiniGameDevtools(): boolean {
+    return isMiniGame() && getDeviceInfo().platform === 'devtools';
 }
 
 /**
@@ -27,12 +43,4 @@ export function isWx(): boolean {
  */
 export function isWeb(): boolean {
     return getTargetType() === 'web';
-}
-
-/**
- * 判断是否在小游戏开发者工具环境
- * @returns {boolean} true - 小游戏开发者工具; false - 其他
- */
-export function isDevtools(): boolean {
-    return isWx() && getDeviceInfo().platform === 'devtools';
 }

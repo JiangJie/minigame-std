@@ -5,6 +5,6 @@ export { decode, encode } from './std/codec/mod.ts';
 export { addErrorListener, addUnhandledrejectionListener } from './std/event/mod.ts';
 export { fetchT } from './std/fetch/mod.ts';
 export * as fs from './std/fs/mod.ts';
-export * from './std/platform/mod.ts';
+export * as platform from './std/platform/mod.ts';
 export { connectSocket } from './std/socket/mod.ts';
 export * as storage from './std/storage/mod.ts';

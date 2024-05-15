@@ -1,8 +1,7 @@
 import { expect, test } from '@jest/globals';
-import { getTargetType, isDevtools, isWx } from '../src/mod.ts';
+import { platform } from '../src/mod.ts';
 
-test('getTargetType is web', () => {
-    expect(getTargetType()).toBe('web');
-    expect(isWx()).toBe(false);
-    expect(isDevtools()).toBe(false);
+test('targetType is web', () => {
+    expect(platform.isWeb()).toBe(true);
+    expect(platform.isMiniGame()).toBe(false);
 });
