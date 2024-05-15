@@ -1,4 +1,4 @@
-import { isMinaEnv } from '../../macros/env.ts' with { type: 'macros' };
+import { isMinaEnv } from '../../macros/env.ts';
 import { decode as minaDecode, encode as minaEncode } from './mina_codec.ts';
 import { decode as webDecode, encode as webEncode } from './web_codec.ts';
 

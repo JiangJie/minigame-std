@@ -1,5 +1,5 @@
 import type { AsyncResult } from 'happy-rusty';
-import { isMinaEnv } from '../../macros/env.ts' with { type: 'macros' };
+import { isMinaEnv } from '../../macros/env.ts';
 import { readText as minaReadText, writeText as minaWriteText } from './mina_clipboard.ts';
 import { readText as webReadText, writeText as webWriteText } from './web_clipboard.ts';
 

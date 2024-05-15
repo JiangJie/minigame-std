@@ -1,4 +1,4 @@
-import { isMinaEnv } from '../../macros/env.ts' with { type: 'macros' };
+import { isMinaEnv } from '../../macros/env.ts';
 import { connectSocket as minaConnectSocket } from './mina_socket.ts';
 import type { ISocket } from './socket_define.ts';
 import { connectSocket as webConnectSocket } from './web_socket.ts';

@@ -13,7 +13,7 @@ import {
     writeFile as webWriteFile,
 } from 'happy-opfs';
 import { Ok, type AsyncIOResult, type Result } from 'happy-rusty';
-import { isMinaEnv } from '../../macros/env.ts' with { type: 'macros' };
+import { isMinaEnv } from '../../macros/env.ts';
 import type { WriteFileContent } from './fs_define.ts';
 import {
     appendFile as minaAppendFile,

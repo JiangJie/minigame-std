@@ -1,4 +1,4 @@
-import { isMinaEnv } from '../../macros/env.ts' with { type: 'macros' };
+import { isMinaEnv } from '../../macros/env.ts';
 import { addErrorListener as minaAddErrorListener, addUnhandledrejectionListener as minaAddUnhandledrejectionListener, removeErrorListener as minaRemoveErrorListener, removeUnhandledrejectionListener as minaRemoveUnhandledrejectionListener } from './mina_event.ts';
 import { addErrorListener as webAddErrorListener, addUnhandledrejectionListener as webAddUnhandledrejectionListener, removeErrorListener as webRemoveErrorListener, removeUnhandledrejectionListener as webRemoveUnhandledrejectionListener } from './web_event.ts';
 

@@ -1,4 +1,4 @@
-import { isMinaEnv } from '../../macros/env.ts' with { type: 'macros' };
+import { isMinaEnv } from '../../macros/env.ts';
 import { decodeBase64 as minaDecodeBase64, encodeBase64 as minaEncodeBase64 } from './mina_base64.ts';
 import { decodeBase64 as webDecodeBase64, encodeBase64 as webEncodeBase64 } from './web_base64.ts';
 export { base64FromArrayBuffer, base64ToArrayBuffer } from './base64.ts';
