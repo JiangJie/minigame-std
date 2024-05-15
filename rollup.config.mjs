@@ -2,6 +2,10 @@ import dts from 'rollup-plugin-dts';
 import esbuild from 'rollup-plugin-esbuild';
 
 const input = 'src/mod.ts';
+
+/**
+ * @type {import('rollup').ExternalOption}
+ */
 const external = [
     /^@std\/path/,
     'happy-rusty',
@@ -18,9 +22,6 @@ export default [
         plugins: [
             esbuild({
                 target: 'esnext',
-                define: {
-                    // __MINIGAME_STD_MINA__: `false`,
-                },
             }),
         ],
         output: [
@@ -36,9 +37,6 @@ export default [
             },
         ],
         external,
-        // treeshake: {
-        //     moduleSideEffects: 'no-external',
-        // },
         treeshake: 'smallest',
     },
     {
@@ -52,5 +50,6 @@ export default [
             sourcemap: true,
         },
         external,
+        treeshake: 'smallest',
     },
 ];
