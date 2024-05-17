@@ -1,6 +1,6 @@
 {
   "name": "@happy-js/minigame-std",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "exports": "./src/mod.ts",
   "publish": {
     "include": [
