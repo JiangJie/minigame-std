@@ -1,6 +1,7 @@
 import {
     appendFile as webAppendFile,
     downloadFile as webDownloadFile,
+    emptyDir as webEmptyDir,
     exists as webExists,
     mkdir as webMkdir,
     readDir as webReadDir,
@@ -18,6 +19,7 @@ import type { WriteFileContent } from './fs_define.ts';
 import {
     appendFile as minaAppendFile,
     downloadFile as minaDownloadFile,
+    emptyDir as minaEmptyDir,
     exists as minaExists,
     mkdir as minaMkdir,
     readDir as minaReadDir,
@@ -164,6 +166,15 @@ export function exists(path: string): AsyncIOResult<boolean> {
 }
 
 /**
+ * 清空文件夹，不存在则创建
+ * @param dirPath 文件夹路径
+ * @returns
+ */
+export function emptyDir(dirPath: string): AsyncIOResult<boolean> {
+    return isMinaEnv() ? minaEmptyDir(dirPath) : webEmptyDir(dirPath);
+}
+
+/**
  * 读取文件内容，返回`string`
  * @param filePath 要读取的文件路径
  */
@@ -178,6 +189,6 @@ export function readTextFile(filePath: string): AsyncIOResult<string> {
  * @param requestInit 传递给`fetch`的参数
  * @returns
  */
-export async function uploadFile(filePath: string, fileUrl: string, requestInit?: RequestInit): AsyncIOResult<boolean> {
+export function uploadFile(filePath: string, fileUrl: string, requestInit?: RequestInit): AsyncIOResult<boolean> {
     return isMinaEnv() ? minaUploadFile(filePath, fileUrl, requestInit?.headers) : webUploadFile(filePath, fileUrl, requestInit);
 }

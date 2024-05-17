@@ -1,6 +1,6 @@
 import { basename, dirname } from '@std/path/posix';
 import { NOT_FOUND_ERROR, assertAbsolutePath, type ExistsOptions, type WriteOptions } from 'happy-opfs';
-import { Err, Ok, type AsyncIOResult } from 'happy-rusty';
+import { Err, Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
 import { assertSafeUrl, assertString } from '../assert/assertions.ts';
 import type { FileEncoding, ReadFileContent, ReadOptions, WriteFileContent } from './fs_define.ts';
 
@@ -40,6 +40,23 @@ function getAbsolutePath(path: string): string {
 }
 
 /**
+ * interface FileError 转换为 Err<Error>
+ * @param err FileError
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function toErr(err: WechatMinigame.FileError | WechatMinigame.GeneralCallbackResult): IOResult<any> {
+    const error = new Error(err.errMsg);
+
+    // 1300002	no such file or directory ${path}
+    // 可能没有errCode
+    if ((err as WechatMinigame.FileError).errCode === 1300002 || err.errMsg.includes('no such file or directory')) {
+        error.name = NOT_FOUND_ERROR;
+    }
+
+    return Err(error);
+}
+
+/**
  * 递归创建文件夹，相当于`mkdir -p`
  * @param dirPath 要创建的文件夹路径
  */
@@ -62,7 +79,7 @@ export function mkdir(dirPath: string): AsyncIOResult<boolean> {
                     return;
                 }
 
-                resolve(Err(new Error(err.errMsg)));
+                resolve(toErr(err));
             },
         });
     });
@@ -83,7 +100,7 @@ export function readDir(dirPath: string): AsyncIOResult<string[]> {
                 resolve(Ok(res.files));
             },
             fail(err): void {
-                resolve(Err(new Error(err.errMsg)));
+                resolve(toErr(err));
             },
         });
     });
@@ -120,7 +137,7 @@ export function readFile<T extends ReadFileContent>(filePath: string, options?: 
                 resolve(Ok(res.data as T));
             },
             fail(err): void {
-                resolve(Err(new Error(err.errMsg)));
+                resolve(toErr(err));
             },
         });
     });
@@ -149,7 +166,7 @@ export async function remove(path: string): AsyncIOResult<boolean> {
                     resolve(Ok(true));
                 },
                 fail(err): void {
-                    resolve(Err(new Error(err.errMsg)));
+                    resolve(toErr(err));
                 },
             });
         } else {
@@ -159,7 +176,7 @@ export async function remove(path: string): AsyncIOResult<boolean> {
                     resolve(Ok(true));
                 },
                 fail(err): void {
-                    resolve(Err(new Error(err.errMsg)));
+                    resolve(toErr(err));
                 },
             });
         }
@@ -184,7 +201,7 @@ export function rename(oldPath: string, newPath: string): AsyncIOResult<boolean>
                 resolve(Ok(true));
             },
             fail(err): void {
-                resolve(Err(new Error(err.errMsg)));
+                resolve(toErr(err));
             },
         });
     });
@@ -205,15 +222,7 @@ export function stat(path: string): AsyncIOResult<WechatMinigame.Stats> {
                 resolve(Ok(res.stats as WechatMinigame.Stats));
             },
             fail(err): void {
-                const error = new Error(err.errMsg);
-
-                // 1300002	no such file or directory ${path}
-                // 可能没有errCode
-                if (err.errCode === 1300002 || err.errMsg.includes('no such file or directory')) {
-                    error.name = NOT_FOUND_ERROR;
-                }
-
-                resolve(Err(error));
+                resolve(toErr(err));
             },
         });
     });
@@ -253,7 +262,7 @@ export async function writeFile(filePath: string, contents: WriteFileContent, op
                 resolve(Ok(true));
             },
             fail(err): void {
-                resolve(Err(new Error(err.errMsg)));
+                resolve(toErr(err));
             },
         });
     });
@@ -301,6 +310,48 @@ export async function exists(path: string, options?: ExistsOptions): AsyncIOResu
 }
 
 /**
+ * 清空文件夹，不存在则创建
+ * @param dirPath 文件夹路径
+ * @returns
+ */
+export async function emptyDir(dirPath: string): AsyncIOResult<boolean> {
+    type T = boolean;
+
+    const res = await readDir(dirPath);
+    if (res.isErr()) {
+        if (res.err().name === NOT_FOUND_ERROR) {
+            // 不存在则创建
+            return mkdir(dirPath);
+        }
+
+        return res;
+    }
+
+    const items: AsyncIOResult<T>[] = [];
+
+    for await (const name of res.unwrap()) {
+        items.push(remove(`${ dirPath }/${ name }`));
+    }
+
+    const success: IOResult<T> = await Promise.all(items).then((x) => {
+        let err: IOResult<T> | null = null;
+
+        const success = x.every(y => {
+            if (y.isErr()) {
+                err = y;
+                return false;
+            }
+
+            return y.unwrap();
+        });
+
+        return err ?? Ok(success);
+    });
+
+    return success;
+}
+
+/**
  * 以字符串格式读取文件
  * @param filePath 要读取的文件路径
  * @returns
@@ -331,7 +382,7 @@ export function downloadFile(fileUrl: string, filePath: string, headers?: Header
                 resolve(Ok(true));
             },
             fail(err): void {
-                resolve(Err(new Error(err.errMsg)));
+                resolve(toErr(err));
             },
         });
     });
@@ -358,7 +409,7 @@ export async function uploadFile(filePath: string, fileUrl: string, headers?: He
                 resolve(Ok(true));
             },
             fail(err): void {
-                resolve(Err(new Error(err.errMsg)));
+                resolve(toErr(err));
             },
         });
     });
