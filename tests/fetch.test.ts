@@ -4,12 +4,12 @@ import { fetchT } from '../src/mod.ts';
 test('fetch json', async () => {
     const fetchTask = fetchT<{
         name: string;
-    }>('https://jsr.io/@happy-js/happy-rusty/meta.json', {
+    }>('https://jsr.io/@happy-js/minigame-std/meta.json', {
         abortable: true,
         responseType: 'json',
     });
 
-    setTimeout(() => {
+    const timer = setTimeout(() => {
         fetchTask.abort();
     }, 100);
 
@@ -18,6 +18,7 @@ test('fetch json', async () => {
     if (res.isErr()) {
         expect((res.unwrapErr() as Error).name).toBe('AbortError');
     } else {
-        expect(res.unwrap().name).toBe('happy-rusty');
+        clearTimeout(timer);
+        expect(res.unwrap().name).toBe('minigame-std');
     }
 });
