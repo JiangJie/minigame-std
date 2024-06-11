@@ -192,3 +192,5 @@ pnpm test
 对 web 平台文件系统的测试可以转到 [happy-opfs](https://github.com/JiangJie/happy-opfs)。
 
 小游戏平台的测试用例请转到 [minigame-std-demo](https://github.com/JiangJie/minigame-std-demo)。
+
+## [文档](docs/index.md)
