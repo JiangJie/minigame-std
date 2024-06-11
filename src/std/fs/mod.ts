@@ -32,6 +32,8 @@ import {
     writeFile as minaWriteFile,
 } from './mina_fs.ts';
 
+export type { WriteFileContent } from './fs_define.ts';
+
 /**
  * 异步读取指定目录下的所有文件和子目录。
  * @param dirPath - 需要读取的目录路径。

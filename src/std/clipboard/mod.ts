@@ -3,8 +3,8 @@ import { isMinaEnv } from '../../macros/env.ts';
 import { readText as minaReadText, writeText as minaWriteText } from './mina_clipboard.ts';
 import { readText as webReadText, writeText as webWriteText } from './web_clipboard.ts';
 
-type WriteResult = AsyncResult<boolean, DOMException | WechatMinigame.GeneralCallbackResult>;
-type ReadResult = AsyncResult<string, DOMException | WechatMinigame.GeneralCallbackResult>;
+export type WriteResult = AsyncResult<boolean, DOMException | WechatMinigame.GeneralCallbackResult>;
+export type ReadResult = AsyncResult<string, DOMException | WechatMinigame.GeneralCallbackResult>;
 
 /**
  * 异步写入文本数据到剪贴板。

@@ -3,6 +3,8 @@ import { connectSocket as minaConnectSocket } from './mina_socket.ts';
 import type { ISocket } from './socket_define.ts';
 import { connectSocket as webConnectSocket } from './web_socket.ts';
 
+export type { ISocket, SocketListenerMap } from './socket_define.ts';
+
 /**
  * 创建并返回一个 WebSocket 连接。
  * @param url - WebSocket 服务器的 URL。
