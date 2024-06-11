@@ -19,7 +19,7 @@
   "scripts": {
     "check": "pnpm exec tsc --noEmit",
     "lint": "pnpm exec eslint src/",
-    "prebuild": "pnpm exec rimraf dist && pnpm run check && pnpm run lint",
+    "prebuild": "pnpm dlx rimraf dist && pnpm run check && pnpm run lint",
     "build": "pnpm exec rollup --config rollup.config.mjs",
     "test": "bun test --preload ./tests/setup.ts",
     "prepublishOnly": "pnpm run build"
@@ -50,7 +50,6 @@
     "@typescript-eslint/eslint-plugin": "^7.13.0",
     "@typescript-eslint/parser": "^7.13.0",
     "eslint": "^8.57.0",
-    "rimraf": "^5.0.7",
     "rollup": "^4.18.0",
     "rollup-plugin-dts": "^6.1.1",
     "rollup-plugin-esbuild": "^6.1.1",
