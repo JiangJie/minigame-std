@@ -13,7 +13,7 @@ import {
     uploadFile as webUploadFile,
     writeFile as webWriteFile,
 } from 'happy-opfs';
-import { Ok, type AsyncIOResult, type Result } from 'happy-rusty';
+import { Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import type { WriteFileContent } from './fs_define.ts';
 import {
@@ -44,7 +44,7 @@ export async function readDir(dirPath: string): AsyncIOResult<string[]> {
 
     const x = await webReadDir(dirPath);
     if (x.isErr()) {
-        return x as Result<string[], Error>;
+        return x as unknown as IOResult<string[]>;
     }
     const items: string[] = [];
     for await (const item of x.unwrap()) {
@@ -116,7 +116,10 @@ export async function stat(path: string): AsyncIOResult<{
     const res = await webStat(path);
 
     if (res.isErr()) {
-        return res;
+        return res as unknown as IOResult<{
+            isFile: () => boolean;
+            isDirectory: () => boolean;
+        }>;
     }
 
     const { kind } = res.unwrap();

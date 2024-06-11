@@ -16,7 +16,7 @@ test('fetch json', async () => {
     const res = await fetchTask.response;
 
     if (res.isErr()) {
-        expect((res.err() as Error).name).toBe('AbortError');
+        expect((res.unwrapErr() as Error).name).toBe('AbortError');
     } else {
         expect(res.unwrap().name).toBe('happy-rusty');
     }

@@ -152,7 +152,7 @@ export async function remove(path: string): AsyncIOResult<boolean> {
     const res = await stat(path);
 
     if (res.isErr()) {
-        return res;
+        return res as unknown as IOResult<boolean>;
     }
 
     const absPath = getAbsolutePath(path);
@@ -288,11 +288,10 @@ export async function exists(path: string, options?: ExistsOptions): AsyncIOResu
     const res = await stat(path);
 
     if (res.isErr()) {
-        if (res.err().name === NOT_FOUND_ERROR) {
+        if (res.unwrapErr().name === NOT_FOUND_ERROR) {
             return Ok(false);
         }
-        // reuse
-        return res;
+        return res as unknown as IOResult<boolean>;
     }
 
     const { isDirectory = false, isFile = false } = options ?? {};
@@ -319,12 +318,12 @@ export async function emptyDir(dirPath: string): AsyncIOResult<boolean> {
 
     const res = await readDir(dirPath);
     if (res.isErr()) {
-        if (res.err().name === NOT_FOUND_ERROR) {
+        if (res.unwrapErr().name === NOT_FOUND_ERROR) {
             // 不存在则创建
             return mkdir(dirPath);
         }
 
-        return res;
+        return res as unknown as IOResult<boolean>;
     }
 
     const items: AsyncIOResult<T>[] = [];
