@@ -11,6 +11,7 @@ const external = [
     'happy-rusty',
     'happy-opfs',
     '@happy-ts/fetch-t',
+    'tiny-invariant',
 ];
 
 /**

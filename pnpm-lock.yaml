@@ -23,6 +23,9 @@ importers:
       minigame-api-typings:
         specifier: ^3.8.4
         version: 3.8.4
+      tiny-invariant:
+        specifier: ^1.3.3
+        version: 1.3.3
     devDependencies:
       '@jest/globals':
         specifier: ^29.7.0
