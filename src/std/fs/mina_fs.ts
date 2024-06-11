@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { basename, dirname } from '@std/path/posix';
 import { NOT_FOUND_ERROR, assertAbsolutePath, type ExistsOptions, type WriteOptions } from 'happy-opfs';
 import { Err, Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
@@ -5,26 +6,41 @@ import { assertSafeUrl, assertString } from '../assert/assertions.ts';
 import type { FileEncoding, ReadFileContent, ReadOptions, WriteFileContent } from './fs_define.ts';
 
 /**
+ * 小游戏文件系统管理器实例。
+ *
  * for tree shake
  */
 let fs: WechatMinigame.FileSystemManager;
+
+/**
+ * 获取小游戏文件系统管理器实例。
+ * @returns 文件系统管理器实例。
+ */
 function getFs(): WechatMinigame.FileSystemManager {
     fs ??= wx.getFileSystemManager();
     return fs;
 }
 
 /**
+ * 根路径。
+ *
  * for tree shake
  */
 let rootPath: string;
+
+/**
+ * 获取文件系统的根路径。
+ * @returns 文件系统的根路径。
+ */
 function getRootPath(): string {
     rootPath ??= wx.env.USER_DATA_PATH;
     return rootPath;
 }
 
 /**
- * 获取绝对路径
- * @param path 相对USER_DATA_PATH的相对路径，也必须以`/`开头
+ * 获取给定路径的绝对路径。
+ * @param path - 相对USER_DATA_PATH的相对路径，也必须以`/`开头。
+ * @returns 转换后的绝对路径。
  */
 function getAbsolutePath(path: string): string {
     assertString(path);
@@ -40,11 +56,12 @@ function getAbsolutePath(path: string): string {
 }
 
 /**
- * interface FileError 转换为 Err<Error>
- * @param err FileError
+ * 将错误对象转换为 IOResult 类型。
+ * @typeParam T - Result 的 Ok 类型。
+ * @param err - 错误对象。
+ * @returns 转换后的 IOResult 对象。
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function toErr(err: WechatMinigame.FileError | WechatMinigame.GeneralCallbackResult): IOResult<any> {
+function toErr<T>(err: WechatMinigame.FileError | WechatMinigame.GeneralCallbackResult): IOResult<T> {
     const error = new Error(err.errMsg);
 
     // 1300002	no such file or directory ${path}
@@ -57,8 +74,9 @@ function toErr(err: WechatMinigame.FileError | WechatMinigame.GeneralCallbackRes
 }
 
 /**
- * 递归创建文件夹，相当于`mkdir -p`
- * @param dirPath 要创建的文件夹路径
+ * 递归创建文件夹，相当于`mkdir -p`。
+ * @param dirPath - 需要创建的目录路径。
+ * @returns 创建结果的异步操作，成功时返回 true。
  */
 export function mkdir(dirPath: string): AsyncIOResult<boolean> {
     const absPath = getAbsolutePath(dirPath);
@@ -86,9 +104,9 @@ export function mkdir(dirPath: string): AsyncIOResult<boolean> {
 }
 
 /**
- * 读取文件夹一级子内容
- * @param dirPath 文件夹路径
- * @returns
+ * 读取目录下的所有文件和子目录。
+ * @param dirPath - 目录路径。
+ * @returns 包含目录内容的字符串数组的异步操作。
  */
 export function readDir(dirPath: string): AsyncIOResult<string[]> {
     const absPath = getAbsolutePath(dirPath);
@@ -107,18 +125,39 @@ export function readDir(dirPath: string): AsyncIOResult<string[]> {
 }
 
 /**
- * 读取文件内容，默认返回`ArrayBuffer`
- * @param filePath 文件路径
- * @param options 可按编码返回不同的格式
- * @returns
+ * 以二进制格式读取文件。
+ * @param filePath - 文件路径。
+ * @param options - 读取选项，指定编码为 'binary'。
+ * @returns 包含文件内容的 ArrayBuffer 的异步操作。
  */
 export function readFile(filePath: string, options: ReadOptions & {
     encoding: 'binary',
 }): AsyncIOResult<ArrayBuffer>;
+
+/**
+ * 以 UTF-8 格式读取文件。
+ * @param filePath - 文件路径。
+ * @param options - 读取选项，指定编码为 'utf8'。
+ * @returns 包含文件内容的字符串的异步操作。
+ */
 export function readFile(filePath: string, options: ReadOptions & {
     encoding: 'utf8',
 }): AsyncIOResult<string>;
+
+/**
+ * 读取文件内容，不指定编码时默认以 ArrayBuffer 形式返回。
+ * @param filePath - 文件路径。
+ * @returns 包含文件内容的 ArrayBuffer 的异步操作。
+ */
 export function readFile(filePath: string): AsyncIOResult<ArrayBuffer>;
+
+/**
+ * 读取文件内容，可选地指定编码和返回类型。
+ * @template T - 返回内容的类型。
+ * @param filePath - 文件路径。
+ * @param options - 可选的读取选项。
+ * @returns 包含文件内容的异步操作。
+ */
 export function readFile<T extends ReadFileContent>(filePath: string, options?: ReadOptions): AsyncIOResult<T> {
     const absPath = getAbsolutePath(filePath);
 
@@ -144,9 +183,9 @@ export function readFile<T extends ReadFileContent>(filePath: string, options?: 
 }
 
 /**
- * 删除文件或文件夹，相当于`rm -rf`
- * @param path 文件（夹）路径
- * @returns
+ * 删除指定路径的文件或目录。
+ * @param path - 需要删除的文件或目录的路径。
+ * @returns 删除操作的异步结果，成功时返回 true。
  */
 export async function remove(path: string): AsyncIOResult<boolean> {
     const res = await stat(path);
@@ -184,10 +223,10 @@ export async function remove(path: string): AsyncIOResult<boolean> {
 }
 
 /**
- * 剪切文件或文件夹
- * @param oldPath
- * @param newPath
- * @returns
+ * 重命名文件或目录。
+ * @param oldPath - 原路径。
+ * @param newPath - 新路径。
+ * @returns 重命名操作的异步结果，成功时返回 true。
  */
 export function rename(oldPath: string, newPath: string): AsyncIOResult<boolean> {
     const absOldPath = getAbsolutePath(oldPath);
@@ -208,9 +247,9 @@ export function rename(oldPath: string, newPath: string): AsyncIOResult<boolean>
 }
 
 /**
- * fs.stat
- * @param path
- * @returns
+ * 获取文件或目录的状态信息。
+ * @param path - 文件或目录的路径。
+ * @returns 包含状态信息的异步操作。
  */
 export function stat(path: string): AsyncIOResult<WechatMinigame.Stats> {
     const absPath = getAbsolutePath(path);
@@ -229,11 +268,11 @@ export function stat(path: string): AsyncIOResult<WechatMinigame.Stats> {
 }
 
 /**
- * 写入文件内容，如果文件不存在默认会创建
- * @param filePath 文件路径
- * @param contents 文件内容
- * @param options
- * @returns
+ * 将内容写入文件。
+ * @param filePath - 文件路径。
+ * @param contents - 要写入的内容。
+ * @param options - 可选的写入选项。
+ * @returns 写入操作的异步结果，成功时返回 true。
  */
 export async function writeFile(filePath: string, contents: WriteFileContent, options?: WriteOptions): AsyncIOResult<boolean> {
     const absPath = getAbsolutePath(filePath);
@@ -269,10 +308,10 @@ export async function writeFile(filePath: string, contents: WriteFileContent, op
 }
 
 /**
- * 将内容写入文件末尾
- * @param filePath 要写入的文件路径
- * @param contents 写入内容
- * @returns
+ * 向文件追加内容。
+ * @param filePath - 文件路径。
+ * @param contents - 要追加的内容。
+ * @returns 追加操作的异步结果，成功时返回 true。
  */
 export function appendFile(filePath: string, contents: WriteFileContent): AsyncIOResult<boolean> {
     return writeFile(filePath, contents, {
@@ -281,8 +320,10 @@ export function appendFile(filePath: string, contents: WriteFileContent): AsyncI
 }
 
 /**
- * 检查路径是否存在
- * @param path 要检查的文件（夹）路径
+ * 检查指定路径的文件或目录是否存在。
+ * @param path - 文件或目录的路径。
+ * @param options - 可选的检查选项。
+ * @returns 检查存在性的异步结果，存在时返回 true。
  */
 export async function exists(path: string, options?: ExistsOptions): AsyncIOResult<boolean> {
     const res = await stat(path);
@@ -309,9 +350,9 @@ export async function exists(path: string, options?: ExistsOptions): AsyncIOResu
 }
 
 /**
- * 清空文件夹，不存在则创建
- * @param dirPath 文件夹路径
- * @returns
+ * 清空目录中的所有文件和子目录。
+ * @param dirPath - 目录路径。
+ * @returns 清空操作的异步结果，成功时返回 true。
  */
 export async function emptyDir(dirPath: string): AsyncIOResult<boolean> {
     type T = boolean;
@@ -351,9 +392,9 @@ export async function emptyDir(dirPath: string): AsyncIOResult<boolean> {
 }
 
 /**
- * 以字符串格式读取文件
- * @param filePath 要读取的文件路径
- * @returns
+ * 读取文本文件的内容。
+ * @param filePath - 文件路径。
+ * @returns 包含文件文本内容的异步操作。
  */
 export function readTextFile(filePath: string): AsyncIOResult<string> {
     return readFile(filePath, {
@@ -362,11 +403,11 @@ export function readTextFile(filePath: string): AsyncIOResult<string> {
 }
 
 /**
- * 下载文件保存到本地
- * @param fileUrl 要下载的文件url
- * @param filePath 保存到本地的文件路径
- * @param headers 请求header
- * @returns
+ * 下载文件。
+ * @param fileUrl - 文件的网络 URL。
+ * @param filePath - 下载后文件存储的路径。
+ * @param headers - 可选的请求头。
+ * @returns 下载操作的异步结果，成功时返回 true。
  */
 export function downloadFile(fileUrl: string, filePath: string, headers?: HeadersInit): AsyncIOResult<boolean> {
     assertSafeUrl(fileUrl);
@@ -388,11 +429,11 @@ export function downloadFile(fileUrl: string, filePath: string, headers?: Header
 }
 
 /**
- * 上传文件
- * @param filePath 本地文件路径
- * @param fileUrl 上传url
- * @param headers 请求header
- * @returns
+ * 文件上传。
+ * @param filePath - 需要上传的文件路径。
+ * @param fileUrl - 目标网络 URL。
+ * @param headers - 可选的请求头。
+ * @returns 上传操作的异步结果，成功时返回 true。
  */
 export async function uploadFile(filePath: string, fileUrl: string, headers?: HeadersInit): AsyncIOResult<boolean> {
     assertSafeUrl(fileUrl);

@@ -2,6 +2,11 @@ import { Ok, type Result } from 'happy-rusty';
 import { assertSafeSocketUrl } from '../assert/assertions.ts';
 import type { ISocket, SocketListenerMap } from './socket_define.ts';
 
+/**
+ * 创建并返回一个 WebSocket 连接。
+ * @param url - WebSocket 服务器的 URL。
+ * @returns 返回一个实现了 ISocket 接口的 WebSocket 对象。
+ */
 export function connectSocket(url: string): ISocket {
     assertSafeSocketUrl(url);
 

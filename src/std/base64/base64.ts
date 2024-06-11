@@ -30,7 +30,7 @@ const lookup = ((): Uint8Array => {
 /**
  * Converts ArrayBuffer into a base64 encoded string.
  *
- * @param data The data to encode.
+ * @param data - The data to encode.
  * @returns The base64 encoded string.
  */
 export function base64FromArrayBuffer(data: ArrayBuffer): string {
@@ -77,7 +77,7 @@ export function base64FromArrayBuffer(data: ArrayBuffer): string {
 /**
  * Converts a base64 encoded string to an ArrayBuffer
  *
- * @param data Base64 encoded string
+ * @param data - Base64 encoded string
  * @returns The decoded data as an ArrayBuffer.
  */
 export function base64ToArrayBuffer(data: string): ArrayBuffer {
