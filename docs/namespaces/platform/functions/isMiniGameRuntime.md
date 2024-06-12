@@ -1,8 +1,8 @@
-[**minigame-std**](../../../index.md) • **Docs**
+[**minigame-std**](../../../README.md) • **Docs**
 
 ***
 
-[minigame-std](../../../index.md) / [platform](../index.md) / isMiniGameRuntime
+[minigame-std](../../../README.md) / [platform](../README.md) / isMiniGameRuntime
 
 # Function: isMiniGameRuntime()
 
@@ -20,4 +20,4 @@ function isMiniGameRuntime(): boolean
 
 ## Source
 
-[src/std/platform/target.ts:25](https://github.com/JiangJie/minigame-std/blob/fe87039c9bf9e09f2936bdac3b9a02fcf5e4b50c/src/std/platform/target.ts#L25)
+[src/std/platform/target.ts:25](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/platform/target.ts#L25)

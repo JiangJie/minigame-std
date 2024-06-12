@@ -1,8 +1,8 @@
-[**minigame-std**](../../../index.md) • **Docs**
+[**minigame-std**](../../../README.md) • **Docs**
 
 ***
 
-[minigame-std](../../../index.md) / [fs](../index.md) / mkdir
+[minigame-std](../../../README.md) / [fs](../README.md) / mkdir
 
 # Function: mkdir()
 
@@ -26,4 +26,4 @@ function mkdir(dirPath): AsyncIOResult<boolean>
 
 ## Source
 
-[src/std/fs/mod.ts:63](https://github.com/JiangJie/minigame-std/blob/fe87039c9bf9e09f2936bdac3b9a02fcf5e4b50c/src/std/fs/mod.ts#L63)
+[src/std/fs/mod.ts:63](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/fs/mod.ts#L63)

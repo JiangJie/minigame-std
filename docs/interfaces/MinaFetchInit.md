@@ -1,8 +1,8 @@
-[**minigame-std**](../index.md) • **Docs**
+[**minigame-std**](../README.md) • **Docs**
 
 ***
 
-[minigame-std](../index.md) / MinaFetchInit
+[minigame-std](../README.md) / MinaFetchInit
 
 # Interface: MinaFetchInit
 

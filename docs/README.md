@@ -8,10 +8,10 @@
 
 | Namespace | Description |
 | :------ | :------ |
-| [clipboard](namespaces/clipboard/index.md) | - |
-| [fs](namespaces/fs/index.md) | - |
-| [platform](namespaces/platform/index.md) | - |
-| [storage](namespaces/storage/index.md) | - |
+| [clipboard](namespaces/clipboard/README.md) | - |
+| [fs](namespaces/fs/README.md) | - |
+| [platform](namespaces/platform/README.md) | - |
+| [storage](namespaces/storage/README.md) | - |
 
 ## Interfaces
 

@@ -1,8 +1,8 @@
-[**minigame-std**](../index.md) • **Docs**
+[**minigame-std**](../README.md) • **Docs**
 
 ***
 
-[minigame-std](../index.md) / base64ToArrayBuffer
+[minigame-std](../README.md) / base64ToArrayBuffer
 
 # Function: base64ToArrayBuffer()
 
@@ -26,4 +26,4 @@ The decoded data as an ArrayBuffer.
 
 ## Source
 
-[src/std/base64/base64.ts:83](https://github.com/JiangJie/minigame-std/blob/fe87039c9bf9e09f2936bdac3b9a02fcf5e4b50c/src/std/base64/base64.ts#L83)
+[src/std/base64/base64.ts:83](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/base64/base64.ts#L83)

@@ -1,8 +1,8 @@
-[**minigame-std**](../index.md) • **Docs**
+[**minigame-std**](../README.md) • **Docs**
 
 ***
 
-[minigame-std](../index.md) / connectSocket
+[minigame-std](../README.md) / connectSocket
 
 # Function: connectSocket()
 
@@ -26,4 +26,4 @@ function connectSocket(url): ISocket
 
 ## Source
 
-[src/std/socket/mod.ts:13](https://github.com/JiangJie/minigame-std/blob/fe87039c9bf9e09f2936bdac3b9a02fcf5e4b50c/src/std/socket/mod.ts#L13)
+[src/std/socket/mod.ts:13](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/socket/mod.ts#L13)

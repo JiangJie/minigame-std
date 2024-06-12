@@ -1,8 +1,8 @@
-[**minigame-std**](../index.md) • **Docs**
+[**minigame-std**](../README.md) • **Docs**
 
 ***
 
-[minigame-std](../index.md) / ISocket
+[minigame-std](../README.md) / ISocket
 
 # Interface: ISocket
 
@@ -37,7 +37,7 @@ addEventListener<K>(type, listener): void
 
 #### Source
 
-[src/std/socket/socket\_define.ts:42](https://github.com/JiangJie/minigame-std/blob/fe87039c9bf9e09f2936bdac3b9a02fcf5e4b50c/src/std/socket/socket_define.ts#L42)
+[src/std/socket/socket\_define.ts:42](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/socket/socket_define.ts#L42)
 
 ***
 
@@ -62,7 +62,7 @@ close(code?, reason?): void
 
 #### Source
 
-[src/std/socket/socket\_define.ts:56](https://github.com/JiangJie/minigame-std/blob/fe87039c9bf9e09f2936bdac3b9a02fcf5e4b50c/src/std/socket/socket_define.ts#L56)
+[src/std/socket/socket\_define.ts:56](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/socket/socket_define.ts#L56)
 
 ***
 
@@ -88,4 +88,4 @@ send(data): Promise<Result<boolean, Error>>
 
 #### Source
 
-[src/std/socket/socket\_define.ts:49](https://github.com/JiangJie/minigame-std/blob/fe87039c9bf9e09f2936bdac3b9a02fcf5e4b50c/src/std/socket/socket_define.ts#L49)
+[src/std/socket/socket\_define.ts:49](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/socket/socket_define.ts#L49)

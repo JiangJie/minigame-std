@@ -1,8 +1,8 @@
-[**minigame-std**](../index.md) • **Docs**
+[**minigame-std**](../README.md) • **Docs**
 
 ***
 
-[minigame-std](../index.md) / assertString
+[minigame-std](../README.md) / assertString
 
 # Function: assertString()
 
@@ -24,4 +24,4 @@ function assertString(str): void
 
 ## Source
 
-[src/std/assert/assertions.ts:7](https://github.com/JiangJie/minigame-std/blob/fe87039c9bf9e09f2936bdac3b9a02fcf5e4b50c/src/std/assert/assertions.ts#L7)
+[src/std/assert/assertions.ts:7](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/assert/assertions.ts#L7)

@@ -1,8 +1,8 @@
-[**minigame-std**](../index.md) • **Docs**
+[**minigame-std**](../README.md) • **Docs**
 
 ***
 
-[minigame-std](../index.md) / UnionFetchInit
+[minigame-std](../README.md) / UnionFetchInit
 
 # Type alias: UnionFetchInit
 
@@ -14,4 +14,4 @@ type UnionFetchInit: FetchInit & MinaFetchInit;
 
 ## Source
 
-[src/std/fetch/fetch\_defines.ts:14](https://github.com/JiangJie/minigame-std/blob/fe87039c9bf9e09f2936bdac3b9a02fcf5e4b50c/src/std/fetch/fetch_defines.ts#L14)
+[src/std/fetch/fetch\_defines.ts:14](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/fetch/fetch_defines.ts#L14)

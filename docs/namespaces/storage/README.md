@@ -1,8 +1,8 @@
-[**minigame-std**](../../index.md) • **Docs**
+[**minigame-std**](../../README.md) • **Docs**
 
 ***
 
-[minigame-std](../../index.md) / storage
+[minigame-std](../../README.md) / storage
 
 # Namespace: storage
 

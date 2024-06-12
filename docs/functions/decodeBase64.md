@@ -1,8 +1,8 @@
-[**minigame-std**](../index.md) • **Docs**
+[**minigame-std**](../README.md) • **Docs**
 
 ***
 
-[minigame-std](../index.md) / decodeBase64
+[minigame-std](../README.md) / decodeBase64
 
 # Function: decodeBase64()
 
@@ -26,4 +26,4 @@ function decodeBase64(data): string
 
 ## Source
 
-[src/std/base64/mod.ts:20](https://github.com/JiangJie/minigame-std/blob/fe87039c9bf9e09f2936bdac3b9a02fcf5e4b50c/src/std/base64/mod.ts#L20)
+[src/std/base64/mod.ts:20](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/base64/mod.ts#L20)

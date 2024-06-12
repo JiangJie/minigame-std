@@ -1,8 +1,8 @@
-[**minigame-std**](../../index.md) • **Docs**
+[**minigame-std**](../../README.md) • **Docs**
 
 ***
 
-[minigame-std](../../index.md) / clipboard
+[minigame-std](../../README.md) / clipboard
 
 # Namespace: clipboard
 

@@ -1,8 +1,8 @@
-[**minigame-std**](../index.md) • **Docs**
+[**minigame-std**](../README.md) • **Docs**
 
 ***
 
-[minigame-std](../index.md) / SocketListenerMap
+[minigame-std](../README.md) / SocketListenerMap
 
 # Interface: SocketListenerMap
 
@@ -31,7 +31,7 @@ close(code, reason): void
 
 #### Source
 
-[src/std/socket/socket\_define.ts:17](https://github.com/JiangJie/minigame-std/blob/fe87039c9bf9e09f2936bdac3b9a02fcf5e4b50c/src/std/socket/socket_define.ts#L17)
+[src/std/socket/socket\_define.ts:17](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/socket/socket_define.ts#L17)
 
 ***
 
@@ -55,7 +55,7 @@ error(err): void
 
 #### Source
 
-[src/std/socket/socket\_define.ts:29](https://github.com/JiangJie/minigame-std/blob/fe87039c9bf9e09f2936bdac3b9a02fcf5e4b50c/src/std/socket/socket_define.ts#L29)
+[src/std/socket/socket\_define.ts:29](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/socket/socket_define.ts#L29)
 
 ***
 
@@ -79,7 +79,7 @@ message(data): void
 
 #### Source
 
-[src/std/socket/socket\_define.ts:23](https://github.com/JiangJie/minigame-std/blob/fe87039c9bf9e09f2936bdac3b9a02fcf5e4b50c/src/std/socket/socket_define.ts#L23)
+[src/std/socket/socket\_define.ts:23](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/socket/socket_define.ts#L23)
 
 ***
 
@@ -97,4 +97,4 @@ open(): void
 
 #### Source
 
-[src/std/socket/socket\_define.ts:10](https://github.com/JiangJie/minigame-std/blob/fe87039c9bf9e09f2936bdac3b9a02fcf5e4b50c/src/std/socket/socket_define.ts#L10)
+[src/std/socket/socket\_define.ts:10](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/socket/socket_define.ts#L10)

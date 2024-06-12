@@ -1,8 +1,8 @@
-[**minigame-std**](../../../index.md) • **Docs**
+[**minigame-std**](../../../README.md) • **Docs**
 
 ***
 
-[minigame-std](../../../index.md) / [fs](../index.md) / downloadFile
+[minigame-std](../../../README.md) / [fs](../README.md) / downloadFile
 
 # Function: downloadFile()
 
@@ -31,4 +31,4 @@ requestInit?): AsyncIOResult<boolean>
 
 ## Source
 
-[src/std/fs/mod.ts:167](https://github.com/JiangJie/minigame-std/blob/fe87039c9bf9e09f2936bdac3b9a02fcf5e4b50c/src/std/fs/mod.ts#L167)
+[src/std/fs/mod.ts:167](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/fs/mod.ts#L167)

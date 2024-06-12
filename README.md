@@ -193,4 +193,4 @@ pnpm test
 
 小游戏平台的测试用例请转到 [minigame-std-demo](https://github.com/JiangJie/minigame-std-demo)。
 
-## [文档](docs/index.md)
+## [文档](docs/README.md)
