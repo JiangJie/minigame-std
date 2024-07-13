@@ -15,7 +15,7 @@ function readTextFile(filePath): AsyncIOResult<string>
 ## Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `filePath` | `string` | 文件路径。 |
 
 ## Returns
@@ -24,6 +24,6 @@ function readTextFile(filePath): AsyncIOResult<string>
 
 包含文件文本内容的异步操作结果。
 
-## Source
+## Defined in
 
-[src/std/fs/mod.ts:194](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/fs/mod.ts#L194)
+[src/std/fs/mod.ts:194](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fs/mod.ts#L194)

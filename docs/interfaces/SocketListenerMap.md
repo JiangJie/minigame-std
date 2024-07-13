@@ -21,7 +21,7 @@ close(code, reason): void
 #### Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `code` | `number` | 表示关闭连接的状态码。 |
 | `reason` | `string` | 表示关闭连接的原因。 |
 
@@ -29,9 +29,9 @@ close(code, reason): void
 
 `void`
 
-#### Source
+#### Defined in
 
-[src/std/socket/socket\_define.ts:17](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/socket/socket_define.ts#L17)
+[src/std/socket/socket\_define.ts:17](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/socket/socket_define.ts#L17)
 
 ***
 
@@ -46,16 +46,16 @@ error(err): void
 #### Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `err` | `Error` | 发生的错误对象。 |
 
 #### Returns
 
 `void`
 
-#### Source
+#### Defined in
 
-[src/std/socket/socket\_define.ts:29](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/socket/socket_define.ts#L29)
+[src/std/socket/socket\_define.ts:29](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/socket/socket_define.ts#L29)
 
 ***
 
@@ -70,16 +70,16 @@ message(data): void
 #### Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `data` | `string` \| `ArrayBuffer` | 接收到的消息数据，可以是字符串或者 ArrayBuffer。 |
 
 #### Returns
 
 `void`
 
-#### Source
+#### Defined in
 
-[src/std/socket/socket\_define.ts:23](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/socket/socket_define.ts#L23)
+[src/std/socket/socket\_define.ts:23](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/socket/socket_define.ts#L23)
 
 ***
 
@@ -95,6 +95,6 @@ open(): void
 
 `void`
 
-#### Source
+#### Defined in
 
-[src/std/socket/socket\_define.ts:10](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/socket/socket_define.ts#L10)
+[src/std/socket/socket\_define.ts:10](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/socket/socket_define.ts#L10)

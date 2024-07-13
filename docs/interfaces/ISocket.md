@@ -18,16 +18,16 @@ addEventListener<K>(type, listener): void
 
 添加事件监听器到 WebSocket 对象。
 
-#### Type parameters
+#### Type Parameters
 
-| Type parameter | Description |
-| :------ | :------ |
+| Type Parameter | Description |
+| ------ | ------ |
 | `K` *extends* keyof `WebSocketEventMap` | 限定为 WebSocketEventMap 的键类型。 |
 
 #### Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `type` | `K` | 事件类型，如 'open', 'close', 'message', 'error'。 |
 | `listener` | [`SocketListenerMap`](SocketListenerMap.md)\[`K`\] | 对应事件的监听器回调函数。 |
 
@@ -35,9 +35,9 @@ addEventListener<K>(type, listener): void
 
 `void`
 
-#### Source
+#### Defined in
 
-[src/std/socket/socket\_define.ts:42](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/socket/socket_define.ts#L42)
+[src/std/socket/socket\_define.ts:42](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/socket/socket_define.ts#L42)
 
 ***
 
@@ -52,7 +52,7 @@ close(code?, reason?): void
 #### Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `code`? | `number` | 可选的状态码，表示关闭连接的原因。 |
 | `reason`? | `string` | 可选的字符串，解释为什么要关闭连接。 |
 
@@ -60,9 +60,9 @@ close(code?, reason?): void
 
 `void`
 
-#### Source
+#### Defined in
 
-[src/std/socket/socket\_define.ts:56](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/socket/socket_define.ts#L56)
+[src/std/socket/socket\_define.ts:56](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/socket/socket_define.ts#L56)
 
 ***
 
@@ -77,7 +77,7 @@ send(data): Promise<Result<boolean, Error>>
 #### Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `data` | `string` \| `ArrayBuffer` \| `ArrayBufferView` | 要发送的数据，可以是字符串、ArrayBuffer 或 ArrayBufferView。 |
 
 #### Returns
@@ -86,6 +86,6 @@ send(data): Promise<Result<boolean, Error>>
 
 返回一个 Promise，其解析为发送结果，成功时返回 true，失败时返回 Error。
 
-#### Source
+#### Defined in
 
-[src/std/socket/socket\_define.ts:49](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/socket/socket_define.ts#L49)
+[src/std/socket/socket\_define.ts:49](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/socket/socket_define.ts#L49)

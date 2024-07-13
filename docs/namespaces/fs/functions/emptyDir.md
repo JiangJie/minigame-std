@@ -15,7 +15,7 @@ function emptyDir(dirPath): AsyncIOResult<boolean>
 ## Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `dirPath` | `string` | 目录路径。 |
 
 ## Returns
@@ -24,6 +24,6 @@ function emptyDir(dirPath): AsyncIOResult<boolean>
 
 清空成功返回 true 的异步操作结果。
 
-## Source
+## Defined in
 
-[src/std/fs/mod.ts:185](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/fs/mod.ts#L185)
+[src/std/fs/mod.ts:185](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fs/mod.ts#L185)

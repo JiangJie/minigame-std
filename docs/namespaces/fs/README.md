@@ -4,20 +4,20 @@
 
 [minigame-std](../../README.md) / fs
 
-# Namespace: fs
+# fs
 
 ## Index
 
 ### Type Aliases
 
 | Type alias | Description |
-| :------ | :------ |
+| ------ | ------ |
 | [WriteFileContent](type-aliases/WriteFileContent.md) | File content type for write, support `ArrayBuffer` `TypedArray` `string`. |
 
 ### Functions
 
 | Function | Description |
-| :------ | :------ |
+| ------ | ------ |
 | [appendFile](functions/appendFile.md) | 向文件追加内容。 |
 | [downloadFile](functions/downloadFile.md) | 下载文件。 |
 | [emptyDir](functions/emptyDir.md) | 清空指定目录下的所有文件和子目录。 |

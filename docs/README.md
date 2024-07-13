@@ -7,7 +7,7 @@
 ## Namespaces
 
 | Namespace | Description |
-| :------ | :------ |
+| ------ | ------ |
 | [clipboard](namespaces/clipboard/README.md) | - |
 | [fs](namespaces/fs/README.md) | - |
 | [platform](namespaces/platform/README.md) | - |
@@ -16,7 +16,7 @@
 ## Interfaces
 
 | Interface | Description |
-| :------ | :------ |
+| ------ | ------ |
 | [ISocket](interfaces/ISocket.md) | WebSocket 接口定义，描述了 WebSocket 的基本操作方法。 |
 | [MinaFetchInit](interfaces/MinaFetchInit.md) | 微信小游戏网络请求初始化配置接口，继承自微信小游戏请求选项，除去'url'和'responseType'。 |
 | [SocketListenerMap](interfaces/SocketListenerMap.md) | WebSocket 事件监听器映射接口，定义了与 WebSocket 事件对应的回调函数类型。 |
@@ -24,13 +24,13 @@
 ## Type Aliases
 
 | Type alias | Description |
-| :------ | :------ |
+| ------ | ------ |
 | [UnionFetchInit](type-aliases/UnionFetchInit.md) | 联合网络请求初始化配置类型，结合了 FetchInit 和 MinaFetchInit。 |
 
 ## Functions
 
 | Function | Description |
-| :------ | :------ |
+| ------ | ------ |
 | [addErrorListener](functions/addErrorListener.md) | 添加错误监听器，用于监听标准的错误事件。 |
 | [addUnhandledrejectionListener](functions/addUnhandledrejectionListener.md) | 添加未处理的 Promise 拒绝事件监听器。 |
 | [assertSafeSocketUrl](functions/assertSafeSocketUrl.md) | 断言传入的 WebSocket URL 是否为 `wss` 协议。 |

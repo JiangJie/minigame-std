@@ -4,12 +4,12 @@
 
 [minigame-std](../../../README.md) / [platform](../README.md) / TargetType
 
-# Type alias: TargetType
+# Type Alias: TargetType
 
 ```ts
 type TargetType: "minigame" | "web";
 ```
 
-## Source
+## Defined in
 
-[src/std/platform/target.ts:3](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/platform/target.ts#L3)
+[src/std/platform/target.ts:3](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/platform/target.ts#L3)

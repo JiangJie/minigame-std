@@ -15,7 +15,7 @@ function addErrorListener(listener): () => void
 ## Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `listener` | (`ev`) => `void` | 错误事件的回调函数。 |
 
 ## Returns
@@ -28,6 +28,6 @@ function addErrorListener(listener): () => void
 
 `void`
 
-## Source
+## Defined in
 
-[src/std/event/mod.ts:10](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/event/mod.ts#L10)
+[src/std/event/mod.ts:10](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/event/mod.ts#L10)

@@ -4,14 +4,14 @@
 
 [minigame-std](../../README.md) / storage
 
-# Namespace: storage
+# storage
 
 ## Index
 
 ### Functions
 
 | Function | Description |
-| :------ | :------ |
+| ------ | ------ |
 | [clear](functions/clear.md) | 清除所有的本地存储数据。 |
 | [getItem](functions/getItem.md) | 从本地缓存中读取数据。 |
 | [removeItem](functions/removeItem.md) | 从本地缓存中移除指定的数据。 |

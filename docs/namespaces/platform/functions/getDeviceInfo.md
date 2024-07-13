@@ -18,6 +18,6 @@ function getDeviceInfo(): WechatMinigame.DeviceInfo
 
 返回小游戏的设备信息对象。
 
-## Source
+## Defined in
 
-[src/std/platform/device.ts:7](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/platform/device.ts#L7)
+[src/std/platform/device.ts:7](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/platform/device.ts#L7)

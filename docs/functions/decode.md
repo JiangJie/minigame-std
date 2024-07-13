@@ -15,13 +15,13 @@ function decode(data): string
 ## Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `data` | `ArrayBuffer` | 要解码的buffer |
 
 ## Returns
 
 `string`
 
-## Source
+## Defined in
 
-[src/std/codec/mod.ts:19](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/codec/mod.ts#L19)
+[src/std/codec/mod.ts:19](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/codec/mod.ts#L19)

@@ -15,7 +15,7 @@ function writeText(data): WriteResult
 ## Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `data` | `string` | 需要写入的文本数据。 |
 
 ## Returns
@@ -24,6 +24,6 @@ function writeText(data): WriteResult
 
 写入操作的结果。
 
-## Source
+## Defined in
 
-[src/std/clipboard/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/clipboard/mod.ts#L14)
+[src/std/clipboard/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/clipboard/mod.ts#L14)

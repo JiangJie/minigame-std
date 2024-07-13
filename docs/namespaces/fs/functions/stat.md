@@ -18,7 +18,7 @@ function stat(path): AsyncIOResult<{
 ## Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `path` | `string` | 文件或目录的路径。 |
 
 ## Returns
@@ -30,11 +30,11 @@ function stat(path): AsyncIOResult<{
 
 包含状态信息的异步操作结果。
 
-| Member | Type |
-| :------ | :------ |
-| `isDirectory` | () => `boolean` |
-| `isFile` | () => `boolean` |
+| Name | Type | Defined in |
+| ------ | ------ | ------ |
+| `isDirectory` | () => `boolean` | [src/std/fs/mod.ts:102](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fs/mod.ts#L102) |
+| `isFile` | () => `boolean` | [src/std/fs/mod.ts:101](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fs/mod.ts#L101) |
 
-## Source
+## Defined in
 
-[src/std/fs/mod.ts:100](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/fs/mod.ts#L100)
+[src/std/fs/mod.ts:100](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fs/mod.ts#L100)

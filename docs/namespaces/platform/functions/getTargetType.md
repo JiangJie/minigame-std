@@ -18,6 +18,6 @@ function getTargetType(): TargetType
 
 返回当前的运行环境类型，可能是 'minigame' 或 'web'。
 
-## Source
+## Defined in
 
-[src/std/platform/target.ts:9](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/platform/target.ts#L9)
+[src/std/platform/target.ts:9](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/platform/target.ts#L9)

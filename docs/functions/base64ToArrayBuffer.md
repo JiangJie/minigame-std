@@ -15,7 +15,7 @@ Converts a base64 encoded string to an ArrayBuffer
 ## Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `data` | `string` | Base64 encoded string |
 
 ## Returns
@@ -24,6 +24,6 @@ Converts a base64 encoded string to an ArrayBuffer
 
 The decoded data as an ArrayBuffer.
 
-## Source
+## Defined in
 
-[src/std/base64/base64.ts:83](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/base64/base64.ts#L83)
+[src/std/base64/base64.ts:83](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/base64/base64.ts#L83)

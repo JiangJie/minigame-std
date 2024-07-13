@@ -6,6 +6,20 @@
 
 # Function: fetchT()
 
+发起一个网络请求，根据初始化配置返回对应类型的 FetchTask 或 AsyncIOResult。
+
+## Type Param
+
+预期的响应数据类型。
+
+## Param
+
+请求的 URL 地址。
+
+## Param
+
+请求的初始化配置。
+
 ## fetchT(url, init)
 
 ```ts
@@ -17,7 +31,7 @@ function fetchT(url, init): FetchTask<string>
 ### Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `url` | `string` | 请求的 URL 地址。 |
 | `init` | `FetchInit` & [`MinaFetchInit`](../interfaces/MinaFetchInit.md) & \{ `abortable`: `true`; `responseType`: `"text"`; \} | 请求的初始化配置，指定响应类型为文本且请求可中断。 |
 
@@ -27,9 +41,9 @@ function fetchT(url, init): FetchTask<string>
 
 返回一个文本类型的 FetchTask。
 
-### Source
+### Defined in
 
-[src/std/fetch/mod.ts:15](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/fetch/mod.ts#L15)
+[src/std/fetch/mod.ts:15](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fetch/mod.ts#L15)
 
 ## fetchT(url, init)
 
@@ -42,7 +56,7 @@ function fetchT(url, init): FetchTask<ArrayBuffer>
 ### Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `url` | `string` | 请求的 URL 地址。 |
 | `init` | `FetchInit` & [`MinaFetchInit`](../interfaces/MinaFetchInit.md) & \{ `abortable`: `true`; `responseType`: `"arraybuffer"`; \} | 请求的初始化配置，指定响应类型为 ArrayBuffer 且请求可中断。 |
 
@@ -52,9 +66,9 @@ function fetchT(url, init): FetchTask<ArrayBuffer>
 
 返回一个 ArrayBuffer 类型的 FetchTask。
 
-### Source
+### Defined in
 
-[src/std/fetch/mod.ts:26](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/fetch/mod.ts#L26)
+[src/std/fetch/mod.ts:26](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fetch/mod.ts#L26)
 
 ## fetchT(url, init)
 
@@ -64,16 +78,16 @@ function fetchT<T>(url, init): FetchTask<T>
 
 发起一个可中断的 JSON 类型响应的网络请求。
 
-### Type parameters
+### Type Parameters
 
-| Type parameter | Description |
-| :------ | :------ |
+| Type Parameter | Description |
+| ------ | ------ |
 | `T` | 预期的 JSON 响应数据类型。 |
 
 ### Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `url` | `string` | 请求的 URL 地址。 |
 | `init` | `FetchInit` & [`MinaFetchInit`](../interfaces/MinaFetchInit.md) & \{ `abortable`: `true`; `responseType`: `"json"`; \} | 请求的初始化配置，指定响应类型为 JSON 且请求可中断。 |
 
@@ -83,9 +97,9 @@ function fetchT<T>(url, init): FetchTask<T>
 
 返回一个 JSON 类型的 FetchTask。
 
-### Source
+### Defined in
 
-[src/std/fetch/mod.ts:38](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/fetch/mod.ts#L38)
+[src/std/fetch/mod.ts:38](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fetch/mod.ts#L38)
 
 ## fetchT(url, init)
 
@@ -98,7 +112,7 @@ function fetchT(url, init): AsyncIOResult<string>
 ### Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `url` | `string` | 请求的 URL 地址。 |
 | `init` | `FetchInit` & [`MinaFetchInit`](../interfaces/MinaFetchInit.md) & \{ `responseType`: `"text"`; \} | 请求的初始化配置，指定响应类型为文本。 |
 
@@ -108,9 +122,9 @@ function fetchT(url, init): AsyncIOResult<string>
 
 返回一个文本类型的 AsyncIOResult。
 
-### Source
+### Defined in
 
-[src/std/fetch/mod.ts:49](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/fetch/mod.ts#L49)
+[src/std/fetch/mod.ts:49](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fetch/mod.ts#L49)
 
 ## fetchT(url, init)
 
@@ -123,7 +137,7 @@ function fetchT(url, init): AsyncIOResult<ArrayBuffer>
 ### Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `url` | `string` | 请求的 URL 地址。 |
 | `init` | `FetchInit` & [`MinaFetchInit`](../interfaces/MinaFetchInit.md) & \{ `responseType`: `"arraybuffer"`; \} | 请求的初始化配置，指定响应类型为 ArrayBuffer。 |
 
@@ -133,9 +147,9 @@ function fetchT(url, init): AsyncIOResult<ArrayBuffer>
 
 返回一个 ArrayBuffer 类型的 AsyncIOResult。
 
-### Source
+### Defined in
 
-[src/std/fetch/mod.ts:59](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/fetch/mod.ts#L59)
+[src/std/fetch/mod.ts:59](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fetch/mod.ts#L59)
 
 ## fetchT(url, init)
 
@@ -145,16 +159,16 @@ function fetchT<T>(url, init): AsyncIOResult<T>
 
 发起一个 JSON 类型响应的网络请求。
 
-### Type parameters
+### Type Parameters
 
-| Type parameter | Description |
-| :------ | :------ |
+| Type Parameter | Description |
+| ------ | ------ |
 | `T` | 预期的 JSON 响应数据类型。 |
 
 ### Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `url` | `string` | 请求的 URL 地址。 |
 | `init` | `FetchInit` & [`MinaFetchInit`](../interfaces/MinaFetchInit.md) & \{ `responseType`: `"json"`; \} | 请求的初始化配置，指定响应类型为 JSON。 |
 
@@ -164,9 +178,9 @@ function fetchT<T>(url, init): AsyncIOResult<T>
 
 返回一个 JSON 类型的 AsyncIOResult。
 
-### Source
+### Defined in
 
-[src/std/fetch/mod.ts:70](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/fetch/mod.ts#L70)
+[src/std/fetch/mod.ts:70](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fetch/mod.ts#L70)
 
 ## fetchT(url, init)
 
@@ -179,7 +193,7 @@ function fetchT(url, init): FetchTask<string>
 ### Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `url` | `string` | 请求的 URL 地址。 |
 | `init` | `FetchInit` & [`MinaFetchInit`](../interfaces/MinaFetchInit.md) & \{ `abortable`: `true`; \} | 请求的初始化配置，指定请求可中断。 |
 
@@ -189,9 +203,9 @@ function fetchT(url, init): FetchTask<string>
 
 返回一个文本类型的 FetchTask。
 
-### Source
+### Defined in
 
-[src/std/fetch/mod.ts:80](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/fetch/mod.ts#L80)
+[src/std/fetch/mod.ts:80](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fetch/mod.ts#L80)
 
 ## fetchT(url, init)
 
@@ -204,7 +218,7 @@ function fetchT(url, init): AsyncIOResult<string>
 ### Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `url` | `string` | 请求的 URL 地址。 |
 | `init` | `FetchInit` & [`MinaFetchInit`](../interfaces/MinaFetchInit.md) & \{ `abortable`: `false`; \} | 请求的初始化配置，指定请求不可中断。 |
 
@@ -214,9 +228,9 @@ function fetchT(url, init): AsyncIOResult<string>
 
 返回一个文本类型的 AsyncIOResult。
 
-### Source
+### Defined in
 
-[src/std/fetch/mod.ts:90](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/fetch/mod.ts#L90)
+[src/std/fetch/mod.ts:90](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fetch/mod.ts#L90)
 
 ## fetchT(url, init)
 
@@ -226,16 +240,16 @@ function fetchT<T>(url, init?): FetchTask<T> | AsyncIOResult<T>
 
 发起一个网络请求，根据初始化配置返回对应类型的 FetchTask 或 AsyncIOResult。
 
-### Type parameters
+### Type Parameters
 
-| Type parameter | Description |
-| :------ | :------ |
+| Type Parameter | Description |
+| ------ | ------ |
 | `T` | 预期的响应数据类型。 |
 
 ### Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `url` | `string` | 请求的 URL 地址。 |
 | `init`? | [`UnionFetchInit`](../type-aliases/UnionFetchInit.md) | 请求的初始化配置。 |
 
@@ -245,6 +259,6 @@ function fetchT<T>(url, init?): FetchTask<T> | AsyncIOResult<T>
 
 根据配置返回 FetchTask 或 AsyncIOResult。
 
-### Source
+### Defined in
 
-[src/std/fetch/mod.ts:101](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/fetch/mod.ts#L101)
+[src/std/fetch/mod.ts:101](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fetch/mod.ts#L101)

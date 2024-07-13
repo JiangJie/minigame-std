@@ -15,7 +15,7 @@ function connectSocket(url): ISocket
 ## Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `url` | `string` | WebSocket 服务器的 URL。 |
 
 ## Returns
@@ -24,6 +24,6 @@ function connectSocket(url): ISocket
 
 返回一个实现了 ISocket 接口的 WebSocket 对象。
 
-## Source
+## Defined in
 
-[src/std/socket/mod.ts:13](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/socket/mod.ts#L13)
+[src/std/socket/mod.ts:13](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/socket/mod.ts#L13)

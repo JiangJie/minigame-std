@@ -15,7 +15,7 @@ function addUnhandledrejectionListener(listener): () => void
 ## Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `listener` | (`ev`) => `void` | 未处理的 Promise 拒绝事件的回调函数。 |
 
 ## Returns
@@ -28,6 +28,6 @@ function addUnhandledrejectionListener(listener): () => void
 
 `void`
 
-## Source
+## Defined in
 
-[src/std/event/mod.ts:38](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/event/mod.ts#L38)
+[src/std/event/mod.ts:38](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/event/mod.ts#L38)

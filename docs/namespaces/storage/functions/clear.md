@@ -18,6 +18,6 @@ function clear(): Promise<void>
 
 返回一个 Promise，表示操作完成。
 
-## Source
+## Defined in
 
-[src/std/storage/mod.ts:38](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/storage/mod.ts#L38)
+[src/std/storage/mod.ts:38](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/storage/mod.ts#L38)

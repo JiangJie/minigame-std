@@ -4,20 +4,20 @@
 
 [minigame-std](../../README.md) / platform
 
-# Namespace: platform
+# platform
 
 ## Index
 
 ### Type Aliases
 
 | Type alias | Description |
-| :------ | :------ |
+| ------ | ------ |
 | [TargetType](type-aliases/TargetType.md) | - |
 
 ### Functions
 
 | Function | Description |
-| :------ | :------ |
+| ------ | ------ |
 | [getDeviceInfo](functions/getDeviceInfo.md) | 获取设备信息。 |
 | [getTargetType](functions/getTargetType.md) | 获取当前的平台类型。 |
 | [isMiniGame](functions/isMiniGame.md) | 判断当前是否在小游戏环境中。 |

@@ -15,7 +15,7 @@ function encodeBase64(data): string
 ## Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `data` | `string` | 需要编码的字符串数据。 |
 
 ## Returns
@@ -24,6 +24,6 @@ function encodeBase64(data): string
 
 编码后的 Base64 字符串。
 
-## Source
+## Defined in
 
-[src/std/base64/mod.ts:11](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/base64/mod.ts#L11)
+[src/std/base64/mod.ts:11](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/base64/mod.ts#L11)

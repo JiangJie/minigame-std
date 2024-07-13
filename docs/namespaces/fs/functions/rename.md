@@ -15,7 +15,7 @@ function rename(oldPath, newPath): AsyncIOResult<boolean>
 ## Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `oldPath` | `string` | 原始路径。 |
 | `newPath` | `string` | 新路径。 |
 
@@ -25,6 +25,6 @@ function rename(oldPath, newPath): AsyncIOResult<boolean>
 
 重命名成功返回 true 的异步操作结果。
 
-## Source
+## Defined in
 
-[src/std/fs/mod.ts:91](https://github.com/JiangJie/minigame-std/blob/1bf3ee8cf3321353e47e032c8721e63dd3e21497/src/std/fs/mod.ts#L91)
+[src/std/fs/mod.ts:91](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fs/mod.ts#L91)
