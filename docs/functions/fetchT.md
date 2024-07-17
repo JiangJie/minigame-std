@@ -43,7 +43,7 @@ function fetchT(url, init): FetchTask<string>
 
 ### Defined in
 
-[src/std/fetch/mod.ts:15](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fetch/mod.ts#L15)
+[fetch/mod.ts:15](https://github.com/JiangJie/minigame-std/blob/1187f9b62000e3d29782e461fb54ceb4107f512c/src/std/fetch/mod.ts#L15)
 
 ## fetchT(url, init)
 
@@ -68,7 +68,7 @@ function fetchT(url, init): FetchTask<ArrayBuffer>
 
 ### Defined in
 
-[src/std/fetch/mod.ts:26](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fetch/mod.ts#L26)
+[fetch/mod.ts:26](https://github.com/JiangJie/minigame-std/blob/1187f9b62000e3d29782e461fb54ceb4107f512c/src/std/fetch/mod.ts#L26)
 
 ## fetchT(url, init)
 
@@ -99,7 +99,7 @@ function fetchT<T>(url, init): FetchTask<T>
 
 ### Defined in
 
-[src/std/fetch/mod.ts:38](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fetch/mod.ts#L38)
+[fetch/mod.ts:38](https://github.com/JiangJie/minigame-std/blob/1187f9b62000e3d29782e461fb54ceb4107f512c/src/std/fetch/mod.ts#L38)
 
 ## fetchT(url, init)
 
@@ -124,7 +124,7 @@ function fetchT(url, init): AsyncIOResult<string>
 
 ### Defined in
 
-[src/std/fetch/mod.ts:49](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fetch/mod.ts#L49)
+[fetch/mod.ts:49](https://github.com/JiangJie/minigame-std/blob/1187f9b62000e3d29782e461fb54ceb4107f512c/src/std/fetch/mod.ts#L49)
 
 ## fetchT(url, init)
 
@@ -149,7 +149,7 @@ function fetchT(url, init): AsyncIOResult<ArrayBuffer>
 
 ### Defined in
 
-[src/std/fetch/mod.ts:59](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fetch/mod.ts#L59)
+[fetch/mod.ts:59](https://github.com/JiangJie/minigame-std/blob/1187f9b62000e3d29782e461fb54ceb4107f512c/src/std/fetch/mod.ts#L59)
 
 ## fetchT(url, init)
 
@@ -180,7 +180,7 @@ function fetchT<T>(url, init): AsyncIOResult<T>
 
 ### Defined in
 
-[src/std/fetch/mod.ts:70](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fetch/mod.ts#L70)
+[fetch/mod.ts:70](https://github.com/JiangJie/minigame-std/blob/1187f9b62000e3d29782e461fb54ceb4107f512c/src/std/fetch/mod.ts#L70)
 
 ## fetchT(url, init)
 
@@ -205,7 +205,7 @@ function fetchT(url, init): FetchTask<string>
 
 ### Defined in
 
-[src/std/fetch/mod.ts:80](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fetch/mod.ts#L80)
+[fetch/mod.ts:80](https://github.com/JiangJie/minigame-std/blob/1187f9b62000e3d29782e461fb54ceb4107f512c/src/std/fetch/mod.ts#L80)
 
 ## fetchT(url, init)
 
@@ -230,7 +230,7 @@ function fetchT(url, init): AsyncIOResult<string>
 
 ### Defined in
 
-[src/std/fetch/mod.ts:90](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fetch/mod.ts#L90)
+[fetch/mod.ts:90](https://github.com/JiangJie/minigame-std/blob/1187f9b62000e3d29782e461fb54ceb4107f512c/src/std/fetch/mod.ts#L90)
 
 ## fetchT(url, init)
 
@@ -261,4 +261,4 @@ function fetchT<T>(url, init?): FetchTask<T> | AsyncIOResult<T>
 
 ### Defined in
 
-[src/std/fetch/mod.ts:101](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fetch/mod.ts#L101)
+[fetch/mod.ts:101](https://github.com/JiangJie/minigame-std/blob/1187f9b62000e3d29782e461fb54ceb4107f512c/src/std/fetch/mod.ts#L101)

@@ -26,4 +26,4 @@ The decoded data as an ArrayBuffer.
 
 ## Defined in
 
-[src/std/base64/base64.ts:83](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/base64/base64.ts#L83)
+[base64/base64.ts:83](https://github.com/JiangJie/minigame-std/blob/1187f9b62000e3d29782e461fb54ceb4107f512c/src/std/base64/base64.ts#L83)

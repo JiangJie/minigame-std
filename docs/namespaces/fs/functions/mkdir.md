@@ -26,4 +26,4 @@ function mkdir(dirPath): AsyncIOResult<boolean>
 
 ## Defined in
 
-[src/std/fs/mod.ts:63](https://github.com/JiangJie/minigame-std/blob/b22fceadbb04574df41eed36a50100fba3cc5e73/src/std/fs/mod.ts#L63)
+[fs/mod.ts:63](https://github.com/JiangJie/minigame-std/blob/1187f9b62000e3d29782e461fb54ceb4107f512c/src/std/fs/mod.ts#L63)
