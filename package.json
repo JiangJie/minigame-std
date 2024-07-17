@@ -50,8 +50,8 @@
   ],
   "devDependencies": {
     "@jest/globals": "^29.7.0",
-    "@typescript-eslint/eslint-plugin": "^7.16.0",
-    "@typescript-eslint/parser": "^7.16.0",
+    "@typescript-eslint/eslint-plugin": "^7.16.1",
+    "@typescript-eslint/parser": "^7.16.1",
     "eslint": "^8.57.0",
     "rollup": "^4.18.1",
     "rollup-plugin-dts": "^6.1.1",
@@ -61,10 +61,10 @@
     "typescript": "^5.5.3"
   },
   "dependencies": {
-    "@happy-ts/fetch-t": "^1.0.10",
+    "@happy-ts/fetch-t": "^1.0.11",
     "@std/path": "npm:@jsr/std__path@^1.0.0",
-    "happy-opfs": "^1.0.11",
-    "happy-rusty": "^1.1.1",
+    "happy-opfs": "^1.0.12",
+    "happy-rusty": "^1.1.2",
     "minigame-api-typings": "^3.8.4",
     "tiny-invariant": "^1.3.3"
   },
