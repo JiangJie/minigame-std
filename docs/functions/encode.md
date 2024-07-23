@@ -24,4 +24,4 @@ function encode(data): ArrayBuffer
 
 ## Defined in
 
-[codec/mod.ts:10](https://github.com/JiangJie/minigame-std/blob/1187f9b62000e3d29782e461fb54ceb4107f512c/src/std/codec/mod.ts#L10)
+[codec/mod.ts:10](https://github.com/JiangJie/minigame-std/blob/d86e790fe8486ddfc8ce953df31d30618f403d3b/src/std/codec/mod.ts#L10)

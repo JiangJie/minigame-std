@@ -20,4 +20,4 @@ function getDeviceInfo(): WechatMinigame.DeviceInfo
 
 ## Defined in
 
-[platform/device.ts:7](https://github.com/JiangJie/minigame-std/blob/1187f9b62000e3d29782e461fb54ceb4107f512c/src/std/platform/device.ts#L7)
+[platform/device.ts:7](https://github.com/JiangJie/minigame-std/blob/d86e790fe8486ddfc8ce953df31d30618f403d3b/src/std/platform/device.ts#L7)

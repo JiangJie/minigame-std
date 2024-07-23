@@ -20,4 +20,4 @@ function readText(): ReadResult
 
 ## Defined in
 
-[clipboard/mod.ts:22](https://github.com/JiangJie/minigame-std/blob/1187f9b62000e3d29782e461fb54ceb4107f512c/src/std/clipboard/mod.ts#L22)
+[clipboard/mod.ts:22](https://github.com/JiangJie/minigame-std/blob/d86e790fe8486ddfc8ce953df31d30618f403d3b/src/std/clipboard/mod.ts#L22)

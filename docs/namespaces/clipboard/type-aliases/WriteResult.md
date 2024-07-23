@@ -12,4 +12,4 @@ type WriteResult: AsyncResult<boolean, DOMException | WechatMinigame.GeneralCall
 
 ## Defined in
 
-[clipboard/mod.ts:6](https://github.com/JiangJie/minigame-std/blob/1187f9b62000e3d29782e461fb54ceb4107f512c/src/std/clipboard/mod.ts#L6)
+[clipboard/mod.ts:6](https://github.com/JiangJie/minigame-std/blob/d86e790fe8486ddfc8ce953df31d30618f403d3b/src/std/clipboard/mod.ts#L6)

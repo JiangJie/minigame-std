@@ -14,4 +14,4 @@ File content type for write, support `ArrayBuffer` `TypedArray` `string`.
 
 ## Defined in
 
-[fs/fs\_define.ts:6](https://github.com/JiangJie/minigame-std/blob/1187f9b62000e3d29782e461fb54ceb4107f512c/src/std/fs/fs_define.ts#L6)
+[fs/fs\_define.ts:6](https://github.com/JiangJie/minigame-std/blob/d86e790fe8486ddfc8ce953df31d30618f403d3b/src/std/fs/fs_define.ts#L6)
