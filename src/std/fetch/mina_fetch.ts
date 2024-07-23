@@ -90,7 +90,11 @@ export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> | 
     assertSafeUrl(url);
 
     // default not abort able
-    const { abortable = false, responseType, ...rest } = init ?? {};
+    const {
+        abortable = false,
+        responseType,
+        ...rest
+    } = init ?? {};
 
     let task: WechatMinigame.RequestTask;
 
@@ -112,6 +116,8 @@ export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> | 
 
                 if (errMsg.includes('abort')) {
                     error.name = 'AbortError';
+                } else if (errMsg.includes('timeout')) {
+                    error.name = 'TimeoutError';
                 }
 
                 resolve(Err(error));
