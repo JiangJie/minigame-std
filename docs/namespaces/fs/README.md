@@ -8,10 +8,22 @@
 
 ## Index
 
+### Interfaces
+
+| Interface | Description |
+| ------ | ------ |
+| [ReadOptions](interfaces/ReadOptions.md) | Options for reading files with specified encoding. |
+
 ### Type Aliases
 
 | Type alias | Description |
 | ------ | ------ |
+| [DownloadFileOptions](type-aliases/DownloadFileOptions.md) | Options for downloading files. |
+| [FileEncoding](type-aliases/FileEncoding.md) | Supported file encodings for reading and writing files. |
+| [ReadFileContent](type-aliases/ReadFileContent.md) | File content type for read result, support `ArrayBuffer` `string`. |
+| [UnionDownloadFileOptions](type-aliases/UnionDownloadFileOptions.md) | Options for union requests. |
+| [UnionUploadFileOptions](type-aliases/UnionUploadFileOptions.md) | Options for union requests. |
+| [UploadFileOptions](type-aliases/UploadFileOptions.md) | Options for uploading files. |
 | [WriteFileContent](type-aliases/WriteFileContent.md) | File content type for write, support `ArrayBuffer` `TypedArray` `string`. |
 
 ### Functions

@@ -10,7 +10,7 @@
 function uploadFile(
    filePath, 
    fileUrl, 
-requestInit?): AsyncIOResult<boolean>
+options?): FetchTask<WechatMinigame.UploadFileSuccessCallbackResult | Response>
 ```
 
 上传本地文件。
@@ -21,14 +21,14 @@ requestInit?): AsyncIOResult<boolean>
 | ------ | ------ | ------ |
 | `filePath` | `string` | 需要上传的文件路径。 |
 | `fileUrl` | `string` | 目标服务器的 URL。 |
-| `requestInit`? | `RequestInit` | 可选的请求初始化参数。 |
+| `options`? | [`UnionUploadFileOptions`](../type-aliases/UnionUploadFileOptions.md) | 可选的请求初始化参数。 |
 
 ## Returns
 
-`AsyncIOResult`\<`boolean`\>
+`FetchTask`\<`WechatMinigame.UploadFileSuccessCallbackResult` \| `Response`\>
 
-上传成功返回 true 的异步操作结果。
+上传成功返回原始结果。
 
 ## Defined in
 
-[fs/mod.ts:202](https://github.com/JiangJie/minigame-std/blob/d86e790fe8486ddfc8ce953df31d30618f403d3b/src/std/fs/mod.ts#L202)
+[fs/mod.ts:203](https://github.com/JiangJie/minigame-std/blob/c06988f76801881a43518a5e9723580f21a11a7f/src/std/fs/mod.ts#L203)

@@ -10,11 +10,16 @@
 
 ## Extends
 
-- `Omit`\<`WechatMinigame.RequestOption`, `"url"` \| `"responseType"`\>
+- `Omit`\<`WechatMinigame.RequestOption`, 
+  \| `"url"`
+  \| `"dataType"`
+  \| `"responseType"`
+  \| `"success"`
+  \| `"fail"`\>
 
 ## Properties
 
 | Property | Type | Defined in |
 | ------ | ------ | ------ |
-| `abortable?` | `boolean` | [fetch/fetch\_defines.ts:7](https://github.com/JiangJie/minigame-std/blob/d86e790fe8486ddfc8ce953df31d30618f403d3b/src/std/fetch/fetch_defines.ts#L7) |
-| `responseType?` | `"arraybuffer"` \| `"text"` \| `"json"` | [fetch/fetch\_defines.ts:8](https://github.com/JiangJie/minigame-std/blob/d86e790fe8486ddfc8ce953df31d30618f403d3b/src/std/fetch/fetch_defines.ts#L8) |
+| `abortable?` | `boolean` | [fetch/fetch\_defines.ts:7](https://github.com/JiangJie/minigame-std/blob/c06988f76801881a43518a5e9723580f21a11a7f/src/std/fetch/fetch_defines.ts#L7) |
+| `responseType?` | `"arraybuffer"` \| `"text"` \| `"json"` | [fetch/fetch\_defines.ts:8](https://github.com/JiangJie/minigame-std/blob/c06988f76801881a43518a5e9723580f21a11a7f/src/std/fetch/fetch_defines.ts#L8) |

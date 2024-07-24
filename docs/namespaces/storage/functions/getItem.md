@@ -26,4 +26,4 @@ function getItem(key): Promise<Option<string>>
 
 ## Defined in
 
-[storage/mod.ts:21](https://github.com/JiangJie/minigame-std/blob/d86e790fe8486ddfc8ce953df31d30618f403d3b/src/std/storage/mod.ts#L21)
+[storage/mod.ts:21](https://github.com/JiangJie/minigame-std/blob/c06988f76801881a43518a5e9723580f21a11a7f/src/std/storage/mod.ts#L21)
