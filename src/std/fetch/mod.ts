@@ -98,7 +98,7 @@ export function fetchT(url: string, init: UnionFetchInit & {
  * @param init - 请求的初始化配置。
  * @returns 根据配置返回 FetchTask 或 AsyncIOResult。
  */
-export function fetchT<T>(url: string, init?: UnionFetchInit): FetchTask<T> | AsyncIOResult<T>;
+export function fetchT<T>(url: string, init?: UnionFetchInit): AsyncIOResult<T>;
 
 /**
  * 发起一个网络请求，根据初始化配置返回对应类型的 FetchTask 或 AsyncIOResult。
