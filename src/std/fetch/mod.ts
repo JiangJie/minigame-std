@@ -3,7 +3,7 @@ import { isMinaEnv } from '../../macros/env.ts';
 import type { UnionFetchInit } from './fetch_defines.ts';
 import { minaFetch } from './mina_fetch.ts';
 
-export type { MinaFetchInit, UnionFetchInit } from './fetch_defines.ts';
+export * from './fetch_defines.ts';
 
 /**
  * 发起一个可中断的文本类型响应的网络请求。

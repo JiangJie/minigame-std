@@ -33,7 +33,7 @@ import {
     writeFile as minaWriteFile,
 } from './mina_fs.ts';
 
-export type { WriteFileContent } from './fs_define.ts';
+export * from './fs_define.ts';
 
 /**
  * 异步读取指定目录下的所有文件和子目录。
