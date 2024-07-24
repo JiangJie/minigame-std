@@ -1,3 +1,4 @@
+import type { FetchTask } from '@happy-ts/fetch-t';
 import {
     appendFile as webAppendFile,
     downloadFile as webDownloadFile,
@@ -15,7 +16,7 @@ import {
 } from 'happy-opfs';
 import { Ok, type AsyncIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
-import type { WriteFileContent } from './fs_define.ts';
+import type { UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent } from './fs_define.ts';
 import {
     appendFile as minaAppendFile,
     downloadFile as minaDownloadFile,
@@ -155,17 +156,6 @@ export function appendFile(filePath: string, contents: WriteFileContent): AsyncI
 }
 
 /**
- * 下载文件。
- * @param fileUrl - 文件的网络 URL。
- * @param filePath - 下载后文件存储的路径。
- * @param requestInit - 可选的请求初始化参数。
- * @returns 下载成功返回 true 的异步操作结果。
- */
-export function downloadFile(fileUrl: string, filePath: string, requestInit?: RequestInit): AsyncIOResult<boolean> {
-    return isMinaEnv() ? minaDownloadFile(fileUrl, filePath, requestInit?.headers) : webDownloadFile(fileUrl, filePath, requestInit);
-}
-
-/**
  * 检查指定路径的文件或目录是否存在。
  * @param path - 文件或目录的路径。
  * @returns 存在返回 true 的异步操作结果。
@@ -193,12 +183,23 @@ export function readTextFile(filePath: string): AsyncIOResult<string> {
 }
 
 /**
+ * 下载文件。
+ * @param fileUrl - 文件的网络 URL。
+ * @param filePath - 下载后文件存储的路径。
+ * @param options - 可选的请求初始化参数。
+ * @returns 下载成功返回原始结果。
+ */
+export function downloadFile(fileUrl: string, filePath: string, options?: UnionDownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | Response> {
+    return isMinaEnv() ? minaDownloadFile(fileUrl, filePath, options) : webDownloadFile(fileUrl, filePath, options);
+}
+
+/**
  * 上传本地文件。
  * @param filePath - 需要上传的文件路径。
  * @param fileUrl - 目标服务器的 URL。
- * @param requestInit - 可选的请求初始化参数。
- * @returns 上传成功返回 true 的异步操作结果。
+ * @param options - 可选的请求初始化参数。
+ * @returns 上传成功返回原始结果。
  */
-export function uploadFile(filePath: string, fileUrl: string, requestInit?: RequestInit): AsyncIOResult<boolean> {
-    return isMinaEnv() ? minaUploadFile(filePath, fileUrl, requestInit?.headers) : webUploadFile(filePath, fileUrl, requestInit);
+export function uploadFile(filePath: string, fileUrl: string, options?: UnionUploadFileOptions): FetchTask<WechatMinigame.UploadFileSuccessCallbackResult | Response> {
+    return isMinaEnv() ? minaUploadFile(filePath, fileUrl, options) : webUploadFile(filePath, fileUrl, options);
 }

@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { FetchTask } from '@happy-ts/fetch-t';
 import { basename, dirname } from '@std/path/posix';
 import { NOT_FOUND_ERROR, assertAbsolutePath, type ExistsOptions, type WriteOptions } from 'happy-opfs';
 import { Err, Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
 import { assertSafeUrl, assertString } from '../assert/assertions.ts';
-import type { FileEncoding, ReadFileContent, ReadOptions, WriteFileContent } from './fs_define.ts';
+import type { DownloadFileOptions, FileEncoding, ReadFileContent, ReadOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
 
 /**
  * 小游戏文件系统管理器实例。
@@ -406,51 +407,83 @@ export function readTextFile(filePath: string): AsyncIOResult<string> {
  * 下载文件。
  * @param fileUrl - 文件的网络 URL。
  * @param filePath - 下载后文件存储的路径。
- * @param headers - 可选的请求头。
+ * @param options - 可选参数。
  * @returns 下载操作的异步结果，成功时返回 true。
  */
-export function downloadFile(fileUrl: string, filePath: string, headers?: HeadersInit): AsyncIOResult<boolean> {
+export function downloadFile(fileUrl: string, filePath: string, options?: DownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult> {
     assertSafeUrl(fileUrl);
     const absPath = getAbsolutePath(filePath);
 
-    return new Promise((resolve) => {
-        wx.downloadFile({
-            url: fileUrl,
-            filePath: absPath,
-            header: headers,
-            success(): void {
-                resolve(Ok(true));
-            },
-            fail(err): void {
-                resolve(toErr(err));
-            },
-        });
-    });
+    let aborted = false;
+
+    let task: WechatMinigame.DownloadTask;
+
+    return {
+        abort(): void {
+            aborted = true;
+            task?.abort();
+        },
+
+        aborted,
+
+        response: new Promise<IOResult<WechatMinigame.DownloadFileSuccessCallbackResult>>((resolve) => {
+            task = wx.downloadFile({
+                ...options,
+                url: fileUrl,
+                filePath: absPath,
+                success(res): void {
+                    resolve(Ok(res));
+                },
+                fail(err): void {
+                    resolve(toErr(err));
+                },
+            });
+        }).catch(err => {
+            const errMsg: string = err?.message ?? `downloadFile error ${ err }`;
+            return Err(new Error(errMsg));
+        }),
+    };
 }
 
 /**
  * 文件上传。
  * @param filePath - 需要上传的文件路径。
  * @param fileUrl - 目标网络 URL。
- * @param headers - 可选的请求头。
+ * @param options - 可选参数。
  * @returns 上传操作的异步结果，成功时返回 true。
  */
-export async function uploadFile(filePath: string, fileUrl: string, headers?: HeadersInit): AsyncIOResult<boolean> {
+export function uploadFile(filePath: string, fileUrl: string, options?: UploadFileOptions): FetchTask<WechatMinigame.UploadFileSuccessCallbackResult> {
     assertSafeUrl(fileUrl);
     const absPath = getAbsolutePath(filePath);
 
-    return new Promise((resolve) => {
-        wx.uploadFile({
-            url: fileUrl,
-            filePath: absPath,
-            name: basename(filePath),
-            header: headers,
-            success(): void {
-                resolve(Ok(true));
-            },
-            fail(err): void {
-                resolve(toErr(err));
-            },
-        });
-    });
+    let aborted = false;
+
+    let task: WechatMinigame.UploadTask;
+
+    return {
+        abort(): void {
+            aborted = true;
+            task?.abort();
+        },
+
+        aborted,
+
+        response: new Promise<IOResult<WechatMinigame.UploadFileSuccessCallbackResult>>((resolve) => {
+            task = wx.uploadFile({
+                name: basename(filePath),
+                ...options,
+                url: fileUrl,
+                filePath: absPath,
+                success(res): void {
+                    resolve(Ok(res));
+                },
+                fail(err): void {
+                    resolve(toErr(err));
+                },
+            });
+        }).catch(err => {
+            const errMsg: string = err?.message ?? `downloadFile error ${ err }`;
+            return Err(new Error(errMsg));
+        }),
+    };
 }

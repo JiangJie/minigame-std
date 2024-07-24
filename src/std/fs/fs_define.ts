@@ -1,4 +1,4 @@
-import type { ReadFileContent as OPFSReadFileContent, WriteFileContent as OPFSWriteFileContent } from 'happy-opfs';
+import type { FsRequestInit, ReadFileContent as OPFSReadFileContent, WriteFileContent as OPFSWriteFileContent } from 'happy-opfs';
 
 /**
  * File content type for write, support `ArrayBuffer` `TypedArray` `string`.
@@ -26,3 +26,23 @@ export interface ReadOptions {
  * Supported file encodings for reading and writing files.
  */
 export type FileEncoding = 'binary' | 'utf8';
+
+/**
+ * Options for downloading files.
+ */
+export type DownloadFileOptions = Omit<WechatMinigame.DownloadFileOption, 'url' | 'filePath' | 'success' | 'fail'>;
+
+/**
+ * Options for uploading files.
+ */
+export type UploadFileOptions = Omit<WechatMinigame.UploadFileOption, 'url' | 'filePath' | 'success' | 'fail'>;
+
+/**
+ * Options for union requests.
+ */
+export type UnionDownloadFileOptions = FsRequestInit & DownloadFileOptions;
+
+/**
+ * Options for union requests.
+ */
+export type UnionUploadFileOptions = FsRequestInit & UploadFileOptions;
