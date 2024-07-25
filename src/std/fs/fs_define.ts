@@ -1,4 +1,4 @@
-import type { FsRequestInit, ReadFileContent as OPFSReadFileContent, WriteFileContent as OPFSWriteFileContent } from 'happy-opfs';
+import type { FsRequestInit, ReadFileContent as OPFSReadFileContent, WriteFileContent as OPFSWriteFileContent, UploadRequestInit } from 'happy-opfs';
 
 /**
  * File content type for write, support `ArrayBuffer` `TypedArray` `string`.
@@ -50,4 +50,4 @@ export type UnionDownloadFileOptions = FsRequestInit & DownloadFileOptions;
 /**
  * Options for union requests.
  */
-export type UnionUploadFileOptions = FsRequestInit & UploadFileOptions;
+export type UnionUploadFileOptions = UploadRequestInit & UploadFileOptions;

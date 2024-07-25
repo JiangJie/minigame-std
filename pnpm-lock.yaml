@@ -15,8 +15,8 @@ importers:
         specifier: npm:@jsr/std__path@^1.0.1
         version: '@jsr/std__path@1.0.1'
       happy-opfs:
-        specifier: ^1.0.16
-        version: 1.0.16
+        specifier: ^1.0.17
+        version: 1.0.17
       happy-rusty:
         specifier: ^1.1.2
         version: 1.1.2
@@ -978,8 +978,8 @@ packages:
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
 
-  happy-opfs@1.0.16:
-    resolution: {integrity: sha512-Ed5Kl4GCVmpInUj3Z9DCEJa+WKfXQmmkDNruOPNdZ9VCgb9Lhm1vbiPQ/P0S9qnQ2PDwWx98HffJhsy0hd9qLw==}
+  happy-opfs@1.0.17:
+    resolution: {integrity: sha512-0kB+Cgultdpy9WVWwfnt0uVJEKEUN17dzy/DPRtS1m8fDFnuF2HrT5iARnexrJmt92Zf0BSOgtfTQb3dyIvuig==}
 
   happy-rusty@1.1.2:
     resolution: {integrity: sha512-+GCLe790pFrd3d9r8X5zE0fBzNl6Hvgk7djMYQqd7e8ItTZ4dvX0Jd8nbFIPwLPHAlE45JLsWVsRa3BFNLZItg==}
@@ -2446,7 +2446,7 @@ snapshots:
 
   graphemer@1.4.0: {}
 
-  happy-opfs@1.0.16:
+  happy-opfs@1.0.17:
     dependencies:
       '@happy-ts/fetch-t': 1.0.15
       '@std/path': '@jsr/std__path@1.0.1'
