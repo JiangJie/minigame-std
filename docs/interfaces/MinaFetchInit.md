@@ -21,5 +21,5 @@
 
 | Property | Type | Defined in |
 | ------ | ------ | ------ |
-| `abortable?` | `boolean` | [fetch/fetch\_defines.ts:7](https://github.com/JiangJie/minigame-std/blob/1fb9a762786cb461df809682ecf1703bbcf00b3a/src/std/fetch/fetch_defines.ts#L7) |
-| `responseType?` | `"arraybuffer"` \| `"text"` \| `"json"` | [fetch/fetch\_defines.ts:8](https://github.com/JiangJie/minigame-std/blob/1fb9a762786cb461df809682ecf1703bbcf00b3a/src/std/fetch/fetch_defines.ts#L8) |
+| `abortable?` | `boolean` | [fetch/fetch\_defines.ts:7](https://github.com/JiangJie/minigame-std/blob/9a02e61a8957cca22585cd9d056a48faa2b3d8ee/src/std/fetch/fetch_defines.ts#L7) |
+| `responseType?` | `"arraybuffer"` \| `"text"` \| `"json"` | [fetch/fetch\_defines.ts:8](https://github.com/JiangJie/minigame-std/blob/9a02e61a8957cca22585cd9d056a48faa2b3d8ee/src/std/fetch/fetch_defines.ts#L8) |

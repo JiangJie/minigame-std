@@ -37,7 +37,7 @@ addEventListener<K>(type, listener): void
 
 #### Defined in
 
-[socket/socket\_define.ts:42](https://github.com/JiangJie/minigame-std/blob/1fb9a762786cb461df809682ecf1703bbcf00b3a/src/std/socket/socket_define.ts#L42)
+[socket/socket\_define.ts:42](https://github.com/JiangJie/minigame-std/blob/9a02e61a8957cca22585cd9d056a48faa2b3d8ee/src/std/socket/socket_define.ts#L42)
 
 ***
 
@@ -62,7 +62,7 @@ close(code?, reason?): void
 
 #### Defined in
 
-[socket/socket\_define.ts:56](https://github.com/JiangJie/minigame-std/blob/1fb9a762786cb461df809682ecf1703bbcf00b3a/src/std/socket/socket_define.ts#L56)
+[socket/socket\_define.ts:56](https://github.com/JiangJie/minigame-std/blob/9a02e61a8957cca22585cd9d056a48faa2b3d8ee/src/std/socket/socket_define.ts#L56)
 
 ***
 
@@ -88,4 +88,4 @@ send(data): Promise<Result<boolean, Error>>
 
 #### Defined in
 
-[socket/socket\_define.ts:49](https://github.com/JiangJie/minigame-std/blob/1fb9a762786cb461df809682ecf1703bbcf00b3a/src/std/socket/socket_define.ts#L49)
+[socket/socket\_define.ts:49](https://github.com/JiangJie/minigame-std/blob/9a02e61a8957cca22585cd9d056a48faa2b3d8ee/src/std/socket/socket_define.ts#L49)

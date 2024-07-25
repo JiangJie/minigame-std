@@ -57,7 +57,7 @@ FetchTask。
 
 ### Defined in
 
-[fetch/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/1fb9a762786cb461df809682ecf1703bbcf00b3a/src/std/fetch/mod.ts#L14)
+[fetch/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/9a02e61a8957cca22585cd9d056a48faa2b3d8ee/src/std/fetch/mod.ts#L14)
 
 ## fetchT(url, init)
 
@@ -96,7 +96,7 @@ FetchTask。
 
 ### Defined in
 
-[fetch/mod.ts:24](https://github.com/JiangJie/minigame-std/blob/1fb9a762786cb461df809682ecf1703bbcf00b3a/src/std/fetch/mod.ts#L24)
+[fetch/mod.ts:24](https://github.com/JiangJie/minigame-std/blob/9a02e61a8957cca22585cd9d056a48faa2b3d8ee/src/std/fetch/mod.ts#L24)
 
 ## fetchT(url, init)
 
@@ -141,12 +141,12 @@ FetchTask。
 
 ### Defined in
 
-[fetch/mod.ts:35](https://github.com/JiangJie/minigame-std/blob/1fb9a762786cb461df809682ecf1703bbcf00b3a/src/std/fetch/mod.ts#L35)
+[fetch/mod.ts:35](https://github.com/JiangJie/minigame-std/blob/9a02e61a8957cca22585cd9d056a48faa2b3d8ee/src/std/fetch/mod.ts#L35)
 
 ## fetchT(url)
 
 ```ts
-function fetchT(url): FetchTask<string>
+function fetchT(url): FetchTask<string | Response>
 ```
 
 发起一个可中断的网络请求，默认返回文本类型响应。
@@ -159,11 +159,11 @@ function fetchT(url): FetchTask<string>
 
 ### Returns
 
-`FetchTask`\<`string`\>
+`FetchTask`\<`string` \| `Response`\>
 
 FetchTask。
 
-返回一个文本类型的 FetchTask。
+FetchTask。
 
 ### Type Param
 
@@ -179,12 +179,12 @@ FetchTask。
 
 ### Defined in
 
-[fetch/mod.ts:44](https://github.com/JiangJie/minigame-std/blob/1fb9a762786cb461df809682ecf1703bbcf00b3a/src/std/fetch/mod.ts#L44)
+[fetch/mod.ts:44](https://github.com/JiangJie/minigame-std/blob/9a02e61a8957cca22585cd9d056a48faa2b3d8ee/src/std/fetch/mod.ts#L44)
 
 ## fetchT(url, init)
 
 ```ts
-function fetchT(url, init): FetchTask<string>
+function fetchT(url, init): FetchTask<string | Response>
 ```
 
 发起一个可中断的网络请求，默认返回文本类型响应。
@@ -198,11 +198,11 @@ function fetchT(url, init): FetchTask<string>
 
 ### Returns
 
-`FetchTask`\<`string`\>
+`FetchTask`\<`string` \| `Response`\>
 
 FetchTask。
 
-返回一个文本类型的 FetchTask。
+FetchTask。
 
 ### Type Param
 
@@ -218,4 +218,4 @@ FetchTask。
 
 ### Defined in
 
-[fetch/mod.ts:53](https://github.com/JiangJie/minigame-std/blob/1fb9a762786cb461df809682ecf1703bbcf00b3a/src/std/fetch/mod.ts#L53)
+[fetch/mod.ts:53](https://github.com/JiangJie/minigame-std/blob/9a02e61a8957cca22585cd9d056a48faa2b3d8ee/src/std/fetch/mod.ts#L53)
