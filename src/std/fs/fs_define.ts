@@ -35,7 +35,12 @@ export type DownloadFileOptions = Omit<WechatMinigame.DownloadFileOption, 'url' 
 /**
  * Options for uploading files.
  */
-export type UploadFileOptions = Omit<WechatMinigame.UploadFileOption, 'url' | 'filePath' | 'success' | 'fail'>;
+export interface UploadFileOptions extends Omit<WechatMinigame.UploadFileOption, 'url' | 'filePath' | 'name' | 'success' | 'fail'> {
+    /**
+     * Optional file name.
+     */
+    name?: string
+}
 
 /**
  * Options for union requests.
