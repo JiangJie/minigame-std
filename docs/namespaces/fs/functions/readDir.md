@@ -26,4 +26,4 @@ function readDir(dirPath): AsyncIOResult<string[]>
 
 ## Defined in
 
-[fs/mod.ts:43](https://github.com/JiangJie/minigame-std/blob/c06988f76801881a43518a5e9723580f21a11a7f/src/std/fs/mod.ts#L43)
+[fs/mod.ts:43](https://github.com/JiangJie/minigame-std/blob/1fb9a762786cb461df809682ecf1703bbcf00b3a/src/std/fs/mod.ts#L43)

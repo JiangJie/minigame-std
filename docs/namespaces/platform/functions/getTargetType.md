@@ -20,4 +20,4 @@ function getTargetType(): TargetType
 
 ## Defined in
 
-[platform/target.ts:9](https://github.com/JiangJie/minigame-std/blob/c06988f76801881a43518a5e9723580f21a11a7f/src/std/platform/target.ts#L9)
+[platform/target.ts:9](https://github.com/JiangJie/minigame-std/blob/1fb9a762786cb461df809682ecf1703bbcf00b3a/src/std/platform/target.ts#L9)

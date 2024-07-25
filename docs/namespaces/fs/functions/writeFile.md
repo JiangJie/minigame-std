@@ -27,4 +27,4 @@ function writeFile(filePath, contents): AsyncIOResult<boolean>
 
 ## Defined in
 
-[fs/mod.ts:144](https://github.com/JiangJie/minigame-std/blob/c06988f76801881a43518a5e9723580f21a11a7f/src/std/fs/mod.ts#L144)
+[fs/mod.ts:144](https://github.com/JiangJie/minigame-std/blob/1fb9a762786cb461df809682ecf1703bbcf00b3a/src/std/fs/mod.ts#L144)

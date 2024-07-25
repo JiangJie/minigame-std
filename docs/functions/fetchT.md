@@ -41,6 +41,8 @@ function fetchT(url, init): FetchTask<string>
 
 FetchTask。
 
+返回一个文本类型的 FetchTask。
+
 ### Type Param
 
 预期的响应数据类型。
@@ -55,7 +57,7 @@ FetchTask。
 
 ### Defined in
 
-[fetch/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/c06988f76801881a43518a5e9723580f21a11a7f/src/std/fetch/mod.ts#L14)
+[fetch/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/1fb9a762786cb461df809682ecf1703bbcf00b3a/src/std/fetch/mod.ts#L14)
 
 ## fetchT(url, init)
 
@@ -78,6 +80,8 @@ function fetchT(url, init): FetchTask<ArrayBuffer>
 
 FetchTask。
 
+返回一个 ArrayBuffer 类型的 FetchTask。
+
 ### Type Param
 
 预期的响应数据类型。
@@ -92,7 +96,7 @@ FetchTask。
 
 ### Defined in
 
-[fetch/mod.ts:24](https://github.com/JiangJie/minigame-std/blob/c06988f76801881a43518a5e9723580f21a11a7f/src/std/fetch/mod.ts#L24)
+[fetch/mod.ts:24](https://github.com/JiangJie/minigame-std/blob/1fb9a762786cb461df809682ecf1703bbcf00b3a/src/std/fetch/mod.ts#L24)
 
 ## fetchT(url, init)
 
@@ -121,6 +125,8 @@ function fetchT<T>(url, init): FetchTask<T>
 
 FetchTask。
 
+返回一个 JSON 类型的 FetchTask。
+
 ### Type Param
 
 预期的响应数据类型。
@@ -135,7 +141,7 @@ FetchTask。
 
 ### Defined in
 
-[fetch/mod.ts:35](https://github.com/JiangJie/minigame-std/blob/c06988f76801881a43518a5e9723580f21a11a7f/src/std/fetch/mod.ts#L35)
+[fetch/mod.ts:35](https://github.com/JiangJie/minigame-std/blob/1fb9a762786cb461df809682ecf1703bbcf00b3a/src/std/fetch/mod.ts#L35)
 
 ## fetchT(url)
 
@@ -157,6 +163,8 @@ function fetchT(url): FetchTask<string>
 
 FetchTask。
 
+返回一个文本类型的 FetchTask。
+
 ### Type Param
 
 预期的响应数据类型。
@@ -171,7 +179,7 @@ FetchTask。
 
 ### Defined in
 
-[fetch/mod.ts:44](https://github.com/JiangJie/minigame-std/blob/c06988f76801881a43518a5e9723580f21a11a7f/src/std/fetch/mod.ts#L44)
+[fetch/mod.ts:44](https://github.com/JiangJie/minigame-std/blob/1fb9a762786cb461df809682ecf1703bbcf00b3a/src/std/fetch/mod.ts#L44)
 
 ## fetchT(url, init)
 
@@ -194,6 +202,8 @@ function fetchT(url, init): FetchTask<string>
 
 FetchTask。
 
+返回一个文本类型的 FetchTask。
+
 ### Type Param
 
 预期的响应数据类型。
@@ -208,4 +218,4 @@ FetchTask。
 
 ### Defined in
 
-[fetch/mod.ts:53](https://github.com/JiangJie/minigame-std/blob/c06988f76801881a43518a5e9723580f21a11a7f/src/std/fetch/mod.ts#L53)
+[fetch/mod.ts:53](https://github.com/JiangJie/minigame-std/blob/1fb9a762786cb461df809682ecf1703bbcf00b3a/src/std/fetch/mod.ts#L53)
