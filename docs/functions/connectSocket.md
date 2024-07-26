@@ -7,7 +7,7 @@
 # Function: connectSocket()
 
 ```ts
-function connectSocket(url): ISocket
+function connectSocket(url, options?): ISocket
 ```
 
 创建并返回一个 WebSocket 连接。
@@ -17,6 +17,7 @@ function connectSocket(url): ISocket
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `url` | `string` | WebSocket 服务器的 URL。 |
+| `options`? | [`SocketOptions`](../type-aliases/SocketOptions.md) | 可选的参数。 |
 
 ## Returns
 
@@ -26,4 +27,4 @@ function connectSocket(url): ISocket
 
 ## Defined in
 
-[socket/mod.ts:13](https://github.com/JiangJie/minigame-std/blob/9a02e61a8957cca22585cd9d056a48faa2b3d8ee/src/std/socket/mod.ts#L13)
+[socket/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/541deb559aa54bb90a9c59ed9d62e2fa15307533/src/std/socket/mod.ts#L14)

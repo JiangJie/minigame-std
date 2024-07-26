@@ -13,6 +13,12 @@
 | [platform](namespaces/platform/README.md) | - |
 | [storage](namespaces/storage/README.md) | - |
 
+## Enumerations
+
+| Enumeration | Description |
+| ------ | ------ |
+| [SocketReadyState](enumerations/SocketReadyState.md) | WebSocket 连接状态，小游戏环境可用。 |
+
 ## Interfaces
 
 | Interface | Description |
@@ -25,6 +31,8 @@
 
 | Type alias | Description |
 | ------ | ------ |
+| [NetworkType](type-aliases/NetworkType.md) | 网络状态，混合了 web 和小游戏环境。 |
+| [SocketOptions](type-aliases/SocketOptions.md) | 创建Socket的可选参数。 |
 | [UnionFetchInit](type-aliases/UnionFetchInit.md) | 联合网络请求初始化配置类型，结合了 FetchInit 和 MinaFetchInit。 |
 
 ## Functions
@@ -32,6 +40,7 @@
 | Function | Description |
 | ------ | ------ |
 | [addErrorListener](functions/addErrorListener.md) | 添加错误监听器，用于监听标准的错误事件。 |
+| [addNetworkChangeListener](functions/addNetworkChangeListener.md) | 监听网络状态变化。 |
 | [addUnhandledrejectionListener](functions/addUnhandledrejectionListener.md) | 添加未处理的 Promise 拒绝事件监听器。 |
 | [assertSafeSocketUrl](functions/assertSafeSocketUrl.md) | 断言传入的 WebSocket URL 是否为 `wss` 协议。 |
 | [assertSafeUrl](functions/assertSafeUrl.md) | 断言传入的 URL 是否为 `https` 协议。 |
@@ -44,3 +53,4 @@
 | [encode](functions/encode.md) | 将`utf8`字符串编码为`ArrayBuffer` |
 | [encodeBase64](functions/encodeBase64.md) | 将字符串数据编码为 Base64 格式。 |
 | [fetchT](functions/fetchT.md) | 发起一个可中断的文本类型响应的网络请求。 |
+| [getNetworkType](functions/getNetworkType.md) | 获取网络状态。 |

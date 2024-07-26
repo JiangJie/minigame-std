@@ -32,9 +32,9 @@ function stat(path): AsyncIOResult<{
 
 | Name | Type | Defined in |
 | ------ | ------ | ------ |
-| `isDirectory` | () => `boolean` | [fs/mod.ts:103](https://github.com/JiangJie/minigame-std/blob/9a02e61a8957cca22585cd9d056a48faa2b3d8ee/src/std/fs/mod.ts#L103) |
-| `isFile` | () => `boolean` | [fs/mod.ts:102](https://github.com/JiangJie/minigame-std/blob/9a02e61a8957cca22585cd9d056a48faa2b3d8ee/src/std/fs/mod.ts#L102) |
+| `isDirectory` | () => `boolean` | [fs/mod.ts:103](https://github.com/JiangJie/minigame-std/blob/541deb559aa54bb90a9c59ed9d62e2fa15307533/src/std/fs/mod.ts#L103) |
+| `isFile` | () => `boolean` | [fs/mod.ts:102](https://github.com/JiangJie/minigame-std/blob/541deb559aa54bb90a9c59ed9d62e2fa15307533/src/std/fs/mod.ts#L102) |
 
 ## Defined in
 
-[fs/mod.ts:101](https://github.com/JiangJie/minigame-std/blob/9a02e61a8957cca22585cd9d056a48faa2b3d8ee/src/std/fs/mod.ts#L101)
+[fs/mod.ts:101](https://github.com/JiangJie/minigame-std/blob/541deb559aa54bb90a9c59ed9d62e2fa15307533/src/std/fs/mod.ts#L101)

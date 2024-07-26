@@ -8,12 +8,18 @@
 
 WebSocket 接口定义，描述了 WebSocket 的基本操作方法。
 
+## Properties
+
+| Property | Modifier | Type | Description | Defined in |
+| ------ | ------ | ------ | ------ | ------ |
+| `readyState` | `readonly` | `number` | WebSocket 的连接状态。 | [socket/socket\_define.ts:61](https://github.com/JiangJie/minigame-std/blob/541deb559aa54bb90a9c59ed9d62e2fa15307533/src/std/socket/socket_define.ts#L61) |
+
 ## Methods
 
 ### addEventListener()
 
 ```ts
-addEventListener<K>(type, listener): void
+addEventListener<K>(type, listener): () => void
 ```
 
 添加事件监听器到 WebSocket 对象。
@@ -33,11 +39,17 @@ addEventListener<K>(type, listener): void
 
 #### Returns
 
+`Function`
+
+返回对应的`removeEventListener代理函数`。
+
+##### Returns
+
 `void`
 
 #### Defined in
 
-[socket/socket\_define.ts:42](https://github.com/JiangJie/minigame-std/blob/9a02e61a8957cca22585cd9d056a48faa2b3d8ee/src/std/socket/socket_define.ts#L42)
+[socket/socket\_define.ts:70](https://github.com/JiangJie/minigame-std/blob/541deb559aa54bb90a9c59ed9d62e2fa15307533/src/std/socket/socket_define.ts#L70)
 
 ***
 
@@ -62,7 +74,7 @@ close(code?, reason?): void
 
 #### Defined in
 
-[socket/socket\_define.ts:56](https://github.com/JiangJie/minigame-std/blob/9a02e61a8957cca22585cd9d056a48faa2b3d8ee/src/std/socket/socket_define.ts#L56)
+[socket/socket\_define.ts:84](https://github.com/JiangJie/minigame-std/blob/541deb559aa54bb90a9c59ed9d62e2fa15307533/src/std/socket/socket_define.ts#L84)
 
 ***
 
@@ -88,4 +100,4 @@ send(data): Promise<Result<boolean, Error>>
 
 #### Defined in
 
-[socket/socket\_define.ts:49](https://github.com/JiangJie/minigame-std/blob/9a02e61a8957cca22585cd9d056a48faa2b3d8ee/src/std/socket/socket_define.ts#L49)
+[socket/socket\_define.ts:77](https://github.com/JiangJie/minigame-std/blob/541deb559aa54bb90a9c59ed9d62e2fa15307533/src/std/socket/socket_define.ts#L77)

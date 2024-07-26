@@ -27,4 +27,4 @@ function setItem(key, data): Promise<void>
 
 ## Defined in
 
-[storage/mod.ts:12](https://github.com/JiangJie/minigame-std/blob/9a02e61a8957cca22585cd9d056a48faa2b3d8ee/src/std/storage/mod.ts#L12)
+[storage/mod.ts:12](https://github.com/JiangJie/minigame-std/blob/541deb559aa54bb90a9c59ed9d62e2fa15307533/src/std/storage/mod.ts#L12)
