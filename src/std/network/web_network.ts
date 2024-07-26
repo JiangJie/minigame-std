@@ -1,18 +1,22 @@
 import type { NetworkType } from './network_define';
 
 /**
- * see https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
+ * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation)
  */
 interface NetworkInformation extends EventTarget {
     type: 'bluetooth' | 'cellular' | 'ethernet' | 'none' | 'wifi' | 'wimax' | 'other' | 'unknown';
     effectiveType: 'slow-2g' | '2g' | '3g' | '4g';
 }
 
-declare global {
-    // extend Navigator
-    interface Navigator {
-        connection?: NetworkInformation;
-    }
+/**
+ * [Global augmentation](https://jsr.io/docs/about-slow-types#global-augmentation)
+ *
+ * Waiting for typescript support.
+ *
+ * extend Navigator.
+ */
+interface Navigator {
+    connection?: NetworkInformation;
 }
 
 /**
@@ -24,11 +28,13 @@ export function getNetworkType(): NetworkType {
         return 'none';
     }
 
+    const navi = (navigator as Navigator);
+
     // 进一步判断
-    if (navigator.connection) {
-        return navigator.connection.type === 'wifi'
+    if (navi.connection) {
+        return navi.connection.type === 'wifi'
             ? 'wifi'
-            : navigator.connection.effectiveType;
+            : navi.connection.effectiveType;
     } else {
         return 'unknown';
     }
@@ -44,9 +50,11 @@ export function addNetworkChangeListener(listener: (type: NetworkType) => void):
         listener(getNetworkType());
     };
 
-    navigator.connection?.addEventListener('change', networkListener);
+    const navi = (navigator as Navigator);
+
+    navi.connection?.addEventListener('change', networkListener);
 
     return () => {
-        navigator.connection?.removeEventListener('change', networkListener);
+        navi.connection?.removeEventListener('change', networkListener);
     };
 }
