@@ -38,8 +38,9 @@ export interface ISocket {
      * @typeParam K - 限定为 WebSocketEventMap 的键类型。
      * @param type - 事件类型，如 'open', 'close', 'message', 'error'。
      * @param listener - 对应事件的监听器回调函数。
+     * @returns 返回对应的`removeEventListener代理函数`。
      */
-    addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: SocketListenerMap[K]): void;
+    addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: SocketListenerMap[K]): () => void;
 
     /**
      * 发送数据到 WebSocket 服务器。
@@ -55,3 +56,8 @@ export interface ISocket {
      */
     close(code?: number, reason?: string): void;
 }
+
+/**
+ * 创建Socket的可选参数。
+ */
+export type SocketOptions = Omit<WechatMinigame.ConnectSocketOption, 'url' | 'complete' | 'success' | 'fail'>;

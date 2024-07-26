@@ -1,47 +1,61 @@
 import { Err, Ok, type Result } from 'happy-rusty';
 import { assertSafeSocketUrl } from '../assert/assertions.ts';
-import type { ISocket, SocketListenerMap } from './socket_define.ts';
+import type { ISocket, SocketListenerMap, SocketOptions } from './socket_define.ts';
 
 /**
  * 创建并返回一个 WebSocket 连接。
  * @param url - WebSocket 服务器的 URL。
+ * @param options - 透传给`wx.connectSocket`。
  * @returns 返回一个实现了 ISocket 接口的 WebSocket 对象。
  */
-export function connectSocket(url: string): ISocket {
+export function connectSocket(url: string, options?: SocketOptions): ISocket {
     assertSafeSocketUrl(url);
 
     const socket = wx.connectSocket({
+        ...options,
         url,
     });
 
     return {
-        addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: SocketListenerMap[K]): void {
+        addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: SocketListenerMap[K]): () => void {
             switch (type) {
                 case 'open': {
                     socket.onOpen(listener as SocketListenerMap['open']);
-                    break;
+
+                    return (): void => {
+                        // 小游戏没有实现
+                    };
                 }
                 case 'close': {
                     socket.onClose((res) => {
                         (listener as SocketListenerMap['close'])(res.code, res.reason);
                     });
-                    break;
+
+
+                    return (): void => {
+                        // 小游戏没有实现
+                    };
                 }
                 case 'message': {
                     socket.onMessage((res) => {
                         (listener as SocketListenerMap['message'])(res.data);
                     });
-                    break;
+
+                    return (): void => {
+                        // 小游戏没有实现
+                    };
                 }
                 case 'error': {
                     socket.onError((err) => {
                         (listener as SocketListenerMap['error'])(new Error(err.errMsg));
                     });
-                    break;
+
+                    return (): void => {
+                        // 小游戏没有实现
+                    };
                 }
                 default: {
-                    console.error(`Invalid socket event type: ${ type }`);
-                    break;
+                    throw new Error(`Invalid socket event type: ${ type }`);
                 }
             }
         },

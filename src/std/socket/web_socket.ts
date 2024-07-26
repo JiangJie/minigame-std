@@ -5,39 +5,60 @@ import type { ISocket, SocketListenerMap } from './socket_define.ts';
 /**
  * 创建并返回一个 WebSocket 连接。
  * @param url - WebSocket 服务器的 URL。
+ * @param protocols - 子协议数组。
  * @returns 返回一个实现了 ISocket 接口的 WebSocket 对象。
  */
-export function connectSocket(url: string): ISocket {
+export function connectSocket(url: string, protocols?: string | string[]): ISocket {
     assertSafeSocketUrl(url);
 
-    const socket = new WebSocket(url);
-    // 二进制通信
+    const socket = new WebSocket(url, protocols);
+    // 考虑到小游戏只支持string和arraybuffer，二进制强制使用arraybuffer通信
     socket.binaryType = 'arraybuffer';
 
     return {
-        addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: SocketListenerMap[K]): void {
+        addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: SocketListenerMap[K]): () => void {
             switch (type) {
                 case 'open': {
-                    socket.addEventListener('open', listener as SocketListenerMap['open']);
-                    break;
+                    const socketListener = listener as SocketListenerMap['open'];
+
+                    socket.addEventListener('open', socketListener);
+
+                    return (): void => {
+                        socket.removeEventListener('open', socketListener);
+                    };
                 }
                 case 'close': {
-                    socket.addEventListener('close', (ev) => {
+                    const socketListener = (ev: CloseEvent) => {
                         (listener as SocketListenerMap['close'])(ev.code, ev.reason);
-                    });
-                    break;
+                    };
+
+                    socket.addEventListener('close', socketListener);
+
+                    return (): void => {
+                        socket.removeEventListener('close', socketListener);
+                    };
                 }
                 case 'message': {
-                    socket.addEventListener('message', (ev) => {
+                    const socketListener = (ev: MessageEvent<string | ArrayBuffer>) => {
                         (listener as SocketListenerMap['message'])(ev.data);
-                    });
-                    break;
+                    };
+
+                    socket.addEventListener('message', socketListener);
+
+                    return (): void => {
+                        socket.removeEventListener('message', socketListener);
+                    };
                 }
                 case 'error': {
-                    socket.addEventListener('error', () => {
+                    const socketListener = () => {
                         (listener as SocketListenerMap['error'])(new Error('WebSocket error'));
-                    });
-                    break;
+                    };
+
+                    socket.addEventListener('error', socketListener);
+
+                    return (): void => {
+                        socket.removeEventListener('error', socketListener);
+                    };
                 }
                 default: {
                     throw new Error(`Invalid socket event type: ${ type }`);

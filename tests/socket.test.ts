@@ -7,7 +7,8 @@ test('socket echo', (done) => {
     const socket = connectSocket('wss://echo.websocket.org/');
 
     let count = 0;
-    socket.addEventListener('message', (msg) => {
+
+    const removeMessageListener = socket.addEventListener('message', (msg) => {
         count += 1;
 
         if (count === 1) {
@@ -23,6 +24,7 @@ test('socket echo', (done) => {
     });
 
     socket.addEventListener('close', (code) => {
+        removeMessageListener();
         expect(code).toBe(1000);
         done();
     });
