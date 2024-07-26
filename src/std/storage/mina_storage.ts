@@ -48,3 +48,44 @@ export async function clear(): Promise<void> {
         console.error((err as WechatMinigame.GeneralCallbackResult)?.errMsg);
     }
 }
+
+export function setItemSync(key: string, data: string): void {
+    assertString(key);
+    assertString(data);
+
+    try {
+        wx.setStorageSync(key, data);
+    } catch (err) {
+        console.error((err as WechatMinigame.GeneralCallbackResult)?.errMsg);
+    }
+}
+
+export function getItemSync(key: string): Option<string> {
+    assertString(key);
+
+    try {
+        const data = wx.getStorageSync<string>(key);
+        return Some(data);
+    } catch (err) {
+        console.error((err as WechatMinigame.GeneralCallbackResult)?.errMsg);
+        return None;
+    }
+}
+
+export function removeItemSync(key: string): void {
+    assertString(key);
+
+    try {
+        wx.removeStorageSync(key);
+    } catch (err) {
+        console.error((err as WechatMinigame.GeneralCallbackResult)?.errMsg);
+    }
+}
+
+export function clearSync(): void {
+    try {
+        wx.clearStorageSync();
+    } catch (err) {
+        console.error((err as WechatMinigame.GeneralCallbackResult)?.errMsg);
+    }
+}
