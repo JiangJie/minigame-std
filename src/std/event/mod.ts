@@ -1,6 +1,6 @@
 import { isMinaEnv } from '../../macros/env.ts';
-import { addErrorListener as minaAddErrorListener, addUnhandledrejectionListener as minaAddUnhandledrejectionListener, removeErrorListener as minaRemoveErrorListener, removeUnhandledrejectionListener as minaRemoveUnhandledrejectionListener } from './mina_event.ts';
-import { addErrorListener as webAddErrorListener, addUnhandledrejectionListener as webAddUnhandledrejectionListener, removeErrorListener as webRemoveErrorListener, removeUnhandledrejectionListener as webRemoveUnhandledrejectionListener } from './web_event.ts';
+import { addErrorListener as minaAddErrorListener, addUnhandledrejectionListener as minaAddUnhandledrejectionListener } from './mina_event.ts';
+import { addErrorListener as webAddErrorListener, addUnhandledrejectionListener as webAddUnhandledrejectionListener } from './web_event.ts';
 
 /**
  * 添加错误监听器，用于监听标准的错误事件。
@@ -9,11 +9,7 @@ import { addErrorListener as webAddErrorListener, addUnhandledrejectionListener 
  */
 export function addErrorListener(listener: (ev: WechatMinigame.Error) => void): () => void {
     if (isMinaEnv()) {
-        minaAddErrorListener(listener);
-
-        return () => {
-            minaRemoveErrorListener(listener);
-        };
+        return minaAddErrorListener(listener);
     }
 
     const webListener = (ev: ErrorEvent) => {
@@ -23,11 +19,7 @@ export function addErrorListener(listener: (ev: WechatMinigame.Error) => void): 
         });
     };
 
-    webAddErrorListener(webListener);
-
-    return () => {
-        webRemoveErrorListener(webListener);
-    };
+    return webAddErrorListener(webListener);
 }
 
 /**
@@ -37,16 +29,8 @@ export function addErrorListener(listener: (ev: WechatMinigame.Error) => void): 
  */
 export function addUnhandledrejectionListener(listener: (ev: Pick<PromiseRejectionEvent, 'reason' | 'promise'>) => void): () => void {
     if (isMinaEnv()) {
-        minaAddUnhandledrejectionListener(listener as unknown as WechatMinigame.OnUnhandledRejectionCallback);
-
-        return () => {
-            minaRemoveUnhandledrejectionListener(listener as unknown as WechatMinigame.OnUnhandledRejectionCallback);
-        };
+        return minaAddUnhandledrejectionListener(listener as unknown as WechatMinigame.OnUnhandledRejectionCallback);
     }
 
-    webAddUnhandledrejectionListener(listener);
-
-    return () => {
-        webRemoveUnhandledrejectionListener(listener);
-    };
+    return webAddUnhandledrejectionListener(listener);
 }

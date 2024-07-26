@@ -1,31 +1,25 @@
 /**
  * 添加错误监听器，用于监听标准的错误事件。
  * @param listener - 错误事件的回调函数。
+ * @returns 返回一个函数，调用该函数可以移除监听器。
  */
-export function addErrorListener(listener: (ev: ErrorEvent) => void): void {
+export function addErrorListener(listener: (ev: ErrorEvent) => void): () => void {
     addEventListener('error', listener);
-}
 
-/**
- * 移除错误监听器，停止监听标准的错误事件。
- * @param listener - 已注册的错误事件的回调函数。
- */
-export function removeErrorListener(listener: (ev: ErrorEvent) => void): void {
-    removeEventListener('error', listener);
+    return () => {
+        removeEventListener('error', listener);
+    };
 }
 
 /**
  * 添加未处理的 Promise 拒绝事件监听器。
  * @param listener - 未处理的 Promise 拒绝事件的回调函数。
+ * @returns 返回一个函数，调用该函数可以移除监听器。
  */
-export function addUnhandledrejectionListener(listener: (ev: PromiseRejectionEvent) => void): void {
+export function addUnhandledrejectionListener(listener: (ev: PromiseRejectionEvent) => void): () => void {
     addEventListener('unhandledrejection', listener);
-}
 
-/**
- * 移除未处理的 Promise 拒绝事件监听器。
- * @param listener - 已注册的未处理的 Promise 拒绝事件的回调函数。
- */
-export function removeUnhandledrejectionListener(listener: (ev: PromiseRejectionEvent) => void): void {
-    removeEventListener('unhandledrejection', listener);
+    return () => {
+        removeEventListener('unhandledrejection', listener);
+    };
 }
