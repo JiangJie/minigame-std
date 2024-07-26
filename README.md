@@ -93,6 +93,9 @@ jsr add @happy-js/minigame-std
 -   全局 error 和 unhandledrejection 处理
     ```js
     import { addErrorListener, addUnhandledrejectionListener } from 'minigame-std';
+-   网络状态/类型
+    ```js
+    import { addNetworkChangeListener, getNetworkType } from 'minigame-std';
     ```
 -   https 请求（fetch）
     ```js
