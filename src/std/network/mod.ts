@@ -3,6 +3,8 @@ import { addNetworkChangeListener as minaAddNetworkChangeListener, getNetworkTyp
 import type { NetworkType } from './network_define';
 import { addNetworkChangeListener as webAddNetworkChangeListener, getNetworkType as webGetNetworkType } from './web_network';
 
+export * from './network_define';
+
 /**
  * 获取网络状态。
  * @returns 根据浏览器支持情况不同，返回值可能为 `wifi` | `none` | `unknown` | `slow-2g` | `2g` | `3g` | `4g`
