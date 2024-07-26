@@ -27,4 +27,4 @@ function connectSocket(url, options?): ISocket
 
 ## Defined in
 
-[socket/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/541deb559aa54bb90a9c59ed9d62e2fa15307533/src/std/socket/mod.ts#L14)
+[socket/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/66ec277d862ca15172344b727bd1c648b6b39934/src/std/socket/mod.ts#L14)

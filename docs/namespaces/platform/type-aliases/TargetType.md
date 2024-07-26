@@ -12,4 +12,4 @@ type TargetType: "minigame" | "web";
 
 ## Defined in
 
-[platform/target.ts:3](https://github.com/JiangJie/minigame-std/blob/541deb559aa54bb90a9c59ed9d62e2fa15307533/src/std/platform/target.ts#L3)
+[platform/target.ts:3](https://github.com/JiangJie/minigame-std/blob/66ec277d862ca15172344b727bd1c648b6b39934/src/std/platform/target.ts#L3)

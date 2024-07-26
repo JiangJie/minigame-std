@@ -24,4 +24,4 @@ function assertSafeUrl(url): void
 
 ## Defined in
 
-[assert/assertions.ts:15](https://github.com/JiangJie/minigame-std/blob/541deb559aa54bb90a9c59ed9d62e2fa15307533/src/std/assert/assertions.ts#L15)
+[assert/assertions.ts:15](https://github.com/JiangJie/minigame-std/blob/66ec277d862ca15172344b727bd1c648b6b39934/src/std/assert/assertions.ts#L15)
