@@ -1,6 +1,28 @@
 import type { Result } from 'happy-rusty';
 
 /**
+ * WebSocket 连接状态，小游戏环境可用。
+ */
+export const enum SocketReadyState {
+    /**
+     * WebSocket.CONNECTING
+     */
+    CONNECTING = 0,
+    /**
+     * WebSocket.OPEN
+     */
+    OPEN = 1,
+    /**
+     * WebSocket.CLOSING
+     */
+    CLOSING = 2,
+    /**
+     * WebSocket.CLOSED
+     */
+    CLOSED = 3,
+}
+
+/**
  * WebSocket 事件监听器映射接口，定义了与 WebSocket 事件对应的回调函数类型。
  */
 export interface SocketListenerMap {

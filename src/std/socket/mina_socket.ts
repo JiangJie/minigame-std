@@ -1,17 +1,6 @@
 import { Err, Ok, type Result } from 'happy-rusty';
 import { assertSafeSocketUrl } from '../assert/assertions.ts';
-import type { ISocket, SocketListenerMap, SocketOptions } from './socket_define.ts';
-
-const enum ReadState {
-    // WebSocket.CONNECTING
-    CONNECTING = 0,
-    // WebSocket.OPEN
-    OPEN = 1,
-    // WebSocket.CLOSING
-    CLOSING = 2,
-    // WebSocket.CLOSED
-    CLOSED = 3,
-}
+import { SocketReadyState, type ISocket, type SocketListenerMap, type SocketOptions } from './socket_define.ts';
 
 /**
  * 创建并返回一个 WebSocket 连接。
@@ -28,7 +17,7 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
     });
 
     // mock WebSocket readyState
-    let readyState = ReadState.CONNECTING;
+    let readyState = SocketReadyState.CONNECTING;
 
     return {
         get readyState(): number {
@@ -39,7 +28,7 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
             switch (type) {
                 case 'open': {
                     socket.onOpen(() => {
-                        readyState = ReadState.OPEN;
+                        readyState = SocketReadyState.OPEN;
                         (listener as SocketListenerMap['open'])();
                     });
 
@@ -49,7 +38,7 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
                 }
                 case 'close': {
                     socket.onClose((res) => {
-                        readyState = ReadState.CLOSED;
+                        readyState = SocketReadyState.CLOSED;
                         (listener as SocketListenerMap['close'])(res.code, res.reason);
                     });
 
@@ -106,7 +95,7 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
         },
 
         close(code?: number, reason?: string): void {
-            readyState = ReadState.CLOSING;
+            readyState = SocketReadyState.CLOSING;
             socket.close({
                 code,
                 reason,
