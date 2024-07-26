@@ -2,6 +2,17 @@ import { Err, Ok, type Result } from 'happy-rusty';
 import { assertSafeSocketUrl } from '../assert/assertions.ts';
 import type { ISocket, SocketListenerMap, SocketOptions } from './socket_define.ts';
 
+const enum ReadState {
+    // WebSocket.CONNECTING
+    CONNECTING = 0,
+    // WebSocket.OPEN
+    OPEN = 1,
+    // WebSocket.CLOSING
+    CLOSING = 2,
+    // WebSocket.CLOSED
+    CLOSED = 3,
+}
+
 /**
  * 创建并返回一个 WebSocket 连接。
  * @param url - WebSocket 服务器的 URL。
@@ -16,11 +27,21 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
         url,
     });
 
+    // mock WebSocket readyState
+    let readyState = ReadState.CONNECTING;
+
     return {
+        get readyState(): number {
+            return readyState;
+        },
+
         addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: SocketListenerMap[K]): () => void {
             switch (type) {
                 case 'open': {
-                    socket.onOpen(listener as SocketListenerMap['open']);
+                    socket.onOpen(() => {
+                        readyState = ReadState.OPEN;
+                        (listener as SocketListenerMap['open'])();
+                    });
 
                     return (): void => {
                         // 小游戏没有实现
@@ -28,6 +49,7 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
                 }
                 case 'close': {
                     socket.onClose((res) => {
+                        readyState = ReadState.CLOSED;
                         (listener as SocketListenerMap['close'])(res.code, res.reason);
                     });
 
@@ -84,6 +106,7 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
         },
 
         close(code?: number, reason?: string): void {
+            readyState = ReadState.CLOSING;
             socket.close({
                 code,
                 reason,

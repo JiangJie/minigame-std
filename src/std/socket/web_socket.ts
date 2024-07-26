@@ -16,6 +16,10 @@ export function connectSocket(url: string, protocols?: string | string[]): ISock
     socket.binaryType = 'arraybuffer';
 
     return {
+        get readyState(): number {
+            return socket.readyState;
+        },
+
         addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: SocketListenerMap[K]): () => void {
             switch (type) {
                 case 'open': {

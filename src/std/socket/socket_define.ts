@@ -34,6 +34,11 @@ export interface SocketListenerMap {
  */
 export interface ISocket {
     /**
+     * WebSocket 的连接状态。
+     */
+    readonly readyState: number;
+
+    /**
      * 添加事件监听器到 WebSocket 对象。
      * @typeParam K - 限定为 WebSocketEventMap 的键类型。
      * @param type - 事件类型，如 'open', 'close', 'message', 'error'。
