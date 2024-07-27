@@ -51,3 +51,21 @@ export type UnionDownloadFileOptions = FsRequestInit & DownloadFileOptions;
  * Options for union requests.
  */
 export type UnionUploadFileOptions = UploadRequestInit & UploadFileOptions;
+
+/**
+ * Stats for file or directory.
+ */
+export interface Stats {
+    /**
+     * Whether the file is a file.
+     */
+    isFile: () => boolean;
+    /**
+     * Whether the file is a directory.
+     */
+    isDirectory: () => boolean;
+    /**
+     * File size.
+     */
+    size: number;
+}

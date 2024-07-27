@@ -16,7 +16,7 @@ import {
 } from 'happy-opfs';
 import { Ok, type AsyncIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
-import type { UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent } from './fs_define.ts';
+import type { Stats, UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent } from './fs_define.ts';
 import {
     appendFile as minaAppendFile,
     downloadFile as minaDownloadFile,
@@ -98,10 +98,7 @@ export function rename(oldPath: string, newPath: string): AsyncIOResult<boolean>
  * @param path - 文件或目录的路径。
  * @returns 包含状态信息的异步操作结果。
  */
-export async function stat(path: string): AsyncIOResult<{
-    isFile: () => boolean;
-    isDirectory: () => boolean;
-}> {
+export async function stat(path: string): AsyncIOResult<Stats> {
     if (isMinaEnv()) {
         const res = await minaStat(path);
 
@@ -110,12 +107,11 @@ export async function stat(path: string): AsyncIOResult<{
         }
 
         const stat = res.unwrap();
-        const isFile = stat.isFile();
-        const isDirectory = stat.isDirectory();
 
         return Ok({
-            isFile: () => isFile,
-            isDirectory: () => isDirectory,
+            isFile: (): boolean => stat.isFile(),
+            isDirectory: (): boolean => stat.isDirectory(),
+            size: stat.size,
         });
     }
 
@@ -125,13 +121,19 @@ export async function stat(path: string): AsyncIOResult<{
         return res.asErr();
     }
 
-    const { kind } = res.unwrap();
+    const stat = res.unwrap();
+
+    const { kind } = stat;
     const isFile = kind === 'file';
     const isDirectory = kind === 'directory';
+    const size = isFile
+        ? (await (stat as FileSystemFileHandle).getFile()).size
+        : 0;
 
     return Ok({
-        isFile: () => isFile,
-        isDirectory: () => isDirectory,
+        isFile: (): boolean => isFile,
+        isDirectory: (): boolean => isDirectory,
+        size,
     });
 }
 
