@@ -50,8 +50,8 @@ export async function readDir(dirPath: string): AsyncIOResult<string[]> {
         return x.asErr();
     }
     const items: string[] = [];
-    for await (const item of x.unwrap()) {
-        items.push(item[0]);
+    for await (const { path } of x.unwrap()) {
+        items.push(path);
     }
     return Ok(items);
 }
