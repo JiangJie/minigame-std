@@ -4,7 +4,7 @@ import { basename, dirname } from '@std/path/posix';
 import { NOT_FOUND_ERROR, assertAbsolutePath, type ExistsOptions, type WriteOptions } from 'happy-opfs';
 import { Err, Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
 import { assertSafeUrl, assertString } from '../assert/assertions.ts';
-import type { DownloadFileOptions, FileEncoding, ReadFileContent, ReadOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
+import type { DownloadFileOptions, FileEncoding, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
 
 /**
  * 小游戏文件系统管理器实例。
@@ -250,16 +250,23 @@ export function rename(oldPath: string, newPath: string): AsyncIOResult<boolean>
 /**
  * 获取文件或目录的状态信息。
  * @param path - 文件或目录的路径。
+ * @param options - 可选选项。
  * @returns 包含状态信息的异步操作。
  */
-export function stat(path: string): AsyncIOResult<WechatMinigame.Stats> {
+export function stat(path: string): AsyncIOResult<WechatMinigame.Stats>;
+export function stat(path: string, options: StatOptions & {
+    recursive: true;
+}): AsyncIOResult<WechatMinigame.FileStats[]>;
+export function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
+export function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     const absPath = getAbsolutePath(path);
 
     return new Promise((resolve) => {
         getFs().stat({
             path: absPath,
+            recursive: options?.recursive,
             success(res): void {
-                resolve(Ok(res.stats as WechatMinigame.Stats));
+                resolve(Ok(res.stats));
             },
             fail(err): void {
                 resolve(toErr(err));
@@ -342,7 +349,7 @@ export async function exists(path: string, options?: ExistsOptions): AsyncIOResu
         throw new TypeError('ExistsOptions.isDirectory and ExistsOptions.isFile must not be true together.');
     }
 
-    const stats =res.unwrap();
+    const stats = res.unwrap();
     const notExist =
         (isDirectory && stats.isFile())
         || (isFile && stats.isDirectory());

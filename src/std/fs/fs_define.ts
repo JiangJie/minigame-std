@@ -69,3 +69,13 @@ export interface Stats {
      */
     size: number;
 }
+
+/**
+ * Options for stat operations.
+ */
+export interface StatOptions {
+    /**
+     * Whether to recursively read the contents of directories.
+     */
+    recursive: boolean;
+}

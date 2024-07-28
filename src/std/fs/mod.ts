@@ -16,7 +16,7 @@ import {
 } from 'happy-opfs';
 import { Ok, type AsyncIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
-import type { Stats, UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent } from './fs_define.ts';
+import type { StatOptions, UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent } from './fs_define.ts';
 import {
     appendFile as minaAppendFile,
     downloadFile as minaDownloadFile,
@@ -94,25 +94,48 @@ export function rename(oldPath: string, newPath: string): AsyncIOResult<boolean>
 }
 
 /**
+ * 将`FileSystemHandle`转换为小游戏 `Stats`。
+ * @param handle
+ * @returns
+ */
+async function convertFileSystemHandleToStats(handle: FileSystemHandle): Promise<WechatMinigame.Stats> {
+    const { kind } = handle;
+    const isFile = kind === 'file';
+    const isDirectory = kind === 'directory';
+    const size = isFile
+        ? (await (handle as FileSystemFileHandle).getFile()).size
+        : 0;
+
+    return {
+        isFile: (): boolean => isFile,
+        isDirectory: (): boolean => isDirectory,
+        size,
+        lastAccessedTime: 0,
+        lastModifiedTime: 0,
+        mode: 0,
+    };
+}
+
+/**
  * 获取文件或目录的状态信息。
  * @param path - 文件或目录的路径。
+ * @param options - 可选选项。
  * @returns 包含状态信息的异步操作结果。
  */
-export async function stat(path: string): AsyncIOResult<Stats> {
+export async function stat(path: string): AsyncIOResult<WechatMinigame.Stats>;
+export async function stat(path: string, options: StatOptions & {
+    recursive: true;
+}): AsyncIOResult<WechatMinigame.FileStats[]>;
+export async function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>
+export async function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     if (isMinaEnv()) {
-        const res = await minaStat(path);
+        const res = await minaStat(path, options);
 
         if (res.isErr()) {
-            return res;
+            return res.asErr();
         }
 
-        const stat = res.unwrap();
-
-        return Ok({
-            isFile: (): boolean => stat.isFile(),
-            isDirectory: (): boolean => stat.isDirectory(),
-            size: stat.size,
-        });
+        return Ok(res.unwrap());
     }
 
     const res = await webStat(path);
@@ -121,20 +144,32 @@ export async function stat(path: string): AsyncIOResult<Stats> {
         return res.asErr();
     }
 
-    const stat = res.unwrap();
+    const entryStats = await convertFileSystemHandleToStats(res.unwrap());
 
-    const { kind } = stat;
-    const isFile = kind === 'file';
-    const isDirectory = kind === 'directory';
-    const size = isFile
-        ? (await (stat as FileSystemFileHandle).getFile()).size
-        : 0;
+    if (entryStats.isFile() || !options?.recursive) {
+        return Ok(entryStats);
+    }
 
-    return Ok({
-        isFile: (): boolean => isFile,
-        isDirectory: (): boolean => isDirectory,
-        size,
-    });
+    // 递归读取目录
+    const readRes = await webReadDir(path);
+
+    if (readRes.isErr()) {
+        return readRes.asErr();
+    }
+
+    const statsArr: WechatMinigame.FileStats[] = [{
+        path,
+        stats: entryStats,
+    }];
+
+    for await (const { path, handle } of readRes.unwrap()) {
+        statsArr.push({
+            path,
+            stats: await convertFileSystemHandleToStats(handle),
+        })
+    }
+
+    return Ok(statsArr);
 }
 
 /**
