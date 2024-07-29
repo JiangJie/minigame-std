@@ -57,6 +57,14 @@ function getAbsolutePath(path: string): string {
 }
 
 /**
+ * 判断是否是文件不存在的错误。
+ * @param err - 错误对象。
+ */
+function isNotFoundFileError(err: WechatMinigame.FileError): boolean {
+    return err.errCode === 1300002 || err.errMsg.includes('no such file or directory');
+}
+
+/**
  * 将错误对象转换为 IOResult 类型。
  * @typeParam T - Result 的 Ok 类型。
  * @param err - 错误对象。
@@ -67,7 +75,7 @@ function toErr<T>(err: WechatMinigame.FileError | WechatMinigame.GeneralCallback
 
     // 1300002	no such file or directory ${path}
     // 可能没有errCode
-    if ((err as WechatMinigame.FileError).errCode === 1300002 || err.errMsg.includes('no such file or directory')) {
+    if (isNotFoundFileError(err as WechatMinigame.FileError)) {
         error.name = NOT_FOUND_ERROR;
     }
 
@@ -206,7 +214,8 @@ export async function remove(path: string): AsyncIOResult<boolean> {
                     resolve(Ok(true));
                 },
                 fail(err): void {
-                    resolve(toErr(err));
+                    // 目标 path 本就不存在，当做成功
+                    resolve(isNotFoundFileError(err) ? Ok(true) : toErr(err));
                 },
             });
         } else {
@@ -216,7 +225,8 @@ export async function remove(path: string): AsyncIOResult<boolean> {
                     resolve(Ok(true));
                 },
                 fail(err): void {
-                    resolve(toErr(err));
+                    // 目标 path 本就不存在，当做成功
+                    resolve(isNotFoundFileError(err) ? Ok(true) : toErr(err));
                 },
             });
         }
@@ -289,7 +299,7 @@ export async function writeFile(filePath: string, contents: WriteFileContent, op
     const { append = false, create = true } = options ?? {};
 
     const isBuffer = contents instanceof ArrayBuffer;
-    const isBufferView = (contents as ArrayBufferView).buffer instanceof ArrayBuffer;
+    const isBufferView = ArrayBuffer.isView(contents);
     const isBin = isBuffer || isBufferView;
 
     if (create) {
@@ -303,7 +313,7 @@ export async function writeFile(filePath: string, contents: WriteFileContent, op
         (append ? getFs().appendFile : getFs().writeFile)({
             filePath: absPath,
             // ArrayBuffer可能是带有offset的
-            data: isBufferView ? (contents as ArrayBufferView).buffer as ArrayBuffer : (contents as string | ArrayBuffer),
+            data: isBufferView ? contents.buffer : contents,
             encoding: isBin ? 'binary' : 'utf8',
             success(): void {
                 resolve(Ok(true));
