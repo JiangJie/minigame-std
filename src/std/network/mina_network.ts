@@ -8,7 +8,7 @@ export async function getNetworkType(): Promise<NetworkType> {
     try {
         const res = await wx.getNetworkType();
         return res.networkType;
-    } catch (e) {
+    } catch {
         return 'unknown';
     }
 }

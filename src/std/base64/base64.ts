@@ -43,12 +43,12 @@ export function base64FromArrayBuffer(data: ArrayBuffer): string {
     for (i = 2; i < len; i += 3) {
         result += base64abc[(uint8[i - 2]) >> 2];
         result += base64abc[
-            (((uint8[i - 2]) & 0x03) << 4) |
-            ((uint8[i - 1]) >> 4)
+            (((uint8[i - 2]) & 0x03) << 4)
+            | ((uint8[i - 1]) >> 4)
         ];
         result += base64abc[
-            (((uint8[i - 1]) & 0x0f) << 2) |
-            ((uint8[i]!) >> 6)
+            (((uint8[i - 1]) & 0x0f) << 2)
+            | ((uint8[i]) >> 6)
         ];
         result += base64abc[(uint8[i]) & 0x3f];
     }
@@ -64,8 +64,8 @@ export function base64FromArrayBuffer(data: ArrayBuffer): string {
         // 2 octets yet to write
         result += base64abc[(uint8[i - 2]) >> 2];
         result += base64abc[
-            (((uint8[i - 2]) & 0x03) << 4) |
-            ((uint8[i - 1]) >> 4)
+            (((uint8[i - 2]) & 0x03) << 4)
+            | ((uint8[i - 1]) >> 4)
         ];
         result += base64abc[((uint8[i - 1]) & 0x0f) << 2];
         result += '=';

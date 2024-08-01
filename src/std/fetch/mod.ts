@@ -38,19 +38,12 @@ export function fetchT<T>(url: string, init: UnionFetchInit & {
 
 /**
  * 发起一个可中断的网络请求，默认返回文本类型响应。
- * @param url - 请求的 URL 地址。
- * @returns FetchTask。
- */
-export function fetchT(url: string): FetchTask<string | Response>;
-
-/**
- * 发起一个可中断的网络请求，默认返回文本类型响应。
  * @typeParam T - 预期的响应数据类型。
  * @param url - 请求的 URL 地址。
  * @param init - 请求的初始化配置，指定请求可中断。
  * @returns FetchTask。
  */
-export function fetchT(url: string, init: UnionFetchInit): FetchTask<string | Response>;
+export function fetchT(url: string, init?: UnionFetchInit): FetchTask<string | Response>;
 
 /**
  * 发起一个网络请求，根据初始化配置返回对应类型的 FetchTask。

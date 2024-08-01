@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { FetchTask } from '@happy-ts/fetch-t';
 import { basename, dirname } from '@std/path/posix';
 import { NOT_FOUND_ERROR, assertAbsolutePath, type ExistsOptions, type WriteOptions } from 'happy-opfs';
@@ -134,16 +133,6 @@ export function readDir(dirPath: string): AsyncIOResult<string[]> {
 }
 
 /**
- * 以二进制格式读取文件。
- * @param filePath - 文件路径。
- * @param options - 读取选项，指定编码为 'binary'。
- * @returns 包含文件内容的 ArrayBuffer 的异步操作。
- */
-export function readFile(filePath: string, options: ReadOptions & {
-    encoding: 'binary',
-}): AsyncIOResult<ArrayBuffer>;
-
-/**
  * 以 UTF-8 格式读取文件。
  * @param filePath - 文件路径。
  * @param options - 读取选项，指定编码为 'utf8'。
@@ -154,11 +143,14 @@ export function readFile(filePath: string, options: ReadOptions & {
 }): AsyncIOResult<string>;
 
 /**
- * 读取文件内容，不指定编码时默认以 ArrayBuffer 形式返回。
+ * 以二进制格式读取文件。
  * @param filePath - 文件路径。
+ * @param options - 读取选项，指定编码为 'binary'。
  * @returns 包含文件内容的 ArrayBuffer 的异步操作。
  */
-export function readFile(filePath: string): AsyncIOResult<ArrayBuffer>;
+export function readFile(filePath: string, options?: ReadOptions & {
+    encoding: 'binary',
+}): AsyncIOResult<ArrayBuffer>;
 
 /**
  * 读取文件内容，可选地指定编码和返回类型。
