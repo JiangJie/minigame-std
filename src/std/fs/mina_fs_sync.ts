@@ -5,18 +5,30 @@ import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from
 import { getAbsolutePath, getFs, isNotFoundError, toErr } from './fs_helpers.ts';
 import { errToMkdirResult, errToRemoveResult, getExistsResult, getReadFileEncoding, getWriteFileContents } from './mina_fs_shared.ts';
 
+const fs = getFs();
+
+/**
+ * 安全地调用同步接口。
+ * @param op - 同步操作。
+ * @param errToResult - 错误处理函数。
+ * @returns
+ */
+function trySyncOp<T>(op: () => T, errToResult: (err: WechatMinigame.FileError) => IOResult<T> = toErr): IOResult<T> {
+    try {
+        const res = op();
+        return Ok(res);
+    } catch (e: unknown) {
+        return errToResult(e as WechatMinigame.FileError);
+    }
+}
+
 /**
  * `mkdir` 的同步版本。
  */
 export function mkdirSync(dirPath: string): IOResult<boolean> {
     const absPath = getAbsolutePath(dirPath);
 
-    try {
-        getFs().mkdirSync(absPath, true);
-        return Ok(true);
-    } catch (e: unknown) {
-        return errToMkdirResult(e as WechatMinigame.FileError);
-    }
+    return trySyncOp(() => (fs.mkdirSync(absPath, true), true), errToMkdirResult);
 }
 
 /**
@@ -25,12 +37,7 @@ export function mkdirSync(dirPath: string): IOResult<boolean> {
 export function readDirSync(dirPath: string): IOResult<string[]> {
     const absPath = getAbsolutePath(dirPath);
 
-    try {
-        const files = getFs().readdirSync(absPath);
-        return Ok(files);
-    } catch (e: unknown) {
-        return toErr(e as WechatMinigame.FileError);
-    }
+    return trySyncOp(() => fs.readdirSync(absPath));
 }
 
 /**
@@ -46,39 +53,31 @@ export function readFileSync<T extends ReadFileContent>(filePath: string, option
     const absPath = getAbsolutePath(filePath);
     const encoding = getReadFileEncoding(options);
 
-    try {
-        const data = getFs().readFileSync(absPath, encoding);
-        return Ok(data as T);
-    } catch (e: unknown) {
-        return toErr(e as WechatMinigame.FileError);
-    }
+    return trySyncOp(() => fs.readFileSync(absPath, encoding) as T);
 }
 
 /**
  * `remove` 的同步版本。
  */
 export function removeSync(path: string): IOResult<boolean> {
-    const res = statSync(path);
+    const statRes = statSync(path);
 
-    if (res.isErr()) {
-        return res.asErr();
+    if (statRes.isErr()) {
+        return statRes.asErr();
     }
 
     const absPath = getAbsolutePath(path);
 
-    try {
+    return trySyncOp(() => {
         // 文件夹还是文件
-        if (res.unwrap().isDirectory()) {
-            getFs().rmdirSync(absPath, true);
+        if (statRes.unwrap().isDirectory()) {
+            fs.rmdirSync(absPath, true);
         } else {
-            getFs().unlinkSync(absPath);
+            fs.unlinkSync(absPath);
         }
 
-        return Ok(true);
-    } catch (e: unknown) {
-        // 目标 path 本就不存在，当做成功
-        return errToRemoveResult(e as WechatMinigame.FileError);
-    }
+        return true;
+    }, errToRemoveResult);
 }
 
 /**
@@ -88,12 +87,7 @@ export function renameSync(oldPath: string, newPath: string): IOResult<boolean> 
     const absOldPath = getAbsolutePath(oldPath);
     const absNewPath = getAbsolutePath(newPath);
 
-    try {
-        getFs().renameSync(absOldPath, absNewPath);
-        return Ok(true);
-    } catch (e: unknown) {
-        return toErr(e as WechatMinigame.FileError);
-    }
+    return trySyncOp(() => (fs.renameSync(absOldPath, absNewPath), true));
 }
 
 /**
@@ -107,12 +101,7 @@ export function statSync(path: string, options?: StatOptions): IOResult<WechatMi
 export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     const absPath = getAbsolutePath(path);
 
-    try {
-        const stats = getFs().statSync(absPath, options?.recursive ?? false);
-        return Ok(stats);
-    } catch (e: unknown) {
-        return toErr(e as WechatMinigame.FileError);
-    }
+    return trySyncOp(() => fs.statSync(absPath, options?.recursive ?? false));
 }
 
 /**
@@ -133,12 +122,7 @@ export function writeFileSync(filePath: string, contents: WriteFileContent, opti
 
     const { data, encoding } = getWriteFileContents(contents);
 
-    try {
-        (append ? getFs().appendFileSync : getFs().writeFileSync)(absPath, data, encoding);
-        return Ok(true);
-    } catch (e: unknown) {
-        return toErr(e as WechatMinigame.FileError);
-    }
+    return trySyncOp(() => ((append ? fs.appendFileSync : fs.writeFileSync)(absPath, data, encoding), true));
 }
 
 /**

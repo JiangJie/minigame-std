@@ -7,6 +7,8 @@ import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, Up
 import { getAbsolutePath, getFs, isNotFoundError, toErr } from './fs_helpers.ts';
 import { errToMkdirResult, errToRemoveResult, getExistsResult, getReadFileEncoding, getWriteFileContents } from './mina_fs_shared.ts';
 
+const fs = getFs();
+
 /**
  * 递归创建文件夹，相当于`mkdir -p`。
  * @param dirPath - 需要创建的目录路径。
@@ -16,7 +18,7 @@ export function mkdir(dirPath: string): AsyncIOResult<boolean> {
     const absPath = getAbsolutePath(dirPath);
 
     return new Promise((resolve) => {
-        getFs().mkdir({
+        fs.mkdir({
             dirPath: absPath,
             recursive: true,
             success(): void {
@@ -38,7 +40,7 @@ export function readDir(dirPath: string): AsyncIOResult<string[]> {
     const absPath = getAbsolutePath(dirPath);
 
     return new Promise((resolve) => {
-        getFs().readdir({
+        fs.readdir({
             dirPath: absPath,
             success(res): void {
                 resolve(Ok(res.files));
@@ -82,7 +84,7 @@ export function readFile<T extends ReadFileContent>(filePath: string, options?: 
     const encoding = getReadFileEncoding(options);
 
     return new Promise((resolve) => {
-        getFs().readFile({
+        fs.readFile({
             filePath: absPath,
             encoding,
             success(res): void {
@@ -112,7 +114,7 @@ export async function remove(path: string): AsyncIOResult<boolean> {
     return new Promise((resolve) => {
         // 文件夹还是文件
         if (res.unwrap().isDirectory()) {
-            getFs().rmdir({
+            fs.rmdir({
                 dirPath: absPath,
                 recursive: true,
                 success(): void {
@@ -123,7 +125,7 @@ export async function remove(path: string): AsyncIOResult<boolean> {
                 },
             });
         } else {
-            getFs().unlink({
+            fs.unlink({
                 filePath: absPath,
                 success(): void {
                     resolve(Ok(true));
@@ -147,7 +149,7 @@ export function rename(oldPath: string, newPath: string): AsyncIOResult<boolean>
     const absNewPath = getAbsolutePath(newPath);
 
     return new Promise((resolve) => {
-        getFs().rename({
+        fs.rename({
             oldPath: absOldPath,
             newPath: absNewPath,
             success(): void {
@@ -175,7 +177,7 @@ export function stat(path: string, options?: StatOptions): AsyncIOResult<WechatM
     const absPath = getAbsolutePath(path);
 
     return new Promise((resolve) => {
-        getFs().stat({
+        fs.stat({
             path: absPath,
             recursive: options?.recursive ?? false,
             success(res): void {
@@ -211,7 +213,7 @@ export async function writeFile(filePath: string, contents: WriteFileContent, op
     const { data, encoding } = getWriteFileContents(contents);
 
     return new Promise((resolve) => {
-        (append ? getFs().appendFile : getFs().writeFile)({
+        (append ? fs.appendFile : fs.writeFile)({
             filePath: absPath,
             data,
             encoding,
