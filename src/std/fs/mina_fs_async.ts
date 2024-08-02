@@ -1,85 +1,11 @@
 import type { FetchTask } from '@happy-ts/fetch-t';
-import { basename, dirname } from '@std/path/posix';
-import { NOT_FOUND_ERROR, assertAbsolutePath, type ExistsOptions, type WriteOptions } from 'happy-opfs';
+import { basename, dirname, join } from '@std/path/posix';
+import { type ExistsOptions, type WriteOptions } from 'happy-opfs';
 import { Err, Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
-import { assertSafeUrl, assertString } from '../assert/assertions.ts';
-import type { DownloadFileOptions, FileEncoding, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
-
-/**
- * 小游戏文件系统管理器实例。
- *
- * for tree shake
- */
-let fs: WechatMinigame.FileSystemManager;
-
-/**
- * 获取小游戏文件系统管理器实例。
- * @returns 文件系统管理器实例。
- */
-function getFs(): WechatMinigame.FileSystemManager {
-    fs ??= wx.getFileSystemManager();
-    return fs;
-}
-
-/**
- * 根路径。
- *
- * for tree shake
- */
-let rootPath: string;
-
-/**
- * 获取文件系统的根路径。
- * @returns 文件系统的根路径。
- */
-function getRootPath(): string {
-    rootPath ??= wx.env.USER_DATA_PATH;
-    return rootPath;
-}
-
-/**
- * 获取给定路径的绝对路径。
- * @param path - 相对USER_DATA_PATH的相对路径，也必须以`/`开头。
- * @returns 转换后的绝对路径。
- */
-function getAbsolutePath(path: string): string {
-    assertString(path);
-
-    const rootPath = getRootPath();
-
-    if (path.startsWith(rootPath)) {
-        return path;
-    }
-
-    assertAbsolutePath(path);
-    return rootPath + path;
-}
-
-/**
- * 判断是否是文件不存在的错误。
- * @param err - 错误对象。
- */
-function isNotFoundFileError(err: WechatMinigame.FileError): boolean {
-    return err.errCode === 1300002 || err.errMsg.includes('no such file or directory');
-}
-
-/**
- * 将错误对象转换为 IOResult 类型。
- * @typeParam T - Result 的 Ok 类型。
- * @param err - 错误对象。
- * @returns 转换后的 IOResult 对象。
- */
-function toErr<T>(err: WechatMinigame.FileError | WechatMinigame.GeneralCallbackResult): IOResult<T> {
-    const error = new Error(err.errMsg);
-
-    // 1300002	no such file or directory ${path}
-    // 可能没有errCode
-    if (isNotFoundFileError(err as WechatMinigame.FileError)) {
-        error.name = NOT_FOUND_ERROR;
-    }
-
-    return Err(error);
-}
+import { assertSafeUrl } from '../assert/assertions.ts';
+import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
+import { getAbsolutePath, getFs, isNotFoundError, toErr } from './fs_helpers.ts';
+import { errToMkdirResult, errToRemoveResult, getExistsResult, getReadFileEncoding, getWriteFileContents } from './mina_fs_shared.ts';
 
 /**
  * 递归创建文件夹，相当于`mkdir -p`。
@@ -97,15 +23,7 @@ export function mkdir(dirPath: string): AsyncIOResult<boolean> {
                 resolve(Ok(true));
             },
             fail(err): void {
-                // 1301005	file already exists ${dirPath}	已有同名文件或目录
-                // 可能没有errCode
-                if (err.errCode === 1301005 || err.errMsg.includes('already exists')) {
-                    // 当做成功
-                    resolve(Ok(true));
-                    return;
-                }
-
-                resolve(toErr(err));
+                resolve(errToMkdirResult(err));
             },
         });
     });
@@ -161,13 +79,7 @@ export function readFile(filePath: string, options?: ReadOptions & {
  */
 export function readFile<T extends ReadFileContent>(filePath: string, options?: ReadOptions): AsyncIOResult<T> {
     const absPath = getAbsolutePath(filePath);
-
-    // NOTE: 想要读取ArrayBuffer就不能传encoding，
-    // 如果传了'binary'，读出来的是字符串
-    let encoding: FileEncoding | undefined = options?.encoding;
-    if (!encoding || encoding === 'binary') {
-        encoding = undefined;
-    }
+    const encoding = getReadFileEncoding(options);
 
     return new Promise((resolve) => {
         getFs().readFile({
@@ -196,6 +108,7 @@ export async function remove(path: string): AsyncIOResult<boolean> {
     }
 
     const absPath = getAbsolutePath(path);
+
     return new Promise((resolve) => {
         // 文件夹还是文件
         if (res.unwrap().isDirectory()) {
@@ -206,8 +119,7 @@ export async function remove(path: string): AsyncIOResult<boolean> {
                     resolve(Ok(true));
                 },
                 fail(err): void {
-                    // 目标 path 本就不存在，当做成功
-                    resolve(isNotFoundFileError(err) ? Ok(true) : toErr(err));
+                    resolve(errToRemoveResult(err));
                 },
             });
         } else {
@@ -217,8 +129,7 @@ export async function remove(path: string): AsyncIOResult<boolean> {
                     resolve(Ok(true));
                 },
                 fail(err): void {
-                    // 目标 path 本就不存在，当做成功
-                    resolve(isNotFoundFileError(err) ? Ok(true) : toErr(err));
+                    resolve(errToRemoveResult(err));
                 },
             });
         }
@@ -266,7 +177,7 @@ export function stat(path: string, options?: StatOptions): AsyncIOResult<WechatM
     return new Promise((resolve) => {
         getFs().stat({
             path: absPath,
-            recursive: options?.recursive,
+            recursive: options?.recursive ?? false,
             success(res): void {
                 resolve(Ok(res.stats));
             },
@@ -290,10 +201,6 @@ export async function writeFile(filePath: string, contents: WriteFileContent, op
     // 默认创建
     const { append = false, create = true } = options ?? {};
 
-    const isBuffer = contents instanceof ArrayBuffer;
-    const isBufferView = ArrayBuffer.isView(contents);
-    const isBin = isBuffer || isBufferView;
-
     if (create) {
         const res = await mkdir(dirname(absPath));
         if (res.isErr()) {
@@ -301,12 +208,13 @@ export async function writeFile(filePath: string, contents: WriteFileContent, op
         }
     }
 
+    const { data, encoding } = getWriteFileContents(contents);
+
     return new Promise((resolve) => {
         (append ? getFs().appendFile : getFs().writeFile)({
             filePath: absPath,
-            // ArrayBuffer可能是带有offset的
-            data: isBufferView ? contents.buffer : contents,
-            encoding: isBin ? 'binary' : 'utf8',
+            data,
+            encoding,
             success(): void {
                 resolve(Ok(true));
             },
@@ -337,26 +245,7 @@ export function appendFile(filePath: string, contents: WriteFileContent): AsyncI
  */
 export async function exists(path: string, options?: ExistsOptions): AsyncIOResult<boolean> {
     const res = await stat(path);
-
-    if (res.isErr()) {
-        if (res.unwrapErr().name === NOT_FOUND_ERROR) {
-            return Ok(false);
-        }
-        return res.asErr();
-    }
-
-    const { isDirectory = false, isFile = false } = options ?? {};
-
-    if (isDirectory && isFile) {
-        throw new TypeError('ExistsOptions.isDirectory and ExistsOptions.isFile must not be true together.');
-    }
-
-    const stats = res.unwrap();
-    const notExist =
-        (isDirectory && stats.isFile())
-        || (isFile && stats.isDirectory());
-
-    return Ok(!notExist);
+    return getExistsResult(res, options);
 }
 
 /**
@@ -369,18 +258,14 @@ export async function emptyDir(dirPath: string): AsyncIOResult<boolean> {
 
     const res = await readDir(dirPath);
     if (res.isErr()) {
-        if (res.unwrapErr().name === NOT_FOUND_ERROR) {
-            // 不存在则创建
-            return mkdir(dirPath);
-        }
-
-        return res.asErr();
+        // 不存在则创建
+        return isNotFoundError(res.unwrapErr()) ? mkdir(dirPath) : res.asErr();
     }
 
     const items: AsyncIOResult<T>[] = [];
 
     for await (const name of res.unwrap()) {
-        items.push(remove(`${ dirPath }/${ name }`));
+        items.push(remove(join(dirPath, name)));
     }
 
     const success: IOResult<T> = await Promise.all(items).then((x) => {
