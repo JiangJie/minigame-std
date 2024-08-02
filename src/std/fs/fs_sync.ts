@@ -78,13 +78,7 @@ export function statSync(path: string, options: StatOptions & {
 export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>
 export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     if (isMinaEnv()) {
-        const res = minaStatSync(path, options);
-
-        if (res.isErr()) {
-            return res.asErr();
-        }
-
-        return Ok(res.unwrap());
+        return minaStatSync(path, options);
     }
 
     const res = webStat(path);

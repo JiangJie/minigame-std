@@ -105,13 +105,7 @@ export async function stat(path: string, options: StatOptions & {
 export async function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>
 export async function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     if (isMinaEnv()) {
-        const res = await minaStat(path, options);
-
-        if (res.isErr()) {
-            return res.asErr();
-        }
-
-        return Ok(res.unwrap());
+        return await minaStat(path, options);
     }
 
     const res = await webStat(path);
