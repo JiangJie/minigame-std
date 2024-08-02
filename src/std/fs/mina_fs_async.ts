@@ -1,7 +1,7 @@
 import type { FetchResponse, FetchTask } from '@happy-ts/fetch-t';
 import { basename, dirname, join } from '@std/path/posix';
 import { type ExistsOptions, type WriteOptions } from 'happy-opfs';
-import { Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
+import { Ok, RESULT_TRUE, type AsyncIOResult, type IOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import { assertSafeUrl } from '../assert/assertions.ts';
 import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
@@ -24,7 +24,7 @@ export function mkdir(dirPath: string): AsyncIOResult<boolean> {
         dirPath: absPath,
         recursive: true,
         success(): void {
-            future.resolve(Ok(true));
+            future.resolve(RESULT_TRUE);
         },
         fail(err): void {
             future.resolve(errToMkdirResult(err));
@@ -126,7 +126,7 @@ export async function remove(path: string): AsyncIOResult<boolean> {
             dirPath: absPath,
             recursive: true,
             success(): void {
-                future.resolve(Ok(true));
+                future.resolve(RESULT_TRUE);
             },
             fail(err): void {
                 future.resolve(errToRemoveResult(err));
@@ -136,7 +136,7 @@ export async function remove(path: string): AsyncIOResult<boolean> {
         fs.unlink({
             filePath: absPath,
             success(): void {
-                future.resolve(Ok(true));
+                future.resolve(RESULT_TRUE);
             },
             fail(err): void {
                 future.resolve(errToRemoveResult(err));
@@ -163,7 +163,7 @@ export function rename(oldPath: string, newPath: string): AsyncIOResult<boolean>
         oldPath: absOldPath,
         newPath: absNewPath,
         success(): void {
-            future.resolve(Ok(true));
+            future.resolve(RESULT_TRUE);
         },
         fail(err): void {
             future.resolve(toErr(err));
@@ -234,7 +234,7 @@ export async function writeFile(filePath: string, contents: WriteFileContent, op
         data,
         encoding,
         success(): void {
-            future.resolve(Ok(true));
+            future.resolve(RESULT_TRUE);
         },
         fail(err): void {
             future.resolve(toErr(err));

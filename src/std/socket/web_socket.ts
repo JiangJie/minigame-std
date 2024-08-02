@@ -1,4 +1,4 @@
-import { Ok, type Result } from 'happy-rusty';
+import { RESULT_TRUE, type Result } from 'happy-rusty';
 import { assertSafeSocketUrl } from '../assert/assertions.ts';
 import type { ISocket, SocketListenerMap } from './socket_define.ts';
 
@@ -72,7 +72,7 @@ export function connectSocket(url: string, protocols?: string | string[]): ISock
 
         send(data: string | ArrayBuffer | ArrayBufferView): Promise<Result<boolean, Error>> {
             socket.send(data);
-            return Promise.resolve(Ok(true));
+            return Promise.resolve(RESULT_TRUE);
         },
 
         close: socket.close.bind(socket),

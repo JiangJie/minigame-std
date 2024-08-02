@@ -1,6 +1,6 @@
 import { dirname, join } from '@std/path/posix';
 import { type ExistsOptions, type WriteOptions } from 'happy-opfs';
-import { Ok, type IOResult } from 'happy-rusty';
+import { Ok, RESULT_TRUE, type IOResult } from 'happy-rusty';
 import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
 import { getAbsolutePath, getFs, isNotFoundError, toErr } from './fs_helpers.ts';
 import { errToMkdirResult, errToRemoveResult, getExistsResult, getReadFileEncoding, getWriteFileContents } from './mina_fs_shared.ts';
@@ -158,7 +158,7 @@ export function emptyDirSync(dirPath: string): IOResult<boolean> {
         }
     }
 
-    return Ok(true);
+    return RESULT_TRUE;
 }
 
 /**

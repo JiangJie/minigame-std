@@ -3,7 +3,7 @@
  */
 
 import type { ExistsOptions } from 'happy-opfs';
-import { Ok, type IOResult } from 'happy-rusty';
+import { Ok, RESULT_FALSE, RESULT_TRUE, type IOResult } from 'happy-rusty';
 import type { FileEncoding, ReadOptions, WriteFileContent } from './fs_define.ts';
 import { isAlreadyExistsIOError, isNotFoundError, isNotFoundIOError, toErr } from './fs_helpers.ts';
 
@@ -12,7 +12,7 @@ import { isAlreadyExistsIOError, isNotFoundError, isNotFoundIOError, toErr } fro
  */
 export function errToMkdirResult(err: WechatMinigame.FileError): IOResult<boolean> {
     // 已存在当做成功
-    return isAlreadyExistsIOError(err) ? Ok(true) : toErr(err);
+    return isAlreadyExistsIOError(err) ? RESULT_TRUE : toErr(err);
 }
 
 /**
@@ -34,7 +34,7 @@ export function getReadFileEncoding(options?: ReadOptions): FileEncoding | undef
  */
 export function errToRemoveResult(err: WechatMinigame.FileError): IOResult<boolean> {
     // 目标 path 本就不存在，当做成功
-    return isNotFoundIOError(err) ? Ok(true) : toErr(err);
+    return isNotFoundIOError(err) ? RESULT_TRUE : toErr(err);
 }
 
 interface GetWriteFileContents {
@@ -66,7 +66,7 @@ export function getWriteFileContents(contents: WriteFileContent): GetWriteFileCo
  */
 export function getExistsResult(statsResult: IOResult<WechatMinigame.Stats>, options?: ExistsOptions): IOResult<boolean> {
     if (statsResult.isErr()) {
-        return isNotFoundError(statsResult.unwrapErr()) ? Ok(false) : statsResult.asErr();
+        return isNotFoundError(statsResult.unwrapErr()) ? RESULT_FALSE : statsResult.asErr();
     }
 
     const { isDirectory = false, isFile = false } = options ?? {};

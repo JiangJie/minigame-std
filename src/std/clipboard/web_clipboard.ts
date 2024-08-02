@@ -1,4 +1,4 @@
-import { Err, Ok, type AsyncResult } from 'happy-rusty';
+import { Err, Ok, RESULT_TRUE, type AsyncResult } from 'happy-rusty';
 import { assertString } from '../assert/assertions.ts';
 
 /**
@@ -11,7 +11,7 @@ export async function writeText(data: string): AsyncResult<boolean, DOMException
 
     try {
         await navigator.clipboard.writeText(data);
-        return Ok(true);
+        return RESULT_TRUE;
     } catch (err) {
         return Err(err as DOMException);
     }
