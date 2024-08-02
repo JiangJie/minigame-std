@@ -1,7 +1,8 @@
-import type { FetchTask } from '@happy-ts/fetch-t';
+import type { FetchResponse, FetchTask } from '@happy-ts/fetch-t';
 import { basename, dirname, join } from '@std/path/posix';
 import { type ExistsOptions, type WriteOptions } from 'happy-opfs';
-import { Err, Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
+import { Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
+import { Future } from 'tiny-future';
 import { assertSafeUrl } from '../assert/assertions.ts';
 import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
 import { getAbsolutePath, getFs, isNotFoundError, toErr } from './fs_helpers.ts';
@@ -17,18 +18,20 @@ const fs = getFs();
 export function mkdir(dirPath: string): AsyncIOResult<boolean> {
     const absPath = getAbsolutePath(dirPath);
 
-    return new Promise((resolve) => {
-        fs.mkdir({
-            dirPath: absPath,
-            recursive: true,
-            success(): void {
-                resolve(Ok(true));
-            },
-            fail(err): void {
-                resolve(errToMkdirResult(err));
-            },
-        });
+    const future = new Future<IOResult<boolean>>();
+
+    fs.mkdir({
+        dirPath: absPath,
+        recursive: true,
+        success(): void {
+            future.resolve(Ok(true));
+        },
+        fail(err): void {
+            future.resolve(errToMkdirResult(err));
+        },
     });
+
+    return future.promise;
 }
 
 /**
@@ -39,17 +42,19 @@ export function mkdir(dirPath: string): AsyncIOResult<boolean> {
 export function readDir(dirPath: string): AsyncIOResult<string[]> {
     const absPath = getAbsolutePath(dirPath);
 
-    return new Promise((resolve) => {
-        fs.readdir({
-            dirPath: absPath,
-            success(res): void {
-                resolve(Ok(res.files));
-            },
-            fail(err): void {
-                resolve(toErr(err));
-            },
-        });
+    const future = new Future<IOResult<string[]>>();
+
+    fs.readdir({
+        dirPath: absPath,
+        success(res): void {
+            future.resolve(Ok(res.files));
+        },
+        fail(err): void {
+            future.resolve(toErr(err));
+        },
     });
+
+    return future.promise;
 }
 
 /**
@@ -83,18 +88,20 @@ export function readFile<T extends ReadFileContent>(filePath: string, options?: 
     const absPath = getAbsolutePath(filePath);
     const encoding = getReadFileEncoding(options);
 
-    return new Promise((resolve) => {
-        fs.readFile({
-            filePath: absPath,
-            encoding,
-            success(res): void {
-                resolve(Ok(res.data as T));
-            },
-            fail(err): void {
-                resolve(toErr(err));
-            },
-        });
+    const future = new Future<IOResult<T>>();
+
+    fs.readFile({
+        filePath: absPath,
+        encoding,
+        success(res): void {
+            future.resolve(Ok(res.data as T));
+        },
+        fail(err): void {
+            future.resolve(toErr(err));
+        },
     });
+
+    return future.promise;
 }
 
 /**
@@ -111,31 +118,33 @@ export async function remove(path: string): AsyncIOResult<boolean> {
 
     const absPath = getAbsolutePath(path);
 
-    return new Promise((resolve) => {
-        // 文件夹还是文件
-        if (res.unwrap().isDirectory()) {
-            fs.rmdir({
-                dirPath: absPath,
-                recursive: true,
-                success(): void {
-                    resolve(Ok(true));
-                },
-                fail(err): void {
-                    resolve(errToRemoveResult(err));
-                },
-            });
-        } else {
-            fs.unlink({
-                filePath: absPath,
-                success(): void {
-                    resolve(Ok(true));
-                },
-                fail(err): void {
-                    resolve(errToRemoveResult(err));
-                },
-            });
-        }
-    });
+    const future = new Future<IOResult<boolean>>();
+
+    // 文件夹还是文件
+    if (res.unwrap().isDirectory()) {
+        fs.rmdir({
+            dirPath: absPath,
+            recursive: true,
+            success(): void {
+                future.resolve(Ok(true));
+            },
+            fail(err): void {
+                future.resolve(errToRemoveResult(err));
+            },
+        });
+    } else {
+        fs.unlink({
+            filePath: absPath,
+            success(): void {
+                future.resolve(Ok(true));
+            },
+            fail(err): void {
+                future.resolve(errToRemoveResult(err));
+            },
+        });
+    }
+
+    return future.promise;
 }
 
 /**
@@ -148,18 +157,20 @@ export function rename(oldPath: string, newPath: string): AsyncIOResult<boolean>
     const absOldPath = getAbsolutePath(oldPath);
     const absNewPath = getAbsolutePath(newPath);
 
-    return new Promise((resolve) => {
-        fs.rename({
-            oldPath: absOldPath,
-            newPath: absNewPath,
-            success(): void {
-                resolve(Ok(true));
-            },
-            fail(err): void {
-                resolve(toErr(err));
-            },
-        });
+    const future = new Future<IOResult<boolean>>();
+
+    fs.rename({
+        oldPath: absOldPath,
+        newPath: absNewPath,
+        success(): void {
+            future.resolve(Ok(true));
+        },
+        fail(err): void {
+            future.resolve(toErr(err));
+        },
     });
+
+    return future.promise;
 }
 
 /**
@@ -174,20 +185,24 @@ export function stat(path: string, options: StatOptions & {
 }): AsyncIOResult<WechatMinigame.FileStats[]>;
 export function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
 export function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
+    type T = WechatMinigame.Stats | WechatMinigame.FileStats[];
+
     const absPath = getAbsolutePath(path);
 
-    return new Promise((resolve) => {
-        fs.stat({
-            path: absPath,
-            recursive: options?.recursive ?? false,
-            success(res): void {
-                resolve(Ok(res.stats));
-            },
-            fail(err): void {
-                resolve(toErr(err));
-            },
-        });
+    const future = new Future<IOResult<T>>();
+
+    fs.stat({
+        path: absPath,
+        recursive: options?.recursive ?? false,
+        success(res): void {
+            future.resolve(Ok(res.stats));
+        },
+        fail(err): void {
+            future.resolve(toErr(err));
+        },
     });
+
+    return future.promise;
 }
 
 /**
@@ -212,19 +227,21 @@ export async function writeFile(filePath: string, contents: WriteFileContent, op
 
     const { data, encoding } = getWriteFileContents(contents);
 
-    return new Promise((resolve) => {
-        (append ? fs.appendFile : fs.writeFile)({
-            filePath: absPath,
-            data,
-            encoding,
-            success(): void {
-                resolve(Ok(true));
-            },
-            fail(err): void {
-                resolve(toErr(err));
-            },
-        });
+    const future = new Future<IOResult<boolean>>();
+
+    (append ? fs.appendFile : fs.writeFile)({
+        filePath: absPath,
+        data,
+        encoding,
+        success(): void {
+            future.resolve(Ok(true));
+        },
+        fail(err): void {
+            future.resolve(toErr(err));
+        },
     });
+
+    return future.promise;
 }
 
 /**
@@ -307,12 +324,26 @@ export function readTextFile(filePath: string): AsyncIOResult<string> {
  * @returns 下载操作的异步结果，成功时返回 true。
  */
 export function downloadFile(fileUrl: string, filePath: string, options?: DownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult> {
+    type T = WechatMinigame.DownloadFileSuccessCallbackResult;
+
     assertSafeUrl(fileUrl);
     const absPath = getAbsolutePath(filePath);
 
     let aborted = false;
 
-    let task: WechatMinigame.DownloadTask;
+    const future = new Future<IOResult<T>>();
+
+    const task = wx.downloadFile({
+        ...options,
+        url: fileUrl,
+        filePath: absPath,
+        success(res): void {
+            future.resolve(Ok(res));
+        },
+        fail(err): void {
+            future.resolve(toErr(err));
+        },
+    });
 
     return {
         abort(): void {
@@ -320,24 +351,13 @@ export function downloadFile(fileUrl: string, filePath: string, options?: Downlo
             task?.abort();
         },
 
-        aborted,
+        get aborted(): boolean {
+            return aborted;
+        },
 
-        response: new Promise<IOResult<WechatMinigame.DownloadFileSuccessCallbackResult>>((resolve) => {
-            task = wx.downloadFile({
-                ...options,
-                url: fileUrl,
-                filePath: absPath,
-                success(res): void {
-                    resolve(Ok(res));
-                },
-                fail(err): void {
-                    resolve(toErr(err));
-                },
-            });
-        }).catch(err => {
-            const errMsg: string = err?.message ?? `downloadFile error ${ err }`;
-            return Err(new Error(errMsg));
-        }),
+        get response(): FetchResponse<T> {
+            return future.promise;
+        },
     };
 }
 
@@ -349,12 +369,27 @@ export function downloadFile(fileUrl: string, filePath: string, options?: Downlo
  * @returns 上传操作的异步结果，成功时返回 true。
  */
 export function uploadFile(filePath: string, fileUrl: string, options?: UploadFileOptions): FetchTask<WechatMinigame.UploadFileSuccessCallbackResult> {
+    type T = WechatMinigame.UploadFileSuccessCallbackResult;
+
     assertSafeUrl(fileUrl);
     const absPath = getAbsolutePath(filePath);
 
     let aborted = false;
 
-    let task: WechatMinigame.UploadTask;
+    const future = new Future<IOResult<T>>();
+
+    const task = wx.uploadFile({
+        name: basename(filePath),
+        ...options,
+        url: fileUrl,
+        filePath: absPath,
+        success(res): void {
+            future.resolve(Ok(res));
+        },
+        fail(err): void {
+            future.resolve(toErr(err));
+        },
+    });
 
     return {
         abort(): void {
@@ -362,24 +397,12 @@ export function uploadFile(filePath: string, fileUrl: string, options?: UploadFi
             task?.abort();
         },
 
-        aborted,
+        get aborted(): boolean {
+            return aborted;
+        },
 
-        response: new Promise<IOResult<WechatMinigame.UploadFileSuccessCallbackResult>>((resolve) => {
-            task = wx.uploadFile({
-                name: basename(filePath),
-                ...options,
-                url: fileUrl,
-                filePath: absPath,
-                success(res): void {
-                    resolve(Ok(res));
-                },
-                fail(err): void {
-                    resolve(toErr(err));
-                },
-            });
-        }).catch(err => {
-            const errMsg: string = err?.message ?? `downloadFile error ${ err }`;
-            return Err(new Error(errMsg));
-        }),
+        get response(): FetchResponse<T> {
+            return future.promise;
+        },
     };
 }
