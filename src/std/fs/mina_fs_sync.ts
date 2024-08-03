@@ -63,7 +63,8 @@ export function removeSync(path: string): IOResult<boolean> {
     const statRes = statSync(path);
 
     if (statRes.isErr()) {
-        return statRes.asErr();
+        // 不存在当做成功
+        return isNotFoundError(statRes.unwrapErr()) ? RESULT_TRUE : statRes.asErr();
     }
 
     const absPath = getAbsolutePath(path);

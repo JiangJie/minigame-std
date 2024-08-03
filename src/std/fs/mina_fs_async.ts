@@ -110,10 +110,11 @@ export function readFile<T extends ReadFileContent>(filePath: string, options?: 
  * @returns 删除操作的异步结果，成功时返回 true。
  */
 export async function remove(path: string): AsyncIOResult<boolean> {
-    const res = await stat(path);
+    const statRes = await stat(path);
 
-    if (res.isErr()) {
-        return res.asErr();
+    if (statRes.isErr()) {
+        // 不存在当做成功
+        return isNotFoundError(statRes.unwrapErr()) ? RESULT_TRUE : statRes.asErr();
     }
 
     const absPath = getAbsolutePath(path);
@@ -121,7 +122,7 @@ export async function remove(path: string): AsyncIOResult<boolean> {
     const future = new Future<IOResult<boolean>>();
 
     // 文件夹还是文件
-    if (res.unwrap().isDirectory()) {
+    if (statRes.unwrap().isDirectory()) {
         fs.rmdir({
             dirPath: absPath,
             recursive: true,
