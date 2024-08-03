@@ -274,36 +274,19 @@ export async function exists(path: string, options?: ExistsOptions): AsyncIOResu
  * @returns 清空操作的异步结果，成功时返回 true。
  */
 export async function emptyDir(dirPath: string): AsyncIOResult<boolean> {
-    type T = boolean;
-
     const res = await readDir(dirPath);
     if (res.isErr()) {
         // 不存在则创建
         return isNotFoundError(res.unwrapErr()) ? mkdir(dirPath) : res.asErr();
     }
 
-    const items: AsyncIOResult<T>[] = [];
+    const tasks = res.unwrap().map(name => remove(join(dirPath, name)));
 
-    for await (const name of res.unwrap()) {
-        items.push(remove(join(dirPath, name)));
-    }
+    const allRes = await Promise.all(tasks);
+    // anyone failed?
+    const fail = allRes.find(x => x.isErr() || !x.unwrap());
 
-    const success: IOResult<T> = await Promise.all(items).then((x) => {
-        let err: IOResult<T> | null = null;
-
-        const success = x.every(y => {
-            if (y.isErr()) {
-                err = y;
-                return false;
-            }
-
-            return y.unwrap();
-        });
-
-        return err ?? Ok(success);
-    });
-
-    return success;
+    return fail ?? RESULT_TRUE;
 }
 
 /**
