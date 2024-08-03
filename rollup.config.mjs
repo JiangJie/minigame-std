@@ -12,6 +12,7 @@ const external = [
     'happy-opfs',
     '@happy-ts/fetch-t',
     'tiny-invariant',
+    'tiny-future',
 ];
 
 /**
