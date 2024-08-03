@@ -2,10 +2,7 @@ import { dirname, join } from '@std/path/posix';
 import { type ExistsOptions, type WriteOptions } from 'happy-opfs';
 import { Ok, RESULT_TRUE, type IOResult } from 'happy-rusty';
 import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
-import { getAbsolutePath, getFs, isNotFoundError, toErr } from './fs_helpers.ts';
-import { errToMkdirResult, errToRemoveResult, getExistsResult, getReadFileEncoding, getWriteFileContents } from './mina_fs_shared.ts';
-
-const fs = getFs();
+import { errToMkdirResult, errToRemoveResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError, toErr } from './mina_fs_shared.ts';
 
 /**
  * 安全地调用同步接口。
@@ -28,7 +25,7 @@ function trySyncOp<T>(op: () => T, errToResult: (err: WechatMinigame.FileError) 
 export function mkdirSync(dirPath: string): IOResult<boolean> {
     const absPath = getAbsolutePath(dirPath);
 
-    return trySyncOp(() => (fs.mkdirSync(absPath, true), true), errToMkdirResult);
+    return trySyncOp(() => (getFs().mkdirSync(absPath, true), true), errToMkdirResult);
 }
 
 /**
@@ -37,7 +34,7 @@ export function mkdirSync(dirPath: string): IOResult<boolean> {
 export function readDirSync(dirPath: string): IOResult<string[]> {
     const absPath = getAbsolutePath(dirPath);
 
-    return trySyncOp(() => fs.readdirSync(absPath));
+    return trySyncOp(() => getFs().readdirSync(absPath));
 }
 
 /**
@@ -53,7 +50,7 @@ export function readFileSync<T extends ReadFileContent>(filePath: string, option
     const absPath = getAbsolutePath(filePath);
     const encoding = getReadFileEncoding(options);
 
-    return trySyncOp(() => fs.readFileSync(absPath, encoding) as T);
+    return trySyncOp(() => getFs().readFileSync(absPath, encoding) as T);
 }
 
 /**
@@ -72,9 +69,9 @@ export function removeSync(path: string): IOResult<boolean> {
     return trySyncOp(() => {
         // 文件夹还是文件
         if (statRes.unwrap().isDirectory()) {
-            fs.rmdirSync(absPath, true);
+            getFs().rmdirSync(absPath, true);
         } else {
-            fs.unlinkSync(absPath);
+            getFs().unlinkSync(absPath);
         }
 
         return true;
@@ -88,7 +85,7 @@ export function renameSync(oldPath: string, newPath: string): IOResult<boolean> 
     const absOldPath = getAbsolutePath(oldPath);
     const absNewPath = getAbsolutePath(newPath);
 
-    return trySyncOp(() => (fs.renameSync(absOldPath, absNewPath), true));
+    return trySyncOp(() => (getFs().renameSync(absOldPath, absNewPath), true));
 }
 
 /**
@@ -102,7 +99,7 @@ export function statSync(path: string, options?: StatOptions): IOResult<WechatMi
 export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     const absPath = getAbsolutePath(path);
 
-    return trySyncOp(() => fs.statSync(absPath, options?.recursive ?? false));
+    return trySyncOp(() => getFs().statSync(absPath, options?.recursive ?? false));
 }
 
 /**
@@ -123,7 +120,7 @@ export function writeFileSync(filePath: string, contents: WriteFileContent, opti
 
     const { data, encoding } = getWriteFileContents(contents);
 
-    return trySyncOp(() => ((append ? fs.appendFileSync : fs.writeFileSync)(absPath, data, encoding), true));
+    return trySyncOp(() => ((append ? getFs().appendFileSync : getFs().writeFileSync)(absPath, data, encoding), true));
 }
 
 /**

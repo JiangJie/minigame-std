@@ -5,10 +5,7 @@ import { Ok, RESULT_TRUE, type AsyncIOResult, type IOResult } from 'happy-rusty'
 import { Future } from 'tiny-future';
 import { assertSafeUrl } from '../assert/assertions.ts';
 import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
-import { getAbsolutePath, getFs, isNotFoundError, toErr } from './fs_helpers.ts';
-import { errToMkdirResult, errToRemoveResult, getExistsResult, getReadFileEncoding, getWriteFileContents } from './mina_fs_shared.ts';
-
-const fs = getFs();
+import { errToMkdirResult, errToRemoveResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError, toErr } from './mina_fs_shared.ts';
 
 /**
  * 递归创建文件夹，相当于`mkdir -p`。
@@ -20,7 +17,7 @@ export function mkdir(dirPath: string): AsyncIOResult<boolean> {
 
     const future = new Future<IOResult<boolean>>();
 
-    fs.mkdir({
+    getFs().mkdir({
         dirPath: absPath,
         recursive: true,
         success(): void {
@@ -44,7 +41,7 @@ export function readDir(dirPath: string): AsyncIOResult<string[]> {
 
     const future = new Future<IOResult<string[]>>();
 
-    fs.readdir({
+    getFs().readdir({
         dirPath: absPath,
         success(res): void {
             future.resolve(Ok(res.files));
@@ -90,7 +87,7 @@ export function readFile<T extends ReadFileContent>(filePath: string, options?: 
 
     const future = new Future<IOResult<T>>();
 
-    fs.readFile({
+    getFs().readFile({
         filePath: absPath,
         encoding,
         success(res): void {
@@ -123,7 +120,7 @@ export async function remove(path: string): AsyncIOResult<boolean> {
 
     // 文件夹还是文件
     if (statRes.unwrap().isDirectory()) {
-        fs.rmdir({
+        getFs().rmdir({
             dirPath: absPath,
             recursive: true,
             success(): void {
@@ -134,7 +131,7 @@ export async function remove(path: string): AsyncIOResult<boolean> {
             },
         });
     } else {
-        fs.unlink({
+        getFs().unlink({
             filePath: absPath,
             success(): void {
                 future.resolve(RESULT_TRUE);
@@ -160,7 +157,7 @@ export function rename(oldPath: string, newPath: string): AsyncIOResult<boolean>
 
     const future = new Future<IOResult<boolean>>();
 
-    fs.rename({
+    getFs().rename({
         oldPath: absOldPath,
         newPath: absNewPath,
         success(): void {
@@ -192,7 +189,7 @@ export function stat(path: string, options?: StatOptions): AsyncIOResult<WechatM
 
     const future = new Future<IOResult<T>>();
 
-    fs.stat({
+    getFs().stat({
         path: absPath,
         recursive: options?.recursive ?? false,
         success(res): void {
@@ -230,7 +227,7 @@ export async function writeFile(filePath: string, contents: WriteFileContent, op
 
     const future = new Future<IOResult<boolean>>();
 
-    (append ? fs.appendFile : fs.writeFile)({
+    (append ? getFs().appendFile : getFs().writeFile)({
         filePath: absPath,
         data,
         encoding,
