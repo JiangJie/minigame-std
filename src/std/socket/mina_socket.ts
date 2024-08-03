@@ -1,4 +1,5 @@
-import { Err, RESULT_TRUE, type Result } from 'happy-rusty';
+import { Err, RESULT_TRUE, type AsyncIOResult, type IOResult } from 'happy-rusty';
+import { Future } from 'tiny-future';
 import { assertSafeSocketUrl } from '../assert/assertions.ts';
 import { SocketReadyState, type ISocket, type SocketListenerMap, type SocketOptions } from './socket_define.ts';
 
@@ -71,27 +72,29 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
             }
         },
 
-        send(data: string | ArrayBuffer | ArrayBufferView): Promise<Result<boolean, Error>> {
-            return new Promise(resolve => {
-                let buffer = data;
+        send(data: string | ArrayBuffer | ArrayBufferView): AsyncIOResult<boolean> {
+            const future = new Future<IOResult<boolean>>();
 
-                if (ArrayBuffer.isView(data)) {
-                    // 可能存在offset
-                    buffer = data.byteOffset === 0
-                        ? data.buffer
-                        : data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
-                }
+            let buffer = data;
 
-                socket.send({
-                    data: buffer as string | ArrayBuffer,
-                    success(): void {
-                        resolve(RESULT_TRUE);
-                    },
-                    fail(err): void {
-                        resolve(Err(new Error(err.errMsg)));
-                    },
-                });
+            if (ArrayBuffer.isView(data)) {
+                // 可能存在offset
+                buffer = data.byteOffset === 0
+                    ? data.buffer
+                    : data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
+            }
+
+            socket.send({
+                data: buffer as string | ArrayBuffer,
+                success(): void {
+                    future.resolve(RESULT_TRUE);
+                },
+                fail(err): void {
+                    future.resolve(Err(new Error(err.errMsg)));
+                },
             });
+
+            return future.promise;
         },
 
         close(code?: number, reason?: string): void {

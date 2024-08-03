@@ -1,5 +1,6 @@
 import { ABORT_ERROR, TIMEOUT_ERROR, type FetchTask } from '@happy-ts/fetch-t';
-import { Err, Ok, type IOResult } from 'happy-rusty';
+import { Err, Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
+import { Future } from 'tiny-future';
 import { assertSafeUrl } from '../assert/assertions.ts';
 import type { MinaFetchInit } from './fetch_defines.ts';
 
@@ -52,59 +53,63 @@ export function minaFetch(url: string, init: MinaFetchInit): FetchTask<string>;
 export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> {
     assertSafeUrl(url);
 
-    let aborted = false;
-
     const {
         responseType,
         ...rest
     } = init ?? {};
 
-    let task: WechatMinigame.RequestTask;
+    let aborted = false;
+
+    const future = new Future<IOResult<T>>();
+
+    const options: WechatMinigame.RequestOption = {
+        ...rest,
+        url,
+        success(res) {
+            const { statusCode } = res;
+            if (statusCode < 200 || statusCode >= 300) {
+                future.resolve(Err(new Error(`wx.request status: ${ statusCode }`)));
+            } else {
+                future.resolve(Ok(res.data as T));
+            }
+        },
+        fail(err) {
+            const { errMsg } = err;
+            const error = new Error(errMsg);
+
+            if (errMsg.includes('abort')) {
+                error.name = ABORT_ERROR;
+            } else if (errMsg.includes('timeout')) {
+                error.name = TIMEOUT_ERROR;
+            }
+
+            future.resolve(Err(error));
+        },
+    };
+
+    if (responseType === 'arraybuffer') {
+        options.responseType = responseType;
+    } else if (responseType === 'json') {
+        options.dataType = responseType;
+    } else {
+        // default responseType is text
+        options.responseType = responseType;
+    }
+
+    const task = wx.request(options);
 
     return {
         abort(): void {
             aborted = true;
-            task?.abort();
+            task.abort();
         },
 
-        aborted,
+        get aborted(): boolean {
+            return aborted;
+        },
 
-        response: new Promise<IOResult<T>>((resolve) => {
-            const options: WechatMinigame.RequestOption = {
-                ...rest,
-                url,
-                success(res) {
-                    const { statusCode } = res;
-                    if (statusCode < 200 || statusCode >= 300) {
-                        resolve(Err(new Error(`wx.request status: ${ statusCode }`)));
-                    } else {
-                        resolve(Ok(res.data as T));
-                    }
-                },
-                fail(err) {
-                    const { errMsg } = err;
-                    const error = new Error(errMsg);
-
-                    if (errMsg.includes('abort')) {
-                        error.name = ABORT_ERROR;
-                    } else if (errMsg.includes('timeout')) {
-                        error.name = TIMEOUT_ERROR;
-                    }
-
-                    resolve(Err(error));
-                },
-            };
-
-            if (responseType === 'arraybuffer') {
-                options.responseType = responseType;
-            } else if (responseType === 'json') {
-                options.dataType = responseType;
-            } else {
-                // default responseType is text
-                options.responseType = responseType;
-            }
-
-            task = wx.request(options);
-        }),
+        get response(): AsyncIOResult<T> {
+            return future.promise;
+        },
     };
 }
