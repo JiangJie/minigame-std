@@ -1,4 +1,4 @@
-import type { NetworkType } from './network_define';
+import type { NetworkType } from './network_define.ts';
 
 /**
  * 获取网络状态。

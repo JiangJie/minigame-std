@@ -1,4 +1,4 @@
-import type { NetworkType } from './network_define';
+import type { NetworkType } from './network_define.ts';
 
 /**
  * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation)

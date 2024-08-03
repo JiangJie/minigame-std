@@ -1,9 +1,9 @@
-import { isMinaEnv } from '../../macros/env';
-import { addNetworkChangeListener as minaAddNetworkChangeListener, getNetworkType as minaGetNetworkType } from './mina_network';
-import type { NetworkType } from './network_define';
-import { addNetworkChangeListener as webAddNetworkChangeListener, getNetworkType as webGetNetworkType } from './web_network';
+import { isMinaEnv } from '../../macros/env.ts';
+import { addNetworkChangeListener as minaAddNetworkChangeListener, getNetworkType as minaGetNetworkType } from './mina_network.ts';
+import type { NetworkType } from './network_define.ts';
+import { addNetworkChangeListener as webAddNetworkChangeListener, getNetworkType as webGetNetworkType } from './web_network.ts';
 
-export * from './network_define';
+export * from './network_define.ts';
 
 /**
  * 获取网络状态。
