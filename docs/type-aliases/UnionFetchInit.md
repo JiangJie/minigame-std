@@ -14,4 +14,4 @@ type UnionFetchInit: FetchInit & MinaFetchInit;
 
 ## Defined in
 
-[fetch/fetch\_defines.ts:14](https://github.com/JiangJie/minigame-std/blob/66ec277d862ca15172344b727bd1c648b6b39934/src/std/fetch/fetch_defines.ts#L14)
+[fetch/fetch\_defines.ts:14](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/fetch/fetch_defines.ts#L14)

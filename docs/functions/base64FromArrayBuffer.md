@@ -26,4 +26,4 @@ The base64 encoded string.
 
 ## Defined in
 
-[base64/base64.ts:36](https://github.com/JiangJie/minigame-std/blob/66ec277d862ca15172344b727bd1c648b6b39934/src/std/base64/base64.ts#L36)
+[base64/base64.ts:36](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/base64/base64.ts#L36)

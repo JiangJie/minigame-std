@@ -26,4 +26,4 @@ function encodeBase64(data): string
 
 ## Defined in
 
-[base64/mod.ts:11](https://github.com/JiangJie/minigame-std/blob/66ec277d862ca15172344b727bd1c648b6b39934/src/std/base64/mod.ts#L11)
+[base64/mod.ts:11](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/base64/mod.ts#L11)

@@ -31,4 +31,4 @@ options?): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | Response
 
 ## Defined in
 
-[fs/mod.ts:192](https://github.com/JiangJie/minigame-std/blob/66ec277d862ca15172344b727bd1c648b6b39934/src/std/fs/mod.ts#L192)
+[fs/fs\_async.ts:199](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/fs/fs_async.ts#L199)

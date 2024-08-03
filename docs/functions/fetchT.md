@@ -57,7 +57,7 @@ FetchTask。
 
 ### Defined in
 
-[fetch/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/66ec277d862ca15172344b727bd1c648b6b39934/src/std/fetch/mod.ts#L14)
+[fetch/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/fetch/mod.ts#L14)
 
 ## fetchT(url, init)
 
@@ -96,7 +96,7 @@ FetchTask。
 
 ### Defined in
 
-[fetch/mod.ts:24](https://github.com/JiangJie/minigame-std/blob/66ec277d862ca15172344b727bd1c648b6b39934/src/std/fetch/mod.ts#L24)
+[fetch/mod.ts:24](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/fetch/mod.ts#L24)
 
 ## fetchT(url, init)
 
@@ -141,50 +141,12 @@ FetchTask。
 
 ### Defined in
 
-[fetch/mod.ts:35](https://github.com/JiangJie/minigame-std/blob/66ec277d862ca15172344b727bd1c648b6b39934/src/std/fetch/mod.ts#L35)
-
-## fetchT(url)
-
-```ts
-function fetchT(url): FetchTask<string | Response>
-```
-
-发起一个可中断的网络请求，默认返回文本类型响应。
-
-### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `url` | `string` | 请求的 URL 地址。 |
-
-### Returns
-
-`FetchTask`\<`string` \| `Response`\>
-
-FetchTask。
-
-FetchTask。
-
-### Type Param
-
-预期的响应数据类型。
-
-### Param
-
-请求的 URL 地址。
-
-### Param
-
-请求的初始化配置。
-
-### Defined in
-
-[fetch/mod.ts:44](https://github.com/JiangJie/minigame-std/blob/66ec277d862ca15172344b727bd1c648b6b39934/src/std/fetch/mod.ts#L44)
+[fetch/mod.ts:35](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/fetch/mod.ts#L35)
 
 ## fetchT(url, init)
 
 ```ts
-function fetchT(url, init): FetchTask<string | Response>
+function fetchT(url, init?): FetchTask<string | Response>
 ```
 
 发起一个可中断的网络请求，默认返回文本类型响应。
@@ -194,7 +156,7 @@ function fetchT(url, init): FetchTask<string | Response>
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `url` | `string` | 请求的 URL 地址。 |
-| `init` | [`UnionFetchInit`](../type-aliases/UnionFetchInit.md) | 请求的初始化配置，指定请求可中断。 |
+| `init`? | [`UnionFetchInit`](../type-aliases/UnionFetchInit.md) | 请求的初始化配置，指定请求可中断。 |
 
 ### Returns
 
@@ -218,4 +180,4 @@ FetchTask。
 
 ### Defined in
 
-[fetch/mod.ts:53](https://github.com/JiangJie/minigame-std/blob/66ec277d862ca15172344b727bd1c648b6b39934/src/std/fetch/mod.ts#L53)
+[fetch/mod.ts:46](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/fetch/mod.ts#L46)

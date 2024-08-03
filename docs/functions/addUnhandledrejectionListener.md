@@ -30,4 +30,4 @@ function addUnhandledrejectionListener(listener): () => void
 
 ## Defined in
 
-[event/mod.ts:30](https://github.com/JiangJie/minigame-std/blob/66ec277d862ca15172344b727bd1c648b6b39934/src/std/event/mod.ts#L30)
+[event/mod.ts:30](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/event/mod.ts#L30)

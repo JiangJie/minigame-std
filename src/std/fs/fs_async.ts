@@ -92,17 +92,17 @@ export function rename(oldPath: string, newPath: string): AsyncIOResult<boolean>
     return isMinaEnv() ? minaRename(oldPath, newPath) : webRename(oldPath, newPath);
 }
 
+export async function stat(path: string): AsyncIOResult<WechatMinigame.Stats>;
+export async function stat(path: string, options: StatOptions & {
+    recursive: true;
+}): AsyncIOResult<WechatMinigame.FileStats[]>;
+export async function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>
 /**
  * 获取文件或目录的状态信息。
  * @param path - 文件或目录的路径。
  * @param options - 可选选项。
  * @returns 包含状态信息的异步操作结果。
  */
-export async function stat(path: string): AsyncIOResult<WechatMinigame.Stats>;
-export async function stat(path: string, options: StatOptions & {
-    recursive: true;
-}): AsyncIOResult<WechatMinigame.FileStats[]>;
-export async function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>
 export async function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     if (isMinaEnv()) {
         return await minaStat(path, options);
