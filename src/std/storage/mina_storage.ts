@@ -1,4 +1,4 @@
-import { None, Some, type Option } from 'happy-rusty';
+import { None, Some, type AsyncOption, type Option } from 'happy-rusty';
 import { assertString } from '../assert/assertions.ts';
 
 export async function setItem(key: string, data: string): Promise<void> {
@@ -15,7 +15,7 @@ export async function setItem(key: string, data: string): Promise<void> {
     }
 }
 
-export async function getItem(key: string): Promise<Option<string>> {
+export async function getItem(key: string): AsyncOption<string> {
     assertString(key);
 
     try {

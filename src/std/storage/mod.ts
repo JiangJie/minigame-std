@@ -1,4 +1,4 @@
-import type { Option } from 'happy-rusty';
+import type { AsyncOption, Option } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import { clear as minaClear, clearSync as minaClearSync, getItem as minaGetItem, getItemSync as minaGetItemSync, removeItem as minaRemoveItem, removeItemSync as minaRemoveItemSync, setItem as minaSetItem, setItemSync as minaSetItemSync } from './mina_storage.ts';
 import { clear as webClear, getItem as webGetItem, removeItem as webRemoveItem, setItem as webSetItem } from './web_storage.ts';
@@ -22,7 +22,7 @@ export async function setItem(key: string, data: string): Promise<void> {
  * @param key - 数据的键名。
  * @returns 返回一个 Promise，解析为一个 Option 类型，包含读取到的数据或者在未找到数据时为 null。
  */
-export async function getItem(key: string): Promise<Option<string>> {
+export async function getItem(key: string): AsyncOption<string> {
     return isMinaEnv() ? minaGetItem(key) : Promise.resolve(webGetItem(key));
 }
 
