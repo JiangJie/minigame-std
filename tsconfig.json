@@ -27,5 +27,8 @@
     "types": [
         "minigame-api-typings"
     ]
-  }
+  },
+  "include": [
+    "./src"
+  ]
 }

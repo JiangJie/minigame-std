@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "@std/assert": "jsr:@std/assert@^1.0.2",
+    "tiny-future": "npm:tiny-future@^1.0.0"
+  }
+}

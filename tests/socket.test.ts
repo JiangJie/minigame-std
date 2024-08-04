@@ -1,7 +1,14 @@
-import { expect, test } from '@jest/globals';
+// deno-lint-ignore-file no-explicit-any
+/* eslint-disable @typescript-eslint/no-explicit-any */
+(globalThis as any).__MINIGAME_STD_MINA__ = false;
+
+import { assert } from '@std/assert';
+import { Future } from 'tiny-future';
 import { connectSocket } from '../src/mod.ts';
 
-test('socket echo', (done) => {
+Deno.test('socket echo', () => {
+    const future = new Future<void>();
+
     const data = 'minigame-std';
 
     const socket = connectSocket('wss://echo.websocket.org/');
@@ -12,9 +19,9 @@ test('socket echo', (done) => {
         count += 1;
 
         if (count === 1) {
-            expect((msg as string).startsWith('Request served by')).toBe(true);
+            assert((msg as string).startsWith('Request served by'));
         } else if (count === 2) {
-            expect(msg).toBe(data);
+            assert(msg === data);
             socket.close();
         }
     });
@@ -25,11 +32,14 @@ test('socket echo', (done) => {
 
     socket.addEventListener('close', (code) => {
         removeMessageListener();
-        expect(code).toBe(1000);
-        done();
+        assert(code === 1005);
+
+        future.resolve();
     });
 
     socket.addEventListener('open', () => {
         socket.send(data);
     });
+
+    return future.promise;
 });
