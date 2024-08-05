@@ -52,6 +52,15 @@ export async function clear(): AsyncVoidIOResult {
     }
 }
 
+export async function getLength(): AsyncIOResult<number> {
+    try {
+        const info = await wx.getStorageInfo();
+        return Ok(info.keys.length);
+    } catch (err) {
+        return generalErrorToResult(err as WechatMinigame.GeneralCallbackResult);
+    }
+}
+
 export function setItemSync(key: string, data: string): VoidIOResult {
     assertString(key);
     assertString(data);
@@ -90,6 +99,15 @@ export function clearSync(): VoidIOResult {
     try {
         wx.clearStorageSync();
         return RESULT_VOID;
+    } catch (err) {
+        return generalErrorToResult(err as WechatMinigame.GeneralCallbackResult);
+    }
+}
+
+export function getLengthSync(): IOResult<number> {
+    try {
+        const info = wx.getStorageInfoSync();
+        return Ok(info.keys.length);
     } catch (err) {
         return generalErrorToResult(err as WechatMinigame.GeneralCallbackResult);
     }

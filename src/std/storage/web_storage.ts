@@ -31,3 +31,7 @@ export function clear(): VoidIOResult {
     localStorage.clear();
     return RESULT_VOID;
 }
+
+export function getLength(): IOResult<number> {
+    return Ok(localStorage.length);
+}

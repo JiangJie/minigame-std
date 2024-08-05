@@ -1,7 +1,24 @@
 import type { AsyncIOResult, AsyncVoidIOResult, IOResult, VoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
-import { clear as minaClear, clearSync as minaClearSync, getItem as minaGetItem, getItemSync as minaGetItemSync, removeItem as minaRemoveItem, removeItemSync as minaRemoveItemSync, setItem as minaSetItem, setItemSync as minaSetItemSync } from './mina_storage.ts';
-import { clear as webClear, getItem as webGetItem, removeItem as webRemoveItem, setItem as webSetItem } from './web_storage.ts';
+import {
+    clear as minaClear,
+    clearSync as minaClearSync,
+    getItem as minaGetItem,
+    getItemSync as minaGetItemSync,
+    getLength as minaGetLength,
+    getLengthSync as minaGetLengthSync,
+    removeItem as minaRemoveItem,
+    removeItemSync as minaRemoveItemSync,
+    setItem as minaSetItem,
+    setItemSync as minaSetItemSync,
+} from './mina_storage.ts';
+import {
+    clear as webClear,
+    getItem as webGetItem,
+    getLength as webGetLength,
+    removeItem as webRemoveItem,
+    setItem as webSetItem,
+} from './web_storage.ts';
 
 /**
  * 将数据存储在本地缓存中。
@@ -40,29 +57,44 @@ export async function clear(): AsyncVoidIOResult {
 }
 
 /**
- * setItem 的同步版本。
+ * 获取本地存储数据的长度。
+ * @returns 返回一个 Promise，表示操作完成。
+ */
+export async function getLength(): AsyncIOResult<number> {
+    return isMinaEnv() ? await minaGetLength() : Promise.resolve(getLength());
+}
+
+/**
+ * `setItem` 的同步版本。
  */
 export function setItemSync(key: string, data: string): VoidIOResult {
     return isMinaEnv() ? minaSetItemSync(key, data) : webSetItem(key, data);
 }
 
 /**
- * getItem 的同步版本。
+ * `getItem` 的同步版本。
  */
 export function getItemSync(key: string): IOResult<string> {
     return isMinaEnv() ? minaGetItemSync(key) : webGetItem(key);
 }
 
 /**
- * removeItem 的同步版本。
+ * `removeItem` 的同步版本。
  */
 export function removeItemSync(key: string): VoidIOResult {
     return isMinaEnv() ? minaRemoveItemSync(key) : webRemoveItem(key);
 }
 
 /**
- * clear 的同步版本。
+ * `clear` 的同步版本。
  */
 export function clearSync(): VoidIOResult {
     return isMinaEnv() ? minaClearSync() : webClear();
+}
+
+/**
+ * `getLength` 的同步版本。
+ */
+export function getLengthSync(): IOResult<number> {
+    return isMinaEnv() ? minaGetLengthSync() : webGetLength();
 }
