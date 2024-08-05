@@ -83,10 +83,10 @@ export function isAlreadyExistsIOError(err: WechatMinigame.FileError): boolean {
  * @param err - 错误对象。
  * @returns 转换后的 IOResult 对象。
  */
-export function toErr<T>(err: WechatMinigame.FileError | WechatMinigame.GeneralCallbackResult): IOResult<T> {
+export function fileErrorToResult<T>(err: WechatMinigame.FileError): IOResult<T> {
     const error = new Error(err.errMsg);
 
-    if (isNotFoundIOError(err as WechatMinigame.FileError)) {
+    if (isNotFoundIOError(err)) {
         error.name = NOT_FOUND_ERROR;
     }
 
@@ -107,7 +107,7 @@ export function isNotFoundError(err: Error): boolean {
  */
 export function errToMkdirResult(err: WechatMinigame.FileError): VoidIOResult {
     // 已存在当做成功
-    return isAlreadyExistsIOError(err) ? RESULT_VOID : toErr(err);
+    return isAlreadyExistsIOError(err) ? RESULT_VOID : fileErrorToResult(err);
 }
 
 /**
@@ -129,7 +129,7 @@ export function getReadFileEncoding(options?: ReadOptions): FileEncoding | undef
  */
 export function errToRemoveResult(err: WechatMinigame.FileError): VoidIOResult {
     // 目标 path 本就不存在，当做成功
-    return isNotFoundIOError(err) ? RESULT_VOID : toErr(err);
+    return isNotFoundIOError(err) ? RESULT_VOID : fileErrorToResult(err);
 }
 
 interface GetWriteFileContents {

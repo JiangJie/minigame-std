@@ -2,7 +2,7 @@ import { dirname, join } from '@std/path/posix';
 import { type ExistsOptions, type WriteOptions } from 'happy-opfs';
 import { Ok, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
 import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
-import { errToMkdirResult, errToRemoveResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError, toErr } from './mina_fs_shared.ts';
+import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError } from './mina_fs_shared.ts';
 
 /**
  * 安全地调用同步接口。
@@ -10,7 +10,7 @@ import { errToMkdirResult, errToRemoveResult, getAbsolutePath, getExistsResult, 
  * @param errToResult - 错误处理函数。
  * @returns
  */
-function trySyncOp<T>(op: () => T, errToResult: (err: WechatMinigame.FileError) => IOResult<T> = toErr): IOResult<T> {
+function trySyncOp<T>(op: () => T, errToResult: (err: WechatMinigame.FileError) => IOResult<T> = fileErrorToResult): IOResult<T> {
     try {
         const res = op();
         return Ok(res);

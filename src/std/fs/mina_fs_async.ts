@@ -4,8 +4,9 @@ import { type ExistsOptions, type WriteOptions } from 'happy-opfs';
 import { Ok, RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import { assertSafeUrl } from '../assert/assertions.ts';
+import { generalErrorToResult } from '../utils/mod.ts';
 import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
-import { errToMkdirResult, errToRemoveResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError, toErr } from './mina_fs_shared.ts';
+import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError } from './mina_fs_shared.ts';
 
 /**
  * 递归创建文件夹，相当于`mkdir -p`。
@@ -47,7 +48,7 @@ export function readDir(dirPath: string): AsyncIOResult<string[]> {
             future.resolve(Ok(res.files));
         },
         fail(err): void {
-            future.resolve(toErr(err));
+            future.resolve(fileErrorToResult(err));
         },
     });
 
@@ -94,7 +95,7 @@ export function readFile<T extends ReadFileContent>(filePath: string, options?: 
             future.resolve(Ok(res.data as T));
         },
         fail(err): void {
-            future.resolve(toErr(err));
+            future.resolve(fileErrorToResult(err));
         },
     });
 
@@ -164,7 +165,7 @@ export function rename(oldPath: string, newPath: string): AsyncVoidIOResult {
             future.resolve(RESULT_VOID);
         },
         fail(err): void {
-            future.resolve(toErr(err));
+            future.resolve(fileErrorToResult(err));
         },
     });
 
@@ -196,7 +197,7 @@ export function stat(path: string, options?: StatOptions): AsyncIOResult<WechatM
             future.resolve(Ok(res.stats));
         },
         fail(err): void {
-            future.resolve(toErr(err));
+            future.resolve(fileErrorToResult(err));
         },
     });
 
@@ -235,7 +236,7 @@ export async function writeFile(filePath: string, contents: WriteFileContent, op
             future.resolve(RESULT_VOID);
         },
         fail(err): void {
-            future.resolve(toErr(err));
+            future.resolve(fileErrorToResult(err));
         },
     });
 
@@ -322,7 +323,7 @@ export function downloadFile(fileUrl: string, filePath: string, options?: Downlo
             future.resolve(Ok(res));
         },
         fail(err): void {
-            future.resolve(toErr(err));
+            future.resolve(generalErrorToResult(err));
         },
     });
 
@@ -368,7 +369,7 @@ export function uploadFile(filePath: string, fileUrl: string, options?: UploadFi
             future.resolve(Ok(res));
         },
         fail(err): void {
-            future.resolve(toErr(err));
+            future.resolve(generalErrorToResult(err));
         },
     });
 
