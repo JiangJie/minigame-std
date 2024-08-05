@@ -1,4 +1,4 @@
-import { RESULT_TRUE, type Result } from 'happy-rusty';
+import { RESULT_VOID, type AsyncVoidIOResult } from 'happy-rusty';
 import { assertSafeSocketUrl } from '../assert/assertions.ts';
 import type { ISocket, SocketListenerMap } from './socket_define.ts';
 
@@ -70,9 +70,9 @@ export function connectSocket(url: string, protocols?: string | string[]): ISock
             }
         },
 
-        send(data: string | ArrayBuffer | ArrayBufferView): Promise<Result<boolean, Error>> {
+        send(data: string | ArrayBuffer | ArrayBufferView): AsyncVoidIOResult {
             socket.send(data);
-            return Promise.resolve(RESULT_TRUE);
+            return Promise.resolve(RESULT_VOID);
         },
 
         close: socket.close.bind(socket),

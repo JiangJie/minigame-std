@@ -1,4 +1,4 @@
-import { Err, RESULT_TRUE, type AsyncIOResult, type IOResult } from 'happy-rusty';
+import { Err, RESULT_VOID, type AsyncVoidIOResult, type VoidIOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import { assertSafeSocketUrl } from '../assert/assertions.ts';
 import { SocketReadyState, type ISocket, type SocketListenerMap, type SocketOptions } from './socket_define.ts';
@@ -72,8 +72,8 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
             }
         },
 
-        send(data: string | ArrayBuffer | ArrayBufferView): AsyncIOResult<boolean> {
-            const future = new Future<IOResult<boolean>>();
+        send(data: string | ArrayBuffer | ArrayBufferView): AsyncVoidIOResult {
+            const future = new Future<VoidIOResult>();
 
             let buffer = data;
 
@@ -87,7 +87,7 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
             socket.send({
                 data: buffer as string | ArrayBuffer,
                 success(): void {
-                    future.resolve(RESULT_TRUE);
+                    future.resolve(RESULT_VOID);
                 },
                 fail(err): void {
                     future.resolve(Err(new Error(err.errMsg)));
