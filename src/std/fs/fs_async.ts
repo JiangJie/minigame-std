@@ -14,7 +14,7 @@ import {
     uploadFile as webUploadFile,
     writeFile as webWriteFile,
 } from 'happy-opfs';
-import { Ok, type AsyncIOResult } from 'happy-rusty';
+import { Ok, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import type { StatOptions, UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent } from './fs_define.ts';
 import { convertFileSystemHandleToStats } from './fs_helpers.ts';
@@ -39,7 +39,7 @@ import {
  * @param dirPath - 将要创建的目录的路径。
  * @returns 创建成功返回 true 的异步操作结果。
  */
-export function mkdir(dirPath: string): AsyncIOResult<boolean> {
+export function mkdir(dirPath: string): AsyncVoidIOResult {
     return isMinaEnv() ? minaMkdir(dirPath) : webMkdir(dirPath);
 }
 
@@ -78,7 +78,7 @@ export function readFile(filePath: string): AsyncIOResult<ArrayBuffer> {
  * @param path - 要删除的文件或目录的路径。
  * @returns 删除成功返回 true 的异步操作结果。
  */
-export function remove(path: string): AsyncIOResult<boolean> {
+export function remove(path: string): AsyncVoidIOResult {
     return isMinaEnv() ? minaRemove(path) : webRemove(path);
 }
 
@@ -88,7 +88,7 @@ export function remove(path: string): AsyncIOResult<boolean> {
  * @param newPath - 新路径。
  * @returns 重命名成功返回 true 的异步操作结果。
  */
-export function rename(oldPath: string, newPath: string): AsyncIOResult<boolean> {
+export function rename(oldPath: string, newPath: string): AsyncVoidIOResult {
     return isMinaEnv() ? minaRename(oldPath, newPath) : webRename(oldPath, newPath);
 }
 
@@ -148,7 +148,7 @@ export async function stat(path: string, options?: StatOptions): AsyncIOResult<W
  * @param contents - 要写入的内容。
  * @returns 写入成功返回 true 的异步操作结果。
  */
-export function writeFile(filePath: string, contents: WriteFileContent): AsyncIOResult<boolean> {
+export function writeFile(filePath: string, contents: WriteFileContent): AsyncVoidIOResult {
     return isMinaEnv() ? minaWriteFile(filePath, contents) : webWriteFile(filePath, contents);
 }
 
@@ -158,7 +158,7 @@ export function writeFile(filePath: string, contents: WriteFileContent): AsyncIO
  * @param contents - 要追加的内容。
  * @returns 追加成功返回 true 的异步操作结果。
  */
-export function appendFile(filePath: string, contents: WriteFileContent): AsyncIOResult<boolean> {
+export function appendFile(filePath: string, contents: WriteFileContent): AsyncVoidIOResult {
     return isMinaEnv() ? minaAppendFile(filePath, contents) : webAppendFile(filePath, contents);
 }
 
@@ -176,7 +176,7 @@ export function exists(path: string): AsyncIOResult<boolean> {
  * @param dirPath - 目录路径。
  * @returns 清空成功返回 true 的异步操作结果。
  */
-export function emptyDir(dirPath: string): AsyncIOResult<boolean> {
+export function emptyDir(dirPath: string): AsyncVoidIOResult {
     return isMinaEnv() ? minaEmptyDir(dirPath) : webEmptyDir(dirPath);
 }
 

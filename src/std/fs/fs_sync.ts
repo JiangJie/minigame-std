@@ -11,7 +11,7 @@ import {
     statSync as webStat,
     writeFileSync as webWriteFile,
 } from 'happy-opfs';
-import { Ok, type IOResult } from 'happy-rusty';
+import { Ok, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import type { StatOptions, WriteFileContent } from './fs_define.ts';
 import { convertFileSystemHandleLikeToStats } from './fs_helpers.ts';
@@ -32,7 +32,7 @@ import {
 /**
  * `mkdir` 的同步版本。
  */
-export function mkdirSync(dirPath: string): IOResult<boolean> {
+export function mkdirSync(dirPath: string): VoidIOResult {
     return isMinaEnv() ? minaMkdir(dirPath) : webMkdirSync(dirPath);
 }
 
@@ -57,14 +57,14 @@ export function readFileSync(filePath: string): IOResult<ArrayBuffer> {
 /**
  * `remove` 的同步版本。
  */
-export function removeSync(path: string): IOResult<boolean> {
+export function removeSync(path: string): VoidIOResult {
     return isMinaEnv() ? minaRemoveSync(path) : webRemove(path);
 }
 
 /**
  * `rename` 的同步版本。
  */
-export function renameSync(oldPath: string, newPath: string): IOResult<boolean> {
+export function renameSync(oldPath: string, newPath: string): VoidIOResult {
     return isMinaEnv() ? minaRenameSync(oldPath, newPath) : webRename(oldPath, newPath);
 }
 
@@ -118,14 +118,14 @@ export function statSync(path: string, options?: StatOptions): IOResult<WechatMi
 /**
  * `writeFile` 的同步版本。
  */
-export function writeFileSync(filePath: string, contents: WriteFileContent): IOResult<boolean> {
+export function writeFileSync(filePath: string, contents: WriteFileContent): VoidIOResult {
     return isMinaEnv() ? minaWriteFileSync(filePath, contents) : webWriteFile(filePath, contents);
 }
 
 /**
  * `appendFile` 的同步版本。
  */
-export function appendFileSync(filePath: string, contents: WriteFileContent): IOResult<boolean> {
+export function appendFileSync(filePath: string, contents: WriteFileContent): VoidIOResult {
     return isMinaEnv() ? minaAppendFile(filePath, contents) : webAppendFileSync(filePath, contents);
 }
 
@@ -139,7 +139,7 @@ export function existsSync(path: string): IOResult<boolean> {
 /**
  * `emptyDir` 的同步版本。
  */
-export function emptyDirSync(dirPath: string): IOResult<boolean> {
+export function emptyDirSync(dirPath: string): VoidIOResult {
     return isMinaEnv() ? minaEmptyDir(dirPath) : webEmptyDirSync(dirPath);
 }
 

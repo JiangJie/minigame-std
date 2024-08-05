@@ -1,6 +1,6 @@
 import { dirname, join } from '@std/path/posix';
 import { type ExistsOptions, type WriteOptions } from 'happy-opfs';
-import { Ok, RESULT_TRUE, type IOResult } from 'happy-rusty';
+import { Ok, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
 import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
 import { errToMkdirResult, errToRemoveResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError, toErr } from './mina_fs_shared.ts';
 
@@ -22,10 +22,10 @@ function trySyncOp<T>(op: () => T, errToResult: (err: WechatMinigame.FileError) 
 /**
  * `mkdir` 的同步版本。
  */
-export function mkdirSync(dirPath: string): IOResult<boolean> {
+export function mkdirSync(dirPath: string): VoidIOResult {
     const absPath = getAbsolutePath(dirPath);
 
-    return trySyncOp(() => (getFs().mkdirSync(absPath, true), true), errToMkdirResult);
+    return trySyncOp(() => getFs().mkdirSync(absPath, true), errToMkdirResult);
 }
 
 /**
@@ -56,12 +56,12 @@ export function readFileSync<T extends ReadFileContent>(filePath: string, option
 /**
  * `remove` 的同步版本。
  */
-export function removeSync(path: string): IOResult<boolean> {
+export function removeSync(path: string): VoidIOResult {
     const statRes = statSync(path);
 
     if (statRes.isErr()) {
         // 不存在当做成功
-        return isNotFoundError(statRes.unwrapErr()) ? RESULT_TRUE : statRes.asErr();
+        return isNotFoundError(statRes.unwrapErr()) ? RESULT_VOID : statRes.asErr();
     }
 
     const absPath = getAbsolutePath(path);
@@ -73,19 +73,17 @@ export function removeSync(path: string): IOResult<boolean> {
         } else {
             getFs().unlinkSync(absPath);
         }
-
-        return true;
     }, errToRemoveResult);
 }
 
 /**
  * `rename` 的同步版本。
  */
-export function renameSync(oldPath: string, newPath: string): IOResult<boolean> {
+export function renameSync(oldPath: string, newPath: string): VoidIOResult {
     const absOldPath = getAbsolutePath(oldPath);
     const absNewPath = getAbsolutePath(newPath);
 
-    return trySyncOp(() => (getFs().renameSync(absOldPath, absNewPath), true));
+    return trySyncOp(() => getFs().renameSync(absOldPath, absNewPath));
 }
 
 /**
@@ -105,7 +103,7 @@ export function statSync(path: string, options?: StatOptions): IOResult<WechatMi
 /**
  * `writeFile` 的同步版本。
  */
-export function writeFileSync(filePath: string, contents: WriteFileContent, options?: WriteOptions): IOResult<boolean> {
+export function writeFileSync(filePath: string, contents: WriteFileContent, options?: WriteOptions): VoidIOResult {
     const absPath = getAbsolutePath(filePath);
 
     // 默认创建
@@ -120,13 +118,13 @@ export function writeFileSync(filePath: string, contents: WriteFileContent, opti
 
     const { data, encoding } = getWriteFileContents(contents);
 
-    return trySyncOp(() => ((append ? getFs().appendFileSync : getFs().writeFileSync)(absPath, data, encoding), true));
+    return trySyncOp(() => (append ? getFs().appendFileSync : getFs().writeFileSync)(absPath, data, encoding));
 }
 
 /**
  * `appendFile` 的同步版本。
  */
-export function appendFileSync(filePath: string, contents: WriteFileContent): IOResult<boolean> {
+export function appendFileSync(filePath: string, contents: WriteFileContent): VoidIOResult {
     return writeFileSync(filePath, contents, {
         append: true,
     });
@@ -143,7 +141,7 @@ export function existsSync(path: string, options?: ExistsOptions): IOResult<bool
 /**
  * `emptyDir` 的同步版本。
  */
-export function emptyDirSync(dirPath: string): IOResult<boolean> {
+export function emptyDirSync(dirPath: string): VoidIOResult {
     const res = readDirSync(dirPath);
     if (res.isErr()) {
         return isNotFoundError(res.unwrapErr()) ? mkdirSync(dirPath) : res.asErr();
@@ -156,7 +154,7 @@ export function emptyDirSync(dirPath: string): IOResult<boolean> {
         }
     }
 
-    return RESULT_TRUE;
+    return RESULT_VOID;
 }
 
 /**

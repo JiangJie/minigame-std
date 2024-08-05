@@ -1,7 +1,7 @@
 import type { FetchResponse, FetchTask } from '@happy-ts/fetch-t';
 import { basename, dirname, join } from '@std/path/posix';
 import { type ExistsOptions, type WriteOptions } from 'happy-opfs';
-import { Ok, RESULT_TRUE, type AsyncIOResult, type IOResult } from 'happy-rusty';
+import { Ok, RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import { assertSafeUrl } from '../assert/assertions.ts';
 import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
@@ -12,16 +12,16 @@ import { errToMkdirResult, errToRemoveResult, getAbsolutePath, getExistsResult, 
  * @param dirPath - 需要创建的目录路径。
  * @returns 创建结果的异步操作，成功时返回 true。
  */
-export function mkdir(dirPath: string): AsyncIOResult<boolean> {
+export function mkdir(dirPath: string): AsyncVoidIOResult {
     const absPath = getAbsolutePath(dirPath);
 
-    const future = new Future<IOResult<boolean>>();
+    const future = new Future<VoidIOResult>();
 
     getFs().mkdir({
         dirPath: absPath,
         recursive: true,
         success(): void {
-            future.resolve(RESULT_TRUE);
+            future.resolve(RESULT_VOID);
         },
         fail(err): void {
             future.resolve(errToMkdirResult(err));
@@ -106,17 +106,17 @@ export function readFile<T extends ReadFileContent>(filePath: string, options?: 
  * @param path - 需要删除的文件或目录的路径。
  * @returns 删除操作的异步结果，成功时返回 true。
  */
-export async function remove(path: string): AsyncIOResult<boolean> {
+export async function remove(path: string): AsyncVoidIOResult {
     const statRes = await stat(path);
 
     if (statRes.isErr()) {
         // 不存在当做成功
-        return isNotFoundError(statRes.unwrapErr()) ? RESULT_TRUE : statRes.asErr();
+        return isNotFoundError(statRes.unwrapErr()) ? RESULT_VOID : statRes.asErr();
     }
 
     const absPath = getAbsolutePath(path);
 
-    const future = new Future<IOResult<boolean>>();
+    const future = new Future<VoidIOResult>();
 
     // 文件夹还是文件
     if (statRes.unwrap().isDirectory()) {
@@ -124,7 +124,7 @@ export async function remove(path: string): AsyncIOResult<boolean> {
             dirPath: absPath,
             recursive: true,
             success(): void {
-                future.resolve(RESULT_TRUE);
+                future.resolve(RESULT_VOID);
             },
             fail(err): void {
                 future.resolve(errToRemoveResult(err));
@@ -134,7 +134,7 @@ export async function remove(path: string): AsyncIOResult<boolean> {
         getFs().unlink({
             filePath: absPath,
             success(): void {
-                future.resolve(RESULT_TRUE);
+                future.resolve(RESULT_VOID);
             },
             fail(err): void {
                 future.resolve(errToRemoveResult(err));
@@ -151,17 +151,17 @@ export async function remove(path: string): AsyncIOResult<boolean> {
  * @param newPath - 新路径。
  * @returns 重命名操作的异步结果，成功时返回 true。
  */
-export function rename(oldPath: string, newPath: string): AsyncIOResult<boolean> {
+export function rename(oldPath: string, newPath: string): AsyncVoidIOResult {
     const absOldPath = getAbsolutePath(oldPath);
     const absNewPath = getAbsolutePath(newPath);
 
-    const future = new Future<IOResult<boolean>>();
+    const future = new Future<VoidIOResult>();
 
     getFs().rename({
         oldPath: absOldPath,
         newPath: absNewPath,
         success(): void {
-            future.resolve(RESULT_TRUE);
+            future.resolve(RESULT_VOID);
         },
         fail(err): void {
             future.resolve(toErr(err));
@@ -210,7 +210,7 @@ export function stat(path: string, options?: StatOptions): AsyncIOResult<WechatM
  * @param options - 可选的写入选项。
  * @returns 写入操作的异步结果，成功时返回 true。
  */
-export async function writeFile(filePath: string, contents: WriteFileContent, options?: WriteOptions): AsyncIOResult<boolean> {
+export async function writeFile(filePath: string, contents: WriteFileContent, options?: WriteOptions): AsyncVoidIOResult {
     const absPath = getAbsolutePath(filePath);
 
     // 默认创建
@@ -225,14 +225,14 @@ export async function writeFile(filePath: string, contents: WriteFileContent, op
 
     const { data, encoding } = getWriteFileContents(contents);
 
-    const future = new Future<IOResult<boolean>>();
+    const future = new Future<VoidIOResult>();
 
     (append ? getFs().appendFile : getFs().writeFile)({
         filePath: absPath,
         data,
         encoding,
         success(): void {
-            future.resolve(RESULT_TRUE);
+            future.resolve(RESULT_VOID);
         },
         fail(err): void {
             future.resolve(toErr(err));
@@ -248,7 +248,7 @@ export async function writeFile(filePath: string, contents: WriteFileContent, op
  * @param contents - 要追加的内容。
  * @returns 追加操作的异步结果，成功时返回 true。
  */
-export function appendFile(filePath: string, contents: WriteFileContent): AsyncIOResult<boolean> {
+export function appendFile(filePath: string, contents: WriteFileContent): AsyncVoidIOResult {
     return writeFile(filePath, contents, {
         append: true,
     });
@@ -270,7 +270,7 @@ export async function exists(path: string, options?: ExistsOptions): AsyncIOResu
  * @param dirPath - 目录路径。
  * @returns 清空操作的异步结果，成功时返回 true。
  */
-export async function emptyDir(dirPath: string): AsyncIOResult<boolean> {
+export async function emptyDir(dirPath: string): AsyncVoidIOResult {
     const res = await readDir(dirPath);
     if (res.isErr()) {
         // 不存在则创建
@@ -281,9 +281,9 @@ export async function emptyDir(dirPath: string): AsyncIOResult<boolean> {
 
     const allRes = await Promise.all(tasks);
     // anyone failed?
-    const fail = allRes.find(x => x.isErr() || !x.unwrap());
+    const fail = allRes.find(x => x.isErr());
 
-    return fail ?? RESULT_TRUE;
+    return fail ?? RESULT_VOID;
 }
 
 /**

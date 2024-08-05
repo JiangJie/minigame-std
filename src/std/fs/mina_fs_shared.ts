@@ -3,7 +3,7 @@
  */
 
 import { assertAbsolutePath, NOT_FOUND_ERROR, type ExistsOptions } from 'happy-opfs';
-import { Err, Ok, RESULT_FALSE, RESULT_TRUE, type IOResult } from 'happy-rusty';
+import { Err, Ok, RESULT_FALSE, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { assertString } from '../assert/assertions.ts';
 import type { FileEncoding, ReadOptions, WriteFileContent } from './fs_define.ts';
 
@@ -105,9 +105,9 @@ export function isNotFoundError(err: Error): boolean {
 /**
  * 处理 `mkdir` 的错误。
  */
-export function errToMkdirResult(err: WechatMinigame.FileError): IOResult<boolean> {
+export function errToMkdirResult(err: WechatMinigame.FileError): VoidIOResult {
     // 已存在当做成功
-    return isAlreadyExistsIOError(err) ? RESULT_TRUE : toErr(err);
+    return isAlreadyExistsIOError(err) ? RESULT_VOID : toErr(err);
 }
 
 /**
@@ -127,9 +127,9 @@ export function getReadFileEncoding(options?: ReadOptions): FileEncoding | undef
 /**
  * 处理 `remove` 的错误。
  */
-export function errToRemoveResult(err: WechatMinigame.FileError): IOResult<boolean> {
+export function errToRemoveResult(err: WechatMinigame.FileError): VoidIOResult {
     // 目标 path 本就不存在，当做成功
-    return isNotFoundIOError(err) ? RESULT_TRUE : toErr(err);
+    return isNotFoundIOError(err) ? RESULT_VOID : toErr(err);
 }
 
 interface GetWriteFileContents {
