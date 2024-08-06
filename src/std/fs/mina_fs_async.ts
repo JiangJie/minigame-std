@@ -5,7 +5,7 @@ import { type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-op
 import { Err, Ok, RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import { assertSafeUrl } from '../assert/assertions.ts';
-import { generalErrorToResult } from '../utils/mod.ts';
+import { miniGameFailureToResult } from '../utils/mod.ts';
 import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
 import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError } from './mina_fs_shared.ts';
 
@@ -324,7 +324,7 @@ export function downloadFile(fileUrl: string, filePath: string, options?: Downlo
             future.resolve(Ok(res));
         },
         fail(err): void {
-            future.resolve(generalErrorToResult(err));
+            future.resolve(miniGameFailureToResult(err));
         },
     });
 
@@ -370,7 +370,7 @@ export function uploadFile(filePath: string, fileUrl: string, options?: UploadFi
             future.resolve(Ok(res));
         },
         fail(err): void {
-            future.resolve(generalErrorToResult(err));
+            future.resolve(miniGameFailureToResult(err));
         },
     });
 

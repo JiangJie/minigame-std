@@ -1,15 +1,15 @@
 import { Err, Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
 
-interface MinaError {
-    errMsg: string;
-}
 /**
- * 将小游戏错误对象转换为 `Error` 类型。
+ * 将小游戏失败回调的结果转换为 `Error` 类型。
+ *
+ * 如果是异步 API 的 `fail` 回调返回的结果通常是 `WechatMinigame.GeneralCallbackResult` 或者变体类型，
+ * 如果是同步 API throw 的异常通常是一个类似 `Error` 的类型。
  * @param err - 小游戏错误对象。
  * @returns 转换后的 `Error` 对象。
  */
-export function minaErrorToError(err: MinaError | Error): Error {
-    return new Error((err as MinaError).errMsg ?? (err as Error).message);
+export function miniGameFailureToError(err: WechatMinigame.GeneralCallbackResult | Error): Error {
+    return new Error((err as WechatMinigame.GeneralCallbackResult).errMsg ?? (err as Error).message);
 }
 
 /**
@@ -18,8 +18,8 @@ export function minaErrorToError(err: MinaError | Error): Error {
  * @param err - 错误对象。
  * @returns 转换后的 IOResult 对象。
  */
-export function generalErrorToResult<T>(err: WechatMinigame.GeneralCallbackResult): IOResult<T> {
-    return Err(minaErrorToError(err));
+export function miniGameFailureToResult<T>(err: WechatMinigame.GeneralCallbackResult): IOResult<T> {
+    return Err(miniGameFailureToError(err));
 }
 
 /**
@@ -31,7 +31,7 @@ export function tryGeneralSyncOp<T>(op: () => T): IOResult<T> {
     try {
         return Ok(op());
     } catch (e) {
-        return generalErrorToResult(e as WechatMinigame.GeneralCallbackResult);
+        return miniGameFailureToResult(e as WechatMinigame.GeneralCallbackResult);
     }
 }
 
@@ -44,7 +44,7 @@ export async function tryGeneralAsyncOp<T>(op: () => Promise<T>): AsyncIOResult<
     try {
         return Ok(await op());
     } catch (e) {
-        return generalErrorToResult(e as WechatMinigame.GeneralCallbackResult);
+        return miniGameFailureToResult(e as WechatMinigame.GeneralCallbackResult);
     }
 }
 

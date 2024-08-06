@@ -2,7 +2,7 @@ import { ABORT_ERROR, FetchError, TIMEOUT_ERROR, type FetchTask } from '@happy-t
 import { Err, Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import { assertSafeUrl } from '../assert/assertions.ts';
-import { minaErrorToError } from '../utils/mod.ts';
+import { miniGameFailureToError } from '../utils/mod.ts';
 import type { MinaFetchInit } from './fetch_defines.ts';
 
 /**
@@ -76,7 +76,7 @@ export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> {
             }
         },
         fail(err) {
-            const error = minaErrorToError(err);
+            const error = miniGameFailureToError(err);
             const { errMsg } = err;
 
             if (errMsg.includes('abort')) {
