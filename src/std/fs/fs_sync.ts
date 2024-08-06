@@ -9,7 +9,10 @@ import {
     removeSync as webRemove,
     renameSync as webRename,
     statSync as webStat,
+    unzipSync as webUnzipSync,
     writeFileSync as webWriteFile,
+    zipSync as webZipSync,
+    type ZipOptions,
 } from 'happy-opfs';
 import { Ok, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
@@ -148,4 +151,26 @@ export function emptyDirSync(dirPath: string): VoidIOResult {
  */
 export function readTextFileSync(filePath: string): IOResult<string> {
     return isMinaEnv() ? minaReadTextFileSync(filePath) : webReadTextFile(filePath);
+}
+
+/**
+ * `unzip` 的同步版本。
+ */
+export function unzipSync(zipFilePath: string, targetPath: string): VoidIOResult {
+    if (isMinaEnv()) {
+        throw new Error('Not supported.');
+    }
+
+    return webUnzipSync(zipFilePath, targetPath);
+}
+
+/**
+ * `zip` 的同步版本。
+ */
+export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOptions): VoidIOResult {
+    if (isMinaEnv()) {
+        throw new Error('Not supported.');
+    }
+
+    return webZipSync(sourcePath, zipFilePath, options);
 }

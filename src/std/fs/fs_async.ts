@@ -11,8 +11,11 @@ import {
     remove as webRemove,
     rename as webRename,
     stat as webStat,
+    unzip as webUnzip,
     uploadFile as webUploadFile,
     writeFile as webWriteFile,
+    zip as webZip,
+    type ZipOptions,
 } from 'happy-opfs';
 import { Ok, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
@@ -30,6 +33,7 @@ import {
     remove as minaRemove,
     rename as minaRename,
     stat as minaStat,
+    unzip as minaUnzip,
     uploadFile as minaUploadFile,
     writeFile as minaWriteFile,
 } from './mina_fs_async.ts';
@@ -209,4 +213,29 @@ export function downloadFile(fileUrl: string, filePath: string, options?: UnionD
  */
 export function uploadFile(filePath: string, fileUrl: string, options?: UnionUploadFileOptions): FetchTask<WechatMinigame.UploadFileSuccessCallbackResult | Response> {
     return isMinaEnv() ? minaUploadFile(filePath, fileUrl, options) : webUploadFile(filePath, fileUrl, options);
+}
+
+/**
+ * 解压 zip 文件。
+ * @param zipFilePath - 要解压的 zip 文件路径。
+ * @param targetPath - 要解压到的目标文件夹路径。
+ * @returns 解压操作的异步结果。
+ */
+export function unzip(zipFilePath: string, targetPath: string): AsyncVoidIOResult {
+    return isMinaEnv() ? minaUnzip(zipFilePath, targetPath) : webUnzip(zipFilePath, targetPath);
+}
+
+/**
+ * 压缩文件。
+ * @param sourcePath - 需要压缩的文件（夹）路径。
+ * @param zipFilePath - 压缩后的 zip 文件路径。
+ * @param options - 可选的压缩参数。
+ * @returns 压缩成功的异步结果。
+ */
+export function zip(sourcePath: string, zipFilePath: string, options?: ZipOptions): AsyncVoidIOResult {
+    if (isMinaEnv()) {
+        throw new Error('Not supported.');
+    }
+
+    return webZip(sourcePath, zipFilePath, options);
 }

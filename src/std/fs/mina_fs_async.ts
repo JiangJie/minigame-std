@@ -388,3 +388,29 @@ export function uploadFile(filePath: string, fileUrl: string, options?: UploadFi
         },
     };
 }
+
+/**
+ * 解压 zip 文件。
+ * @param zipFilePath - 要解压的 zip 文件路径。
+ * @param targetPath - 要解压到的目标文件夹路径。
+ * @returns 解压操作的异步结果。
+ */
+export function unzip(zipFilePath: string, targetPath: string): AsyncVoidIOResult {
+    const absZipPath = getAbsolutePath(zipFilePath);
+    const absTargetPath = getAbsolutePath(targetPath);
+
+    const future = new Future<VoidIOResult>();
+
+    getFs().unzip({
+        zipFilePath: absZipPath,
+        targetPath: absTargetPath,
+        success(): void {
+            future.resolve(RESULT_VOID);
+        },
+        fail(err): void {
+            future.resolve(errToMkdirResult(err));
+        },
+    });
+
+    return future.promise;
+}
