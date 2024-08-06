@@ -5,6 +5,7 @@
 import { assertAbsolutePath, NOT_FOUND_ERROR, type ExistsOptions } from 'happy-opfs';
 import { Err, Ok, RESULT_FALSE, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { assertString } from '../assert/assertions.ts';
+import { minaErrorToError } from '../utils/mod.ts';
 import type { FileEncoding, ReadOptions, WriteFileContent } from './fs_define.ts';
 
 /**
@@ -84,7 +85,7 @@ export function isAlreadyExistsIOError(err: WechatMinigame.FileError): boolean {
  * @returns 转换后的 IOResult 对象。
  */
 export function fileErrorToResult<T>(err: WechatMinigame.FileError): IOResult<T> {
-    const error = new Error(err.errMsg);
+    const error = minaErrorToError(err);
 
     if (isNotFoundIOError(err)) {
         error.name = NOT_FOUND_ERROR;

@@ -1,16 +1,19 @@
-import { Err, Ok, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
+import { Err, Ok, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { assertString } from '../assert/assertions.ts';
+import { tryDOMSyncOp } from '../utils/mod.ts';
+
+function callOp<T>(op: () => T): IOResult<T> {
+    const res = op();
+    return Ok(res);
+}
 
 export function setItem(key: string, data: string): VoidIOResult {
     assertString(key);
     assertString(data);
 
-    try {
+    return tryDOMSyncOp(() => {
         localStorage.setItem(key, data);
-        return RESULT_VOID;
-    } catch (e) {
-        return Err(e as DOMException);
-    }
+    });
 }
 
 export function getItem(key: string): IOResult<string> {
@@ -23,15 +26,19 @@ export function getItem(key: string): IOResult<string> {
 export function removeItem(key: string): VoidIOResult {
     assertString(key);
 
-    localStorage.removeItem(key);
-    return RESULT_VOID;
+    return callOp(() => {
+        localStorage.removeItem(key);
+    });
 }
 
 export function clear(): VoidIOResult {
-    localStorage.clear();
-    return RESULT_VOID;
+    return callOp(() => {
+        localStorage.clear();
+    });
 }
 
 export function getLength(): IOResult<number> {
-    return Ok(localStorage.length);
+    return callOp(() => {
+        return localStorage.length;
+    });
 }

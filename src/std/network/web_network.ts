@@ -28,13 +28,13 @@ export function getNetworkType(): NetworkType {
         return 'none';
     }
 
-    const navi = (navigator as Navigator);
+    const nav = (navigator as Navigator);
 
     // 进一步判断
-    if (navi.connection) {
-        return navi.connection.type === 'wifi'
+    if (nav.connection) {
+        return nav.connection.type === 'wifi'
             ? 'wifi'
-            : navi.connection.effectiveType;
+            : nav.connection.effectiveType;
     } else {
         return 'unknown';
     }
@@ -50,11 +50,11 @@ export function addNetworkChangeListener(listener: (type: NetworkType) => void):
         listener(getNetworkType());
     };
 
-    const navi = (navigator as Navigator);
+    const nav = (navigator as Navigator);
 
-    navi.connection?.addEventListener('change', networkListener);
+    nav.connection?.addEventListener('change', networkListener);
 
     return () => {
-        navi.connection?.removeEventListener('change', networkListener);
+        nav.connection?.removeEventListener('change', networkListener);
     };
 }

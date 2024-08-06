@@ -1,7 +1,8 @@
-import { ABORT_ERROR, TIMEOUT_ERROR, type FetchTask } from '@happy-ts/fetch-t';
+import { ABORT_ERROR, FetchError, TIMEOUT_ERROR, type FetchTask } from '@happy-ts/fetch-t';
 import { Err, Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import { assertSafeUrl } from '../assert/assertions.ts';
+import { minaErrorToError } from '../utils/mod.ts';
 import type { MinaFetchInit } from './fetch_defines.ts';
 
 /**
@@ -67,15 +68,16 @@ export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> {
         url,
         success(res) {
             const { statusCode } = res;
-            if (statusCode < 200 || statusCode >= 300) {
-                future.resolve(Err(new Error(`wx.request status: ${ statusCode }`)));
-            } else {
+
+            if (statusCode >= 200 && statusCode < 300) {
                 future.resolve(Ok(res.data as T));
+            } else {
+                future.resolve(Err(new FetchError(res.errMsg, statusCode)));
             }
         },
         fail(err) {
+            const error = minaErrorToError(err);
             const { errMsg } = err;
-            const error = new Error(errMsg);
 
             if (errMsg.includes('abort')) {
                 error.name = ABORT_ERROR;

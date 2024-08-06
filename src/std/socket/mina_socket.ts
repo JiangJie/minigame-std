@@ -1,6 +1,7 @@
-import { Err, RESULT_VOID, type AsyncVoidIOResult, type VoidIOResult } from 'happy-rusty';
+import { RESULT_VOID, type AsyncVoidIOResult, type VoidIOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import { assertSafeSocketUrl } from '../assert/assertions.ts';
+import { generalErrorToResult, minaErrorToError } from '../utils/mod.ts';
 import { SocketReadyState, type ISocket, type SocketListenerMap, type SocketOptions } from './socket_define.ts';
 
 /**
@@ -59,7 +60,7 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
                 }
                 case 'error': {
                     socket.onError((err) => {
-                        (listener as SocketListenerMap['error'])(new Error(err.errMsg));
+                        (listener as SocketListenerMap['error'])(minaErrorToError(err));
                     });
 
                     return (): void => {
@@ -90,7 +91,7 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
                     future.resolve(RESULT_VOID);
                 },
                 fail(err): void {
-                    future.resolve(Err(new Error(err.errMsg)));
+                    future.resolve(generalErrorToResult(err));
                 },
             });
 
