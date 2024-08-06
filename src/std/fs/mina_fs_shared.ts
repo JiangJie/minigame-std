@@ -65,7 +65,8 @@ export function getAbsolutePath(path: string): string {
 export function isNotFoundIOError(err: WechatMinigame.FileError): boolean {
     // 1300002	no such file or directory ${path}
     // 可能没有errCode
-    return err.errCode === 1300002 || err.errMsg.includes('no such file or directory');
+    // 同步接口抛出异常是 `Error`，但 instanceof Error 却是 false
+    return err.errCode === 1300002 || (err.errMsg ?? (err as unknown as Error).message).includes('no such file or directory');
 }
 
 /**
@@ -75,7 +76,8 @@ export function isNotFoundIOError(err: WechatMinigame.FileError): boolean {
 export function isAlreadyExistsIOError(err: WechatMinigame.FileError): boolean {
     // 1301005	file already exists ${dirPath}	已有同名文件或目录
     // 可能没有errCode
-    return err.errCode === 1301005 || err.errMsg.includes('already exists');
+    // 同步接口抛出异常是 `Error`，但 instanceof Error 却是 false
+    return err.errCode === 1301005 || (err.errMsg ?? (err as unknown as Error).message).includes('already exists');
 }
 
 /**

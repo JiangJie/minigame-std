@@ -187,7 +187,6 @@ export function unzipSync(zipFilePath: string, targetPath: string): VoidIOResult
         for (const path in unzipped) {
             // ignore directory
             if (path.at(-1) !== SEPARATOR) {
-                console.log('path', path, join(absTargetPath, path));
                 // 不能用 json，否则 http://usr 会变成 http:/usr
                 const res = writeFileSync(`${ absTargetPath }/${ path }`, unzipped[path]);
                 if (res.isErr()) {

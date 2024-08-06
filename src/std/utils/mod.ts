@@ -1,14 +1,15 @@
 import { Err, Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
 
+interface MinaError {
+    errMsg: string;
+}
 /**
  * 将小游戏错误对象转换为 `Error` 类型。
  * @param err - 小游戏错误对象。
  * @returns 转换后的 `Error` 对象。
  */
-export function minaErrorToError(err: {
-    errMsg: string;
-}): Error {
-    return new Error(err.errMsg);
+export function minaErrorToError(err: MinaError | Error): Error {
+    return new Error((err as MinaError).errMsg ?? (err as Error).message);
 }
 
 /**
