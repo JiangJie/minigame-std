@@ -12,7 +12,7 @@ WebSocket 接口定义，描述了 WebSocket 的基本操作方法。
 
 | Property | Modifier | Type | Description | Defined in |
 | ------ | ------ | ------ | ------ | ------ |
-| `readyState` | `readonly` | `number` | WebSocket 的连接状态。 | [socket/socket\_define.ts:61](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/socket/socket_define.ts#L61) |
+| `readyState` | `readonly` | `number` | WebSocket 的连接状态。 | [socket/socket\_define.ts:61](https://github.com/JiangJie/minigame-std/blob/e98ab0af7ad78dc07fcec865ee164ff1e7efe9cf/src/std/socket/socket_define.ts#L61) |
 
 ## Methods
 
@@ -49,7 +49,7 @@ addEventListener<K>(type, listener): () => void
 
 #### Defined in
 
-[socket/socket\_define.ts:70](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/socket/socket_define.ts#L70)
+[socket/socket\_define.ts:70](https://github.com/JiangJie/minigame-std/blob/e98ab0af7ad78dc07fcec865ee164ff1e7efe9cf/src/std/socket/socket_define.ts#L70)
 
 ***
 
@@ -74,7 +74,7 @@ close(code?, reason?): void
 
 #### Defined in
 
-[socket/socket\_define.ts:84](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/socket/socket_define.ts#L84)
+[socket/socket\_define.ts:84](https://github.com/JiangJie/minigame-std/blob/e98ab0af7ad78dc07fcec865ee164ff1e7efe9cf/src/std/socket/socket_define.ts#L84)
 
 ***
 
@@ -100,4 +100,4 @@ send(data): AsyncVoidIOResult
 
 #### Defined in
 
-[socket/socket\_define.ts:77](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/socket/socket_define.ts#L77)
+[socket/socket\_define.ts:77](https://github.com/JiangJie/minigame-std/blob/e98ab0af7ad78dc07fcec865ee164ff1e7efe9cf/src/std/socket/socket_define.ts#L77)

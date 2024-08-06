@@ -44,27 +44,13 @@ wx.encode({
 
 ## 安装
 
-pnpm
-
-```
+```sh
 pnpm add minigame-std
-```
-
-yarn
-
-```
+# or
 yarn add minigame-std
-```
-
-npm
-
-```
+# or
 npm install --save minigame-std
-```
-
-通过 JSR
-
-```
+# or
 jsr add @happy-js/minigame-std
 ```
 
@@ -83,6 +69,7 @@ jsr add @happy-js/minigame-std
     import { decodeBase64, encodeBase64 } from 'minigame-std';
     ```
 -   文件系统
+    - 支持 `zip` `unzip` `zipSync` `unzipSync`
     ```js
     import { fs } from 'minigame-std';
     ```

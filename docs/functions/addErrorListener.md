@@ -30,4 +30,4 @@ function addErrorListener(listener): () => void
 
 ## Defined in
 
-[event/mod.ts:10](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/event/mod.ts#L10)
+[event/mod.ts:10](https://github.com/JiangJie/minigame-std/blob/e98ab0af7ad78dc07fcec865ee164ff1e7efe9cf/src/std/event/mod.ts#L10)

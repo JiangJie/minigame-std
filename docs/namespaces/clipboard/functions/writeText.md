@@ -26,4 +26,4 @@ function writeText(data): AsyncVoidIOResult
 
 ## Defined in
 
-[clipboard/mod.ts:11](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/clipboard/mod.ts#L11)
+[clipboard/mod.ts:11](https://github.com/JiangJie/minigame-std/blob/e98ab0af7ad78dc07fcec865ee164ff1e7efe9cf/src/std/clipboard/mod.ts#L11)

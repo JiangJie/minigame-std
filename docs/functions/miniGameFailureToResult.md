@@ -2,12 +2,12 @@
 
 ***
 
-[minigame-std](../README.md) / generalErrorToResult
+[minigame-std](../README.md) / miniGameFailureToResult
 
-# Function: generalErrorToResult()
+# Function: miniGameFailureToResult()
 
 ```ts
-function generalErrorToResult<T>(err): IOResult<T>
+function miniGameFailureToResult<T>(err): IOResult<T>
 ```
 
 将错误对象转换为 IOResult 类型。
@@ -32,4 +32,4 @@ function generalErrorToResult<T>(err): IOResult<T>
 
 ## Defined in
 
-[utils/mod.ts:20](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/utils/mod.ts#L20)
+[utils/mod.ts:21](https://github.com/JiangJie/minigame-std/blob/e98ab0af7ad78dc07fcec865ee164ff1e7efe9cf/src/std/utils/mod.ts#L21)

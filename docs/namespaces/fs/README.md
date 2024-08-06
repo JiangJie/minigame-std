@@ -52,6 +52,10 @@
 | [renameSync](functions/renameSync.md) | `rename` 的同步版本。 |
 | [stat](functions/stat.md) | - |
 | [statSync](functions/statSync.md) | `stat` 的同步版本。 |
+| [unzip](functions/unzip.md) | 解压 zip 文件。 |
+| [unzipSync](functions/unzipSync.md) | `unzip` 的同步版本。 |
 | [uploadFile](functions/uploadFile.md) | 上传本地文件。 |
 | [writeFile](functions/writeFile.md) | 写入文件，不存在则创建，同时创建对应目录，contents只支持ArrayBuffer和string，并且需要确保string一定是utf8编码的。 |
 | [writeFileSync](functions/writeFileSync.md) | `writeFile` 的同步版本。 |
+| [zip](functions/zip.md) | 压缩文件。 |
+| [zipSync](functions/zipSync.md) | `zip` 的同步版本。 |
