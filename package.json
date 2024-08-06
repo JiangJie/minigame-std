@@ -68,7 +68,7 @@
     "@happy-ts/fetch-t": "^1.2.1",
     "@std/path": "npm:@jsr/std__path@^1.0.2",
     "fflate": "^0.8.2",
-    "happy-opfs": "^1.6.0",
+    "happy-opfs": "^1.6.1",
     "happy-rusty": "^1.4.0",
     "minigame-api-typings": "^3.8.4",
     "tiny-future": "^1.0.0",

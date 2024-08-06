@@ -18,8 +18,8 @@ importers:
         specifier: ^0.8.2
         version: 0.8.2
       happy-opfs:
-        specifier: ^1.6.0
-        version: 1.6.0
+        specifier: ^1.6.1
+        version: 1.6.1
       happy-rusty:
         specifier: ^1.4.0
         version: 1.4.0
@@ -656,8 +656,8 @@ packages:
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
 
-  happy-opfs@1.6.0:
-    resolution: {integrity: sha512-YHT+8OX5SzEk3yg0ToE/txZZxRUvG0Aa4hmRY7khdibfvei90OwjKiXV/2Lvwr/wu+0bspSaGqX93elox8T3zg==}
+  happy-opfs@1.6.1:
+    resolution: {integrity: sha512-FlrPBhMKjsvn4Yq0EvjT7A7WB4dt6t9Ix33TF+hNuTfM1JzAiXoiw9MGafwMdXYcrQP2xX1E16Fc3VGUF6EVmg==}
 
   happy-rusty@1.4.0:
     resolution: {integrity: sha512-RbIfVv/XIVwKvwirx6a8Pkc1RfAgXyuMPAqJM9EUE3rVGxVgNOqLXU1yvmzt6VYWuYW5V7J3r6eBpr8s9kK/Vw==}
@@ -1530,7 +1530,7 @@ snapshots:
 
   graphemer@1.4.0: {}
 
-  happy-opfs@1.6.0:
+  happy-opfs@1.6.1:
     dependencies:
       '@happy-ts/fetch-t': 1.2.1
       '@std/path': '@jsr/std__path@1.0.2'
