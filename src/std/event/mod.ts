@@ -28,9 +28,7 @@ export function addErrorListener(listener: (ev: WechatMinigame.Error) => void): 
  * @returns  返回一个函数，调用该函数可以移除监听器。
  */
 export function addUnhandledrejectionListener(listener: (ev: Pick<PromiseRejectionEvent, 'reason' | 'promise'>) => void): () => void {
-    if (isMinaEnv()) {
-        return minaAddUnhandledrejectionListener(listener as unknown as WechatMinigame.OnUnhandledRejectionCallback);
-    }
-
-    return webAddUnhandledrejectionListener(listener);
+    return isMinaEnv()
+        ? minaAddUnhandledrejectionListener(listener as unknown as WechatMinigame.OnUnhandledRejectionCallback)
+        : webAddUnhandledrejectionListener(listener);
 }

@@ -5,12 +5,12 @@ import {
     mkdirSync as webMkdirSync,
     readDirSync as webReadDirSync,
     readFileSync as webReadFileSync,
-    readTextFileSync as webReadTextFile,
-    removeSync as webRemove,
-    renameSync as webRename,
-    statSync as webStat,
+    readTextFileSync as webReadTextFileSync,
+    removeSync as webRemoveSync,
+    renameSync as webRenameSync,
+    statSync as webStatSync,
     unzipSync as webUnzipSync,
-    writeFileSync as webWriteFile,
+    writeFileSync as webWriteFileSync,
     zipSync as webZipSync,
     type ZipOptions,
 } from 'happy-opfs';
@@ -19,12 +19,12 @@ import { isMinaEnv } from '../../macros/env.ts';
 import type { StatOptions, WriteFileContent } from './fs_define.ts';
 import { convertFileSystemHandleLikeToStats } from './fs_helpers.ts';
 import {
-    appendFileSync as minaAppendFile,
-    emptyDirSync as minaEmptyDir,
-    existsSync as minaExists,
-    mkdirSync as minaMkdir,
-    readDirSync as minaReadDir,
-    readFileSync as minaReadFile,
+    appendFileSync as minaAppendFileSync,
+    emptyDirSync as minaEmptyDirSync,
+    existsSync as minaExistsSync,
+    mkdirSync as minaMkdirSync,
+    readDirSync as minaReadDirSync,
+    readFileSync as minaReadFileSync,
     readTextFileSync as minaReadTextFileSync,
     removeSync as minaRemoveSync,
     renameSync as minaRenameSync,
@@ -38,7 +38,7 @@ import {
  * `mkdir` 的同步版本。
  */
 export function mkdirSync(dirPath: string): VoidIOResult {
-    return isMinaEnv() ? minaMkdir(dirPath) : webMkdirSync(dirPath);
+    return (isMinaEnv() ? minaMkdirSync : webMkdirSync)(dirPath);
 }
 
 /**
@@ -46,7 +46,7 @@ export function mkdirSync(dirPath: string): VoidIOResult {
  */
 export function readDirSync(dirPath: string): IOResult<string[]> {
     return isMinaEnv()
-        ? minaReadDir(dirPath)
+        ? minaReadDirSync(dirPath)
         : webReadDirSync(dirPath).map(x => {
             return x.map(y => y.path);
         });
@@ -56,21 +56,21 @@ export function readDirSync(dirPath: string): IOResult<string[]> {
  * `readFile` 的同步版本。
  */
 export function readFileSync(filePath: string): IOResult<ArrayBuffer> {
-    return isMinaEnv() ? minaReadFile(filePath) : webReadFileSync(filePath);
+    return (isMinaEnv() ? minaReadFileSync : webReadFileSync)(filePath);
 }
 
 /**
  * `remove` 的同步版本。
  */
 export function removeSync(path: string): VoidIOResult {
-    return isMinaEnv() ? minaRemoveSync(path) : webRemove(path);
+    return (isMinaEnv() ? minaRemoveSync : webRemoveSync)(path);
 }
 
 /**
  * `rename` 的同步版本。
  */
 export function renameSync(oldPath: string, newPath: string): VoidIOResult {
-    return isMinaEnv() ? minaRenameSync(oldPath, newPath) : webRename(oldPath, newPath);
+    return (isMinaEnv() ? minaRenameSync : webRenameSync)(oldPath, newPath);
 }
 
 /**
@@ -86,7 +86,7 @@ export function statSync(path: string, options?: StatOptions): IOResult<WechatMi
         return minaStatSync(path, options);
     }
 
-    const res = webStat(path);
+    const res = webStatSync(path);
 
     if (res.isErr()) {
         return res.asErr();
@@ -124,35 +124,35 @@ export function statSync(path: string, options?: StatOptions): IOResult<WechatMi
  * `writeFile` 的同步版本。
  */
 export function writeFileSync(filePath: string, contents: WriteFileContent): VoidIOResult {
-    return isMinaEnv() ? minaWriteFileSync(filePath, contents) : webWriteFile(filePath, contents);
+    return (isMinaEnv() ? minaWriteFileSync : webWriteFileSync)(filePath, contents);
 }
 
 /**
  * `appendFile` 的同步版本。
  */
 export function appendFileSync(filePath: string, contents: WriteFileContent): VoidIOResult {
-    return isMinaEnv() ? minaAppendFile(filePath, contents) : webAppendFileSync(filePath, contents);
+    return (isMinaEnv() ? minaAppendFileSync : webAppendFileSync)(filePath, contents);
 }
 
 /**
  * `exists` 的同步版本。
  */
 export function existsSync(path: string): IOResult<boolean> {
-    return isMinaEnv() ? minaExists(path) : webExistsSync(path);
+    return (isMinaEnv() ? minaExistsSync : webExistsSync)(path);
 }
 
 /**
  * `emptyDir` 的同步版本。
  */
 export function emptyDirSync(dirPath: string): VoidIOResult {
-    return isMinaEnv() ? minaEmptyDir(dirPath) : webEmptyDirSync(dirPath);
+    return (isMinaEnv() ? minaEmptyDirSync : webEmptyDirSync)(dirPath);
 }
 
 /**
  * `readTextFile` 的同步版本。
  */
 export function readTextFileSync(filePath: string): IOResult<string> {
-    return isMinaEnv() ? minaReadTextFileSync(filePath) : webReadTextFile(filePath);
+    return (isMinaEnv() ? minaReadTextFileSync : webReadTextFileSync)(filePath);
 }
 
 /**

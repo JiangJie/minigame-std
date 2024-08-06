@@ -10,11 +10,9 @@ export * from './network_define.ts';
  * @returns 根据浏览器支持情况不同，返回值可能为 `wifi` | `none` | `unknown` | `slow-2g` | `2g` | `3g` | `4g`
  */
 export function getNetworkType(): Promise<NetworkType> {
-    if (isMinaEnv()) {
-        return minaGetNetworkType();
-    }
-
-    return Promise.resolve(webGetNetworkType());
+    return isMinaEnv()
+        ? minaGetNetworkType()
+        : Promise.resolve(webGetNetworkType());
 }
 
 /**
@@ -23,9 +21,5 @@ export function getNetworkType(): Promise<NetworkType> {
  * @returns 返回一个函数，调用该函数可以移除监听器。
  */
 export function addNetworkChangeListener(listener: (type: NetworkType) => void): () => void {
-    if (isMinaEnv()) {
-        return minaAddNetworkChangeListener(listener);
-    }
-
-    return webAddNetworkChangeListener(listener);
+    return (isMinaEnv() ? minaAddNetworkChangeListener : webAddNetworkChangeListener)(listener);
 }

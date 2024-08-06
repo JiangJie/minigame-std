@@ -27,7 +27,9 @@ import {
  * @returns 返回一个 Promise，表示操作完成。
  */
 export async function setItem(key: string, data: string): AsyncVoidIOResult {
-    return isMinaEnv() ? await minaSetItem(key, data) : Promise.resolve(webSetItem(key, data));
+    return isMinaEnv()
+        ? await minaSetItem(key, data)
+        : Promise.resolve(webSetItem(key, data));
 }
 
 /**
@@ -36,7 +38,9 @@ export async function setItem(key: string, data: string): AsyncVoidIOResult {
  * @returns 返回一个 Promise，表示操作完成。
  */
 export async function getItem(key: string): AsyncIOResult<string> {
-    return isMinaEnv() ? minaGetItem(key) : Promise.resolve(webGetItem(key));
+    return isMinaEnv()
+        ? minaGetItem(key)
+        : Promise.resolve(webGetItem(key));
 }
 
 /**
@@ -45,7 +49,9 @@ export async function getItem(key: string): AsyncIOResult<string> {
  * @returns 返回一个 Promise，表示操作完成。
  */
 export async function removeItem(key: string): AsyncVoidIOResult {
-    return isMinaEnv() ? await minaRemoveItem(key) : Promise.resolve(webRemoveItem(key));
+    return isMinaEnv()
+        ? await minaRemoveItem(key)
+        : Promise.resolve(webRemoveItem(key));
 }
 
 /**
@@ -53,7 +59,9 @@ export async function removeItem(key: string): AsyncVoidIOResult {
  * @returns 返回一个 Promise，表示操作完成。
  */
 export async function clear(): AsyncVoidIOResult {
-    return isMinaEnv() ? await minaClear() : Promise.resolve(webClear());
+    return isMinaEnv()
+        ? await minaClear()
+        : Promise.resolve(webClear());
 }
 
 /**
@@ -61,40 +69,42 @@ export async function clear(): AsyncVoidIOResult {
  * @returns 返回一个 Promise，表示操作完成。
  */
 export async function getLength(): AsyncIOResult<number> {
-    return isMinaEnv() ? await minaGetLength() : Promise.resolve(getLength());
+    return isMinaEnv()
+        ? await minaGetLength()
+        : Promise.resolve(getLength());
 }
 
 /**
  * `setItem` 的同步版本。
  */
 export function setItemSync(key: string, data: string): VoidIOResult {
-    return isMinaEnv() ? minaSetItemSync(key, data) : webSetItem(key, data);
+    return (isMinaEnv() ? minaSetItemSync : webSetItem)(key, data);
 }
 
 /**
  * `getItem` 的同步版本。
  */
 export function getItemSync(key: string): IOResult<string> {
-    return isMinaEnv() ? minaGetItemSync(key) : webGetItem(key);
+    return (isMinaEnv() ? minaGetItemSync : webGetItem)(key);
 }
 
 /**
  * `removeItem` 的同步版本。
  */
 export function removeItemSync(key: string): VoidIOResult {
-    return isMinaEnv() ? minaRemoveItemSync(key) : webRemoveItem(key);
+    return (isMinaEnv() ? minaRemoveItemSync : webRemoveItem)(key);
 }
 
 /**
  * `clear` 的同步版本。
  */
 export function clearSync(): VoidIOResult {
-    return isMinaEnv() ? minaClearSync() : webClear();
+    return (isMinaEnv() ? minaClearSync : webClear)();
 }
 
 /**
  * `getLength` 的同步版本。
  */
 export function getLengthSync(): IOResult<number> {
-    return isMinaEnv() ? minaGetLengthSync() : webGetLength();
+    return (isMinaEnv() ? minaGetLengthSync : webGetLength)();
 }

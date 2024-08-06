@@ -8,7 +8,7 @@ import { decode as webDecode, encode as webEncode } from './web_codec.ts';
  * @returns
  */
 export function encode(data: string): ArrayBuffer {
-    return isMinaEnv() ? minaEncode(data) : webEncode(data);
+    return (isMinaEnv() ? minaEncode : webEncode)(data);
 }
 
 /**
@@ -17,5 +17,5 @@ export function encode(data: string): ArrayBuffer {
  * @returns
  */
 export function decode(data: ArrayBuffer): string {
-    return isMinaEnv() ? minaDecode(data) : webDecode(data);
+    return (isMinaEnv() ? minaDecode : webDecode)(data);
 }

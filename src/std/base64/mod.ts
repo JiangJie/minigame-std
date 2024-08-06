@@ -9,7 +9,7 @@ export { base64FromArrayBuffer, base64ToArrayBuffer } from './base64.ts';
  * @returns 编码后的 Base64 字符串。
  */
 export function encodeBase64(data: string): string {
-    return isMinaEnv() ? minaEncodeBase64(data) : webEncodeBase64(data);
+    return (isMinaEnv() ? minaEncodeBase64 : webEncodeBase64)(data);
 }
 
 /**
@@ -18,5 +18,5 @@ export function encodeBase64(data: string): string {
  * @returns 解码后的字符串。
  */
 export function decodeBase64(data: string): string {
-    return isMinaEnv() ? minaDecodeBase64(data) : webDecodeBase64(data);
+    return (isMinaEnv() ? minaDecodeBase64 : webDecodeBase64)(data);
 }

@@ -45,7 +45,7 @@ import {
  * @returns 创建成功返回 true 的异步操作结果。
  */
 export function mkdir(dirPath: string): AsyncVoidIOResult {
-    return isMinaEnv() ? minaMkdir(dirPath) : webMkdir(dirPath);
+    return (isMinaEnv() ? minaMkdir : webMkdir)(dirPath);
 }
 
 /**
@@ -75,7 +75,7 @@ export async function readDir(dirPath: string): AsyncIOResult<string[]> {
  * @returns 包含文件内容的 ArrayBuffer 的异步操作结果。
  */
 export function readFile(filePath: string): AsyncIOResult<ArrayBuffer> {
-    return isMinaEnv() ? minaReadFile(filePath) : webReadFile(filePath);
+    return (isMinaEnv() ? minaReadFile : webReadFile)(filePath);
 }
 
 /**
@@ -84,7 +84,7 @@ export function readFile(filePath: string): AsyncIOResult<ArrayBuffer> {
  * @returns 删除成功返回 true 的异步操作结果。
  */
 export function remove(path: string): AsyncVoidIOResult {
-    return isMinaEnv() ? minaRemove(path) : webRemove(path);
+    return (isMinaEnv() ? minaRemove : webRemove)(path);
 }
 
 /**
@@ -94,7 +94,7 @@ export function remove(path: string): AsyncVoidIOResult {
  * @returns 重命名成功返回 true 的异步操作结果。
  */
 export function rename(oldPath: string, newPath: string): AsyncVoidIOResult {
-    return isMinaEnv() ? minaRename(oldPath, newPath) : webRename(oldPath, newPath);
+    return (isMinaEnv() ? minaRename : webRename)(oldPath, newPath);
 }
 
 export async function stat(path: string): AsyncIOResult<WechatMinigame.Stats>;
@@ -154,7 +154,7 @@ export async function stat(path: string, options?: StatOptions): AsyncIOResult<W
  * @returns 写入成功返回 true 的异步操作结果。
  */
 export function writeFile(filePath: string, contents: WriteFileContent): AsyncVoidIOResult {
-    return isMinaEnv() ? minaWriteFile(filePath, contents) : webWriteFile(filePath, contents);
+    return (isMinaEnv() ? minaWriteFile : webWriteFile)(filePath, contents);
 }
 
 /**
@@ -164,7 +164,7 @@ export function writeFile(filePath: string, contents: WriteFileContent): AsyncVo
  * @returns 追加成功返回 true 的异步操作结果。
  */
 export function appendFile(filePath: string, contents: WriteFileContent): AsyncVoidIOResult {
-    return isMinaEnv() ? minaAppendFile(filePath, contents) : webAppendFile(filePath, contents);
+    return (isMinaEnv() ? minaAppendFile : webAppendFile)(filePath, contents);
 }
 
 /**
@@ -173,7 +173,7 @@ export function appendFile(filePath: string, contents: WriteFileContent): AsyncV
  * @returns 存在返回 true 的异步操作结果。
  */
 export function exists(path: string): AsyncIOResult<boolean> {
-    return isMinaEnv() ? minaExists(path) : webExists(path);
+    return (isMinaEnv() ? minaExists : webExists)(path);
 }
 
 /**
@@ -182,7 +182,7 @@ export function exists(path: string): AsyncIOResult<boolean> {
  * @returns 清空成功返回 true 的异步操作结果。
  */
 export function emptyDir(dirPath: string): AsyncVoidIOResult {
-    return isMinaEnv() ? minaEmptyDir(dirPath) : webEmptyDir(dirPath);
+    return (isMinaEnv() ? minaEmptyDir : webEmptyDir)(dirPath);
 }
 
 /**
@@ -191,7 +191,7 @@ export function emptyDir(dirPath: string): AsyncVoidIOResult {
  * @returns 包含文件文本内容的异步操作结果。
  */
 export function readTextFile(filePath: string): AsyncIOResult<string> {
-    return isMinaEnv() ? minaReadTextFile(filePath) : webReadTextFile(filePath);
+    return (isMinaEnv() ? minaReadTextFile : webReadTextFile)(filePath);
 }
 
 /**
@@ -202,7 +202,7 @@ export function readTextFile(filePath: string): AsyncIOResult<string> {
  * @returns 下载成功返回原始结果。
  */
 export function downloadFile(fileUrl: string, filePath: string, options?: UnionDownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | Response> {
-    return isMinaEnv() ? minaDownloadFile(fileUrl, filePath, options) : webDownloadFile(fileUrl, filePath, options);
+    return (isMinaEnv() ? minaDownloadFile : webDownloadFile)(fileUrl, filePath, options);
 }
 
 /**
@@ -213,7 +213,7 @@ export function downloadFile(fileUrl: string, filePath: string, options?: UnionD
  * @returns 上传成功返回原始结果。
  */
 export function uploadFile(filePath: string, fileUrl: string, options?: UnionUploadFileOptions): FetchTask<WechatMinigame.UploadFileSuccessCallbackResult | Response> {
-    return isMinaEnv() ? minaUploadFile(filePath, fileUrl, options) : webUploadFile(filePath, fileUrl, options);
+    return (isMinaEnv() ? minaUploadFile : webUploadFile)(filePath, fileUrl, options);
 }
 
 /**
@@ -223,7 +223,7 @@ export function uploadFile(filePath: string, fileUrl: string, options?: UnionUpl
  * @returns 解压操作的异步结果。
  */
 export function unzip(zipFilePath: string, targetPath: string): AsyncVoidIOResult {
-    return isMinaEnv() ? minaUnzip(zipFilePath, targetPath) : webUnzip(zipFilePath, targetPath);
+    return (isMinaEnv() ? minaUnzip : webUnzip)(zipFilePath, targetPath);
 }
 
 /**

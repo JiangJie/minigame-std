@@ -9,7 +9,7 @@ import { readText as webReadText, writeText as webWriteText } from './web_clipbo
  * @returns 写入操作的结果。
  */
 export function writeText(data: string): AsyncVoidIOResult {
-    return isMinaEnv() ? minaWriteText(data) : webWriteText(data);
+    return (isMinaEnv() ? minaWriteText : webWriteText)(data);
 }
 
 /**
@@ -17,5 +17,5 @@ export function writeText(data: string): AsyncVoidIOResult {
  * @returns 读取操作的结果。
  */
 export function readText(): AsyncIOResult<string> {
-    return isMinaEnv() ? minaReadText() : webReadText();
+    return (isMinaEnv() ? minaReadText : webReadText)();
 }
