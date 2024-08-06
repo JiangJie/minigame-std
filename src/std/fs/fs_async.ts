@@ -36,6 +36,7 @@ import {
     unzip as minaUnzip,
     uploadFile as minaUploadFile,
     writeFile as minaWriteFile,
+    zip as minaZip,
 } from './mina_fs_async.ts';
 
 /**
@@ -233,9 +234,5 @@ export function unzip(zipFilePath: string, targetPath: string): AsyncVoidIOResul
  * @returns 压缩成功的异步结果。
  */
 export function zip(sourcePath: string, zipFilePath: string, options?: ZipOptions): AsyncVoidIOResult {
-    if (isMinaEnv()) {
-        throw new Error('Not supported.');
-    }
-
-    return webZip(sourcePath, zipFilePath, options);
+    return (isMinaEnv() ? minaZip : webZip)(sourcePath, zipFilePath, options);
 }

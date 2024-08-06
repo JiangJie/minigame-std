@@ -1,7 +1,8 @@
 import type { FetchResponse, FetchTask } from '@happy-ts/fetch-t';
 import { basename, dirname, join } from '@std/path/posix';
-import { type ExistsOptions, type WriteOptions } from 'happy-opfs';
-import { Ok, RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';
+import * as fflate from 'fflate/browser';
+import { type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
+import { Err, Ok, RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import { assertSafeUrl } from '../assert/assertions.ts';
 import { generalErrorToResult } from '../utils/mod.ts';
@@ -413,4 +414,76 @@ export function unzip(zipFilePath: string, targetPath: string): AsyncVoidIOResul
     });
 
     return future.promise;
+}
+
+/**
+ * 压缩文件。
+ * @param sourcePath - 需要压缩的文件（夹）路径。
+ * @param zipFilePath - 压缩后的 zip 文件路径。
+ * @param options - 可选的压缩参数。
+ * @returns 压缩成功的异步结果。
+ */
+export async function zip(sourcePath: string, zipFilePath: string, options?: ZipOptions): AsyncVoidIOResult {
+    const absSourcePath = getAbsolutePath(sourcePath);
+    const absZipPath = getAbsolutePath(zipFilePath);
+
+    const statRes = await stat(absSourcePath);
+    if (statRes.isErr()) {
+        return statRes.asErr();
+    }
+
+    const zipped: fflate.AsyncZippable = {};
+
+    const sourceName = basename(absSourcePath);
+    const stats = statRes.unwrap();
+
+    if (stats.isFile()) {
+        // file
+        const res = await readFile(absSourcePath);
+        if (res.isErr()) {
+            return res.asErr();
+        }
+
+        zipped[sourceName] = new Uint8Array(res.unwrap());
+    } else {
+        // directory
+        const res = await stat(absSourcePath, {
+            recursive: true,
+        });
+        if (res.isErr()) {
+            return res.asErr();
+        }
+
+        // default to preserve root
+        const preserveRoot = options?.preserveRoot ?? true;
+
+        for (const { path, stats } of res.unwrap()) {
+            if (stats.isFile()) {
+                const entryName = preserveRoot ? join(sourceName, path) : path;
+                // 不能用 json，否则 http://usr 会变成 http:/usr
+                const res = await readFile(absSourcePath + path);
+                if (res.isErr()) {
+                    return res.asErr();
+                }
+
+                zipped[entryName] = new Uint8Array(res.unwrap());
+            }
+        }
+    }
+
+    const future = new Future<VoidIOResult>();
+
+    fflate.zip(zipped, {
+        consume: true,
+    }, async (err, u8a) => {
+        if (err) {
+            future.resolve(Err(err));
+            return;
+        }
+
+        const res = await writeFile(absZipPath, u8a);
+        future.resolve(res);
+    });
+
+    return await future.promise;
 }

@@ -13,6 +13,7 @@ const external = [
     '@happy-ts/fetch-t',
     'tiny-invariant',
     'tiny-future',
+    'fflate/browser',
 ];
 
 /**
