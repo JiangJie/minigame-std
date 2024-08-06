@@ -7,7 +7,7 @@
 # Function: removeItem()
 
 ```ts
-function removeItem(key): Promise<void>
+function removeItem(key): AsyncVoidIOResult
 ```
 
 从本地缓存中移除指定的数据。
@@ -20,10 +20,10 @@ function removeItem(key): Promise<void>
 
 ## Returns
 
-`Promise`\<`void`\>
+`AsyncVoidIOResult`
 
 返回一个 Promise，表示操作完成。
 
 ## Defined in
 
-[storage/mod.ts:34](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/storage/mod.ts#L34)
+[storage/mod.ts:47](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/storage/mod.ts#L47)

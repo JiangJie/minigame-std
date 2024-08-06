@@ -7,7 +7,7 @@
 # Function: removeSync()
 
 ```ts
-function removeSync(path): IOResult<boolean>
+function removeSync(path): VoidIOResult
 ```
 
 `remove` 的同步版本。
@@ -20,8 +20,8 @@ function removeSync(path): IOResult<boolean>
 
 ## Returns
 
-`IOResult`\<`boolean`\>
+`VoidIOResult`
 
 ## Defined in
 
-[fs/fs\_sync.ts:60](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/fs/fs_sync.ts#L60)
+[fs/fs\_sync.ts:60](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/fs/fs_sync.ts#L60)

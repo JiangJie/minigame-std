@@ -7,7 +7,7 @@
 # Function: remove()
 
 ```ts
-function remove(path): AsyncIOResult<boolean>
+function remove(path): AsyncVoidIOResult
 ```
 
 删除文件或目录。
@@ -20,10 +20,10 @@ function remove(path): AsyncIOResult<boolean>
 
 ## Returns
 
-`AsyncIOResult`\<`boolean`\>
+`AsyncVoidIOResult`
 
 删除成功返回 true 的异步操作结果。
 
 ## Defined in
 
-[fs/fs\_async.ts:81](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/fs/fs_async.ts#L81)
+[fs/fs\_async.ts:81](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/fs/fs_async.ts#L81)

@@ -7,7 +7,7 @@
 # Function: appendFile()
 
 ```ts
-function appendFile(filePath, contents): AsyncIOResult<boolean>
+function appendFile(filePath, contents): AsyncVoidIOResult
 ```
 
 向文件追加内容。
@@ -21,10 +21,10 @@ function appendFile(filePath, contents): AsyncIOResult<boolean>
 
 ## Returns
 
-`AsyncIOResult`\<`boolean`\>
+`AsyncVoidIOResult`
 
 追加成功返回 true 的异步操作结果。
 
 ## Defined in
 
-[fs/fs\_async.ts:161](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/fs/fs_async.ts#L161)
+[fs/fs\_async.ts:161](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/fs/fs_async.ts#L161)

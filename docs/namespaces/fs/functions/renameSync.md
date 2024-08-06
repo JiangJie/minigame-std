@@ -7,7 +7,7 @@
 # Function: renameSync()
 
 ```ts
-function renameSync(oldPath, newPath): IOResult<boolean>
+function renameSync(oldPath, newPath): VoidIOResult
 ```
 
 `rename` 的同步版本。
@@ -21,8 +21,8 @@ function renameSync(oldPath, newPath): IOResult<boolean>
 
 ## Returns
 
-`IOResult`\<`boolean`\>
+`VoidIOResult`
 
 ## Defined in
 
-[fs/fs\_sync.ts:67](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/fs/fs_sync.ts#L67)
+[fs/fs\_sync.ts:67](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/fs/fs_sync.ts#L67)

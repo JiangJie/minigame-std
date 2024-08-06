@@ -7,7 +7,7 @@
 # Function: getItem()
 
 ```ts
-function getItem(key): AsyncOption<string>
+function getItem(key): AsyncIOResult<string>
 ```
 
 从本地缓存中读取数据。
@@ -20,10 +20,10 @@ function getItem(key): AsyncOption<string>
 
 ## Returns
 
-`AsyncOption`\<`string`\>
+`AsyncIOResult`\<`string`\>
 
-返回一个 Promise，解析为一个 Option 类型，包含读取到的数据或者在未找到数据时为 null。
+返回一个 Promise，表示操作完成。
 
 ## Defined in
 
-[storage/mod.ts:25](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/storage/mod.ts#L25)
+[storage/mod.ts:38](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/storage/mod.ts#L38)

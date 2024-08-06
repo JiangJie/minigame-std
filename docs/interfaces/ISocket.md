@@ -12,7 +12,7 @@ WebSocket 接口定义，描述了 WebSocket 的基本操作方法。
 
 | Property | Modifier | Type | Description | Defined in |
 | ------ | ------ | ------ | ------ | ------ |
-| `readyState` | `readonly` | `number` | WebSocket 的连接状态。 | [socket/socket\_define.ts:61](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/socket/socket_define.ts#L61) |
+| `readyState` | `readonly` | `number` | WebSocket 的连接状态。 | [socket/socket\_define.ts:61](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/socket/socket_define.ts#L61) |
 
 ## Methods
 
@@ -49,7 +49,7 @@ addEventListener<K>(type, listener): () => void
 
 #### Defined in
 
-[socket/socket\_define.ts:70](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/socket/socket_define.ts#L70)
+[socket/socket\_define.ts:70](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/socket/socket_define.ts#L70)
 
 ***
 
@@ -74,14 +74,14 @@ close(code?, reason?): void
 
 #### Defined in
 
-[socket/socket\_define.ts:84](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/socket/socket_define.ts#L84)
+[socket/socket\_define.ts:84](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/socket/socket_define.ts#L84)
 
 ***
 
 ### send()
 
 ```ts
-send(data): Promise<Result<boolean, Error>>
+send(data): AsyncVoidIOResult
 ```
 
 发送数据到 WebSocket 服务器。
@@ -94,10 +94,10 @@ send(data): Promise<Result<boolean, Error>>
 
 #### Returns
 
-`Promise`\<`Result`\<`boolean`, `Error`\>\>
+`AsyncVoidIOResult`
 
 返回一个 Promise，其解析为发送结果，成功时返回 true，失败时返回 Error。
 
 #### Defined in
 
-[socket/socket\_define.ts:77](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/socket/socket_define.ts#L77)
+[socket/socket\_define.ts:77](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/socket/socket_define.ts#L77)

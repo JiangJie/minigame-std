@@ -8,13 +8,6 @@
 
 ## Index
 
-### Type Aliases
-
-| Type alias | Description |
-| ------ | ------ |
-| [ReadResult](type-aliases/ReadResult.md) | - |
-| [WriteResult](type-aliases/WriteResult.md) | - |
-
 ### Functions
 
 | Function | Description |

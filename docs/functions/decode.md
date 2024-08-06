@@ -24,4 +24,4 @@ function decode(data): string
 
 ## Defined in
 
-[codec/mod.ts:19](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/codec/mod.ts#L19)
+[codec/mod.ts:19](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/codec/mod.ts#L19)

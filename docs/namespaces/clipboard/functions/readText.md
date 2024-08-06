@@ -7,17 +7,17 @@
 # Function: readText()
 
 ```ts
-function readText(): ReadResult
+function readText(): AsyncIOResult<string>
 ```
 
 异步读取剪贴板文本数据。
 
 ## Returns
 
-[`ReadResult`](../type-aliases/ReadResult.md)
+`AsyncIOResult`\<`string`\>
 
 读取操作的结果。
 
 ## Defined in
 
-[clipboard/mod.ts:22](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/clipboard/mod.ts#L22)
+[clipboard/mod.ts:19](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/clipboard/mod.ts#L19)

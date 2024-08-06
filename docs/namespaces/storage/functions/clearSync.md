@@ -7,15 +7,15 @@
 # Function: clearSync()
 
 ```ts
-function clearSync(): void
+function clearSync(): VoidIOResult
 ```
 
-clear 的同步版本。
+`clear` 的同步版本。
 
 ## Returns
 
-`void`
+`VoidIOResult`
 
 ## Defined in
 
-[storage/mod.ts:86](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/storage/mod.ts#L86)
+[storage/mod.ts:91](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/storage/mod.ts#L91)

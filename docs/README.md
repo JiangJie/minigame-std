@@ -53,4 +53,10 @@
 | [encode](functions/encode.md) | 将`utf8`字符串编码为`ArrayBuffer` |
 | [encodeBase64](functions/encodeBase64.md) | 将字符串数据编码为 Base64 格式。 |
 | [fetchT](functions/fetchT.md) | 发起一个可中断的文本类型响应的网络请求。 |
+| [generalErrorToResult](functions/generalErrorToResult.md) | 将错误对象转换为 IOResult 类型。 |
 | [getNetworkType](functions/getNetworkType.md) | 获取网络状态。 |
+| [minaErrorToError](functions/minaErrorToError.md) | 将小游戏错误对象转换为 `Error` 类型。 |
+| [tryDOMAsyncOp](functions/tryDOMAsyncOp.md) | 执行异步函数，预期异常都是 `DOMException`。 |
+| [tryDOMSyncOp](functions/tryDOMSyncOp.md) | 执行同步函数，预期异常都是 `DOMException`。 |
+| [tryGeneralAsyncOp](functions/tryGeneralAsyncOp.md) | 执行异步函数，预期异常都是 `WechatMinigame.GeneralCallbackResult`。 |
+| [tryGeneralSyncOp](functions/tryGeneralSyncOp.md) | 执行同步函数，预期异常都是 `WechatMinigame.GeneralCallbackResult`。 |

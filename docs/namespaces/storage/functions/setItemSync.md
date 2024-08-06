@@ -7,10 +7,10 @@
 # Function: setItemSync()
 
 ```ts
-function setItemSync(key, data): void
+function setItemSync(key, data): VoidIOResult
 ```
 
-setItem 的同步版本。
+`setItem` 的同步版本。
 
 ## Parameters
 
@@ -21,8 +21,8 @@ setItem 的同步版本。
 
 ## Returns
 
-`void`
+`VoidIOResult`
 
 ## Defined in
 
-[storage/mod.ts:57](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/storage/mod.ts#L57)
+[storage/mod.ts:70](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/storage/mod.ts#L70)

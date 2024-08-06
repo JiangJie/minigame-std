@@ -26,7 +26,7 @@ function statSync(path): IOResult<WechatMinigame.Stats>
 
 ### Defined in
 
-[fs/fs\_sync.ts:74](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/fs/fs_sync.ts#L74)
+[fs/fs\_sync.ts:74](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/fs/fs_sync.ts#L74)
 
 ## statSync(path, options)
 
@@ -47,7 +47,7 @@ function statSync(path, options): IOResult<WechatMinigame.FileStats[]>
 
 ### Defined in
 
-[fs/fs\_sync.ts:75](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/fs/fs_sync.ts#L75)
+[fs/fs\_sync.ts:75](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/fs/fs_sync.ts#L75)
 
 ## statSync(path, options)
 
@@ -68,4 +68,4 @@ function statSync(path, options?): IOResult<WechatMinigame.Stats | WechatMinigam
 
 ### Defined in
 
-[fs/fs\_sync.ts:78](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/fs/fs_sync.ts#L78)
+[fs/fs\_sync.ts:78](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/fs/fs_sync.ts#L78)

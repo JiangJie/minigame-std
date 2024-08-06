@@ -31,7 +31,7 @@ close(code, reason): void
 
 #### Defined in
 
-[socket/socket\_define.ts:39](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/socket/socket_define.ts#L39)
+[socket/socket\_define.ts:39](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/socket/socket_define.ts#L39)
 
 ***
 
@@ -55,7 +55,7 @@ error(err): void
 
 #### Defined in
 
-[socket/socket\_define.ts:51](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/socket/socket_define.ts#L51)
+[socket/socket\_define.ts:51](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/socket/socket_define.ts#L51)
 
 ***
 
@@ -79,7 +79,7 @@ message(data): void
 
 #### Defined in
 
-[socket/socket\_define.ts:45](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/socket/socket_define.ts#L45)
+[socket/socket\_define.ts:45](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/socket/socket_define.ts#L45)
 
 ***
 
@@ -97,4 +97,4 @@ open(): void
 
 #### Defined in
 
-[socket/socket\_define.ts:32](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/socket/socket_define.ts#L32)
+[socket/socket\_define.ts:32](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/socket/socket_define.ts#L32)

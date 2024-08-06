@@ -7,10 +7,10 @@
 # Function: getItemSync()
 
 ```ts
-function getItemSync(key): Option<string>
+function getItemSync(key): IOResult<string>
 ```
 
-getItem 的同步版本。
+`getItem` 的同步版本。
 
 ## Parameters
 
@@ -20,8 +20,8 @@ getItem 的同步版本。
 
 ## Returns
 
-`Option`\<`string`\>
+`IOResult`\<`string`\>
 
 ## Defined in
 
-[storage/mod.ts:68](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/storage/mod.ts#L68)
+[storage/mod.ts:77](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/storage/mod.ts#L77)

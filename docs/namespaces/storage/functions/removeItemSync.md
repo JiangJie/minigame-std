@@ -7,10 +7,10 @@
 # Function: removeItemSync()
 
 ```ts
-function removeItemSync(key): void
+function removeItemSync(key): VoidIOResult
 ```
 
-removeItem 的同步版本。
+`removeItem` 的同步版本。
 
 ## Parameters
 
@@ -20,8 +20,8 @@ removeItem 的同步版本。
 
 ## Returns
 
-`void`
+`VoidIOResult`
 
 ## Defined in
 
-[storage/mod.ts:75](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/storage/mod.ts#L75)
+[storage/mod.ts:84](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/storage/mod.ts#L84)

@@ -7,7 +7,7 @@
 # Function: writeFileSync()
 
 ```ts
-function writeFileSync(filePath, contents): IOResult<boolean>
+function writeFileSync(filePath, contents): VoidIOResult
 ```
 
 `writeFile` 的同步版本。
@@ -21,8 +21,8 @@ function writeFileSync(filePath, contents): IOResult<boolean>
 
 ## Returns
 
-`IOResult`\<`boolean`\>
+`VoidIOResult`
 
 ## Defined in
 
-[fs/fs\_sync.ts:121](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/fs/fs_sync.ts#L121)
+[fs/fs\_sync.ts:121](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/fs/fs_sync.ts#L121)

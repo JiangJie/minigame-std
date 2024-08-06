@@ -7,7 +7,7 @@
 # Function: setItem()
 
 ```ts
-function setItem(key, data): Promise<void>
+function setItem(key, data): AsyncVoidIOResult
 ```
 
 将数据存储在本地缓存中。
@@ -21,10 +21,10 @@ function setItem(key, data): Promise<void>
 
 ## Returns
 
-`Promise`\<`void`\>
+`AsyncVoidIOResult`
 
 返回一个 Promise，表示操作完成。
 
 ## Defined in
 
-[storage/mod.ts:12](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/storage/mod.ts#L12)
+[storage/mod.ts:29](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/storage/mod.ts#L29)

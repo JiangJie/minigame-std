@@ -7,7 +7,7 @@
 # Function: writeFile()
 
 ```ts
-function writeFile(filePath, contents): AsyncIOResult<boolean>
+function writeFile(filePath, contents): AsyncVoidIOResult
 ```
 
 写入文件，不存在则创建，同时创建对应目录，contents只支持ArrayBuffer和string，并且需要确保string一定是utf8编码的。
@@ -21,10 +21,10 @@ function writeFile(filePath, contents): AsyncIOResult<boolean>
 
 ## Returns
 
-`AsyncIOResult`\<`boolean`\>
+`AsyncVoidIOResult`
 
 写入成功返回 true 的异步操作结果。
 
 ## Defined in
 
-[fs/fs\_async.ts:151](https://github.com/JiangJie/minigame-std/blob/1d046e44c5931182cced8ad59c3bf51847c8ead7/src/std/fs/fs_async.ts#L151)
+[fs/fs\_async.ts:151](https://github.com/JiangJie/minigame-std/blob/baaa9364b1809237ffe9720be3ef4dba617567c9/src/std/fs/fs_async.ts#L151)
