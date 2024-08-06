@@ -29,7 +29,9 @@ import {
     removeSync as minaRemoveSync,
     renameSync as minaRenameSync,
     statSync as minaStatSync,
+    unzipSync as minaUnzipSync,
     writeFileSync as minaWriteFileSync,
+    zipSync as minaZipSync,
 } from './mina_fs_sync.ts';
 
 /**
@@ -157,20 +159,12 @@ export function readTextFileSync(filePath: string): IOResult<string> {
  * `unzip` 的同步版本。
  */
 export function unzipSync(zipFilePath: string, targetPath: string): VoidIOResult {
-    if (isMinaEnv()) {
-        throw new Error('Not supported.');
-    }
-
-    return webUnzipSync(zipFilePath, targetPath);
+    return (isMinaEnv() ? minaUnzipSync : webUnzipSync)(zipFilePath, targetPath);
 }
 
 /**
  * `zip` 的同步版本。
  */
 export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOptions): VoidIOResult {
-    if (isMinaEnv()) {
-        throw new Error('Not supported.');
-    }
-
-    return webZipSync(sourcePath, zipFilePath, options);
+    return (isMinaEnv() ? minaZipSync : webZipSync)(sourcePath, zipFilePath, options);
 }

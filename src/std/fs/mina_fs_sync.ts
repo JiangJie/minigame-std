@@ -1,6 +1,7 @@
-import { dirname, join } from '@std/path/posix';
-import { type ExistsOptions, type WriteOptions } from 'happy-opfs';
-import { Ok, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
+import { basename, dirname, join, SEPARATOR } from '@std/path/posix';
+import * as fflate from 'fflate/browser';
+import { type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
+import { Err, Ok, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
 import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
 import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError } from './mina_fs_shared.ts';
 
@@ -164,4 +165,98 @@ export function readTextFileSync(filePath: string): IOResult<string> {
     return readFileSync(filePath, {
         encoding: 'utf8',
     });
+}
+
+/**
+ * `unzip` 的同步版本。
+ */
+export function unzipSync(zipFilePath: string, targetPath: string): VoidIOResult {
+    const absZipPath = getAbsolutePath(zipFilePath);
+    const absTargetPath = getAbsolutePath(targetPath);
+
+    const res = readFileSync(absZipPath);
+    if (res.isErr()) {
+        return res.asErr();
+    }
+
+    const data = new Uint8Array(res.unwrap());
+
+    try {
+        const unzipped = fflate.unzipSync(data);
+
+        for (const path in unzipped) {
+            // ignore directory
+            if (path.at(-1) !== SEPARATOR) {
+                console.log('path', path, join(absTargetPath, path));
+                // 不能用 json，否则 http://usr 会变成 http:/usr
+                const res = writeFileSync(`${ absTargetPath }/${ path }`, unzipped[path]);
+                if (res.isErr()) {
+                    return res.asErr();
+                }
+            }
+        }
+
+        return RESULT_VOID;
+    } catch (e) {
+        return Err(e as fflate.FlateError);
+    }
+}
+
+/**
+ * `zip` 的同步版本。
+ */
+export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOptions): VoidIOResult {
+    const absSourcePath = getAbsolutePath(sourcePath);
+    const absZipPath = getAbsolutePath(zipFilePath);
+
+    const statRes = statSync(absSourcePath);
+    if (statRes.isErr()) {
+        return statRes.asErr();
+    }
+
+    const zipped: fflate.AsyncZippable = {};
+
+    const sourceName = basename(absSourcePath);
+    const stats = statRes.unwrap();
+
+    if (stats.isFile()) {
+        // file
+        const res = readFileSync(absSourcePath);
+        if (res.isErr()) {
+            return res.asErr();
+        }
+
+        zipped[sourceName] = new Uint8Array(res.unwrap());
+    } else {
+        // directory
+        const res = statSync(absSourcePath, {
+            recursive: true,
+        });
+        if (res.isErr()) {
+            return res.asErr();
+        }
+
+        // default to preserve root
+        const preserveRoot = options?.preserveRoot ?? true;
+
+        for (const { path, stats } of res.unwrap()) {
+            if (stats.isFile()) {
+                const entryName = preserveRoot ? join(sourceName, path) : path;
+                // 不能用 json，否则 http://usr 会变成 http:/usr
+                const res = readFileSync(absSourcePath + path);
+                if (res.isErr()) {
+                    return res.asErr();
+                }
+
+                zipped[entryName] = new Uint8Array(res.unwrap());
+            }
+        }
+    }
+
+    try {
+        const u8a = fflate.zipSync(zipped);
+        return writeFileSync(absZipPath, u8a);
+    } catch (e) {
+        return Err(e as fflate.FlateError);
+    }
 }

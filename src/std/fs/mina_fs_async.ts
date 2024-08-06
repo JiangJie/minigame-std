@@ -409,7 +409,7 @@ export function unzip(zipFilePath: string, targetPath: string): AsyncVoidIOResul
             future.resolve(RESULT_VOID);
         },
         fail(err): void {
-            future.resolve(errToMkdirResult(err));
+            future.resolve(fileErrorToResult(err));
         },
     });
 
