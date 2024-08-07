@@ -45,12 +45,13 @@ wx.encode({
 ## 安装
 
 ```sh
+# via pnpm
 pnpm add minigame-std
-# or
+# or via yarn
 yarn add minigame-std
-# or
+# or just from npm
 npm install --save minigame-std
-# or
+# via JSR
 jsr add @happy-js/minigame-std
 ```
 
