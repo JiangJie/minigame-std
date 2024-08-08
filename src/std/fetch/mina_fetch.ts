@@ -56,6 +56,7 @@ export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> {
 
     const {
         responseType,
+        onChunk,
         ...rest
     } = init ?? {};
 
@@ -99,6 +100,12 @@ export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> {
     }
 
     const task = wx.request(options);
+
+    if (typeof onChunk === 'function') {
+        task.onChunkReceived(res => {
+            onChunk(new Uint8Array(res.data));
+        });
+    }
 
     return {
         abort(): void {
