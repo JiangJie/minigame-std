@@ -1,5 +1,6 @@
 import {
     appendFileSync as webAppendFileSync,
+    copySync as webCopySync,
     emptyDirSync as webEmptyDirSync,
     existsSync as webExistsSync,
     mkdirSync as webMkdirSync,
@@ -20,6 +21,7 @@ import type { StatOptions, WriteFileContent } from './fs_define.ts';
 import { convertFileSystemHandleLikeToStats } from './fs_helpers.ts';
 import {
     appendFileSync as minaAppendFileSync,
+    copySync as minaCopySync,
     emptyDirSync as minaEmptyDirSync,
     existsSync as minaExistsSync,
     mkdirSync as minaMkdirSync,
@@ -125,6 +127,13 @@ export function statSync(path: string, options?: StatOptions): IOResult<WechatMi
  */
 export function writeFileSync(filePath: string, contents: WriteFileContent): VoidIOResult {
     return (isMinaEnv() ? minaWriteFileSync : webWriteFileSync)(filePath, contents);
+}
+
+/**
+ * `copy` 的同步版本。
+ */
+export function copySync(srcPath: string, destPath: string): VoidIOResult {
+    return (isMinaEnv() ? minaCopySync : webCopySync)(srcPath, destPath);
 }
 
 /**

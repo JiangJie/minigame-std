@@ -1,6 +1,7 @@
 import type { FetchTask } from '@happy-ts/fetch-t';
 import {
     appendFile as webAppendFile,
+    copy as webCopy,
     downloadFile as webDownloadFile,
     emptyDir as webEmptyDir,
     exists as webExists,
@@ -15,7 +16,7 @@ import {
     uploadFile as webUploadFile,
     writeFile as webWriteFile,
     zip as webZip,
-    type ZipOptions,
+    type ZipOptions
 } from 'happy-opfs';
 import { Ok, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
@@ -23,6 +24,7 @@ import type { StatOptions, UnionDownloadFileOptions, UnionUploadFileOptions, Wri
 import { convertFileSystemHandleToStats } from './fs_helpers.ts';
 import {
     appendFile as minaAppendFile,
+    copy as minaCopy,
     downloadFile as minaDownloadFile,
     emptyDir as minaEmptyDir,
     exists as minaExists,
@@ -36,7 +38,7 @@ import {
     unzip as minaUnzip,
     uploadFile as minaUploadFile,
     writeFile as minaWriteFile,
-    zip as minaZip,
+    zip as minaZip
 } from './mina_fs_async.ts';
 
 /**
@@ -165,6 +167,17 @@ export function writeFile(filePath: string, contents: WriteFileContent): AsyncVo
  */
 export function appendFile(filePath: string, contents: WriteFileContent): AsyncVoidIOResult {
     return (isMinaEnv() ? minaAppendFile : webAppendFile)(filePath, contents);
+}
+
+/**
+ * 复制文件或文件夹。
+ *
+ * @param srcPath - 源文件或文件夹路径。
+ * @param destPath - 目标文件或文件夹路径。
+ * @returns 操作的异步结果。
+ */
+export function copy(srcPath: string, destPath: string): AsyncVoidIOResult {
+    return (isMinaEnv() ? minaCopy : webCopy)(srcPath, destPath);
 }
 
 /**

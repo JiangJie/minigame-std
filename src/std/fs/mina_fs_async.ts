@@ -256,6 +256,66 @@ export function appendFile(filePath: string, contents: WriteFileContent): AsyncV
     });
 }
 
+function copyFile(srcPath: string, destPath: string): AsyncVoidIOResult {
+    const future = new Future<VoidIOResult>();
+
+    getFs().copyFile({
+        srcPath,
+        destPath,
+        success(): void {
+            future.resolve(RESULT_VOID);
+        },
+        fail(err): void {
+            future.resolve(fileErrorToResult(err));
+        },
+    });
+
+    return future.promise;
+}
+
+/**
+ * 复制文件或文件夹。
+ *
+ * @param srcPath - 源文件或文件夹路径。
+ * @param destPath - 目标文件或文件夹路径。
+ * @returns 操作的异步结果。
+ */
+export async function copy(srcPath: string, destPath: string): AsyncVoidIOResult {
+    const absSrcPath = getAbsolutePath(srcPath);
+    const absDestPath = getAbsolutePath(destPath);
+
+    const statRes = await stat(absSrcPath, {
+        recursive: true,
+    });
+    if (statRes.isErr()) {
+        return statRes.asErr();
+    }
+
+    const statsArray = statRes.unwrap();
+
+    // directory
+    if (Array.isArray(statsArray)) {
+        for (const { path, stats } of statsArray) {
+            // 不能用join
+            const absPath = absSrcPath + path;
+            const newPath = absDestPath + path;
+
+            const res = await (stats.isDirectory()
+                ? mkdir(newPath)
+                : copyFile(absPath, newPath));
+
+            if (res.isErr()) {
+                return res;
+            }
+        }
+
+        return RESULT_VOID;
+    } else {
+        // file
+        return await copyFile(absSrcPath, absDestPath);
+    }
+}
+
 /**
  * 检查指定路径的文件或目录是否存在。
  * @param path - 文件或目录的路径。
@@ -460,7 +520,7 @@ export async function zip(sourcePath: string, zipFilePath: string, options?: Zip
         for (const { path, stats } of res.unwrap()) {
             if (stats.isFile()) {
                 const entryName = preserveRoot ? join(sourceName, path) : path;
-                // 不能用 json，否则 http://usr 会变成 http:/usr
+                // 不能用 join，否则 http://usr 会变成 http:/usr
                 const res = await readFile(absSourcePath + path);
                 if (res.isErr()) {
                     return res.asErr();

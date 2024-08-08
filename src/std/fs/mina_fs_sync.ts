@@ -131,6 +131,52 @@ export function appendFileSync(filePath: string, contents: WriteFileContent): Vo
     });
 }
 
+function copyFileSync(srcPath: string, destPath: string): VoidIOResult {
+    return trySyncOp(() => (getFs().copyFile({
+        srcPath,
+        destPath,
+    })));
+}
+
+/**
+ * `copy` 的同步版本。
+ */
+export function copySync(srcPath: string, destPath: string): VoidIOResult {
+    const absSrcPath = getAbsolutePath(srcPath);
+    const absDestPath = getAbsolutePath(destPath);
+
+    const statRes = statSync(absSrcPath, {
+        recursive: true,
+    });
+    if (statRes.isErr()) {
+        return statRes.asErr();
+    }
+
+    const statsArray = statRes.unwrap();
+
+    // directory
+    if (Array.isArray(statsArray)) {
+        for (const { path, stats } of statsArray) {
+            // 不能用join
+            const absPath = absSrcPath + path;
+            const newPath = absDestPath + path;
+
+            const res = (stats.isDirectory()
+                ? mkdirSync(newPath)
+                : copyFileSync(absPath, newPath));
+
+            if (res.isErr()) {
+                return res;
+            }
+        }
+
+        return RESULT_VOID;
+    } else {
+        // file
+        return copyFileSync(absSrcPath, absDestPath);
+    }
+}
+
 /**
  * `exists` 的同步版本。
  */
@@ -241,7 +287,7 @@ export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOp
         for (const { path, stats } of res.unwrap()) {
             if (stats.isFile()) {
                 const entryName = preserveRoot ? join(sourceName, path) : path;
-                // 不能用 json，否则 http://usr 会变成 http:/usr
+                // 不能用 join，否则 http://usr 会变成 http:/usr
                 const res = readFileSync(absSourcePath + path);
                 if (res.isErr()) {
                     return res.asErr();
