@@ -16,19 +16,19 @@ function getDecoder(): TextDecoder {
 }
 
 /**
- * 将字符串数据编码为 ArrayBuffer。
+ * 将字符串数据编码为 `Uint8Array`
  * @param data - 需要编码的字符串数据。
- * @returns 编码后的 ArrayBuffer。
+ * @returns 编码后的 `Uint8Array`
  */
-export function encode(data: string): ArrayBuffer {
-    return getEncoder().encode(data).buffer as ArrayBuffer;
+export function encode(data: string): Uint8Array {
+    return getEncoder().encode(data);
 }
 
 /**
- * 将 ArrayBuffer 数据解码为字符串。
- * @param data - 需要解码的 ArrayBuffer。
+ * 将二进制数据解码为字符串。
+ * @param data - 需要解码的二进制数据。
  * @returns 解码后的字符串。
  */
-export function decode(data: ArrayBuffer): string {
+export function decode(data: AllowSharedBufferSource): string {
     return getDecoder().decode(data);
 }

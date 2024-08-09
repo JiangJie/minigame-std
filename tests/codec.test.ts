@@ -5,7 +5,7 @@
 import { assert } from '@std/assert';
 import { decode, encode } from '../src/mod.ts';
 
-Deno.test('encode/decode between utf8 string and ArrayBuffer', () => {
+Deno.test('encode/decode between utf8 string and binary', () => {
     const data = 'minigame-std';
     assert(decode(encode(data)) === data);
 });
