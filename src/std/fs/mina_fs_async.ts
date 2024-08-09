@@ -372,12 +372,17 @@ export function downloadFile(fileUrl: string, filePath: string, options?: Downlo
     assertSafeUrl(fileUrl);
     const absPath = getAbsolutePath(filePath);
 
+    const {
+        onProgress,
+        ...rest
+    } = options ?? {};
+
     let aborted = false;
 
     const future = new Future<IOResult<T>>();
 
     const task = wx.downloadFile({
-        ...options,
+        ...rest,
         url: fileUrl,
         filePath: absPath,
         success(res): void {
@@ -387,6 +392,16 @@ export function downloadFile(fileUrl: string, filePath: string, options?: Downlo
             future.resolve(miniGameFailureToResult(err));
         },
     });
+
+    if (typeof onProgress === 'function') {
+        task.onProgressUpdate(res => {
+            const { totalBytesExpectedToWrite, totalBytesWritten } = res;
+            onProgress(typeof totalBytesExpectedToWrite === 'number' && typeof totalBytesWritten === 'number' ? Ok({
+                totalByteLength: totalBytesExpectedToWrite,
+                completedByteLength: totalBytesWritten,
+            }) : Err(new Error(`Unknown download progress ${ totalBytesWritten }/${ totalBytesExpectedToWrite }`)));
+        });
+    }
 
     return {
         abort(): void {

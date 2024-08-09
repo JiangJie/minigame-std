@@ -1,3 +1,4 @@
+import type { FetchInit } from '@happy-ts/fetch-t';
 import type { FsRequestInit, ReadFileContent as OPFSReadFileContent, WriteFileContent as OPFSWriteFileContent, UploadRequestInit } from 'happy-opfs';
 
 /**
@@ -30,7 +31,9 @@ export type FileEncoding = 'binary' | 'utf8';
 /**
  * Options for downloading files.
  */
-export type DownloadFileOptions = Omit<WechatMinigame.DownloadFileOption, 'url' | 'filePath' | 'success' | 'fail'>;
+export interface DownloadFileOptions extends Omit<WechatMinigame.DownloadFileOption, 'url' | 'filePath' | 'success' | 'fail'> {
+    onProgress?: FetchInit['onProgress'];
+}
 
 /**
  * Options for uploading files.
