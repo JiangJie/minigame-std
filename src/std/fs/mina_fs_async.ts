@@ -511,6 +511,24 @@ export function unzip(zipFilePath: string, targetPath: string): AsyncVoidIOResul
 }
 
 /**
+ * 从网络下载 zip 文件并解压。
+ * @param zipFileUrl - Zip 文件的网络地址。
+ * @param targetPath - 要解压到的目标文件夹路径。
+ * @param options - 可选的下载参数。
+ * @returns 下载并解压操作的异步结果。
+ */
+export async function unzipFromUrl(zipFileUrl: string, targetPath: string, options?: DownloadFileOptions): AsyncVoidIOResult {
+    const task = downloadFile(zipFileUrl, options);
+    const res = await task.response;
+
+    if (res.isErr()) {
+        return res.asErr();
+    }
+
+    return await unzip(res.unwrap().tempFilePath, targetPath);
+}
+
+/**
  * 压缩文件。
  * @param sourcePath - 需要压缩的文件（夹）路径。
  * @param zipFilePath - 压缩后的 zip 文件路径。

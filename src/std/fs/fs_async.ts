@@ -13,11 +13,12 @@ import {
     rename as webRename,
     stat as webStat,
     unzip as webUnzip,
+    unzipFromUrl as webUnzipFromUrl,
     uploadFile as webUploadFile,
     writeFile as webWriteFile,
     zip as webZip,
     type DownloadFileTempResponse,
-    type ZipOptions
+    type ZipOptions,
 } from 'happy-opfs';
 import { Ok, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
@@ -37,9 +38,10 @@ import {
     rename as minaRename,
     stat as minaStat,
     unzip as minaUnzip,
+    unzipFromUrl as minaUnzipFromUrl,
     uploadFile as minaUploadFile,
     writeFile as minaWriteFile,
-    zip as minaZip
+    zip as minaZip,
 } from './mina_fs_async.ts';
 
 /**
@@ -254,6 +256,17 @@ export function uploadFile(filePath: string, fileUrl: string, options?: UnionUpl
  */
 export function unzip(zipFilePath: string, targetPath: string): AsyncVoidIOResult {
     return (isMinaEnv() ? minaUnzip : webUnzip)(zipFilePath, targetPath);
+}
+
+/**
+ * 从网络下载 zip 文件并解压。
+ * @param zipFileUrl - Zip 文件的网络地址。
+ * @param targetPath - 要解压到的目标文件夹路径。
+ * @param options - 可选的下载参数。
+ * @returns 下载并解压操作的异步结果。
+ */
+export async function unzipFromUrl(zipFileUrl: string, targetPath: string, options?: UnionDownloadFileOptions): AsyncVoidIOResult {
+    return (isMinaEnv() ? minaUnzipFromUrl : webUnzipFromUrl)(zipFileUrl, targetPath, options);
 }
 
 /**
