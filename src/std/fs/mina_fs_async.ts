@@ -529,15 +529,29 @@ export async function unzipFromUrl(zipFileUrl: string, targetPath: string, optio
 }
 
 /**
+ * 压缩文件到内存。
+ * @param sourcePath - 需要压缩的文件（夹）路径。
+ * @param options - 可选的压缩参数。
+ * @returns 压缩成功的异步结果。
+ */
+export async function zip(sourcePath: string, options?: ZipOptions): AsyncIOResult<Uint8Array>;
+/**
  * 压缩文件。
  * @param sourcePath - 需要压缩的文件（夹）路径。
  * @param zipFilePath - 压缩后的 zip 文件路径。
  * @param options - 可选的压缩参数。
  * @returns 压缩成功的异步结果。
  */
-export async function zip(sourcePath: string, zipFilePath: string, options?: ZipOptions): AsyncVoidIOResult {
+export async function zip(sourcePath: string, zipFilePath: string, options?: ZipOptions): AsyncVoidIOResult
+export async function zip<T>(sourcePath: string, zipFilePath?: string | ZipOptions, options?: ZipOptions): AsyncIOResult<T> {
     const absSourcePath = getAbsolutePath(sourcePath);
-    const absZipPath = getAbsolutePath(zipFilePath);
+
+    let absZipFilePath: string;
+    if (typeof zipFilePath === 'string') {
+        absZipFilePath = getAbsolutePath(zipFilePath);
+    } else {
+        options = zipFilePath;
+    }
 
     const statRes = await stat(absSourcePath);
     if (statRes.isErr()) {
@@ -583,7 +597,7 @@ export async function zip(sourcePath: string, zipFilePath: string, options?: Zip
         }
     }
 
-    const future = new Future<VoidIOResult>();
+    const future = new Future<IOResult<T>>();
 
     fflate.zip(zipped, {
         consume: true,
@@ -593,9 +607,46 @@ export async function zip(sourcePath: string, zipFilePath: string, options?: Zip
             return;
         }
 
-        const res = await writeFile(absZipPath, u8a);
-        future.resolve(res);
+        if (absZipFilePath) {
+            const res = await writeFile(absZipFilePath, u8a);
+            future.resolve(res as IOResult<T>);
+        } else {
+            future.resolve(Ok(u8a as T));
+        }
     });
 
     return await future.promise;
+}
+
+type ZipFromUrlOptions = DownloadFileOptions & ZipOptions;
+/**
+ * 下载文件并压缩到内存。
+ * @param sourceUrl - 要下载的文件 URL。
+ * @param options - 合并的下载和压缩选项。
+ */
+export async function zipFromUrl(sourceUrl: string, options?: ZipFromUrlOptions): AsyncIOResult<Uint8Array>;
+/**
+ * 下载文件并压缩为 zip 文件。
+ * @param sourceUrl - 要下载的文件 URL。
+ * @param zipFilePath - 要输出的 zip 文件路径。
+ * @param options - 合并的下载和压缩选项。
+ */
+export async function zipFromUrl(sourceUrl: string, zipFilePath: string, options?: ZipFromUrlOptions): AsyncVoidIOResult;
+export async function zipFromUrl<T>(sourceUrl: string, zipFilePath?: string | ZipFromUrlOptions, options?: ZipFromUrlOptions): AsyncIOResult<T> {
+    if (typeof zipFilePath !== 'string') {
+        options = zipFilePath;
+        zipFilePath = undefined;
+    }
+
+    const task = downloadFile(sourceUrl, options);
+    const res = await task.response;
+
+    if (res.isErr()) {
+        return res.asErr();
+    }
+
+    const { tempFilePath } = res.unwrap();
+    return await (zipFilePath
+        ? zip(tempFilePath, zipFilePath, options)
+        : zip(tempFilePath, options)) as IOResult<T>;
 }

@@ -17,12 +17,14 @@ import {
     uploadFile as webUploadFile,
     writeFile as webWriteFile,
     zip as webZip,
+    zipFromUrl as webZipFromUrl,
     type DownloadFileTempResponse,
+    type FsRequestInit,
     type ZipOptions,
 } from 'happy-opfs';
 import { Ok, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
-import type { StatOptions, UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent } from './fs_define.ts';
+import type { DownloadFileOptions, StatOptions, UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent } from './fs_define.ts';
 import { convertFileSystemHandleToStats } from './fs_helpers.ts';
 import {
     appendFile as minaAppendFile,
@@ -42,6 +44,7 @@ import {
     uploadFile as minaUploadFile,
     writeFile as minaWriteFile,
     zip as minaZip,
+    zipFromUrl as minaZipFromUrl,
 } from './mina_fs_async.ts';
 
 /**
@@ -270,12 +273,54 @@ export async function unzipFromUrl(zipFileUrl: string, targetPath: string, optio
 }
 
 /**
+ * 压缩文件到内存。
+ * @param sourcePath - 需要压缩的文件（夹）路径。
+ * @param options - 可选的压缩参数。
+ * @returns 压缩成功的异步结果。
+ */
+export function zip(sourcePath: string, options?: ZipOptions): AsyncIOResult<Uint8Array>;
+/**
  * 压缩文件。
  * @param sourcePath - 需要压缩的文件（夹）路径。
  * @param zipFilePath - 压缩后的 zip 文件路径。
  * @param options - 可选的压缩参数。
  * @returns 压缩成功的异步结果。
  */
-export function zip(sourcePath: string, zipFilePath: string, options?: ZipOptions): AsyncVoidIOResult {
-    return (isMinaEnv() ? minaZip : webZip)(sourcePath, zipFilePath, options);
+export function zip(sourcePath: string, zipFilePath: string, options?: ZipOptions): AsyncVoidIOResult;
+export function zip(sourcePath: string, zipFilePath?: string | ZipOptions, options?: ZipOptions): AsyncVoidIOResult | AsyncIOResult<Uint8Array> {
+    if (typeof zipFilePath === 'string') {
+        return isMinaEnv()
+            ? minaZip(sourcePath, zipFilePath, options)
+            : webZip(sourcePath, zipFilePath, options);
+    } else {
+        return isMinaEnv()
+            ? minaZip(sourcePath, zipFilePath)
+            : webZip(sourcePath, zipFilePath);
+    }
+}
+
+type ZipFromUrlOptions = (DownloadFileOptions & ZipOptions) & FsRequestInit;
+/**
+ * 下载文件并压缩到内存。
+ * @param sourceUrl - 要下载的文件 URL。
+ * @param options - 合并的下载和压缩选项。
+ */
+export function zipFromUrl(sourceUrl: string, options?: ZipFromUrlOptions): AsyncIOResult<Uint8Array>;
+/**
+ * 下载文件并压缩为 zip 文件。
+ * @param sourceUrl - 要下载的文件 URL。
+ * @param zipFilePath - 要输出的 zip 文件路径。
+ * @param options - 合并的下载和压缩选项。
+ */
+export function zipFromUrl(sourceUrl: string, zipFilePath: string, options?: ZipFromUrlOptions): AsyncVoidIOResult;
+export function zipFromUrl(sourceUrl: string, zipFilePath?: string | ZipFromUrlOptions, options?: ZipFromUrlOptions): AsyncVoidIOResult | AsyncIOResult<Uint8Array> {
+    if (typeof zipFilePath === 'string') {
+        return isMinaEnv()
+            ? minaZipFromUrl(sourceUrl, zipFilePath, options)
+            : webZipFromUrl(sourceUrl, zipFilePath, options);
+    } else {
+        return isMinaEnv()
+            ? minaZipFromUrl(sourceUrl, zipFilePath)
+            : webZipFromUrl(sourceUrl, zipFilePath);
+    }
 }
