@@ -5,14 +5,14 @@
       "jsr:@std/assert@^1.0.2": "jsr:@std/assert@1.0.2",
       "jsr:@std/internal@^1.0.1": "jsr:@std/internal@1.0.1",
       "npm:@eslint/js@^9.8.0": "npm:@eslint/js@9.8.0",
-      "npm:@happy-ts/fetch-t@^1.2.1": "npm:@happy-ts/fetch-t@1.2.1",
+      "npm:@happy-ts/fetch-t@^1.3.0": "npm:@happy-ts/fetch-t@1.3.0",
       "npm:@jsr/std__path@^1.0.2": "npm:@jsr/std__path@1.0.2",
       "npm:@types/eslint__js@^8.42.3": "npm:@types/eslint__js@8.42.3",
       "npm:eslint@^9.8.0": "npm:eslint@9.8.0",
       "npm:fflate@^0.8.2": "npm:fflate@0.8.2",
-      "npm:happy-opfs@^1.6.1": "npm:happy-opfs@1.6.1",
+      "npm:happy-opfs@^1.7.4": "npm:happy-opfs@1.7.4",
       "npm:happy-rusty@^1.4.0": "npm:happy-rusty@1.4.0",
-      "npm:minigame-api-typings@^3.8.4": "npm:minigame-api-typings@3.8.4",
+      "npm:minigame-api-typings@^3.8.5": "npm:minigame-api-typings@3.8.5",
       "npm:rollup-plugin-dts@^6.1.1": "npm:rollup-plugin-dts@6.1.1_rollup@4.20.0_typescript@5.5.4",
       "npm:rollup-plugin-esbuild@^6.1.1": "npm:rollup-plugin-esbuild@6.1.1_esbuild@0.23.0_rollup@4.20.0",
       "npm:rollup@^4.20.0": "npm:rollup@4.20.0",
@@ -192,8 +192,8 @@
         "integrity": "sha512-BsWiH1yFGjXXS2yvrf5LyuoSIIbPrGUWob917o+BTKuZ7qJdxX8aJLRxs1fS9n6r7vESrq1OUqb68dANcFXuQQ==",
         "dependencies": {}
       },
-      "@happy-ts/fetch-t@1.2.1": {
-        "integrity": "sha512-iQ1bV67ahFa0qhzf/2b/7BEzXbOkhK0Af2d4xcGsTkpJ9672WBGLGDXWAb0hxTaTTHq1RSmz0L4/+HpumaqRAw==",
+      "@happy-ts/fetch-t@1.3.0": {
+        "integrity": "sha512-MHPpRe707WFYF6jF51cUt6PZTPldPgWF61ie7jrIhHUB/FEjYVH+alZm0BgzZefhNoPOMlLHp0wzhAC5fgc41g==",
         "dependencies": {
           "happy-rusty": "happy-rusty@1.4.0",
           "tiny-invariant": "tiny-invariant@1.3.3"
@@ -787,10 +787,10 @@
         "integrity": "sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==",
         "dependencies": {}
       },
-      "happy-opfs@1.6.1": {
-        "integrity": "sha512-FlrPBhMKjsvn4Yq0EvjT7A7WB4dt6t9Ix33TF+hNuTfM1JzAiXoiw9MGafwMdXYcrQP2xX1E16Fc3VGUF6EVmg==",
+      "happy-opfs@1.7.4": {
+        "integrity": "sha512-blD48/DnqYNR4uL05dBPE8zevguqNCNZW9Mc5lYTwT4sH9wKyAYJgYZGI60rlyorEpQ7WhW1SSsJ7ihdlDKg4Q==",
         "dependencies": {
-          "@happy-ts/fetch-t": "@happy-ts/fetch-t@1.2.1",
+          "@happy-ts/fetch-t": "@happy-ts/fetch-t@1.3.0",
           "@std/path": "@jsr/std__path@1.0.2",
           "fflate": "fflate@0.8.2",
           "happy-rusty": "happy-rusty@1.4.0",
@@ -934,8 +934,8 @@
           "picomatch": "picomatch@2.3.1"
         }
       },
-      "minigame-api-typings@3.8.4": {
-        "integrity": "sha512-2dPLR97Bgy4FHC/av3nk84CW75zppdKvimDgUEE/3qCLesguRddjcqmkUGG+oMvj87AXAx1K10pHaMjquIqwBw==",
+      "minigame-api-typings@3.8.5": {
+        "integrity": "sha512-WLJw0St5zFeY5mPJBOte8NF4RVsJ+G7qchqz7NYv1vC4tOhTbdUP1hk0cdywFPAxN2mDxzYXgltsVKJLc/JDYA==",
         "dependencies": {}
       },
       "minimatch@3.1.2": {
@@ -1229,14 +1229,14 @@
     "packageJson": {
       "dependencies": [
         "npm:@eslint/js@^9.8.0",
-        "npm:@happy-ts/fetch-t@^1.2.1",
+        "npm:@happy-ts/fetch-t@^1.3.0",
         "npm:@jsr/std__path@^1.0.2",
         "npm:@types/eslint__js@^8.42.3",
         "npm:eslint@^9.8.0",
         "npm:fflate@^0.8.2",
-        "npm:happy-opfs@^1.6.1",
+        "npm:happy-opfs@^1.7.4",
         "npm:happy-rusty@^1.4.0",
-        "npm:minigame-api-typings@^3.8.4",
+        "npm:minigame-api-typings@^3.8.5",
         "npm:rollup-plugin-dts@^6.1.1",
         "npm:rollup-plugin-esbuild@^6.1.1",
         "npm:rollup@^4.20.0",
