@@ -25,19 +25,29 @@ export function getFs(): WechatMinigame.FileSystemManager {
 }
 
 /**
- * 根路径。
+ * 根路径，`wxfile://` 或 `http://`。
  *
  * for tree shake
  */
 let rootPath: string;
 
 /**
+ * 用户可写的根路径， `wxfile://usr` 或 `http://usr`。
+ *
+ * for tree shake
+ */
+let rootUsrPath: string;
+
+/**
  * 获取文件系统的根路径。
  * @returns 文件系统的根路径。
  */
-function getRootPath(): string {
-    rootPath ??= wx.env.USER_DATA_PATH;
-    return rootPath;
+function getRootUsrPath(): string {
+    rootUsrPath ??= wx.env.USER_DATA_PATH;
+    // trim `usr`
+    rootPath ??= rootUsrPath.slice(0, rootUsrPath.indexOf('usr'));
+
+    return rootUsrPath;
 }
 
 /**
@@ -48,14 +58,15 @@ function getRootPath(): string {
 export function getAbsolutePath(path: string): string {
     assertString(path);
 
-    const rootPath = getRootPath();
+    const usrPath = getRootUsrPath();
 
+    // usr or tmp
     if (path.startsWith(rootPath)) {
         return path;
     }
 
     assertAbsolutePath(path);
-    return rootPath + path;
+    return usrPath + path;
 }
 
 /**
