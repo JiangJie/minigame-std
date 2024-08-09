@@ -18,14 +18,14 @@ importers:
         specifier: ^0.8.2
         version: 0.8.2
       happy-opfs:
-        specifier: ^1.7.0
-        version: 1.7.0
+        specifier: ^1.7.4
+        version: 1.7.4
       happy-rusty:
         specifier: ^1.4.0
         version: 1.4.0
       minigame-api-typings:
-        specifier: ^3.8.4
-        version: 3.8.4
+        specifier: ^3.8.5
+        version: 3.8.5
       tiny-future:
         specifier: ^1.0.0
         version: 1.0.0
@@ -656,8 +656,8 @@ packages:
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
 
-  happy-opfs@1.7.0:
-    resolution: {integrity: sha512-COaiYi1Qfrfoulk1dZVJZ+9aK4U/IS/OYuN/WEX2YZBH/VwpUgiBTh8gIk1IJy3ja4o+N2+I6eFzmLp5cqnEnQ==}
+  happy-opfs@1.7.4:
+    resolution: {integrity: sha512-blD48/DnqYNR4uL05dBPE8zevguqNCNZW9Mc5lYTwT4sH9wKyAYJgYZGI60rlyorEpQ7WhW1SSsJ7ihdlDKg4Q==}
 
   happy-rusty@1.4.0:
     resolution: {integrity: sha512-RbIfVv/XIVwKvwirx6a8Pkc1RfAgXyuMPAqJM9EUE3rVGxVgNOqLXU1yvmzt6VYWuYW5V7J3r6eBpr8s9kK/Vw==}
@@ -755,8 +755,8 @@ packages:
     resolution: {integrity: sha512-LPP/3KorzCwBxfeUuZmaR6bG2kdeHSbe0P2tY3FLRU4vYrjYz5hI4QZwV0njUx3jeuKe67YukQ1LSPZBKDqO/Q==}
     engines: {node: '>=8.6'}
 
-  minigame-api-typings@3.8.4:
-    resolution: {integrity: sha512-2dPLR97Bgy4FHC/av3nk84CW75zppdKvimDgUEE/3qCLesguRddjcqmkUGG+oMvj87AXAx1K10pHaMjquIqwBw==}
+  minigame-api-typings@3.8.5:
+    resolution: {integrity: sha512-WLJw0St5zFeY5mPJBOte8NF4RVsJ+G7qchqz7NYv1vC4tOhTbdUP1hk0cdywFPAxN2mDxzYXgltsVKJLc/JDYA==}
 
   minimatch@3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
@@ -1530,7 +1530,7 @@ snapshots:
 
   graphemer@1.4.0: {}
 
-  happy-opfs@1.7.0:
+  happy-opfs@1.7.4:
     dependencies:
       '@happy-ts/fetch-t': 1.3.0
       '@std/path': '@jsr/std__path@1.0.2'
@@ -1623,7 +1623,7 @@ snapshots:
       braces: 3.0.3
       picomatch: 2.3.1
 
-  minigame-api-typings@3.8.4: {}
+  minigame-api-typings@3.8.5: {}
 
   minimatch@3.1.2:
     dependencies:
