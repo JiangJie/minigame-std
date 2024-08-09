@@ -19,12 +19,11 @@ import {
     zip as webZip,
     zipFromUrl as webZipFromUrl,
     type DownloadFileTempResponse,
-    type FsRequestInit,
     type ZipOptions,
 } from 'happy-opfs';
 import { Ok, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
-import type { DownloadFileOptions, StatOptions, UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent } from './fs_define.ts';
+import type { StatOptions, UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent, ZipFromUrlOptions } from './fs_define.ts';
 import { convertFileSystemHandleToStats } from './fs_helpers.ts';
 import {
     appendFile as minaAppendFile,
@@ -299,7 +298,6 @@ export function zip(sourcePath: string, zipFilePath?: string | ZipOptions, optio
     }
 }
 
-type ZipFromUrlOptions = (DownloadFileOptions & ZipOptions) & FsRequestInit;
 /**
  * 下载文件并压缩到内存。
  * @param sourceUrl - 要下载的文件 URL。

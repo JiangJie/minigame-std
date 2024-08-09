@@ -1,5 +1,5 @@
 import type { FetchInit } from '@happy-ts/fetch-t';
-import type { FsRequestInit, ReadFileContent as OPFSReadFileContent, WriteFileContent as OPFSWriteFileContent, UploadRequestInit } from 'happy-opfs';
+import type { FsRequestInit, ReadFileContent as OPFSReadFileContent, WriteFileContent as OPFSWriteFileContent, UploadRequestInit, ZipOptions } from 'happy-opfs';
 
 /**
  * File content type for write, support `ArrayBuffer` `TypedArray` `string`.
@@ -64,3 +64,8 @@ export interface StatOptions {
      */
     recursive: boolean;
 }
+
+/**
+ * Union options for `unzipFromUrl`.
+ */
+export type ZipFromUrlOptions = (DownloadFileOptions & ZipOptions) & FsRequestInit;
