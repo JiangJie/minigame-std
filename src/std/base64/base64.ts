@@ -1,5 +1,5 @@
 /**
- * @fileoverview Encode/Decode between ArrayBuffer and base64 encoded string.
+ * @fileoverview Encode/Decode between Uint8Array and base64 encoded string.
  *
  * Forked from @std/encoding/base64 and https://github.com/cross-org/base64
  */
@@ -28,46 +28,45 @@ const lookup = ((): Uint8Array => {
 })();
 
 /**
- * Converts ArrayBuffer into a base64 encoded string.
+ * Converts Uint8Array into a base64 encoded string.
  *
  * @param data - The data to encode.
  * @returns The base64 encoded string.
  */
-export function base64FromArrayBuffer(data: ArrayBuffer): string {
+export function base64FromArrayBuffer(data: Uint8Array): string {
     let result = '';
 
-    const uint8 = new Uint8Array(data);
-    const len = uint8.length;
+    const len = data.length;
     let i: number;
 
     for (i = 2; i < len; i += 3) {
-        result += base64abc[(uint8[i - 2]) >> 2];
+        result += base64abc[(data[i - 2]) >> 2];
         result += base64abc[
-            (((uint8[i - 2]) & 0x03) << 4)
-            | ((uint8[i - 1]) >> 4)
+            (((data[i - 2]) & 0x03) << 4)
+            | ((data[i - 1]) >> 4)
         ];
         result += base64abc[
-            (((uint8[i - 1]) & 0x0f) << 2)
-            | ((uint8[i]) >> 6)
+            (((data[i - 1]) & 0x0f) << 2)
+            | ((data[i]) >> 6)
         ];
-        result += base64abc[(uint8[i]) & 0x3f];
+        result += base64abc[(data[i]) & 0x3f];
     }
 
     if (i === len + 1) {
         // 1 octet yet to write
-        result += base64abc[(uint8[i - 2]) >> 2];
-        result += base64abc[((uint8[i - 2]) & 0x03) << 4];
+        result += base64abc[(data[i - 2]) >> 2];
+        result += base64abc[((data[i - 2]) & 0x03) << 4];
         result += '==';
     }
 
     if (i === len) {
         // 2 octets yet to write
-        result += base64abc[(uint8[i - 2]) >> 2];
+        result += base64abc[(data[i - 2]) >> 2];
         result += base64abc[
-            (((uint8[i - 2]) & 0x03) << 4)
-            | ((uint8[i - 1]) >> 4)
+            (((data[i - 2]) & 0x03) << 4)
+            | ((data[i - 1]) >> 4)
         ];
-        result += base64abc[((uint8[i - 1]) & 0x0f) << 2];
+        result += base64abc[((data[i - 1]) & 0x0f) << 2];
         result += '=';
     }
 
@@ -75,12 +74,12 @@ export function base64FromArrayBuffer(data: ArrayBuffer): string {
 }
 
 /**
- * Converts a base64 encoded string to an ArrayBuffer
+ * Converts a base64 encoded string to an Uint8Array
  *
  * @param data - Base64 encoded string
- * @returns The decoded data as an ArrayBuffer.
+ * @returns The decoded data as an Uint8Array.
  */
-export function base64ToArrayBuffer(data: string): ArrayBuffer {
+export function base64ToArrayBuffer(data: string): Uint8Array {
     const len = data.length;
 
     let bufferLength = len * 0.75;
@@ -92,8 +91,7 @@ export function base64ToArrayBuffer(data: string): ArrayBuffer {
         }
     }
 
-    const arraybuffer = new ArrayBuffer(bufferLength);
-    const bytes = new Uint8Array(arraybuffer);
+    const u8a = new Uint8Array(bufferLength);
 
     let pos = 0;
 
@@ -103,10 +101,10 @@ export function base64ToArrayBuffer(data: string): ArrayBuffer {
         const encoded3 = lookup[data.charCodeAt(i + 2)];
         const encoded4 = lookup[data.charCodeAt(i + 3)];
 
-        bytes[pos++] = (encoded1 << 2) | (encoded2 >> 4);
-        bytes[pos++] = ((encoded2 & 15) << 4) | (encoded3 >> 2);
-        bytes[pos++] = ((encoded3 & 3) << 6) | (encoded4 & 63);
+        u8a[pos++] = (encoded1 << 2) | (encoded2 >> 4);
+        u8a[pos++] = ((encoded2 & 15) << 4) | (encoded3 >> 2);
+        u8a[pos++] = ((encoded3 & 3) << 6) | (encoded4 & 63);
     }
 
-    return arraybuffer;
+    return u8a;
 }
