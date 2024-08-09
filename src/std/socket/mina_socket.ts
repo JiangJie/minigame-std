@@ -73,7 +73,7 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
             }
         },
 
-        send(data: string | ArrayBuffer | ArrayBufferView): AsyncVoidIOResult {
+        send(data: string | BufferSource): AsyncVoidIOResult {
             const future = new Future<VoidIOResult>();
 
             let buffer = data;

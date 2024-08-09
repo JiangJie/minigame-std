@@ -74,7 +74,7 @@ export interface ISocket {
      * @param data - 要发送的数据，可以是字符串、ArrayBuffer 或 ArrayBufferView。
      * @returns 返回一个 Promise，其解析为发送结果，成功时返回 true，失败时返回 Error。
      */
-    send(data: string | ArrayBuffer | ArrayBufferView): AsyncVoidIOResult;
+    send(data: string | BufferSource): AsyncVoidIOResult;
 
     /**
      * 关闭 WebSocket 连接。

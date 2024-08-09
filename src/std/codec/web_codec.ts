@@ -29,6 +29,6 @@ export function encode(data: string): Uint8Array {
  * @param data - 需要解码的二进制数据。
  * @returns 解码后的字符串。
  */
-export function decode(data: AllowSharedBufferSource): string {
+export function decode(data: BufferSource): string {
     return getDecoder().decode(data);
 }

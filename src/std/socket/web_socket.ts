@@ -70,7 +70,7 @@ export function connectSocket(url: string, protocols?: string | string[]): ISock
             }
         },
 
-        send(data: string | ArrayBuffer | ArrayBufferView): AsyncVoidIOResult {
+        send(data: string | BufferSource): AsyncVoidIOResult {
             socket.send(data);
             return Promise.resolve(RESULT_VOID);
         },
