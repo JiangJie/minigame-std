@@ -312,6 +312,11 @@ export async function copy(srcPath: string, destPath: string): AsyncVoidIOResult
         return RESULT_VOID;
     } else {
         // file
+        const res = await mkdir(dirname(absDestPath));
+        if (res.isErr()) {
+            return res;
+        }
+
         return await copyFile(absSrcPath, absDestPath);
     }
 }
