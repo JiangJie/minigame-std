@@ -57,7 +57,7 @@ FetchTask。
 
 ### Defined in
 
-[fetch/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/e98ab0af7ad78dc07fcec865ee164ff1e7efe9cf/src/std/fetch/mod.ts#L14)
+[src/std/fetch/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/ffbed6cccc22260d9da27c221c59422568396e08/src/std/fetch/mod.ts#L14)
 
 ## fetchT(url, init)
 
@@ -96,7 +96,7 @@ FetchTask。
 
 ### Defined in
 
-[fetch/mod.ts:24](https://github.com/JiangJie/minigame-std/blob/e98ab0af7ad78dc07fcec865ee164ff1e7efe9cf/src/std/fetch/mod.ts#L24)
+[src/std/fetch/mod.ts:24](https://github.com/JiangJie/minigame-std/blob/ffbed6cccc22260d9da27c221c59422568396e08/src/std/fetch/mod.ts#L24)
 
 ## fetchT(url, init)
 
@@ -141,7 +141,7 @@ FetchTask。
 
 ### Defined in
 
-[fetch/mod.ts:35](https://github.com/JiangJie/minigame-std/blob/e98ab0af7ad78dc07fcec865ee164ff1e7efe9cf/src/std/fetch/mod.ts#L35)
+[src/std/fetch/mod.ts:35](https://github.com/JiangJie/minigame-std/blob/ffbed6cccc22260d9da27c221c59422568396e08/src/std/fetch/mod.ts#L35)
 
 ## fetchT(url, init)
 
@@ -180,4 +180,4 @@ FetchTask。
 
 ### Defined in
 
-[fetch/mod.ts:46](https://github.com/JiangJie/minigame-std/blob/e98ab0af7ad78dc07fcec865ee164ff1e7efe9cf/src/std/fetch/mod.ts#L46)
+[src/std/fetch/mod.ts:46](https://github.com/JiangJie/minigame-std/blob/ffbed6cccc22260d9da27c221c59422568396e08/src/std/fetch/mod.ts#L46)

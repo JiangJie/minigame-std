@@ -12,6 +12,7 @@
 
 | Interface | Description |
 | ------ | ------ |
+| [DownloadFileOptions](interfaces/DownloadFileOptions.md) | Options for downloading files. |
 | [ReadOptions](interfaces/ReadOptions.md) | Options for reading files with specified encoding. |
 | [StatOptions](interfaces/StatOptions.md) | Options for stat operations. |
 | [UploadFileOptions](interfaces/UploadFileOptions.md) | Options for uploading files. |
@@ -20,12 +21,12 @@
 
 | Type alias | Description |
 | ------ | ------ |
-| [DownloadFileOptions](type-aliases/DownloadFileOptions.md) | Options for downloading files. |
 | [FileEncoding](type-aliases/FileEncoding.md) | Supported file encodings for reading and writing files. |
 | [ReadFileContent](type-aliases/ReadFileContent.md) | File content type for read result, support `ArrayBuffer` `string`. |
 | [UnionDownloadFileOptions](type-aliases/UnionDownloadFileOptions.md) | Options for union requests. |
 | [UnionUploadFileOptions](type-aliases/UnionUploadFileOptions.md) | Options for union requests. |
 | [WriteFileContent](type-aliases/WriteFileContent.md) | File content type for write, support `ArrayBuffer` `TypedArray` `string`. |
+| [ZipFromUrlOptions](type-aliases/ZipFromUrlOptions.md) | Union options for `unzipFromUrl`. |
 
 ### Functions
 
@@ -33,7 +34,9 @@
 | ------ | ------ |
 | [appendFile](functions/appendFile.md) | 向文件追加内容。 |
 | [appendFileSync](functions/appendFileSync.md) | `appendFile` 的同步版本。 |
-| [downloadFile](functions/downloadFile.md) | 下载文件。 |
+| [copy](functions/copy.md) | 复制文件或文件夹。 |
+| [copySync](functions/copySync.md) | `copy` 的同步版本。 |
+| [downloadFile](functions/downloadFile.md) | 下载文件并保存到临时文件。 |
 | [emptyDir](functions/emptyDir.md) | 清空指定目录下的所有文件和子目录。 |
 | [emptyDirSync](functions/emptyDirSync.md) | `emptyDir` 的同步版本。 |
 | [exists](functions/exists.md) | 检查指定路径的文件或目录是否存在。 |
@@ -53,9 +56,11 @@
 | [stat](functions/stat.md) | - |
 | [statSync](functions/statSync.md) | `stat` 的同步版本。 |
 | [unzip](functions/unzip.md) | 解压 zip 文件。 |
+| [unzipFromUrl](functions/unzipFromUrl.md) | 从网络下载 zip 文件并解压。 |
 | [unzipSync](functions/unzipSync.md) | `unzip` 的同步版本。 |
 | [uploadFile](functions/uploadFile.md) | 上传本地文件。 |
 | [writeFile](functions/writeFile.md) | 写入文件，不存在则创建，同时创建对应目录，contents只支持ArrayBuffer和string，并且需要确保string一定是utf8编码的。 |
 | [writeFileSync](functions/writeFileSync.md) | `writeFile` 的同步版本。 |
-| [zip](functions/zip.md) | 压缩文件。 |
+| [zip](functions/zip.md) | 压缩文件到内存。 |
+| [zipFromUrl](functions/zipFromUrl.md) | 下载文件并压缩到内存。 |
 | [zipSync](functions/zipSync.md) | `zip` 的同步版本。 |

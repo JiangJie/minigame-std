@@ -12,7 +12,7 @@ WebSocket 接口定义，描述了 WebSocket 的基本操作方法。
 
 | Property | Modifier | Type | Description | Defined in |
 | ------ | ------ | ------ | ------ | ------ |
-| `readyState` | `readonly` | `number` | WebSocket 的连接状态。 | [socket/socket\_define.ts:61](https://github.com/JiangJie/minigame-std/blob/e98ab0af7ad78dc07fcec865ee164ff1e7efe9cf/src/std/socket/socket_define.ts#L61) |
+| `readyState` | `readonly` | `number` | WebSocket 的连接状态。 | [src/std/socket/socket\_define.ts:61](https://github.com/JiangJie/minigame-std/blob/ffbed6cccc22260d9da27c221c59422568396e08/src/std/socket/socket_define.ts#L61) |
 
 ## Methods
 
@@ -49,7 +49,7 @@ addEventListener<K>(type, listener): () => void
 
 #### Defined in
 
-[socket/socket\_define.ts:70](https://github.com/JiangJie/minigame-std/blob/e98ab0af7ad78dc07fcec865ee164ff1e7efe9cf/src/std/socket/socket_define.ts#L70)
+[src/std/socket/socket\_define.ts:70](https://github.com/JiangJie/minigame-std/blob/ffbed6cccc22260d9da27c221c59422568396e08/src/std/socket/socket_define.ts#L70)
 
 ***
 
@@ -74,7 +74,7 @@ close(code?, reason?): void
 
 #### Defined in
 
-[socket/socket\_define.ts:84](https://github.com/JiangJie/minigame-std/blob/e98ab0af7ad78dc07fcec865ee164ff1e7efe9cf/src/std/socket/socket_define.ts#L84)
+[src/std/socket/socket\_define.ts:84](https://github.com/JiangJie/minigame-std/blob/ffbed6cccc22260d9da27c221c59422568396e08/src/std/socket/socket_define.ts#L84)
 
 ***
 
@@ -90,7 +90,7 @@ send(data): AsyncVoidIOResult
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `data` | `string` \| `ArrayBuffer` \| `ArrayBufferView` | 要发送的数据，可以是字符串、ArrayBuffer 或 ArrayBufferView。 |
+| `data` | `string` \| `BufferSource` | 要发送的数据，可以是字符串、ArrayBuffer 或 ArrayBufferView。 |
 
 #### Returns
 
@@ -100,4 +100,4 @@ send(data): AsyncVoidIOResult
 
 #### Defined in
 
-[socket/socket\_define.ts:77](https://github.com/JiangJie/minigame-std/blob/e98ab0af7ad78dc07fcec865ee164ff1e7efe9cf/src/std/socket/socket_define.ts#L77)
+[src/std/socket/socket\_define.ts:77](https://github.com/JiangJie/minigame-std/blob/ffbed6cccc22260d9da27c221c59422568396e08/src/std/socket/socket_define.ts#L77)

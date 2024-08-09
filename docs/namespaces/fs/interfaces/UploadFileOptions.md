@@ -21,4 +21,4 @@ Options for uploading files.
 
 | Property | Type | Description | Defined in |
 | ------ | ------ | ------ | ------ |
-| `name?` | `string` | Optional file name. | [fs/fs\_define.ts:42](https://github.com/JiangJie/minigame-std/blob/e98ab0af7ad78dc07fcec865ee164ff1e7efe9cf/src/std/fs/fs_define.ts#L42) |
+| `name?` | `string` | Optional file name. | [src/std/fs/fs\_define.ts:45](https://github.com/JiangJie/minigame-std/blob/ffbed6cccc22260d9da27c221c59422568396e08/src/std/fs/fs_define.ts#L45) |

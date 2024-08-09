@@ -7,21 +7,23 @@
 # Function: encode()
 
 ```ts
-function encode(data): ArrayBuffer
+function encode(data): Uint8Array
 ```
 
-将`utf8`字符串编码为`ArrayBuffer`
+将字符串数据编码为 `Uint8Array`
 
 ## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `data` | `string` | 要编码的字符串 |
+| `data` | `string` | 需要编码的字符串数据。 |
 
 ## Returns
 
-`ArrayBuffer`
+`Uint8Array`
+
+编码后的 `Uint8Array`
 
 ## Defined in
 
-[codec/mod.ts:10](https://github.com/JiangJie/minigame-std/blob/e98ab0af7ad78dc07fcec865ee164ff1e7efe9cf/src/std/codec/mod.ts#L10)
+[src/std/codec/mod.ts:10](https://github.com/JiangJie/minigame-std/blob/ffbed6cccc22260d9da27c221c59422568396e08/src/std/codec/mod.ts#L10)

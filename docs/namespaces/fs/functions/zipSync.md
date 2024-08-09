@@ -29,4 +29,4 @@ function zipSync(
 
 ## Defined in
 
-[fs/fs\_sync.ts:168](https://github.com/JiangJie/minigame-std/blob/e98ab0af7ad78dc07fcec865ee164ff1e7efe9cf/src/std/fs/fs_sync.ts#L168)
+[src/std/fs/fs\_sync.ts:177](https://github.com/JiangJie/minigame-std/blob/ffbed6cccc22260d9da27c221c59422568396e08/src/std/fs/fs_sync.ts#L177)

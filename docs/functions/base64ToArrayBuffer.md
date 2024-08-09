@@ -7,10 +7,10 @@
 # Function: base64ToArrayBuffer()
 
 ```ts
-function base64ToArrayBuffer(data): ArrayBuffer
+function base64ToArrayBuffer(data): Uint8Array
 ```
 
-Converts a base64 encoded string to an ArrayBuffer
+Converts a base64 encoded string to an Uint8Array
 
 ## Parameters
 
@@ -20,10 +20,10 @@ Converts a base64 encoded string to an ArrayBuffer
 
 ## Returns
 
-`ArrayBuffer`
+`Uint8Array`
 
-The decoded data as an ArrayBuffer.
+The decoded data as an Uint8Array.
 
 ## Defined in
 
-[base64/base64.ts:83](https://github.com/JiangJie/minigame-std/blob/e98ab0af7ad78dc07fcec865ee164ff1e7efe9cf/src/std/base64/base64.ts#L83)
+[src/std/base64/base64.ts:82](https://github.com/JiangJie/minigame-std/blob/ffbed6cccc22260d9da27c221c59422568396e08/src/std/base64/base64.ts#L82)

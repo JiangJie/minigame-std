@@ -45,12 +45,12 @@
 | [assertSafeSocketUrl](functions/assertSafeSocketUrl.md) | 断言传入的 WebSocket URL 是否为 `wss` 协议。 |
 | [assertSafeUrl](functions/assertSafeUrl.md) | 断言传入的 URL 是否为 `https` 协议。 |
 | [assertString](functions/assertString.md) | 断言传入的是一个字符串。 |
-| [base64FromArrayBuffer](functions/base64FromArrayBuffer.md) | Converts ArrayBuffer into a base64 encoded string. |
-| [base64ToArrayBuffer](functions/base64ToArrayBuffer.md) | Converts a base64 encoded string to an ArrayBuffer |
+| [base64FromArrayBuffer](functions/base64FromArrayBuffer.md) | Converts Uint8Array into a base64 encoded string. |
+| [base64ToArrayBuffer](functions/base64ToArrayBuffer.md) | Converts a base64 encoded string to an Uint8Array |
 | [connectSocket](functions/connectSocket.md) | 创建并返回一个 WebSocket 连接。 |
-| [decode](functions/decode.md) | 将一段`ArrayBuffer`解码为`utf8`字符串 |
+| [decode](functions/decode.md) | 将二进制数据解码为字符串。 |
 | [decodeBase64](functions/decodeBase64.md) | 将 Base64 格式的字符串数据解码。 |
-| [encode](functions/encode.md) | 将`utf8`字符串编码为`ArrayBuffer` |
+| [encode](functions/encode.md) | 将字符串数据编码为 `Uint8Array` |
 | [encodeBase64](functions/encodeBase64.md) | 将字符串数据编码为 Base64 格式。 |
 | [fetchT](functions/fetchT.md) | 发起一个可中断的文本类型响应的网络请求。 |
 | [getNetworkType](functions/getNetworkType.md) | 获取网络状态。 |
