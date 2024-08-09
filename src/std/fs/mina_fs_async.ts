@@ -365,17 +365,31 @@ export function readTextFile(filePath: string): AsyncIOResult<string> {
 }
 
 /**
- * 下载文件。
+ * 下载文件并保存到临时文件。
  * @param fileUrl - 文件的网络 URL。
- * @param filePath - 下载后文件存储的路径。
  * @param options - 可选参数。
  * @returns 下载操作的异步结果，成功时返回 true。
  */
-export function downloadFile(fileUrl: string, filePath: string, options?: DownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult> {
+export function downloadFile(fileUrl: string, options?: DownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult>;
+/**
+ * 下载文件。
+ * @param fileUrl - 文件的网络 URL。
+ * @param filePath - 可选的下载后文件存储的路径，没传则存到临时文件。
+ * @param options - 可选参数。
+ * @returns 下载操作的异步结果，成功时返回 true。
+ */
+export function downloadFile(fileUrl: string, filePath: string, options?: DownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult>;
+export function downloadFile(fileUrl: string, filePath?: string | DownloadFileOptions, options?: DownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult> {
     type T = WechatMinigame.DownloadFileSuccessCallbackResult;
 
     assertSafeUrl(fileUrl);
-    const absPath = getAbsolutePath(filePath);
+
+    let absFilePath: string | undefined = undefined;
+    if (typeof filePath === 'string') {
+        absFilePath = getAbsolutePath(filePath);
+    } else {
+        options = filePath;
+    }
 
     const {
         onProgress,
@@ -389,7 +403,7 @@ export function downloadFile(fileUrl: string, filePath: string, options?: Downlo
     const task = wx.downloadFile({
         ...rest,
         url: fileUrl,
-        filePath: absPath,
+        filePath: absFilePath,
         success(res): void {
             future.resolve(Ok(res));
         },

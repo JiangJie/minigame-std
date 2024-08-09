@@ -16,6 +16,7 @@ import {
     uploadFile as webUploadFile,
     writeFile as webWriteFile,
     zip as webZip,
+    type DownloadFileTempResponse,
     type ZipOptions
 } from 'happy-opfs';
 import { Ok, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
@@ -208,14 +209,30 @@ export function readTextFile(filePath: string): AsyncIOResult<string> {
 }
 
 /**
+ * 下载文件并保存到临时文件。
+ * @param fileUrl - 文件的网络 URL。
+ * @param options - 可选参数。
+ * @returns 下载操作的异步结果，成功时返回 true。
+ */
+export function downloadFile(fileUrl: string, options?: UnionDownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | DownloadFileTempResponse>;
+/**
  * 下载文件。
  * @param fileUrl - 文件的网络 URL。
- * @param filePath - 下载后文件存储的路径。
+ * @param filePath - 可选的下载后文件存储的路径，没传则存到临时文件。
  * @param options - 可选的请求初始化参数。
  * @returns 下载成功返回原始结果。
  */
-export function downloadFile(fileUrl: string, filePath: string, options?: UnionDownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | Response> {
-    return (isMinaEnv() ? minaDownloadFile : webDownloadFile)(fileUrl, filePath, options);
+export function downloadFile(fileUrl: string, filePath: string, options?: UnionDownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | Response>
+export function downloadFile(fileUrl: string, filePath?: string | UnionDownloadFileOptions, options?: UnionDownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | DownloadFileTempResponse | Response> {
+    if (typeof filePath === 'string') {
+        return isMinaEnv()
+            ? minaDownloadFile(fileUrl, filePath, options)
+            : webDownloadFile(fileUrl, filePath, options);
+    } else {
+        return isMinaEnv()
+            ? minaDownloadFile(fileUrl, filePath)
+            : webDownloadFile(fileUrl, filePath);
+    }
 }
 
 /**
