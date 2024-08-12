@@ -32,4 +32,4 @@ IOResult。
 
 ## Defined in
 
-[src/std/utils/mod.ts:30](https://github.com/JiangJie/minigame-std/blob/d5a0bd55450bd8f6d3ddbc9f604a3e15ebaebf6d/src/std/utils/mod.ts#L30)
+[src/std/utils/mod.ts:30](https://github.com/JiangJie/minigame-std/blob/22787d0fd0cff776ed579de48ccf7523d9e4ce53/src/std/utils/mod.ts#L30)

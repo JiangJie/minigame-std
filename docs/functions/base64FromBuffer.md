@@ -2,12 +2,12 @@
 
 ***
 
-[minigame-std](../README.md) / base64FromArrayBuffer
+[minigame-std](../README.md) / base64FromBuffer
 
-# Function: base64FromArrayBuffer()
+# Function: base64FromBuffer()
 
 ```ts
-function base64FromArrayBuffer(data): string
+function base64FromBuffer(data): string
 ```
 
 Converts Uint8Array into a base64 encoded string.
@@ -26,4 +26,4 @@ The base64 encoded string.
 
 ## Defined in
 
-[src/std/base64/base64.ts:36](https://github.com/JiangJie/minigame-std/blob/d5a0bd55450bd8f6d3ddbc9f604a3e15ebaebf6d/src/std/base64/base64.ts#L36)
+[src/std/base64/base64.ts:36](https://github.com/JiangJie/minigame-std/blob/22787d0fd0cff776ed579de48ccf7523d9e4ce53/src/std/base64/base64.ts#L36)

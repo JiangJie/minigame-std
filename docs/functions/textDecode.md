@@ -2,12 +2,12 @@
 
 ***
 
-[minigame-std](../README.md) / decode
+[minigame-std](../README.md) / textDecode
 
-# Function: decode()
+# Function: textDecode()
 
 ```ts
-function decode(data): string
+function textDecode(data): string
 ```
 
 将二进制数据解码为字符串。
@@ -26,4 +26,4 @@ function decode(data): string
 
 ## Defined in
 
-[src/std/codec/mod.ts:21](https://github.com/JiangJie/minigame-std/blob/d5a0bd55450bd8f6d3ddbc9f604a3e15ebaebf6d/src/std/codec/mod.ts#L21)
+[src/std/codec/mod.ts:21](https://github.com/JiangJie/minigame-std/blob/22787d0fd0cff776ed579de48ccf7523d9e4ce53/src/std/codec/mod.ts#L21)

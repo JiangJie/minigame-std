@@ -8,6 +8,7 @@
 
 | Namespace | Description |
 | ------ | ------ |
+| [audio](namespaces/audio/README.md) | - |
 | [clipboard](namespaces/clipboard/README.md) | - |
 | [fs](namespaces/fs/README.md) | - |
 | [platform](namespaces/platform/README.md) | - |
@@ -45,17 +46,17 @@
 | [assertSafeSocketUrl](functions/assertSafeSocketUrl.md) | 断言传入的 WebSocket URL 是否为 `wss` 协议。 |
 | [assertSafeUrl](functions/assertSafeUrl.md) | 断言传入的 URL 是否为 `https` 协议。 |
 | [assertString](functions/assertString.md) | 断言传入的是一个字符串。 |
-| [base64FromArrayBuffer](functions/base64FromArrayBuffer.md) | Converts Uint8Array into a base64 encoded string. |
-| [base64ToArrayBuffer](functions/base64ToArrayBuffer.md) | Converts a base64 encoded string to an Uint8Array |
+| [base64FromBuffer](functions/base64FromBuffer.md) | Converts Uint8Array into a base64 encoded string. |
+| [base64ToBuffer](functions/base64ToBuffer.md) | Converts a base64 encoded string to an Uint8Array |
 | [connectSocket](functions/connectSocket.md) | 创建并返回一个 WebSocket 连接。 |
-| [decode](functions/decode.md) | 将二进制数据解码为字符串。 |
 | [decodeBase64](functions/decodeBase64.md) | 将 Base64 格式的字符串数据解码。 |
-| [encode](functions/encode.md) | 将字符串数据编码为 `Uint8Array` |
 | [encodeBase64](functions/encodeBase64.md) | 将字符串数据编码为 Base64 格式。 |
 | [fetchT](functions/fetchT.md) | 发起一个可中断的文本类型响应的网络请求。 |
 | [getNetworkType](functions/getNetworkType.md) | 获取网络状态。 |
 | [miniGameFailureToError](functions/miniGameFailureToError.md) | 将小游戏失败回调的结果转换为 `Error` 类型。 |
 | [miniGameFailureToResult](functions/miniGameFailureToResult.md) | 将错误对象转换为 IOResult 类型。 |
+| [textDecode](functions/textDecode.md) | 将二进制数据解码为字符串。 |
+| [textEncode](functions/textEncode.md) | 将字符串数据编码为 `Uint8Array` |
 | [tryDOMAsyncOp](functions/tryDOMAsyncOp.md) | 执行异步函数，预期异常都是 `DOMException`。 |
 | [tryDOMSyncOp](functions/tryDOMSyncOp.md) | 执行同步函数，预期异常都是 `DOMException`。 |
 | [tryGeneralAsyncOp](functions/tryGeneralAsyncOp.md) | 执行异步函数，预期异常都是 `WechatMinigame.GeneralCallbackResult`。 |

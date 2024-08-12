@@ -26,4 +26,4 @@ function readFile(filePath): AsyncIOResult<ArrayBuffer>
 
 ## Defined in
 
-[src/std/fs/fs\_async.ts:92](https://github.com/JiangJie/minigame-std/blob/d5a0bd55450bd8f6d3ddbc9f604a3e15ebaebf6d/src/std/fs/fs_async.ts#L92)
+[src/std/fs/fs\_async.ts:92](https://github.com/JiangJie/minigame-std/blob/22787d0fd0cff776ed579de48ccf7523d9e4ce53/src/std/fs/fs_async.ts#L92)
