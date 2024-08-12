@@ -63,7 +63,7 @@ jsr add @happy-js/minigame-std
     ```
 -   UTF-8 字符串和 ArrayBuffer 之间编解码
     ```js
-    import { decode, encode } from 'minigame-std';
+    import { textDecode, textEncode } from 'minigame-std';
     ```
 -   base64 编解码
     ```js
@@ -96,6 +96,10 @@ jsr add @happy-js/minigame-std
 -   storage（localStorage）
     ```js
     import { storage } from 'minigame-std';
+    ```
+-   WebAudio
+    ```js
+    import { audio } from 'minigame-std';
     ```
 -   更多特性正在开发中...
 
