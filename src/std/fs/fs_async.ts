@@ -6,11 +6,11 @@ import {
     emptyDir as webEmptyDir,
     exists as webExists,
     mkdir as webMkdir,
+    move as webMove,
     readDir as webReadDir,
     readFile as webReadFile,
     readTextFile as webReadTextFile,
     remove as webRemove,
-    rename as webRename,
     stat as webStat,
     unzip as webUnzip,
     unzipFromUrl as webUnzipFromUrl,
@@ -32,11 +32,11 @@ import {
     emptyDir as minaEmptyDir,
     exists as minaExists,
     mkdir as minaMkdir,
+    move as minaMove,
     readDir as minaReadDir,
     readFile as minaReadFile,
     readTextFile as minaReadTextFile,
     remove as minaRemove,
-    rename as minaRename,
     stat as minaStat,
     unzip as minaUnzip,
     unzipFromUrl as minaUnzipFromUrl,
@@ -100,8 +100,8 @@ export function remove(path: string): AsyncVoidIOResult {
  * @param newPath - 新路径。
  * @returns 重命名成功返回 true 的异步操作结果。
  */
-export function rename(oldPath: string, newPath: string): AsyncVoidIOResult {
-    return (isMinaEnv() ? minaRename : webRename)(oldPath, newPath);
+export function move(oldPath: string, newPath: string): AsyncVoidIOResult {
+    return (isMinaEnv() ? minaMove : webMove)(oldPath, newPath);
 }
 
 export async function stat(path: string): AsyncIOResult<WechatMinigame.Stats>;

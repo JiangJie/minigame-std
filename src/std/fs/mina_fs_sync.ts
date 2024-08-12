@@ -30,6 +30,16 @@ export function mkdirSync(dirPath: string): VoidIOResult {
 }
 
 /**
+ * `move` 的同步版本。
+ */
+export function moveSync(oldPath: string, newPath: string): VoidIOResult {
+    const absOldPath = getAbsolutePath(oldPath);
+    const absNewPath = getAbsolutePath(newPath);
+
+    return trySyncOp(() => getFs().renameSync(absOldPath, absNewPath));
+}
+
+/**
  * `readDir` 的同步版本。
  */
 export function readDirSync(dirPath: string): IOResult<string[]> {
@@ -75,16 +85,6 @@ export function removeSync(path: string): VoidIOResult {
             getFs().unlinkSync(absPath);
         }
     }, errToRemoveResult);
-}
-
-/**
- * `rename` 的同步版本。
- */
-export function renameSync(oldPath: string, newPath: string): VoidIOResult {
-    const absOldPath = getAbsolutePath(oldPath);
-    const absNewPath = getAbsolutePath(newPath);
-
-    return trySyncOp(() => getFs().renameSync(absOldPath, absNewPath));
 }
 
 /**

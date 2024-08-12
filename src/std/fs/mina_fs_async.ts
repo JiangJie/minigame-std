@@ -34,6 +34,32 @@ export function mkdir(dirPath: string): AsyncVoidIOResult {
 }
 
 /**
+ * 重命名文件或目录。
+ * @param oldPath - 原路径。
+ * @param newPath - 新路径。
+ * @returns 重命名操作的异步结果，成功时返回 true。
+ */
+export function move(oldPath: string, newPath: string): AsyncVoidIOResult {
+    const absOldPath = getAbsolutePath(oldPath);
+    const absNewPath = getAbsolutePath(newPath);
+
+    const future = new Future<VoidIOResult>();
+
+    getFs().rename({
+        oldPath: absOldPath,
+        newPath: absNewPath,
+        success(): void {
+            future.resolve(RESULT_VOID);
+        },
+        fail(err): void {
+            future.resolve(fileErrorToResult(err));
+        },
+    });
+
+    return future.promise;
+}
+
+/**
  * 读取目录下的所有文件和子目录。
  * @param dirPath - 目录路径。
  * @returns 包含目录内容的字符串数组的异步操作。
@@ -143,32 +169,6 @@ export async function remove(path: string): AsyncVoidIOResult {
             },
         });
     }
-
-    return future.promise;
-}
-
-/**
- * 重命名文件或目录。
- * @param oldPath - 原路径。
- * @param newPath - 新路径。
- * @returns 重命名操作的异步结果，成功时返回 true。
- */
-export function rename(oldPath: string, newPath: string): AsyncVoidIOResult {
-    const absOldPath = getAbsolutePath(oldPath);
-    const absNewPath = getAbsolutePath(newPath);
-
-    const future = new Future<VoidIOResult>();
-
-    getFs().rename({
-        oldPath: absOldPath,
-        newPath: absNewPath,
-        success(): void {
-            future.resolve(RESULT_VOID);
-        },
-        fail(err): void {
-            future.resolve(fileErrorToResult(err));
-        },
-    });
 
     return future.promise;
 }

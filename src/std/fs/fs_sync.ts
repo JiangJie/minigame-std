@@ -4,11 +4,11 @@ import {
     emptyDirSync as webEmptyDirSync,
     existsSync as webExistsSync,
     mkdirSync as webMkdirSync,
+    moveSync as webMoveSync,
     readDirSync as webReadDirSync,
     readFileSync as webReadFileSync,
     readTextFileSync as webReadTextFileSync,
     removeSync as webRemoveSync,
-    renameSync as webRenameSync,
     statSync as webStatSync,
     unzipSync as webUnzipSync,
     writeFileSync as webWriteFileSync,
@@ -25,11 +25,11 @@ import {
     emptyDirSync as minaEmptyDirSync,
     existsSync as minaExistsSync,
     mkdirSync as minaMkdirSync,
+    moveSync as minaMoveSync,
     readDirSync as minaReadDirSync,
     readFileSync as minaReadFileSync,
     readTextFileSync as minaReadTextFileSync,
     removeSync as minaRemoveSync,
-    renameSync as minaRenameSync,
     statSync as minaStatSync,
     unzipSync as minaUnzipSync,
     writeFileSync as minaWriteFileSync,
@@ -41,6 +41,13 @@ import {
  */
 export function mkdirSync(dirPath: string): VoidIOResult {
     return (isMinaEnv() ? minaMkdirSync : webMkdirSync)(dirPath);
+}
+
+/**
+ * `move` 的同步版本。
+ */
+export function moveSync(oldPath: string, newPath: string): VoidIOResult {
+    return (isMinaEnv() ? minaMoveSync : webMoveSync)(oldPath, newPath);
 }
 
 /**
@@ -66,13 +73,6 @@ export function readFileSync(filePath: string): IOResult<ArrayBuffer> {
  */
 export function removeSync(path: string): VoidIOResult {
     return (isMinaEnv() ? minaRemoveSync : webRemoveSync)(path);
-}
-
-/**
- * `rename` 的同步版本。
- */
-export function renameSync(oldPath: string, newPath: string): VoidIOResult {
-    return (isMinaEnv() ? minaRenameSync : webRenameSync)(oldPath, newPath);
 }
 
 /**
