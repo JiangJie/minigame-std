@@ -29,7 +29,7 @@ function zip(sourcePath, options?): AsyncIOResult<Uint8Array>
 
 ### Defined in
 
-[src/std/fs/fs\_async.ts:280](https://github.com/JiangJie/minigame-std/blob/ffbed6cccc22260d9da27c221c59422568396e08/src/std/fs/fs_async.ts#L280)
+[src/std/fs/fs\_async.ts:270](https://github.com/JiangJie/minigame-std/blob/d5a0bd55450bd8f6d3ddbc9f604a3e15ebaebf6d/src/std/fs/fs_async.ts#L270)
 
 ## zip(sourcePath, zipFilePath, options)
 
@@ -58,4 +58,4 @@ function zip(
 
 ### Defined in
 
-[src/std/fs/fs\_async.ts:288](https://github.com/JiangJie/minigame-std/blob/ffbed6cccc22260d9da27c221c59422568396e08/src/std/fs/fs_async.ts#L288)
+[src/std/fs/fs\_async.ts:278](https://github.com/JiangJie/minigame-std/blob/d5a0bd55450bd8f6d3ddbc9f604a3e15ebaebf6d/src/std/fs/fs_async.ts#L278)

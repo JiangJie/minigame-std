@@ -43,6 +43,8 @@
 | [existsSync](functions/existsSync.md) | `exists` 的同步版本。 |
 | [mkdir](functions/mkdir.md) | 递归创建文件夹，相当于`mkdir -p`。 |
 | [mkdirSync](functions/mkdirSync.md) | `mkdir` 的同步版本。 |
+| [move](functions/move.md) | 重命名文件或目录。 |
+| [moveSync](functions/moveSync.md) | `move` 的同步版本。 |
 | [readDir](functions/readDir.md) | 异步读取指定目录下的所有文件和子目录。 |
 | [readDirSync](functions/readDirSync.md) | `readDir` 的同步版本。 |
 | [readFile](functions/readFile.md) | 读取文件内容。 |
@@ -51,8 +53,6 @@
 | [readTextFileSync](functions/readTextFileSync.md) | `readTextFile` 的同步版本。 |
 | [remove](functions/remove.md) | 删除文件或目录。 |
 | [removeSync](functions/removeSync.md) | `remove` 的同步版本。 |
-| [rename](functions/rename.md) | 重命名文件或目录。 |
-| [renameSync](functions/renameSync.md) | `rename` 的同步版本。 |
 | [stat](functions/stat.md) | - |
 | [statSync](functions/statSync.md) | `stat` 的同步版本。 |
 | [unzip](functions/unzip.md) | 解压 zip 文件。 |
