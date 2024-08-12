@@ -174,20 +174,19 @@ export function getWriteFileContents(contents: WriteFileContent): GetWriteFileCo
  * 获取 `exists` 的结果。
  */
 export function getExistsResult(statsResult: IOResult<WechatMinigame.Stats>, options?: ExistsOptions): IOResult<boolean> {
-    if (statsResult.isErr()) {
-        return isNotFoundError(statsResult.unwrapErr()) ? RESULT_FALSE : statsResult.asErr();
-    }
+    return statsResult.andThen(stats => {
+        const { isDirectory = false, isFile = false } = options ?? {};
 
-    const { isDirectory = false, isFile = false } = options ?? {};
+        if (isDirectory && isFile) {
+            throw new TypeError('ExistsOptions.isDirectory and ExistsOptions.isFile must not be true together.');
+        }
 
-    if (isDirectory && isFile) {
-        throw new TypeError('ExistsOptions.isDirectory and ExistsOptions.isFile must not be true together.');
-    }
+        const notExist =
+            (isDirectory && stats.isFile())
+            || (isFile && stats.isDirectory());
 
-    const stats = statsResult.unwrap();
-    const notExist =
-        (isDirectory && stats.isFile())
-        || (isFile && stats.isDirectory());
-
-    return Ok(!notExist);
+        return Ok(!notExist);
+    }).orElse((err): IOResult<boolean> => {
+        return isNotFoundError(err) ? RESULT_FALSE : Err(err);
+    });
 }

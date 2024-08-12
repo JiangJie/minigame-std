@@ -88,38 +88,30 @@ export function statSync(path: string, options?: StatOptions): IOResult<WechatMi
         return minaStatSync(path, options);
     }
 
-    const res = webStatSync(path);
+    return webStatSync(path).andThen((handleLike): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> => {
+        const entryStats = convertFileSystemHandleLikeToStats(handleLike);
 
-    if (res.isErr()) {
-        return res.asErr();
-    }
+        if (entryStats.isFile() || !options?.recursive) {
+            return Ok(entryStats);
+        }
 
-    const entryStats = convertFileSystemHandleLikeToStats(res.unwrap());
+        // 递归读取目录
+        return webReadDirSync(path).andThen(entries => {
+            const statsArr: WechatMinigame.FileStats[] = [{
+                path,
+                stats: entryStats,
+            }];
 
-    if (entryStats.isFile() || !options?.recursive) {
-        return Ok(entryStats);
-    }
+            for (const { path, handle } of entries) {
+                statsArr.push({
+                    path,
+                    stats: convertFileSystemHandleLikeToStats(handle),
+                })
+            }
 
-    // 递归读取目录
-    const readRes = webReadDirSync(path);
-
-    if (readRes.isErr()) {
-        return readRes.asErr();
-    }
-
-    const statsArr: WechatMinigame.FileStats[] = [{
-        path,
-        stats: entryStats,
-    }];
-
-    for (const { path, handle } of readRes.unwrap()) {
-        statsArr.push({
-            path,
-            stats: convertFileSystemHandleLikeToStats(handle),
-        })
-    }
-
-    return Ok(statsArr);
+            return Ok(statsArr);
+        });
+    });
 }
 
 /**

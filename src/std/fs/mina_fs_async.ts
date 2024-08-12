@@ -284,41 +284,33 @@ export async function copy(srcPath: string, destPath: string): AsyncVoidIOResult
     const absSrcPath = getAbsolutePath(srcPath);
     const absDestPath = getAbsolutePath(destPath);
 
-    const statRes = await stat(absSrcPath, {
+    return (await stat(absSrcPath, {
         recursive: true,
-    });
-    if (statRes.isErr()) {
-        return statRes.asErr();
-    }
+    })).andThenAsync(async statsArray => {
+        // directory
+        if (Array.isArray(statsArray)) {
+            for (const { path, stats } of statsArray) {
+                // 不能用join
+                const absPath = absSrcPath + path;
+                const newPath = absDestPath + path;
 
-    const statsArray = statRes.unwrap();
+                const res = await (stats.isDirectory()
+                    ? mkdir(newPath)
+                    : copyFile(absPath, newPath));
 
-    // directory
-    if (Array.isArray(statsArray)) {
-        for (const { path, stats } of statsArray) {
-            // 不能用join
-            const absPath = absSrcPath + path;
-            const newPath = absDestPath + path;
-
-            const res = await (stats.isDirectory()
-                ? mkdir(newPath)
-                : copyFile(absPath, newPath));
-
-            if (res.isErr()) {
-                return res;
+                if (res.isErr()) {
+                    return res;
+                }
             }
-        }
 
-        return RESULT_VOID;
-    } else {
-        // file
-        const res = await mkdir(dirname(absDestPath));
-        if (res.isErr()) {
-            return res;
+            return RESULT_VOID;
+        } else {
+            // file
+            return (await mkdir(dirname(absDestPath))).andThenAsync(() => {
+                return copyFile(absSrcPath, absDestPath);
+            });
         }
-
-        return await copyFile(absSrcPath, absDestPath);
-    }
+    });
 }
 
 /**
@@ -518,14 +510,9 @@ export function unzip(zipFilePath: string, targetPath: string): AsyncVoidIOResul
  * @returns 下载并解压操作的异步结果。
  */
 export async function unzipFromUrl(zipFileUrl: string, targetPath: string, options?: DownloadFileOptions): AsyncVoidIOResult {
-    const task = downloadFile(zipFileUrl, options);
-    const res = await task.response;
-
-    if (res.isErr()) {
-        return res.asErr();
-    }
-
-    return await unzip(res.unwrap().tempFilePath, targetPath);
+    return (await downloadFile(zipFileUrl, options).response).andThenAsync(({ tempFilePath }) => {
+        return unzip(tempFilePath, targetPath);
+    });
 }
 
 /**
@@ -553,69 +540,65 @@ export async function zip<T>(sourcePath: string, zipFilePath?: string | ZipOptio
         options = zipFilePath;
     }
 
-    const statRes = await stat(absSourcePath);
-    if (statRes.isErr()) {
-        return statRes.asErr();
-    }
+    return (await stat(absSourcePath)).andThenAsync(async stats => {
+        const zipped: fflate.AsyncZippable = {};
 
-    const zipped: fflate.AsyncZippable = {};
+        const sourceName = basename(absSourcePath);
 
-    const sourceName = basename(absSourcePath);
-    const stats = statRes.unwrap();
+        if (stats.isFile()) {
+            // file
+            const res = await readFile(absSourcePath);
+            if (res.isErr()) {
+                return res.asErr();
+            }
 
-    if (stats.isFile()) {
-        // file
-        const res = await readFile(absSourcePath);
-        if (res.isErr()) {
-            return res.asErr();
-        }
+            zipped[sourceName] = new Uint8Array(res.unwrap());
+        } else {
+            // directory
+            const res = await stat(absSourcePath, {
+                recursive: true,
+            });
+            if (res.isErr()) {
+                return res.asErr();
+            }
 
-        zipped[sourceName] = new Uint8Array(res.unwrap());
-    } else {
-        // directory
-        const res = await stat(absSourcePath, {
-            recursive: true,
-        });
-        if (res.isErr()) {
-            return res.asErr();
-        }
+            // default to preserve root
+            const preserveRoot = options?.preserveRoot ?? true;
 
-        // default to preserve root
-        const preserveRoot = options?.preserveRoot ?? true;
+            for (const { path, stats } of res.unwrap()) {
+                if (stats.isFile()) {
+                    const entryName = preserveRoot ? join(sourceName, path) : path;
+                    // 不能用 join，否则 http://usr 会变成 http:/usr
+                    const res = await readFile(absSourcePath + path);
+                    if (res.isErr()) {
+                        return res.asErr();
+                    }
 
-        for (const { path, stats } of res.unwrap()) {
-            if (stats.isFile()) {
-                const entryName = preserveRoot ? join(sourceName, path) : path;
-                // 不能用 join，否则 http://usr 会变成 http:/usr
-                const res = await readFile(absSourcePath + path);
-                if (res.isErr()) {
-                    return res.asErr();
+                    zipped[entryName] = new Uint8Array(res.unwrap());
                 }
-
-                zipped[entryName] = new Uint8Array(res.unwrap());
             }
         }
-    }
 
-    const future = new Future<IOResult<T>>();
+        const future = new Future<IOResult<T>>();
 
-    fflate.zip(zipped, {
-        consume: true,
-    }, async (err, u8a) => {
-        if (err) {
-            future.resolve(Err(err));
-            return;
-        }
+        fflate.zip(zipped, {
+            consume: true,
+        }, async (err, u8a) => {
+            if (err) {
+                future.resolve(Err(err));
+                return;
+            }
 
-        if (absZipFilePath) {
-            const res = await writeFile(absZipFilePath, u8a);
-            future.resolve(res as IOResult<T>);
-        } else {
-            future.resolve(Ok(u8a as T));
-        }
+            if (absZipFilePath) {
+                const res = await writeFile(absZipFilePath, u8a);
+                future.resolve(res as IOResult<T>);
+            } else {
+                future.resolve(Ok(u8a as T));
+            }
+        });
+
+        return await future.promise;
     });
-
-    return await future.promise;
 }
 
 type ZipFromUrlOptions = DownloadFileOptions & ZipOptions;
@@ -638,15 +621,9 @@ export async function zipFromUrl<T>(sourceUrl: string, zipFilePath?: string | Zi
         zipFilePath = undefined;
     }
 
-    const task = downloadFile(sourceUrl, options);
-    const res = await task.response;
-
-    if (res.isErr()) {
-        return res.asErr();
-    }
-
-    const { tempFilePath } = res.unwrap();
-    return await (zipFilePath
-        ? zip(tempFilePath, zipFilePath, options)
-        : zip(tempFilePath, options)) as IOResult<T>;
+    return (await downloadFile(sourceUrl, options).response).andThenAsync(async ({ tempFilePath }) => {
+        return await (zipFilePath
+            ? zip(tempFilePath, zipFilePath, options)
+            : zip(tempFilePath, options)) as IOResult<T>;
+    });
 }
