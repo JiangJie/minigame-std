@@ -32,11 +32,11 @@ export function mkdirSync(dirPath: string): VoidIOResult {
 /**
  * `move` 的同步版本。
  */
-export function moveSync(oldPath: string, newPath: string): VoidIOResult {
-    const absOldPath = getAbsolutePath(oldPath);
-    const absNewPath = getAbsolutePath(newPath);
+export function moveSync(srcPath: string, destPath: string): VoidIOResult {
+    const absSrcPath = getAbsolutePath(srcPath);
+    const absDestPath = getAbsolutePath(destPath);
 
-    return trySyncOp(() => getFs().renameSync(absOldPath, absNewPath));
+    return trySyncOp(() => getFs().renameSync(absSrcPath, absDestPath));
 }
 
 /**
@@ -152,12 +152,12 @@ export function copySync(srcPath: string, destPath: string): VoidIOResult {
         if (Array.isArray(statsArray)) {
             for (const { path, stats } of statsArray) {
                 // 不能用join
-                const absPath = absSrcPath + path;
-                const newPath = absDestPath + path;
+                const srcEntryPath = absSrcPath + path;
+                const destEntryPath = absDestPath + path;
 
                 const res = (stats.isDirectory()
-                    ? mkdirSync(newPath)
-                    : copyFileSync(absPath, newPath));
+                    ? mkdirSync(destEntryPath)
+                    : copyFileSync(srcEntryPath, destEntryPath));
 
                 if (res.isErr()) {
                     return res;

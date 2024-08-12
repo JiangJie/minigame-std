@@ -35,19 +35,19 @@ export function mkdir(dirPath: string): AsyncVoidIOResult {
 
 /**
  * 重命名文件或目录。
- * @param oldPath - 原路径。
- * @param newPath - 新路径。
+ * @param srcPath - 原路径。
+ * @param destPath - 新路径。
  * @returns 重命名操作的异步结果，成功时返回 true。
  */
-export function move(oldPath: string, newPath: string): AsyncVoidIOResult {
-    const absOldPath = getAbsolutePath(oldPath);
-    const absNewPath = getAbsolutePath(newPath);
+export function move(srcPath: string, destPath: string): AsyncVoidIOResult {
+    const absSrcPath = getAbsolutePath(srcPath);
+    const absDestPath = getAbsolutePath(destPath);
 
     const future = new Future<VoidIOResult>();
 
     getFs().rename({
-        oldPath: absOldPath,
-        newPath: absNewPath,
+        oldPath: absSrcPath,
+        newPath: absDestPath,
         success(): void {
             future.resolve(RESULT_VOID);
         },
@@ -291,12 +291,12 @@ export async function copy(srcPath: string, destPath: string): AsyncVoidIOResult
         if (Array.isArray(statsArray)) {
             for (const { path, stats } of statsArray) {
                 // 不能用join
-                const absPath = absSrcPath + path;
-                const newPath = absDestPath + path;
+                const srcEntryPath = absSrcPath + path;
+                const destEntryPath = absDestPath + path;
 
                 const res = await (stats.isDirectory()
-                    ? mkdir(newPath)
-                    : copyFile(absPath, newPath));
+                    ? mkdir(destEntryPath)
+                    : copyFile(srcEntryPath, destEntryPath));
 
                 if (res.isErr()) {
                     return res;

@@ -46,8 +46,8 @@ export function mkdirSync(dirPath: string): VoidIOResult {
 /**
  * `move` 的同步版本。
  */
-export function moveSync(oldPath: string, newPath: string): VoidIOResult {
-    return (isMinaEnv() ? minaMoveSync : webMoveSync)(oldPath, newPath);
+export function moveSync(srcPath: string, destPath: string): VoidIOResult {
+    return (isMinaEnv() ? minaMoveSync : webMoveSync)(srcPath, destPath);
 }
 
 /**

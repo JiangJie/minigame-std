@@ -56,6 +56,16 @@ export function mkdir(dirPath: string): AsyncVoidIOResult {
 }
 
 /**
+ * 重命名文件或目录。
+ * @param srcPath - 原始路径。
+ * @param destPath - 新路径。
+ * @returns 重命名成功返回 true 的异步操作结果。
+ */
+export function move(srcPath: string, destPath: string): AsyncVoidIOResult {
+    return (isMinaEnv() ? minaMove : webMove)(srcPath, destPath);
+}
+
+/**
  * 异步读取指定目录下的所有文件和子目录。
  * @param dirPath - 需要读取的目录路径。
  * @returns 包含目录内容的字符串数组的异步操作结果。
@@ -90,16 +100,6 @@ export function readFile(filePath: string): AsyncIOResult<ArrayBuffer> {
  */
 export function remove(path: string): AsyncVoidIOResult {
     return (isMinaEnv() ? minaRemove : webRemove)(path);
-}
-
-/**
- * 重命名文件或目录。
- * @param oldPath - 原始路径。
- * @param newPath - 新路径。
- * @returns 重命名成功返回 true 的异步操作结果。
- */
-export function move(oldPath: string, newPath: string): AsyncVoidIOResult {
-    return (isMinaEnv() ? minaMove : webMove)(oldPath, newPath);
 }
 
 export async function stat(path: string): AsyncIOResult<WechatMinigame.Stats>;
