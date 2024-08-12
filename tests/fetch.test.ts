@@ -19,10 +19,10 @@ Deno.test('fetch json', async () => {
 
     const res = await fetchTask.response;
 
-    if (res.isErr()) {
-        assert((res.unwrapErr() as Error).name === 'AbortError');
-    } else {
+    res.inspect(data => {
         clearTimeout(timer);
-        assert(res.unwrap().name === 'minigame-std');
-    }
+        assert(data.name === 'minigame-std');
+    }).inspectErr(err => {
+        assert((err as Error).name === 'AbortError');
+    });
 });
