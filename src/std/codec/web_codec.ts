@@ -20,7 +20,7 @@ function getDecoder(): TextDecoder {
  * @param data - 需要编码的字符串数据。
  * @returns 编码后的 `Uint8Array`
  */
-export function encode(data: string): Uint8Array {
+export function textEncode(data: string): Uint8Array {
     return getEncoder().encode(data);
 }
 
@@ -29,6 +29,6 @@ export function encode(data: string): Uint8Array {
  * @param data - 需要解码的二进制数据。
  * @returns 解码后的字符串。
  */
-export function decode(data: BufferSource): string {
+export function textDecode(data: BufferSource): string {
     return getDecoder().decode(data);
 }

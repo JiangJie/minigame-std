@@ -1,16 +1,16 @@
 import { isMinaEnv } from '../../macros/env.ts';
-import { decode as minaDecode, encode as minaEncode } from './mina_codec.ts';
-import { decode as webDecode, encode as webEncode } from './web_codec.ts';
+import { textDecode as minaTextDecode, textEncode as minaTextEncode } from './mina_codec.ts';
+import { textDecode as webTextDecode, textEncode as webTextEncode } from './web_codec.ts';
 
 /**
  * 将字符串数据编码为 `Uint8Array`
  * @param data - 需要编码的字符串数据。
  * @returns 编码后的 `Uint8Array`
  */
-export function encode(data: string): Uint8Array {
+export function textEncode(data: string): Uint8Array {
     return isMinaEnv()
-        ? new Uint8Array(minaEncode(data))
-        : webEncode(data);
+        ? new Uint8Array(minaTextEncode(data))
+        : webTextEncode(data);
 }
 
 /**
@@ -18,13 +18,12 @@ export function encode(data: string): Uint8Array {
  * @param data - 需要解码的二进制数据。
  * @returns 解码后的字符串。
  */
-export function decode(data: BufferSource): string {
+export function textDecode(data: BufferSource): string {
     if (isMinaEnv()) {
         return data instanceof ArrayBuffer
-            ? minaDecode(data)
-            : minaDecode(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength));
+            ? minaTextDecode(data)
+            : minaTextDecode(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength));
     }
 
-    return webDecode(data);
-
+    return webTextDecode(data);
 }

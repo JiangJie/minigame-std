@@ -33,7 +33,7 @@ const lookup = ((): Uint8Array => {
  * @param data - The data to encode.
  * @returns The base64 encoded string.
  */
-export function base64FromArrayBuffer(data: Uint8Array): string {
+export function base64FromBuffer(data: Uint8Array): string {
     let result = '';
 
     const len = data.length;
@@ -79,7 +79,7 @@ export function base64FromArrayBuffer(data: Uint8Array): string {
  * @param data - Base64 encoded string
  * @returns The decoded data as an Uint8Array.
  */
-export function base64ToArrayBuffer(data: string): Uint8Array {
+export function base64ToBuffer(data: string): Uint8Array {
     const len = data.length;
 
     let bufferLength = len * 0.75;
