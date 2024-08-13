@@ -5,6 +5,7 @@ export * from './std/codec/mod.ts';
 export * from './std/event/mod.ts';
 export * from './std/fetch/mod.ts';
 export * as fs from './std/fs/mod.ts';
+export * as hash from './std/hash/mod.ts';
 export * from './std/network/mod.ts';
 export * as platform from './std/platform/mod.ts';
 export * from './std/socket/mod.ts';
