@@ -73,3 +73,24 @@ export async function tryDOMAsyncOp<T>(op: () => Promise<T>): AsyncIOResult<T> {
         return Err(e as DOMException);
     }
 }
+
+/**
+ * 将 BufferSource 转换为 Uint8Array。
+ * @param data - 需要转换的 BufferSource。
+ * @returns Uint8Array。
+ */
+export function bufferSource2U8a(data: BufferSource): Uint8Array {
+    if (data instanceof Uint8Array) {
+        return data;
+    }
+
+    if (data instanceof ArrayBuffer) {
+        return new Uint8Array(data);
+    }
+
+    if (ArrayBuffer.isView(data)) {
+        return new Uint8Array(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength));
+    }
+
+    throw new TypeError(`BufferSource is not ArrayBuffer or ArrayBufferView`);
+}

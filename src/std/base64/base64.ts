@@ -4,6 +4,8 @@
  * Forked from @std/encoding/base64 and https://github.com/cross-org/base64
  */
 
+import { bufferSource2U8a } from '../utils/mod.ts';
+
 /**
  * A string containing standard base64 characters
  */
@@ -33,40 +35,42 @@ const lookup = ((): Uint8Array => {
  * @param data - The data to encode.
  * @returns The base64 encoded string.
  */
-export function base64FromBuffer(data: Uint8Array): string {
+export function base64FromBuffer(data: BufferSource): string {
     let result = '';
 
-    const len = data.length;
+    const u8a = bufferSource2U8a(data);
+
+    const len = u8a.length;
     let i: number;
 
     for (i = 2; i < len; i += 3) {
-        result += base64abc[(data[i - 2]) >> 2];
+        result += base64abc[(u8a[i - 2]) >> 2];
         result += base64abc[
-            (((data[i - 2]) & 0x03) << 4)
-            | ((data[i - 1]) >> 4)
+            (((u8a[i - 2]) & 0x03) << 4)
+            | ((u8a[i - 1]) >> 4)
         ];
         result += base64abc[
-            (((data[i - 1]) & 0x0f) << 2)
-            | ((data[i]) >> 6)
+            (((u8a[i - 1]) & 0x0f) << 2)
+            | ((u8a[i]) >> 6)
         ];
-        result += base64abc[(data[i]) & 0x3f];
+        result += base64abc[(u8a[i]) & 0x3f];
     }
 
     if (i === len + 1) {
         // 1 octet yet to write
-        result += base64abc[(data[i - 2]) >> 2];
-        result += base64abc[((data[i - 2]) & 0x03) << 4];
+        result += base64abc[(u8a[i - 2]) >> 2];
+        result += base64abc[((u8a[i - 2]) & 0x03) << 4];
         result += '==';
     }
 
     if (i === len) {
         // 2 octets yet to write
-        result += base64abc[(data[i - 2]) >> 2];
+        result += base64abc[(u8a[i - 2]) >> 2];
         result += base64abc[
-            (((data[i - 2]) & 0x03) << 4)
-            | ((data[i - 1]) >> 4)
+            (((u8a[i - 2]) & 0x03) << 4)
+            | ((u8a[i - 1]) >> 4)
         ];
-        result += base64abc[((data[i - 1]) & 0x0f) << 2];
+        result += base64abc[((u8a[i - 1]) & 0x0f) << 2];
         result += '=';
     }
 

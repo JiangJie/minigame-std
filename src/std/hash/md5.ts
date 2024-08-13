@@ -6,8 +6,8 @@
  */
 
 import { textEncode } from '../codec/mod.ts';
+import { bufferSource2U8a } from '../utils/mod.ts';
 
-const TYPE_ERROR_MSG = 'md5: `data` is invalid type';
 const BLOCK_SIZE = 64;
 
 /** Md5 hash */
@@ -142,17 +142,9 @@ export class Md5 {
      * @param data data to update, data cannot exceed 2^32 bytes
      */
     update(data: string | BufferSource): this {
-        let msg: Uint8Array;
-
-        if (typeof data === 'string') {
-            msg = textEncode(data);
-        } else if (data instanceof ArrayBuffer) {
-            msg = new Uint8Array(data);
-        } else if (ArrayBuffer.isView(data)) {
-            msg = new Uint8Array(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength));
-        } else {
-            throw new TypeError(TYPE_ERROR_MSG);
-        }
+        const msg = typeof data === 'string'
+            ? textEncode(data)
+            : bufferSource2U8a(data);
 
         let pos = this.pos;
         const free = BLOCK_SIZE - pos;
