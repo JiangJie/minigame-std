@@ -7,6 +7,7 @@ import { Future } from 'tiny-future';
 import { assertSafeUrl } from '../assert/assertions.ts';
 import { miniGameFailureToResult } from '../utils/mod.ts';
 import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
+import { createAbortError } from './fs_helpers.ts';
 import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError } from './mina_fs_shared.ts';
 
 /**
@@ -397,10 +398,18 @@ export function downloadFile(fileUrl: string, filePath?: string | DownloadFileOp
         url: fileUrl,
         filePath: absFilePath,
         success(res): void {
-            future.resolve(Ok(res));
+            if (aborted) {
+                future.resolve(Err(createAbortError()));
+                return;
+            }
+
+            future.resolve(res.statusCode >= 200 && res.statusCode < 300
+                ? Ok(res)
+                : Err(new Error(res.statusCode.toString()))
+            );
         },
         fail(err): void {
-            future.resolve(miniGameFailureToResult(err));
+            future.resolve(aborted ? Err(createAbortError()) : miniGameFailureToResult(err));
         },
     });
 

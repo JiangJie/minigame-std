@@ -1,4 +1,4 @@
-import { toFileSystemHandleLike, type FileSystemFileHandleLike, type FileSystemHandleLike } from 'happy-opfs';
+import { ABORT_ERROR, toFileSystemHandleLike, type FileSystemFileHandleLike, type FileSystemHandleLike } from 'happy-opfs';
 
 /**
  * 将 `FileSystemHandleLike` 转换为小游戏 `Stats`。
@@ -40,4 +40,15 @@ export function convertFileSystemHandleLikeToStats(handleLike: FileSystemHandleL
 export async function convertFileSystemHandleToStats(handle: FileSystemHandle): Promise<WechatMinigame.Stats> {
     const handleLike = await toFileSystemHandleLike(handle);
     return convertFileSystemHandleLikeToStats(handleLike);
+}
+
+/**
+ * Creates an `AbortError` Error.
+ * @returns An `AbortError` Error.
+ */
+export function createAbortError(): Error {
+    const error = new Error();
+    error.name = ABORT_ERROR;
+
+    return error;
 }
