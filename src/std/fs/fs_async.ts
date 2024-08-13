@@ -9,6 +9,7 @@ import {
     move as webMove,
     readDir as webReadDir,
     readFile as webReadFile,
+    readJsonFile as webReadJsonFile,
     readTextFile as webReadTextFile,
     remove as webRemove,
     stat as webStat,
@@ -35,6 +36,7 @@ import {
     move as minaMove,
     readDir as minaReadDir,
     readFile as minaReadFile,
+    readJsonFile as minaReadJsonFile,
     readTextFile as minaReadTextFile,
     remove as minaRemove,
     stat as minaStat,
@@ -191,6 +193,15 @@ export function exists(path: string): AsyncIOResult<boolean> {
  */
 export function emptyDir(dirPath: string): AsyncVoidIOResult {
     return (isMinaEnv() ? minaEmptyDir : webEmptyDir)(dirPath);
+}
+
+/**
+ * 读取文件并解析为 JSON。
+ * @param filePath - 文件路径。
+ * @returns 读取结果。
+ */
+export function readJsonFile<T>(filePath: string): AsyncIOResult<T> {
+    return (isMinaEnv() ? minaReadJsonFile : webReadJsonFile)(filePath);
 }
 
 /**

@@ -11,7 +11,7 @@
       "npm:eslint@9.9.0": "npm:eslint@9.9.0",
       "npm:eslint@^9.9.0": "npm:eslint@9.9.0",
       "npm:fflate@^0.8.2": "npm:fflate@0.8.2",
-      "npm:happy-opfs@^1.8.3": "npm:happy-opfs@1.8.3",
+      "npm:happy-opfs@^1.8.4": "npm:happy-opfs@1.8.4",
       "npm:happy-rusty@^1.5.0": "npm:happy-rusty@1.5.0",
       "npm:minigame-api-typings@^3.8.5": "npm:minigame-api-typings@3.8.5",
       "npm:rollup-plugin-dts@^6.1.1": "npm:rollup-plugin-dts@6.1.1_rollup@4.20.0_typescript@5.5.4",
@@ -790,8 +790,8 @@
         "integrity": "sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==",
         "dependencies": {}
       },
-      "happy-opfs@1.8.3": {
-        "integrity": "sha512-GW6mR8/cXwmVN/JxPQEyqmuMK3BWRHVOefprQemq4kRG9C3sAAFRbZumBFJlwdg9OwqVn9hgf6RxPHFCXsNPBA==",
+      "happy-opfs@1.8.4": {
+        "integrity": "sha512-/OkaUCreSHtUZNUo319wQknYBKgpvHO5LzPRAqa0jBcnpmJ1SnG1DVH66byF/Ii6JHOqrXwlVvpfKx6AokYkJw==",
         "dependencies": {
           "@happy-ts/fetch-t": "@happy-ts/fetch-t@1.3.2",
           "@std/path": "@jsr/std__path@1.0.2",
@@ -1237,7 +1237,7 @@
         "npm:@types/eslint__js@^8.42.3",
         "npm:eslint@^9.9.0",
         "npm:fflate@^0.8.2",
-        "npm:happy-opfs@^1.8.3",
+        "npm:happy-opfs@^1.8.4",
         "npm:happy-rusty@^1.5.0",
         "npm:minigame-api-typings@^3.8.5",
         "npm:rollup-plugin-dts@^6.1.1",

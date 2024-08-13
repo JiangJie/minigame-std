@@ -347,6 +347,21 @@ export async function emptyDir(dirPath: string): AsyncVoidIOResult {
 }
 
 /**
+ * 读取文件并解析为 JSON。
+ * @param filePath - 文件路径。
+ * @returns 读取结果。
+ */
+export async function readJsonFile<T>(filePath: string): AsyncIOResult<T> {
+    return (await readTextFile(filePath)).andThenAsync(async contents => {
+        try {
+            return Ok(JSON.parse(contents));
+        } catch (e) {
+            return Err(e as Error);
+        }
+    });
+}
+
+/**
  * 读取文本文件的内容。
  * @param filePath - 文件路径。
  * @returns 包含文件文本内容的异步操作。

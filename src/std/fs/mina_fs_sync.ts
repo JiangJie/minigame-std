@@ -200,6 +200,19 @@ export function emptyDirSync(dirPath: string): VoidIOResult {
 }
 
 /**
+ * `readJsonFile` 的同步版本。
+ */
+export function readJsonFileSync<T>(filePath: string): IOResult<T> {
+    return readTextFileSync(filePath).andThen(contents => {
+        try {
+            return Ok(JSON.parse(contents));
+        } catch (e) {
+            return Err(e as Error);
+        }
+    });
+}
+
+/**
  * `readTextFile` 的同步版本。
  */
 export function readTextFileSync(filePath: string): IOResult<string> {

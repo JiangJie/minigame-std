@@ -7,6 +7,7 @@ import {
     moveSync as webMoveSync,
     readDirSync as webReadDirSync,
     readFileSync as webReadFileSync,
+    readJsonFileSync as webReadJsonFileSync,
     readTextFileSync as webReadTextFileSync,
     removeSync as webRemoveSync,
     statSync as webStatSync,
@@ -28,6 +29,7 @@ import {
     moveSync as minaMoveSync,
     readDirSync as minaReadDirSync,
     readFileSync as minaReadFileSync,
+    readJsonFileSync as minaReadJsonFileSync,
     readTextFileSync as minaReadTextFileSync,
     removeSync as minaRemoveSync,
     statSync as minaStatSync,
@@ -147,6 +149,13 @@ export function existsSync(path: string): IOResult<boolean> {
  */
 export function emptyDirSync(dirPath: string): VoidIOResult {
     return (isMinaEnv() ? minaEmptyDirSync : webEmptyDirSync)(dirPath);
+}
+
+/**
+ * `readJsonFile` 的同步版本。
+ */
+export function readJsonFileSync<T>(filePath: string): IOResult<T> {
+    return (isMinaEnv() ? minaReadJsonFileSync : webReadJsonFileSync)(filePath);
 }
 
 /**
