@@ -1,4 +1,5 @@
 import { isMinaEnv } from '../../macros/env.ts';
+import { bufferSource2Ab, bufferSource2U8a } from '../utils/mod.ts';
 import { textDecode as minaTextDecode, textEncode as minaTextEncode } from './mina_codec.ts';
 import { textDecode as webTextDecode, textEncode as webTextEncode } from './web_codec.ts';
 
@@ -9,7 +10,7 @@ import { textDecode as webTextDecode, textEncode as webTextEncode } from './web_
  */
 export function textEncode(data: string): Uint8Array {
     return isMinaEnv()
-        ? new Uint8Array(minaTextEncode(data))
+        ? bufferSource2U8a(minaTextEncode(data))
         : webTextEncode(data);
 }
 
@@ -19,11 +20,7 @@ export function textEncode(data: string): Uint8Array {
  * @returns 解码后的字符串。
  */
 export function textDecode(data: BufferSource): string {
-    if (isMinaEnv()) {
-        return data instanceof ArrayBuffer
-            ? minaTextDecode(data)
-            : minaTextDecode(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength));
-    }
-
-    return webTextDecode(data);
+    return isMinaEnv()
+        ? minaTextDecode(bufferSource2Ab(data))
+        : webTextDecode(data);
 }

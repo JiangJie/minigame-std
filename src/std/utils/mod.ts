@@ -89,7 +89,24 @@ export function bufferSource2U8a(data: BufferSource): Uint8Array {
     }
 
     if (ArrayBuffer.isView(data)) {
-        return new Uint8Array(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength));
+        return new Uint8Array(data.byteOffset === 0 ? data.buffer : data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength));
+    }
+
+    throw new TypeError(`BufferSource is not ArrayBuffer or ArrayBufferView`);
+}
+
+/**
+ * 将 BufferSource 转换为 ArrayBuffer
+ * @param data - 需要转换的 BufferSource。
+ * @returns ArrayBuffer。
+ */
+export function bufferSource2Ab(data: BufferSource): ArrayBuffer {
+    if (data instanceof ArrayBuffer) {
+        return data;
+    }
+
+    if (ArrayBuffer.isView(data)) {
+        return data.byteOffset === 0 ? data.buffer : data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
     }
 
     throw new TypeError(`BufferSource is not ArrayBuffer or ArrayBufferView`);

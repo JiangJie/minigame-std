@@ -30,7 +30,7 @@ const lookup = ((): Uint8Array => {
 })();
 
 /**
- * Converts Uint8Array into a base64 encoded string.
+ * Converts BufferSource into a base64 encoded string.
  *
  * @param data - The data to encode.
  * @returns The base64 encoded string.

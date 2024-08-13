@@ -5,7 +5,7 @@
 import { assertAbsolutePath, NOT_FOUND_ERROR, type ExistsOptions } from 'happy-opfs';
 import { Err, Ok, RESULT_FALSE, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { assertString } from '../assert/assertions.ts';
-import { miniGameFailureToError } from '../utils/mod.ts';
+import { bufferSource2Ab, miniGameFailureToError } from '../utils/mod.ts';
 import type { FileEncoding, ReadOptions, WriteFileContent } from './fs_define.ts';
 
 /**
@@ -154,13 +154,10 @@ interface GetWriteFileContents {
  * 获取写入文件的参数。
  */
 export function getWriteFileContents(contents: WriteFileContent): GetWriteFileContents {
-    const isBuffer = contents instanceof ArrayBuffer;
-    const isBufferView = ArrayBuffer.isView(contents);
-    const isBin = isBuffer || isBufferView;
+    const isBin = typeof contents !== 'string';
 
-    // ArrayBuffer 可能是带有 offset 的
-    const data = isBufferView ? contents.buffer.slice(contents.byteOffset, contents.byteOffset + contents.byteLength) : contents;
-    const encoding: FileEncoding = isBin ? 'binary' : 'utf8'
+    const encoding = isBin ? 'binary' : 'utf8'
+    const data = isBin ? bufferSource2Ab(contents) : contents;
 
     const res: GetWriteFileContents = {
         data,

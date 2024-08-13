@@ -1,6 +1,7 @@
 import { Err, Ok, RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import { readFile } from '../fs/mod.ts';
+import { bufferSource2Ab } from '../utils/mod.ts';
 import type { PlayOptions } from './audio_defines.ts';
 
 export * from './audio_defines.ts';
@@ -77,14 +78,14 @@ export function playWebAudioFromAudioBuffer(buffer: AudioBuffer, options?: PlayO
 }
 
 /**
- * 使用 ArrayBuffer 进行解码播放。
- * @param buffer - 需要解码的 ArrayBuffer。
+ * 使用 Buffer 进行解码播放。
+ * @param buffer - 需要解码的 Buffer。
  * @param options - 播放选项。
  * @returns 正在播放的 AudioBufferSourceNode。
  */
-export async function playWebAudioFromArrayBuffer(buffer: ArrayBuffer, options?: PlayOptions): Promise<AudioBufferSourceNode> {
+export async function playWebAudioFromArrayBuffer(buffer: BufferSource, options?: PlayOptions): Promise<AudioBufferSourceNode> {
     const context = getGlobalAudioContext();
-    const audioBuffer = await context.decodeAudioData(buffer);
+    const audioBuffer = await context.decodeAudioData(bufferSource2Ab(buffer));
 
     return playWebAudioFromAudioBuffer(audioBuffer, options);
 }
