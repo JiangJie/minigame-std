@@ -397,16 +397,25 @@ export function downloadFile(fileUrl: string, filePath?: string | DownloadFileOp
         ...rest,
         url: fileUrl,
         filePath: absFilePath,
-        success(res): void {
+        async success(res): Promise<void> {
             if (aborted) {
                 future.resolve(Err(createAbortError()));
                 return;
             }
 
-            future.resolve(res.statusCode >= 200 && res.statusCode < 300
-                ? Ok(res)
-                : Err(new Error(res.statusCode.toString()))
-            );
+            const { statusCode } = res;
+
+            if (statusCode >= 200 && statusCode < 300) {
+                future.resolve(Ok(res));
+                return;
+            }
+
+            // remove the not expected file but no need to actively delete the temporary file
+            if (res.filePath) {
+                await remove(res.filePath);
+            }
+
+            future.resolve(Err(new Error(statusCode.toString())));
         },
         fail(err): void {
             future.resolve(aborted ? Err(createAbortError()) : miniGameFailureToResult(err));
