@@ -5,7 +5,7 @@ import { Md5 } from './md5.ts';
 import { Sha1 } from './sha1.ts';
 
 export { Md5 } from './md5.ts';
-export * as rsa from './rsa.ts';
+export * as rsa from './rsa/mod.ts';
 export { Sha1 } from './sha1.ts';
 
 /**

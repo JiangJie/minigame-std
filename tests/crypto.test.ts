@@ -3,7 +3,7 @@
 (globalThis as any).__MINIGAME_STD_MINA__ = false;
 
 import { assert } from '@std/assert';
-import { cryptos, textDecode, textEncode } from '../src/mod.ts';
+import { base64ToBuffer, cryptos, textDecode, textEncode } from '../src/mod.ts';
 
 Deno.test('calculate md5', () => {
     const data = 'minigame-std';
@@ -54,16 +54,16 @@ Deno.test('RSA encryption', async () => {
         );
     }
 
-    const publicKey = await cryptos.rsa.importEncryptKey(Deno.readTextFileSync(`${ import.meta.dirname }/keys/public_key.pem`), 'SHA-256');
+    const publicKey = await cryptos.rsa.publicKeyFromPem(Deno.readTextFileSync(`${ import.meta.dirname }/keys/public_key.pem`), 'SHA-256');
     const privateKey = await importDecryptKey(Deno.readTextFileSync(`${ import.meta.dirname }/keys/private_key.pem`));
 
-    const encryptedData = await cryptos.rsa.encrypt(publicKey, data);
+    const encryptedData = await publicKey.encrypt(data);
     const decryptedData = textDecode(await crypto.subtle.decrypt(
         {
             name: 'RSA-OAEP',
         },
         privateKey,
-        encryptedData
+        base64ToBuffer(encryptedData)
     ));
 
     assert(decryptedData === data);
