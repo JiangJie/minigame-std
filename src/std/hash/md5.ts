@@ -6,7 +6,7 @@
  */
 
 import { textEncode } from '../codec/mod.ts';
-import { bufferSource2U8a } from '../utils/mod.ts';
+import { bufferSource2U8a, hexFromBuffer } from '../utils/mod.ts';
 
 const BLOCK_SIZE = 64;
 
@@ -211,10 +211,6 @@ export class Md5 {
    * Returns hash as a hex string.
    */
     toString(): string {
-        const u8a = new Uint8Array(this.digest());
-
-        return [...u8a]
-            .map(byte => byte.toString(16).padStart(2, '0'))
-            .join('');
+        return hexFromBuffer(this.digest());
     }
 }
