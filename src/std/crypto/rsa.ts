@@ -1,7 +1,26 @@
-import { base64ToBuffer } from '../base64/mod.ts';
 import { textEncode } from '../codec/mod.ts';
 
-function str2U8a(str: string) {
+/**
+ * Supported hash algorithms.
+ */
+type SHA = 'SHA-1' | 'SHA-256' | 'SHA-384' | 'SHA-512';
+
+/**
+ * The header of a PEM encoded public key.
+ */
+const pemHeader = '-----BEGIN PUBLIC KEY-----';
+
+/**
+ * The footer of a PEM encoded public key.
+ */
+const pemFooter = '-----END PUBLIC KEY-----';
+
+/**
+ * Convert a string to an Uint8Array.
+ * @param str
+ * @returns
+ */
+function str2U8a(str: string): Uint8Array {
     const { length } = str;
     const u8a = new Uint8Array(length);
 
@@ -12,10 +31,13 @@ function str2U8a(str: string) {
     return u8a;
 }
 
-export function importPublicKey(pem: string): Promise<CryptoKey> {
-    const pemHeader = '-----BEGIN PUBLIC KEY-----';
-    const pemFooter = '-----END PUBLIC KEY-----';
-
+/**
+ * Import a public key from a PEM encoded string.
+ * @param pem - PEM encoded string.
+ * @param hash - Hash algorithm.
+ * @returns
+ */
+export function importPublicKey(pem: string, hash: SHA): Promise<CryptoKey> {
     if (pem.startsWith(pemHeader)) {
         pem = pem.slice(pemHeader.length);
     }
@@ -23,18 +45,14 @@ export function importPublicKey(pem: string): Promise<CryptoKey> {
         pem = pem.slice(0, pem.length - pemFooter.length);
     }
 
-    console.log(pem);
-    let keyData = base64ToBuffer(pem);
-    console.log(keyData);
-    keyData = str2U8a(atob(pem));
-    console.log(keyData);
+    const publicKey = str2U8a(atob(pem));
 
     return crypto.subtle.importKey(
         'spki',
-        keyData,
+        publicKey,
         {
             name: 'RSA-OAEP',
-            hash: 'SHA-256',
+            hash,
         },
         true,
         [
@@ -43,6 +61,12 @@ export function importPublicKey(pem: string): Promise<CryptoKey> {
     );
 }
 
+/**
+ * Encrypt data with a public key.
+ * @param publicKey - The public key.
+ * @param data - The data to encrypt.
+ * @returns
+ */
 export function encrypt(publicKey: CryptoKey, data: string): Promise<ArrayBuffer> {
     const encodedData = textEncode(data);
     return crypto.subtle.encrypt(
