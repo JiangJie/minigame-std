@@ -8,12 +8,12 @@ type SHA = 'SHA-1' | 'SHA-256' | 'SHA-384' | 'SHA-512';
 /**
  * The header of a PEM encoded public key.
  */
-const pemHeader = '-----BEGIN PUBLIC KEY-----';
+const PEM_HEADER = '-----BEGIN PUBLIC KEY-----' as const;
 
 /**
  * The footer of a PEM encoded public key.
  */
-const pemFooter = '-----END PUBLIC KEY-----';
+const PEM_FOOTER = '-----END PUBLIC KEY-----' as const;
 
 /**
  * Convert a string to an Uint8Array.
@@ -38,11 +38,11 @@ function str2U8a(str: string): Uint8Array {
  * @returns
  */
 export function importPublicKey(pem: string, hash: SHA): Promise<CryptoKey> {
-    if (pem.startsWith(pemHeader)) {
-        pem = pem.slice(pemHeader.length);
+    if (pem.startsWith(PEM_HEADER)) {
+        pem = pem.slice(PEM_HEADER.length);
     }
-    if (pem.endsWith(pemFooter)) {
-        pem = pem.slice(0, pem.length - pemFooter.length);
+    if (pem.endsWith(PEM_FOOTER)) {
+        pem = pem.slice(0, pem.length - PEM_FOOTER.length);
     }
 
     const publicKey = str2U8a(atob(pem));

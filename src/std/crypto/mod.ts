@@ -6,6 +6,7 @@ import { Sha1 } from './sha1.ts';
 
 export { Md5 } from './md5.ts';
 export * as rsa from './rsa.ts';
+export { Sha1 } from './sha1.ts';
 
 /**
  * 计算字符串或者 buffer 的 MD5 值，结果用16进制字符串表示。
@@ -21,12 +22,14 @@ export function md5(data: string | BufferSource): string {
  * @param data - 需要计算 SHA-1 哈希值的数据。
  * @returns 计算得到的 SHA-1 十六进制字符串。
  */
-export async function sha1(data: string): Promise<string> {
+export async function sha1(data: string | BufferSource): Promise<string> {
     if (isMinaEnv()) {
         return Promise.resolve(new Sha1().update(data).toString());
     }
 
-    const encodedData = textEncode(data);
+    const encodedData = typeof data === 'string'
+        ? textEncode(data)
+        : data;
     const hashBuffer = await crypto.subtle.digest('SHA-1', encodedData);
     return hexFromBuffer(hashBuffer);
 }

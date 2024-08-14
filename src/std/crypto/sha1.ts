@@ -1,8 +1,6 @@
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 // This module is browser compatible.
 
-import { bufferSource2U8a, hexFromBuffer } from '../utils/mod.ts';
-
 /*
  * [js-sha1]{@link https://github.com/emn178/js-sha1}
  *
@@ -16,19 +14,22 @@ import { bufferSource2U8a, hexFromBuffer } from '../utils/mod.ts';
  * Forked from https://github.com/denoland/std/blob/0.160.0/hash/sha1.ts
  */
 
+import { bufferSource2U8a, hexFromBuffer } from '../utils/mod.ts';
+
 const EXTRA = [-2147483648, 8388608, 32768, 128] as const;
 const SHIFT = [24, 16, 8, 0] as const;
 
-const blocks: number[] = [];
-
+/**
+ * Sha1 hash
+ */
 export class Sha1 {
-    private blocks!: number[];
-    private block!: number;
-    private start!: number;
-    private bytes!: number;
-    private hBytes!: number;
-    private finalized!: boolean;
-    private hashed!: boolean;
+    private blocks = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    private block = 0;
+    private start = 0;
+    private bytes = 0;
+    private hBytes = 0;
+    private finalized = false;
+    private hashed = false;
 
     private h0 = 0x67452301;
     private h1 = 0xefcdab89;
@@ -37,53 +38,11 @@ export class Sha1 {
     private h4 = 0xc3d2e1f0;
     private lastByteIndex = 0;
 
-    constructor(sharedMemory = false) {
-        this.init(sharedMemory);
-    }
-
-    private init(sharedMemory: boolean) {
-        if (sharedMemory) {
-            blocks[0] =
-                blocks[16] =
-                blocks[1] =
-                blocks[2] =
-                blocks[3] =
-                blocks[4] =
-                blocks[5] =
-                blocks[6] =
-                blocks[7] =
-                blocks[8] =
-                blocks[9] =
-                blocks[10] =
-                blocks[11] =
-                blocks[12] =
-                blocks[13] =
-                blocks[14] =
-                blocks[15] =
-                0;
-            this.blocks = blocks;
-        } else {
-            this.blocks = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        }
-
-        this.h0 = 0x67452301;
-        this.h1 = 0xefcdab89;
-        this.h2 = 0x98badcfe;
-        this.h3 = 0x10325476;
-        this.h4 = 0xc3d2e1f0;
-
-        this.block =
-            this.start =
-            this.bytes =
-            this.hBytes =
-            0;
-        this.finalized = this.hashed = false;
-    }
-
     private finalize() {
         if (this.finalized) {
             return;
         }
+
         this.finalized = true;
         const blocks = this.blocks;
         const i = this.lastByteIndex;
@@ -249,17 +208,14 @@ export class Sha1 {
         this.h4 = (this.h4 + e) >>> 0;
     }
 
-    update(message: string | BufferSource): this {
+    update(data: string | BufferSource): this {
         if (this.finalized) {
             return this;
         }
 
-        let msg: string | Uint8Array;
-        if (typeof message === 'string') {
-            msg = message;
-        } else {
-            msg = bufferSource2U8a(message);
-        }
+        const msg = typeof data === 'string'
+            ? data
+            : bufferSource2U8a(data);
 
         let index = 0;
         const length = msg.length;
@@ -334,6 +290,9 @@ export class Sha1 {
         return this;
     }
 
+    /**
+     * Returns final hash.
+     */
     digest(): ArrayBuffer {
         this.finalize();
 
@@ -348,6 +307,9 @@ export class Sha1 {
         return hash;
     }
 
+    /**
+     * Returns hash as a hex string.
+     */
     toString(): string {
         return hexFromBuffer(this.digest());
     }

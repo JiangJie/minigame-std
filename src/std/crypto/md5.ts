@@ -8,9 +8,11 @@
 import { textEncode } from '../codec/mod.ts';
 import { bufferSource2U8a, hexFromBuffer } from '../utils/mod.ts';
 
-const BLOCK_SIZE = 64;
+const BLOCK_SIZE = 64 as const;
 
-/** Md5 hash */
+/**
+ * Md5 hash
+ */
 export class Md5 {
     private a = 0x67452301;
     private b = 0xefcdab89;
@@ -138,8 +140,8 @@ export class Md5 {
     }
 
     /**
-     * Update internal state
-     * @param data data to update, data cannot exceed 2^32 bytes
+     * Update internal state.
+     * @param data data to update, data cannot exceed 2^32 bytes.
      */
     update(data: string | BufferSource): this {
         const msg = typeof data === 'string'
@@ -175,7 +177,9 @@ export class Md5 {
         return this;
     }
 
-    /** Returns final hash */
+    /**
+     * Returns final hash.
+     */
     digest(): ArrayBuffer {
         let padLen = BLOCK_SIZE - this.pos;
         if (padLen < 9) padLen += BLOCK_SIZE;
@@ -208,8 +212,8 @@ export class Md5 {
     }
 
     /**
-   * Returns hash as a hex string.
-   */
+     * Returns hash as a hex string.
+     */
     toString(): string {
         return hexFromBuffer(this.digest());
     }
