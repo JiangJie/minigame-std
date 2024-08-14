@@ -1,19 +1,10 @@
 import { textEncode } from '../codec/mod.ts';
+import { bufferSource2U8a } from '../utils/mod.ts';
 
 /**
  * Supported hash algorithms.
  */
 type SHA = 'SHA-1' | 'SHA-256' | 'SHA-384' | 'SHA-512';
-
-/**
- * The header of a PEM encoded public key.
- */
-const PEM_HEADER = '-----BEGIN PUBLIC KEY-----' as const;
-
-/**
- * The footer of a PEM encoded public key.
- */
-const PEM_FOOTER = '-----END PUBLIC KEY-----' as const;
 
 /**
  * Convert a string to an Uint8Array.
@@ -32,18 +23,13 @@ function str2U8a(str: string): Uint8Array {
 }
 
 /**
- * Import a public key from a PEM encoded string.
+ * Import a public key from a PEM encoded string for encryption.
  * @param pem - PEM encoded string.
  * @param hash - Hash algorithm.
  * @returns
  */
-export function importPublicKey(pem: string, hash: SHA): Promise<CryptoKey> {
-    if (pem.startsWith(PEM_HEADER)) {
-        pem = pem.slice(PEM_HEADER.length);
-    }
-    if (pem.endsWith(PEM_FOOTER)) {
-        pem = pem.slice(0, pem.length - PEM_FOOTER.length);
-    }
+export function importEncryptKey(pem: string, hash: SHA): Promise<CryptoKey> {
+    pem = pem.replace(/(-----(BEGIN|END) PUBLIC KEY-----|\s)/g, '');
 
     const publicKey = str2U8a(atob(pem));
 
@@ -54,7 +40,7 @@ export function importPublicKey(pem: string, hash: SHA): Promise<CryptoKey> {
             name: 'RSA-OAEP',
             hash,
         },
-        true,
+        false,
         [
             'encrypt',
         ]
@@ -67,8 +53,11 @@ export function importPublicKey(pem: string, hash: SHA): Promise<CryptoKey> {
  * @param data - The data to encrypt.
  * @returns
  */
-export function encrypt(publicKey: CryptoKey, data: string): Promise<ArrayBuffer> {
-    const encodedData = textEncode(data);
+export function encrypt(publicKey: CryptoKey, data: string | BufferSource): Promise<ArrayBuffer> {
+    const encodedData = typeof data === 'string'
+        ? textEncode(data)
+        : bufferSource2U8a(data);
+
     return crypto.subtle.encrypt(
         {
             name: 'RSA-OAEP',
