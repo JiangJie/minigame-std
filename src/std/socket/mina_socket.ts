@@ -19,7 +19,7 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
     });
 
     // mock WebSocket readyState
-    let readyState = SocketReadyState.CONNECTING;
+    let readyState: number = SocketReadyState.CONNECTING;
 
     return {
         get readyState(): number {

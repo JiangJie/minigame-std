@@ -3,24 +3,24 @@ import type { AsyncVoidIOResult } from 'happy-rusty';
 /**
  * WebSocket 连接状态，小游戏环境可用。
  */
-export const enum SocketReadyState {
+export const SocketReadyState = {
     /**
      * WebSocket.CONNECTING
      */
-    CONNECTING = 0,
+    CONNECTING: 0,
     /**
      * WebSocket.OPEN
      */
-    OPEN = 1,
+    OPEN: 1,
     /**
      * WebSocket.CLOSING
      */
-    CLOSING = 2,
+    CLOSING: 2,
     /**
      * WebSocket.CLOSED
      */
-    CLOSED = 3,
-}
+    CLOSED: 3,
+} as const;
 
 /**
  * WebSocket 事件监听器映射接口，定义了与 WebSocket 事件对应的回调函数类型。
