@@ -14,7 +14,8 @@
  * Forked from https://github.com/denoland/std/blob/0.160.0/hash/sha1.ts
  */
 
-import { bufferSource2U8a, hexFromBuffer } from '../utils/mod.ts';
+import { hexFromBuffer } from '../codec/mod.ts';
+import { bufferSource2U8a } from '../utils/mod.ts';
 
 const EXTRA = [-2147483648, 8388608, 32768, 128] as const;
 const SHIFT = [24, 16, 8, 0] as const;

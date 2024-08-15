@@ -3,7 +3,7 @@
 (globalThis as any).__MINIGAME_STD_MINA__ = false;
 
 import { assert } from '@std/assert';
-import { base64ToBuffer, cryptos, textDecode, textEncode } from '../src/mod.ts';
+import { base64ToBuffer, byteStringToBuffer, cryptos, textDecode, textEncode } from '../src/mod.ts';
 
 Deno.test('calculate md5', () => {
     const data = 'minigame-std';
@@ -24,21 +24,10 @@ Deno.test('calculate sha1', async () => {
 Deno.test('RSA encryption', async () => {
     const data = 'minigame-std';
 
-    function str2U8a(str: string): Uint8Array {
-        const { length } = str;
-        const u8a = new Uint8Array(length);
-
-        for (let i = 0; i < length; i++) {
-            u8a[i] = str.charCodeAt(i);
-        }
-
-        return u8a;
-    }
-
     function importDecryptKey(pem: string): Promise<CryptoKey> {
         pem = pem.replace(/(-----(BEGIN|END) PRIVATE KEY-----|\s)/g, '');
 
-        const publicKey = str2U8a(atob(pem));
+        const publicKey = byteStringToBuffer(atob(pem));
 
         return crypto.subtle.importKey(
             'pkcs8',

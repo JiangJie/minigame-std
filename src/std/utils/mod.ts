@@ -111,12 +111,3 @@ export function bufferSource2Ab(data: BufferSource): ArrayBuffer {
 
     throw new TypeError(`BufferSource is not ArrayBuffer or ArrayBufferView`);
 }
-
-/**
- * 将 BufferSource 转换为十六进制字符串。
- * @param buffer - 需要转换的 BufferSource。
- * @returns 十六进制字符串。
- */
-export function hexFromBuffer(buffer: BufferSource): string {
-    return Array.from(bufferSource2U8a(buffer)).map(byte => byte.toString(16).padStart(2, '0')).join('');
-}

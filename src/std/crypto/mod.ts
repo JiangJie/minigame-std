@@ -1,6 +1,5 @@
 import { isMinaEnv } from '../../macros/env.ts';
-import { textEncode } from '../codec/mod.ts';
-import { hexFromBuffer } from '../utils/mod.ts';
+import { hexFromBuffer, textEncode } from '../codec/mod.ts';
 import { Md5 } from './md5.ts';
 import { Sha1 } from './sha1.ts';
 

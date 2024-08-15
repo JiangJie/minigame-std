@@ -1,10 +1,12 @@
+import { byteStringFromBuffer, byteStringToBuffer, textDecode, textEncode } from '../codec/mod.ts';
+
 /**
  * 将字符串数据编码为 Base64 格式。
  * @param data - 需要编码的字符串数据。
  * @returns 编码后的 Base64 字符串。
  */
 export function encodeBase64(data: string): string {
-    return btoa(unescape(encodeURIComponent(data)));
+    return btoa(byteStringFromBuffer(textEncode(data)));
 }
 
 /**
@@ -13,5 +15,5 @@ export function encodeBase64(data: string): string {
  * @returns 解码后的字符串。
  */
 export function decodeBase64(data: string): string {
-    return decodeURIComponent(escape(atob(data)));
+    return textDecode(byteStringToBuffer(atob(data)));
 }

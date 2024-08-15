@@ -24,3 +24,37 @@ export function textDecode(data: BufferSource): string {
         ? minaTextDecode(bufferSource2Ab(data))
         : webTextDecode(data);
 }
+
+/**
+ * 将 BufferSource 转换为十六进制字符串。
+ * @param buffer - 需要转换的 BufferSource。
+ * @returns 十六进制字符串。
+ */
+export function hexFromBuffer(buffer: BufferSource): string {
+    return Array.from(bufferSource2U8a(buffer)).map(byte => byte.toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * 将字符串转换为 Uint8Array。
+ * @param str - 需要转换的字符串。
+ * @returns Uint8Array。
+ */
+export function byteStringToBuffer(str: string): Uint8Array {
+    const { length } = str;
+    const u8a = new Uint8Array(length);
+
+    for (let i = 0; i < length; i++) {
+        u8a[i] = str.charCodeAt(i);
+    }
+
+    return u8a;
+}
+
+/**
+ * 将字符串转换为 Uint8Array。
+ * @param str - 需要转换的字符串。
+ * @returns Uint8Array。
+ */
+export function byteStringFromBuffer(buffer: BufferSource): string {
+    return String.fromCharCode(...bufferSource2U8a(buffer));
+}
