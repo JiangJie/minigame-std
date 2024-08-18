@@ -26,4 +26,4 @@ function removeItem(key): AsyncVoidIOResult
 
 ## Defined in
 
-[src/std/storage/mod.ts:51](https://github.com/JiangJie/minigame-std/blob/22787d0fd0cff776ed579de48ccf7523d9e4ce53/src/std/storage/mod.ts#L51)
+[src/std/storage/mod.ts:51](https://github.com/JiangJie/minigame-std/blob/0b3f4c24a764d15c8d4cfbfab659d3f6c53dfd93/src/std/storage/mod.ts#L51)

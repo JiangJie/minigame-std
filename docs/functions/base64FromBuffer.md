@@ -10,13 +10,13 @@
 function base64FromBuffer(data): string
 ```
 
-Converts Uint8Array into a base64 encoded string.
+Converts BufferSource into a base64 encoded string.
 
 ## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `data` | `Uint8Array` | The data to encode. |
+| `data` | `BufferSource` | The data to encode. |
 
 ## Returns
 
@@ -26,4 +26,4 @@ The base64 encoded string.
 
 ## Defined in
 
-[src/std/base64/base64.ts:36](https://github.com/JiangJie/minigame-std/blob/22787d0fd0cff776ed579de48ccf7523d9e4ce53/src/std/base64/base64.ts#L36)
+[src/std/base64/base64.ts:38](https://github.com/JiangJie/minigame-std/blob/0b3f4c24a764d15c8d4cfbfab659d3f6c53dfd93/src/std/base64/base64.ts#L38)

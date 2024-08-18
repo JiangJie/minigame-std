@@ -10,15 +10,10 @@
 | ------ | ------ |
 | [audio](namespaces/audio/README.md) | - |
 | [clipboard](namespaces/clipboard/README.md) | - |
+| [cryptos](namespaces/cryptos/README.md) | - |
 | [fs](namespaces/fs/README.md) | - |
 | [platform](namespaces/platform/README.md) | - |
 | [storage](namespaces/storage/README.md) | - |
-
-## Enumerations
-
-| Enumeration | Description |
-| ------ | ------ |
-| [SocketReadyState](enumerations/SocketReadyState.md) | WebSocket 连接状态，小游戏环境可用。 |
 
 ## Interfaces
 
@@ -36,6 +31,12 @@
 | [SocketOptions](type-aliases/SocketOptions.md) | 创建Socket的可选参数。 |
 | [UnionFetchInit](type-aliases/UnionFetchInit.md) | 联合网络请求初始化配置类型，结合了 FetchInit 和 MinaFetchInit。 |
 
+## Variables
+
+| Variable | Description |
+| ------ | ------ |
+| [SocketReadyState](variables/SocketReadyState.md) | WebSocket 连接状态，小游戏环境可用。 |
+
 ## Functions
 
 | Function | Description |
@@ -46,13 +47,18 @@
 | [assertSafeSocketUrl](functions/assertSafeSocketUrl.md) | 断言传入的 WebSocket URL 是否为 `wss` 协议。 |
 | [assertSafeUrl](functions/assertSafeUrl.md) | 断言传入的 URL 是否为 `https` 协议。 |
 | [assertString](functions/assertString.md) | 断言传入的是一个字符串。 |
-| [base64FromBuffer](functions/base64FromBuffer.md) | Converts Uint8Array into a base64 encoded string. |
+| [base64FromBuffer](functions/base64FromBuffer.md) | Converts BufferSource into a base64 encoded string. |
 | [base64ToBuffer](functions/base64ToBuffer.md) | Converts a base64 encoded string to an Uint8Array |
+| [bufferSource2Ab](functions/bufferSource2Ab.md) | 将 BufferSource 转换为 ArrayBuffer。 |
+| [bufferSource2U8a](functions/bufferSource2U8a.md) | 将 BufferSource 转换为 Uint8Array。 |
+| [byteStringFromBuffer](functions/byteStringFromBuffer.md) | 将 Buffer 转换为 ByteString。 |
+| [byteStringToBuffer](functions/byteStringToBuffer.md) | 将字符串转换为 Uint8Array。 |
 | [connectSocket](functions/connectSocket.md) | 创建并返回一个 WebSocket 连接。 |
 | [decodeBase64](functions/decodeBase64.md) | 将 Base64 格式的字符串数据解码。 |
 | [encodeBase64](functions/encodeBase64.md) | 将字符串数据编码为 Base64 格式。 |
 | [fetchT](functions/fetchT.md) | 发起一个可中断的文本类型响应的网络请求。 |
 | [getNetworkType](functions/getNetworkType.md) | 获取网络状态。 |
+| [hexFromBuffer](functions/hexFromBuffer.md) | 将 BufferSource 转换为十六进制字符串。 |
 | [miniGameFailureToError](functions/miniGameFailureToError.md) | 将小游戏失败回调的结果转换为 `Error` 类型。 |
 | [miniGameFailureToResult](functions/miniGameFailureToResult.md) | 将错误对象转换为 IOResult 类型。 |
 | [textDecode](functions/textDecode.md) | 将二进制数据解码为字符串。 |

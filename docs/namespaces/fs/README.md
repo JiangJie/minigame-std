@@ -49,6 +49,8 @@
 | [readDirSync](functions/readDirSync.md) | `readDir` 的同步版本。 |
 | [readFile](functions/readFile.md) | 读取文件内容。 |
 | [readFileSync](functions/readFileSync.md) | `readFile` 的同步版本。 |
+| [readJsonFile](functions/readJsonFile.md) | 读取文件并解析为 JSON。 |
+| [readJsonFileSync](functions/readJsonFileSync.md) | `readJsonFile` 的同步版本。 |
 | [readTextFile](functions/readTextFile.md) | 读取文本文件的内容。 |
 | [readTextFileSync](functions/readTextFileSync.md) | `readTextFile` 的同步版本。 |
 | [remove](functions/remove.md) | 删除文件或目录。 |

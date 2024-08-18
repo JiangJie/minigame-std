@@ -22,4 +22,4 @@ type NetworkType:
 
 ## Defined in
 
-[src/std/network/network\_define.ts:4](https://github.com/JiangJie/minigame-std/blob/22787d0fd0cff776ed579de48ccf7523d9e4ce53/src/std/network/network_define.ts#L4)
+[src/std/network/network\_define.ts:4](https://github.com/JiangJie/minigame-std/blob/0b3f4c24a764d15c8d4cfbfab659d3f6c53dfd93/src/std/network/network_define.ts#L4)

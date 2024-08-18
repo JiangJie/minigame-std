@@ -27,4 +27,4 @@ function playWebAudioFromAudioBuffer(buffer, options?): AudioBufferSourceNode
 
 ## Defined in
 
-[src/std/web\_audio/mod.ts:55](https://github.com/JiangJie/minigame-std/blob/22787d0fd0cff776ed579de48ccf7523d9e4ce53/src/std/web_audio/mod.ts#L55)
+[src/std/web\_audio/mod.ts:56](https://github.com/JiangJie/minigame-std/blob/0b3f4c24a764d15c8d4cfbfab659d3f6c53dfd93/src/std/web_audio/mod.ts#L56)

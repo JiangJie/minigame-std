@@ -24,4 +24,4 @@ function mkdirSync(dirPath): VoidIOResult
 
 ## Defined in
 
-[src/std/fs/fs\_sync.ts:42](https://github.com/JiangJie/minigame-std/blob/22787d0fd0cff776ed579de48ccf7523d9e4ce53/src/std/fs/fs_sync.ts#L42)
+[src/std/fs/fs\_sync.ts:44](https://github.com/JiangJie/minigame-std/blob/0b3f4c24a764d15c8d4cfbfab659d3f6c53dfd93/src/std/fs/fs_sync.ts#L44)
