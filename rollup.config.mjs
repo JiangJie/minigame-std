@@ -14,7 +14,7 @@ const external = [
     'tiny-invariant',
     'tiny-future',
     'fflate/browser',
-    'node-forge',
+    'rsa-oaep-encryption',
 ];
 
 /**
