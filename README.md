@@ -185,7 +185,7 @@ pnpm test
 > [!NOTE]
 > 由于测试环境的局限性，测试用例并不能覆盖所有功能。
 
-`tests` 目录下的测试用例是基于 web 平台的测试场景，相当于设置 `__MINIGAME_STD_MINA__: false` 的代码，测试工具为支持 web API 同时又兼容 jest API 的 [bun](https://bun.sh/)。
+`tests` 目录下的测试用例是基于 web 平台的测试场景，相当于设置 `__MINIGAME_STD_MINA__: false` 的代码，测试工具为 [deno](https://deno.com/)。
 
 对 web 平台文件系统的测试可以转到 [happy-opfs](https://github.com/JiangJie/happy-opfs)。
 
