@@ -3,7 +3,7 @@
   "description": "Mini Game Standard Development Library.",
   "author": "jiang115jie@gmail.com",
   "license": "GPL-3.0",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "source": "src/std/mod.ts",
   "main": "dist/main.cjs",
   "module": "dist/main.mjs",
@@ -48,7 +48,11 @@
     "base64",
     "storage",
     "clipboard",
-    "network"
+    "network",
+    "crypto",
+    "md5",
+    "sha",
+    "rsa"
   ],
   "devDependencies": {
     "@eslint/js": "^9.9.0",
