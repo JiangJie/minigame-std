@@ -51,9 +51,9 @@ export function byteStringToBuffer(str: string): Uint8Array {
 }
 
 /**
- * 将字符串转换为 Uint8Array。
- * @param str - 需要转换的字符串。
- * @returns Uint8Array。
+ * 将 Buffer 转换为 ByteString。
+ * @param buffer - 需要转换的 Buffer。
+ * @returns ByteString。
  */
 export function byteStringFromBuffer(buffer: BufferSource): string {
     return String.fromCharCode(...bufferSource2U8a(buffer));
