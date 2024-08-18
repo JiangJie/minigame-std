@@ -1,10 +1,8 @@
 import invariant from 'tiny-invariant';
 import { isMinaEnv } from '../../../macros/env.ts';
+import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
 import { importPublicKey as minaImportPublicKey } from './mina_rsa.ts';
-import type { RSAPublicKey, SHA } from './rsa_defines.ts';
 import { importPublicKey as webImportPublicKey } from './web_rsa.ts';
-
-export * from './rsa_defines.ts';
 
 /**
  * Import a public key from a PEM encoded string for encryption.

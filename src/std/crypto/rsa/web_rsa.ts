@@ -1,7 +1,7 @@
 import { base64FromBuffer } from '../../base64/mod.ts';
 import { byteStringToBuffer, textEncode } from '../../codec/mod.ts';
 import { bufferSource2U8a } from '../../utils/mod.ts';
-import type { RSAPublicKey, SHA } from './rsa_defines.ts';
+import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
 
 /**
  * Encrypt data with a public key.

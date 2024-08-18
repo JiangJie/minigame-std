@@ -5,8 +5,8 @@
  * Forked from https://github.com/denoland/std/blob/0.160.0/hash/md5.ts
  */
 
-import { hexFromBuffer, textEncode } from '../codec/mod.ts';
-import { bufferSource2U8a } from '../utils/mod.ts';
+import { hexFromBuffer, textEncode } from '../../codec/mod.ts';
+import { bufferSource2U8a } from '../../utils/mod.ts';
 
 const BLOCK_SIZE = 64 as const;
 
