@@ -57,11 +57,11 @@
     "@types/eslint__js": "^8.42.3",
     "@types/node-forge": "^1.3.11",
     "eslint": "^9.9.0",
-    "rollup": "^4.20.0",
+    "rollup": "^4.21.0",
     "rollup-plugin-dts": "^6.1.1",
     "rollup-plugin-esbuild": "^6.1.1",
     "typedoc": "^0.26.5",
-    "typedoc-plugin-markdown": "^4.2.3",
+    "typedoc-plugin-markdown": "^4.2.5",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.1.0"
   },
@@ -72,7 +72,7 @@
     "happy-opfs": "^1.8.4",
     "happy-rusty": "^1.5.0",
     "minigame-api-typings": "^3.8.5",
-    "node-forge": "^1.3.1",
+    "rsa-oaep-encryption": "^1.0.0",
     "tiny-future": "^1.0.0",
     "tiny-invariant": "^1.3.3"
   },

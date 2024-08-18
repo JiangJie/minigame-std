@@ -29,8 +29,15 @@ function encrypt(publicKey: CryptoKey, data: string | BufferSource): Promise<Arr
  * @param hash - Hash algorithm.
  * @returns
  */
-export async function publicKeyFromPem(pem: string, hash: SHA): Promise<RSAPublicKey> {
-    pem = pem.replace(/(-----(BEGIN|END) PUBLIC KEY-----|\s)/g, '');
+export async function importPublicKey(pem: string, hash: SHA): Promise<RSAPublicKey> {
+    const rMessage = /\s*-----BEGIN ([A-Z0-9- ]+)-----\r?\n?([\x21-\x7e\s]+?(?:\r?\n\r?\n))?([:A-Za-z0-9+/=\s]+?)-----END \1-----/g;
+    const match = rMessage.exec(pem);
+
+    if (!match) {
+        throw new Error('Invalid PEM formatted message.');
+    }
+
+    pem = match[3];
 
     const keyData = byteStringToBuffer(atob(pem));
 
@@ -48,7 +55,11 @@ export async function publicKeyFromPem(pem: string, hash: SHA): Promise<RSAPubli
     );
 
     return {
-        async encrypt(data: string | BufferSource): Promise<string> {
+        encrypt(data: string | BufferSource): Promise<ArrayBuffer> {
+            return encrypt(publicKey, data);
+        },
+
+        async encryptToString(data: string | BufferSource): Promise<string> {
             return base64FromBuffer(await encrypt(publicKey, data));
         },
     };

@@ -1,5 +1,13 @@
-import forge from 'node-forge';
+import { importPublicKey as importKey, sha1, sha256, sha384, sha512 } from 'rsa-oaep-encryption';
+import { base64FromBuffer } from '../../base64/mod.ts';
 import type { RSAPublicKey, SHA } from './rsa_defines.ts';
+
+const SHAs = {
+    sha1,
+    sha256,
+    sha384,
+    sha512,
+};
 
 /**
  * Import a public key from a PEM encoded string for encryption.
@@ -7,19 +15,23 @@ import type { RSAPublicKey, SHA } from './rsa_defines.ts';
  * @param hash - Hash algorithm.
  * @returns
  */
-export function publicKeyFromPem(pem: string, hash: SHA): RSAPublicKey {
-    const publicKey = forge.pki.publicKeyFromPem(pem);
+export function importPublicKey(pem: string, hash: SHA): RSAPublicKey {
+    const publicKey = importKey(pem);
+
+    const encrypt = (data: string): ArrayBuffer => {
+        // eg: SHA-1 => sha1
+        const sha = hash.replace('-', '').toLowerCase();
+        // bypassing type check
+        return publicKey.encrypt(data, SHAs[sha as 'sha1'].create());
+    };
 
     return {
-        encrypt(data: string): Promise<string> {
-            // eg: SHA-1 => sha1
-            const md = hash.toLowerCase().replace('-', '');
-            const encryptedData = publicKey.encrypt(data, 'RSA-OAEP', {
-                // bypassing ts errors
-                md: forge.md[md as 'sha1'].create(),
-            });
+        encrypt(data: string): Promise<ArrayBuffer> {
+            return Promise.resolve(encrypt(data));
+        },
 
-            return Promise.resolve(forge.util.encode64(encryptedData));
+        encryptToString(data: string): Promise<string> {
+            return Promise.resolve(base64FromBuffer(encrypt(data)));
         },
     };
 }

@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 (globalThis as any).__MINIGAME_STD_MINA__ = false;
 
-import { assert } from '@std/assert';
+import { assert, assertRejects, assertThrows } from '@std/assert';
 import { base64ToBuffer, byteStringToBuffer, cryptos, textDecode, textEncode } from '../src/mod.ts';
 
 Deno.test('calculate md5', () => {
@@ -24,17 +24,17 @@ Deno.test('calculate sha1', async () => {
 Deno.test('RSA encryption', async () => {
     const data = 'minigame-std';
 
-    function importDecryptKey(pem: string): Promise<CryptoKey> {
+    function importDecryptKey(pem: string, sha: string): Promise<CryptoKey> {
         pem = pem.replace(/(-----(BEGIN|END) PRIVATE KEY-----|\s)/g, '');
 
-        const publicKey = byteStringToBuffer(atob(pem));
+        const privateKey = byteStringToBuffer(atob(pem));
 
         return crypto.subtle.importKey(
             'pkcs8',
-            publicKey,
+            privateKey,
             {
                 name: 'RSA-OAEP',
-                hash: 'SHA-256',
+                hash: sha,
             },
             false,
             [
@@ -43,17 +43,55 @@ Deno.test('RSA encryption', async () => {
         );
     }
 
-    const publicKey = await cryptos.rsa.publicKeyFromPem(Deno.readTextFileSync(`${ import.meta.dirname }/keys/public_key.pem`), 'SHA-256');
-    const privateKey = await importDecryptKey(Deno.readTextFileSync(`${ import.meta.dirname }/keys/private_key.pem`));
+    async function decrypt(encryptedData: string | BufferSource, hash: string) {
+        const data = typeof encryptedData === 'string'
+            ? base64ToBuffer(encryptedData)
+            : encryptedData;
+        const privateKey = await importDecryptKey(Deno.readTextFileSync(`${ import.meta.dirname }/keys/private_key.pem`), hash);
+        const decryptedData = textDecode(await crypto.subtle.decrypt(
+            {
+                name: 'RSA-OAEP',
+            },
+            privateKey,
+            data
+        ));
 
-    const encryptedData = await publicKey.encrypt(data);
-    const decryptedData = textDecode(await crypto.subtle.decrypt(
+        return decryptedData;
+    }
+
+    const publicKeyStr = Deno.readTextFileSync(`${ import.meta.dirname }/keys/public_key.pem`);
+
+    {
+        assertThrows(() => cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-2' as any));
+        assertRejects(() => cryptos.rsa.importPublicKey(publicKeyStr.slice(1), 'SHA-256'));
+        assertRejects(() => cryptos.rsa.importPublicKey(publicKeyStr.replace('PUBLIC', 'AES PUBLIC'), 'SHA-256'));
+    }
+
+    for (let index = 0; index < 1; index++) {
         {
-            name: 'RSA-OAEP',
-        },
-        privateKey,
-        base64ToBuffer(encryptedData)
-    ));
-
-    assert(decryptedData === data);
+            const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-256')).encryptToString(data);
+            const decryptedData = await decrypt(encryptedData, 'SHA-256');
+            assert(decryptedData === data);
+        }
+        {
+            const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-1')).encrypt(data);
+            const decryptedData = await decrypt(encryptedData, 'SHA-1');
+            assert(decryptedData === data);
+        }
+        {
+            const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-256')).encrypt(data);
+            const decryptedData = await decrypt(encryptedData, 'SHA-256');
+            assert(decryptedData === data);
+        }
+        {
+            const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-384')).encrypt(data);
+            const decryptedData = await decrypt(encryptedData, 'SHA-384');
+            assert(decryptedData === data);
+        }
+        {
+            const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-512')).encrypt(data);
+            const decryptedData = await decrypt(encryptedData, 'SHA-512');
+            assert(decryptedData === data);
+        }
+    }
 });

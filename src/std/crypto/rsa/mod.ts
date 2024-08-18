@@ -1,7 +1,8 @@
+import invariant from 'tiny-invariant';
 import { isMinaEnv } from '../../../macros/env.ts';
-import { publicKeyFromPem as minaPublicKeyFromPem } from './mina_rsa.ts';
+import { importPublicKey as minaImportPublicKey } from './mina_rsa.ts';
 import type { RSAPublicKey, SHA } from './rsa_defines.ts';
-import { publicKeyFromPem as webPublicKeyFromPem } from './web_rsa.ts';
+import { importPublicKey as webImportPublicKey } from './web_rsa.ts';
 
 export * from './rsa_defines.ts';
 
@@ -11,8 +12,15 @@ export * from './rsa_defines.ts';
  * @param hash - Hash algorithm.
  * @returns
  */
-export function publicKeyFromPem(pem: string, hash: SHA): Promise<RSAPublicKey> {
+export function importPublicKey(pem: string, hash: SHA): Promise<RSAPublicKey> {
+    invariant(
+        hash === 'SHA-1'
+        || hash === 'SHA-256'
+        || hash === 'SHA-384'
+        || hash === 'SHA-512',
+        'Unsupported hash algorithm.'
+    );
     return isMinaEnv()
-        ? Promise.resolve(minaPublicKeyFromPem(pem, hash))
-        : webPublicKeyFromPem(pem, hash);
+        ? Promise.resolve(minaImportPublicKey(pem, hash))
+        : webImportPublicKey(pem, hash);
 }
