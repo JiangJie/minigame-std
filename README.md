@@ -100,8 +100,11 @@ jsr add @happy-js/minigame-std
 -   WebAudio
     ```js
     import { audio } from 'minigame-std';
+-   加密 md5/sha/rsa
+    ```js
+    import { cryptos } from 'minigame-std';
     ```
--   更多特性正在开发中...
+-   更多特性请查看[文档](docs/README.md)
 
 ## 和 Adapter 是什么关系
 
