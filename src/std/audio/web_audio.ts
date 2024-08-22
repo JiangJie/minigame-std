@@ -4,8 +4,6 @@ import { readFile } from '../fs/mod.ts';
 import { bufferSource2Ab } from '../utils/mod.ts';
 import type { PlayOptions } from './audio_defines.ts';
 
-export * from './audio_defines.ts';
-
 /**
  * Cache AudioContext.
  */
