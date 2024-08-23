@@ -1,5 +1,8 @@
 import { getDeviceInfo } from './device.ts';
 
+/**
+ * 平台类型，Web 或者小游戏。
+ */
 export type TargetType = 'minigame' | 'web';
 
 /**
