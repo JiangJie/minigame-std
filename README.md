@@ -103,6 +103,9 @@ jsr add @happy-js/minigame-std
 -   加密 md5/sha/rsa
     ```js
     import { cryptos } from 'minigame-std';
+-   LBS
+    ```js
+    import { lbs } from 'minigame-std';
     ```
 -   更多特性请查看[文档](docs/README.md)
 
