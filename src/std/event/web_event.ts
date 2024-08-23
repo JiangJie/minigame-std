@@ -6,7 +6,7 @@
 export function addErrorListener(listener: (ev: ErrorEvent) => void): () => void {
     addEventListener('error', listener);
 
-    return () => {
+    return (): void => {
         removeEventListener('error', listener);
     };
 }
@@ -19,7 +19,15 @@ export function addErrorListener(listener: (ev: ErrorEvent) => void): () => void
 export function addUnhandledrejectionListener(listener: (ev: PromiseRejectionEvent) => void): () => void {
     addEventListener('unhandledrejection', listener);
 
-    return () => {
+    return (): void => {
         removeEventListener('unhandledrejection', listener);
+    };
+}
+
+export function addResizeListener(listener: (ev: UIEvent) => void): () => void {
+    addEventListener('resize', listener);
+
+    return (): void => {
+        removeEventListener('resize', listener);
     };
 }

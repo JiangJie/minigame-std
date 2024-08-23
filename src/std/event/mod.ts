@@ -1,6 +1,14 @@
 import { isMinaEnv } from '../../macros/env.ts';
-import { addErrorListener as minaAddErrorListener, addUnhandledrejectionListener as minaAddUnhandledrejectionListener } from './mina_event.ts';
-import { addErrorListener as webAddErrorListener, addUnhandledrejectionListener as webAddUnhandledrejectionListener } from './web_event.ts';
+import {
+    addErrorListener as minaAddErrorListener,
+    addResizeListener as minaAddResizeListener,
+    addUnhandledrejectionListener as minaAddUnhandledrejectionListener,
+} from './mina_event.ts';
+import {
+    addErrorListener as webAddErrorListener,
+    addResizeListener as webAddResizeListener,
+    addUnhandledrejectionListener as webAddUnhandledrejectionListener,
+} from './web_event.ts';
 
 /**
  * 添加错误监听器，用于监听标准的错误事件。
@@ -31,4 +39,20 @@ export function addUnhandledrejectionListener(listener: (ev: Pick<PromiseRejecti
     return isMinaEnv()
         ? minaAddUnhandledrejectionListener(listener as unknown as WechatMinigame.OnUnhandledRejectionCallback)
         : webAddUnhandledrejectionListener(listener);
+}
+
+/**
+ * 添加窗口大小变化监听器。
+ * @param listener - 窗口大小变化的回调函数。
+ * @returns 返回一个函数，调用该函数可以移除监听器。
+ */
+export function addResizeListener(listener: WechatMinigame.OnWindowResizeCallback): () => void {
+    return isMinaEnv()
+        ? minaAddResizeListener(listener)
+        : webAddResizeListener(ev => {
+            listener({
+                windowWidth: (ev.target as Window).innerWidth,
+                windowHeight: (ev.target as Window).innerHeight,
+            });
+        });
 }

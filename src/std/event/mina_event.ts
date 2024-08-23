@@ -6,7 +6,7 @@
 export function addErrorListener(listener: WechatMinigame.WxOnErrorCallback): () => void {
     wx.onError(listener);
 
-    return () => {
+    return (): void => {
         wx.offError(listener as unknown as WechatMinigame.WxOffErrorCallback);
     };
 }
@@ -19,7 +19,15 @@ export function addErrorListener(listener: WechatMinigame.WxOnErrorCallback): ()
 export function addUnhandledrejectionListener(listener: (WechatMinigame.OnUnhandledRejectionCallback)): () => void {
     wx.onUnhandledRejection(listener);
 
-    return () => {
+    return (): void => {
         wx.offUnhandledRejection(listener);
+    };
+}
+
+export function addResizeListener(listener: WechatMinigame.OnWindowResizeCallback): () => void {
+    wx.onWindowResize(listener);
+
+    return (): void => {
+        wx.offWindowResize(listener);
     };
 }
