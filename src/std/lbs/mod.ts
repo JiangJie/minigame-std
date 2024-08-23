@@ -1,10 +1,10 @@
 import { type AsyncIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
-import type { GeoPosition } from './lib_defines.ts';
+import type { GeoPosition } from './lbs_defines.ts';
 import { getCurrentPosition as minaGetCurrentPosition } from './mina_lbs.ts';
 import { getCurrentPosition as webGetCurrentPosition } from './web_lbs.ts';
 
-export * from './lib_defines.ts';
+export * from './lbs_defines.ts';
 
 /**
  * 获取当前 geo 坐标。
