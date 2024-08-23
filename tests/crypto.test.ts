@@ -25,6 +25,21 @@ Deno.test('calculate sha', async () => {
     assert(await cryptos.sha512(data) === 'b4ebfef03638039622452ce378974fba515a8cb46c07e667bf80cdae06e69127123d5c32d85deb0ccc9ce563e5939b3340a604b45bd6493e663ae266c203d694');
 });
 
+Deno.test('Generate random bytes', async () => {
+    (await cryptos.getRandomValues(10)).inspect(bytes => {
+        for (const n of bytes) {
+            assert(n >= 0 && n < 256);
+        }
+    });
+});
+
+Deno.test('Generate random UUID', async () => {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    (await cryptos.randomUUID()).inspect(uuid => {
+        assert(uuidRegex.test(uuid));
+    });
+});
+
 Deno.test('RSA encryption', async () => {
     const data = 'minigame-std';
 

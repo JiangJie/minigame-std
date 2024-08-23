@@ -1,8 +1,8 @@
 import { Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
-import { hexFromBuffer } from '../../codec/mod';
-import { miniGameFailureToResult } from '../../utils/mod';
-import type { UUID } from './random_defines';
+import { hexFromBuffer } from '../../codec/mod.ts';
+import { miniGameFailureToResult } from '../../utils/mod.ts';
+import type { UUID } from './random_defines.ts';
 
 export function getRandomValues(length: number): AsyncIOResult<Uint8Array> {
     const future = new Future<IOResult<Uint8Array>>();

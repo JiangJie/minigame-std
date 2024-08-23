@@ -1,5 +1,5 @@
 import { Ok, type AsyncIOResult } from 'happy-rusty';
-import { isMinaEnv } from '../../../macros/env';
+import { isMinaEnv } from '../../../macros/env.ts';
 import {
     getRandomValues as minaGetRandomValues,
     randomUUID as minaRandomUUID,
