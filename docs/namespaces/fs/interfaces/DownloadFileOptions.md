@@ -16,4 +16,4 @@ Options for downloading files.
 
 | Property | Type | Defined in |
 | ------ | ------ | ------ |
-| `onProgress?` | (`progressResult`: `IOResult`\<`FetchProgress`\>) => `void` | [src/std/fs/fs\_define.ts:35](https://github.com/JiangJie/minigame-std/blob/0b3f4c24a764d15c8d4cfbfab659d3f6c53dfd93/src/std/fs/fs_define.ts#L35) |
+| `onProgress?` | (`progressResult`: `IOResult`\<`FetchProgress`\>) => `void` | [src/std/fs/fs\_define.ts:35](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/fs/fs_define.ts#L35) |

@@ -12,6 +12,8 @@
 | [clipboard](namespaces/clipboard/README.md) | - |
 | [cryptos](namespaces/cryptos/README.md) | - |
 | [fs](namespaces/fs/README.md) | - |
+| [image](namespaces/image/README.md) | - |
+| [lbs](namespaces/lbs/README.md) | - |
 | [platform](namespaces/platform/README.md) | - |
 | [storage](namespaces/storage/README.md) | - |
 
@@ -43,6 +45,7 @@
 | ------ | ------ |
 | [addErrorListener](functions/addErrorListener.md) | 添加错误监听器，用于监听标准的错误事件。 |
 | [addNetworkChangeListener](functions/addNetworkChangeListener.md) | 监听网络状态变化。 |
+| [addResizeListener](functions/addResizeListener.md) | 添加窗口大小变化监听器。 |
 | [addUnhandledrejectionListener](functions/addUnhandledrejectionListener.md) | 添加未处理的 Promise 拒绝事件监听器。 |
 | [assertSafeSocketUrl](functions/assertSafeSocketUrl.md) | 断言传入的 WebSocket URL 是否为 `wss` 协议。 |
 | [assertSafeUrl](functions/assertSafeUrl.md) | 断言传入的 URL 是否为 `https` 协议。 |

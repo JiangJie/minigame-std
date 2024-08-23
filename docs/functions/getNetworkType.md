@@ -20,4 +20,4 @@ function getNetworkType(): Promise<NetworkType>
 
 ## Defined in
 
-[src/std/network/mod.ts:12](https://github.com/JiangJie/minigame-std/blob/0b3f4c24a764d15c8d4cfbfab659d3f6c53dfd93/src/std/network/mod.ts#L12)
+[src/std/network/mod.ts:12](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/network/mod.ts#L12)

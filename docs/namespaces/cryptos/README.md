@@ -31,12 +31,15 @@
 | Type alias | Description |
 | ------ | ------ |
 | [SHA](type-aliases/SHA.md) | Supported hash algorithms. |
+| [UUID](type-aliases/UUID.md) | UUID. |
 
 ### Functions
 
 | Function | Description |
 | ------ | ------ |
+| [getRandomValues](functions/getRandomValues.md) | 获取密码学安全随机数。 |
 | [md5](functions/md5.md) | 计算字符串或者 buffer 的 MD5 值，结果用16进制字符串表示。 |
+| [randomUUID](functions/randomUUID.md) | 生成 UUID。 |
 | [sha1](functions/sha1.md) | 计算 SHA-1。 |
 | [sha256](functions/sha256.md) | 计算 SHA-256。 |
 | [sha384](functions/sha384.md) | 计算 SHA-384。 |

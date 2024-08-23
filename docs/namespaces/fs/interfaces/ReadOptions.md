@@ -12,4 +12,4 @@ Options for reading files with specified encoding.
 
 | Property | Type | Default value | Description | Defined in |
 | ------ | ------ | ------ | ------ | ------ |
-| `encoding?` | [`FileEncoding`](../type-aliases/FileEncoding.md) | `'binary'` | Read file encoding type, support `binary(ArrayBuffer)` `utf8(string)` `blob(Blob)` | [src/std/fs/fs\_define.ts:23](https://github.com/JiangJie/minigame-std/blob/0b3f4c24a764d15c8d4cfbfab659d3f6c53dfd93/src/std/fs/fs_define.ts#L23) |
+| `encoding?` | [`FileEncoding`](../type-aliases/FileEncoding.md) | `'binary'` | Read file encoding type, support `binary(ArrayBuffer)` `utf8(string)` `blob(Blob)` | [src/std/fs/fs\_define.ts:23](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/fs/fs_define.ts#L23) |

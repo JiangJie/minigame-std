@@ -20,4 +20,4 @@ function isMiniGameDevtools(): boolean
 
 ## Defined in
 
-[src/std/platform/target.ts:33](https://github.com/JiangJie/minigame-std/blob/0b3f4c24a764d15c8d4cfbfab659d3f6c53dfd93/src/std/platform/target.ts#L33)
+[src/std/platform/target.ts:36](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/platform/target.ts#L36)

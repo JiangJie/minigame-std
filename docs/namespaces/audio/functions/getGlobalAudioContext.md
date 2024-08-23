@@ -20,4 +20,4 @@ function getGlobalAudioContext(): AudioContext
 
 ## Defined in
 
-[src/std/web\_audio/mod.ts:18](https://github.com/JiangJie/minigame-std/blob/0b3f4c24a764d15c8d4cfbfab659d3f6c53dfd93/src/std/web_audio/mod.ts#L18)
+[src/std/audio/web\_audio.ts:16](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/audio/web_audio.ts#L16)
