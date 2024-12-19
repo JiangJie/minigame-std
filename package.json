@@ -58,26 +58,26 @@
     "webaudio"
   ],
   "devDependencies": {
-    "@eslint/js": "^9.9.0",
+    "@eslint/js": "^9.17.0",
     "@types/eslint__js": "^8.42.3",
     "@types/node-forge": "^1.3.11",
-    "eslint": "^9.9.0",
-    "rollup": "^4.21.0",
+    "eslint": "^9.17.0",
+    "rollup": "^4.28.1",
     "rollup-plugin-dts": "^6.1.1",
     "rollup-plugin-esbuild": "^6.1.1",
-    "typedoc": "^0.26.6",
-    "typedoc-plugin-markdown": "^4.2.5",
-    "typescript": "^5.5.4",
-    "typescript-eslint": "^8.2.0"
+    "typedoc": "^0.27.5",
+    "typedoc-plugin-markdown": "^4.3.3",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.1"
   },
   "dependencies": {
     "@happy-ts/fetch-t": "^1.3.2",
-    "@std/path": "npm:@jsr/std__path@^1.0.2",
+    "@std/path": "npm:@jsr/std__path@^1.0.8",
     "fflate": "^0.8.2",
     "happy-opfs": "^1.8.4",
     "happy-rusty": "^1.5.0",
-    "minigame-api-typings": "^3.8.5",
-    "rsa-oaep-encryption": "^1.0.0",
+    "minigame-api-typings": "^3.8.7",
+    "rsa-oaep-encryption": "^1.0.1",
     "tiny-future": "^1.0.0",
     "tiny-invariant": "^1.3.3"
   },
