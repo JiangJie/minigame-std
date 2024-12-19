@@ -3,7 +3,7 @@
 (globalThis as any).__MINIGAME_STD_MINA__ = false;
 
 import { assert, assertRejects, assertThrows } from '@std/assert';
-import { base64ToBuffer, byteStringToBuffer, cryptos, textDecode, textEncode } from '../src/mod.ts';
+import { base64ToBuffer, byteStringToBuffer, cryptos, textDecode, textEncode, type DataSource } from '../src/mod.ts';
 
 Deno.test('calculate md5', () => {
     const data = 'minigame-std-中文';
@@ -23,6 +23,16 @@ Deno.test('calculate sha', async () => {
     assert(await cryptos.sha256(data) === '9cff73e4d0e15d78089294a8519788df44f306411e8d20f5f3770e564a73467f');
     assert(await cryptos.sha384(data) === '23ba7aac72c86e88befc6094e8f903645e2531cf14ac57edf1796e74e40a6e567b0255502a342d3085493d34e87b0541');
     assert(await cryptos.sha512(data) === 'b4ebfef03638039622452ce378974fba515a8cb46c07e667bf80cdae06e69127123d5c32d85deb0ccc9ce563e5939b3340a604b45bd6493e663ae266c203d694');
+});
+
+Deno.test('calculate hmac', async () => {
+    const key = '密码';
+    const data = 'minigame-std-中文';
+
+    assert(await cryptos.sha1HMAC(key, data) === 'c039c11a31199388dfb540f989d27f1ec099a43e');
+    assert(await cryptos.sha256HMAC(key, data) === '5e6bcf9fd1f62617773c18d420ef200dfd46dc15373d1192ff02cf648d703748');
+    assert(await cryptos.sha384HMAC(key, data) === '7e011216b97450f06de084cdc6bd5f6e206dba1aa87519129dfc289ae9aa6231800188a0defe9543321365db2acc91f6');
+    assert(await cryptos.sha512HMAC(key, data) === 'e781e747d4358000756e7752086dbf37822bd5f4733df2953a6eb96945b670cad1df950d4ba2f09cdf0e90beba1cdab9f0798ce6814b5aad7521d41bf3b4d0f3');
 });
 
 Deno.test('Generate random bytes', async () => {
@@ -62,7 +72,7 @@ Deno.test('RSA encryption', async () => {
         );
     }
 
-    async function decrypt(encryptedData: string | BufferSource, hash: string) {
+    async function decrypt(encryptedData: DataSource, hash: string) {
         const data = typeof encryptedData === 'string'
             ? base64ToBuffer(encryptedData)
             : encryptedData;
