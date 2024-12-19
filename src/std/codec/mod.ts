@@ -1,4 +1,5 @@
 import { isMinaEnv } from '../../macros/env.ts';
+import type { DataSource } from '../defines.ts';
 import { bufferSource2Ab, bufferSource2U8a } from '../utils/mod.ts';
 import { textDecode as minaTextDecode, textEncode as minaTextEncode } from './mina_codec.ts';
 import { textDecode as webTextDecode, textEncode as webTextEncode } from './web_codec.ts';
@@ -57,4 +58,18 @@ export function byteStringToBuffer(str: string): Uint8Array {
  */
 export function byteStringFromBuffer(buffer: BufferSource): string {
     return String.fromCharCode(...bufferSource2U8a(buffer));
+}
+
+/**
+ * 将 UTF-8 字符串转换为 ByteString。
+ *
+ * @param data - 需要转换的字符串或 BufferSource。
+ * @returns 转换后的 ByteString。
+ */
+export function toByteString(data: DataSource): string {
+    const buffer = typeof data === 'string'
+        ? textEncode(data)
+        : data;
+
+    return byteStringFromBuffer(buffer);
 }

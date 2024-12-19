@@ -4,6 +4,7 @@ export * from './std/base64/mod.ts';
 export * as clipboard from './std/clipboard/mod.ts';
 export * from './std/codec/mod.ts';
 export * as cryptos /* Avoid conflict with global `crypto` */ from './std/crypto/mod.ts';
+export * from './std/defines.ts';
 export * from './std/event/mod.ts';
 export * from './std/fetch/mod.ts';
 export * as fs from './std/fs/mod.ts';

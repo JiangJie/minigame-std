@@ -106,7 +106,7 @@ export function bufferSource2Ab(data: BufferSource): ArrayBuffer {
     }
 
     if (ArrayBuffer.isView(data)) {
-        return data.byteOffset === 0 ? data.buffer : data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
+        return (data.byteOffset === 0 ? data.buffer : data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)) as ArrayBuffer;
     }
 
     throw new TypeError(`BufferSource is not ArrayBuffer or ArrayBufferView`);

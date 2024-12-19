@@ -1,5 +1,6 @@
 import { RESULT_VOID, type AsyncVoidIOResult } from 'happy-rusty';
 import { assertSafeSocketUrl } from '../assert/assertions.ts';
+import type { DataSource } from '../defines.ts';
 import type { ISocket, SocketListenerMap } from './socket_define.ts';
 
 /**
@@ -70,7 +71,7 @@ export function connectSocket(url: string, protocols?: string | string[]): ISock
             }
         },
 
-        send(data: string | BufferSource): AsyncVoidIOResult {
+        send(data: DataSource): AsyncVoidIOResult {
             socket.send(data);
             return Promise.resolve(RESULT_VOID);
         },

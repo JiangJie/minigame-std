@@ -1,3 +1,4 @@
+import type { DataSource } from '../../defines.ts';
 import { Md5 } from './md5.ts';
 
 export { Md5 } from './md5.ts';
@@ -7,6 +8,6 @@ export { Md5 } from './md5.ts';
  * @param data - 需要计算 MD5 值的数据。
  * @returns 计算得到的 MD5 十六进制字符串。
  */
-export function md5(data: string | BufferSource): string {
+export function md5(data: DataSource): string {
     return new Md5().update(data).toString();
 }

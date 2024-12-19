@@ -1,29 +1,19 @@
 import { sha1 as SHA1, sha256 as SHA256, sha384 as SHA384, sha512 as SHA512 } from 'rsa-oaep-encryption';
-import { byteStringFromBuffer, textEncode } from '../../codec/mod.ts';
+import { toByteString } from '../../codec/mod.ts';
+import type { DataSource } from '../../defines.ts';
 
-/**
- * 将 UTF-8 字符串转换为 ByteString。
- */
-function toByteString(data: string | BufferSource): string {
-    const buffer = typeof data === 'string'
-        ? textEncode(data)
-        : data;
-
-    return byteStringFromBuffer(buffer);
-}
-
-export function sha1(data: string | BufferSource): string {
+export function sha1(data: DataSource): string {
     return SHA1.create().update(toByteString(data)).digest().toHex();
 }
 
-export function sha256(data: string | BufferSource): string {
+export function sha256(data: DataSource): string {
     return SHA256.create().update(toByteString(data)).digest().toHex();
 }
 
-export function sha384(data: string | BufferSource): string {
+export function sha384(data: DataSource): string {
     return SHA384.create().update(toByteString(data)).digest().toHex();
 }
 
-export function sha512(data: string | BufferSource): string {
+export function sha512(data: DataSource): string {
     return SHA512.create().update(toByteString(data)).digest().toHex();
 }

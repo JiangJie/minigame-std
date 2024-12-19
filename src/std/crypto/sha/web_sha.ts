@@ -1,4 +1,5 @@
 import { hexFromBuffer, textEncode } from '../../codec/mod.ts';
+import type { DataSource } from '../../defines.ts';
 import type { SHA } from '../crypto_defines.ts';
 
 /**
@@ -7,7 +8,7 @@ import type { SHA } from '../crypto_defines.ts';
  * @param hash - SHA 算法。
  * @returns 计算得到的哈希值。
  */
-export async function sha(data: string | BufferSource, hash: SHA): Promise<string> {
+export async function sha(data: DataSource, hash: SHA): Promise<string> {
     const encodedData = typeof data === 'string'
         ? textEncode(data)
         : data;

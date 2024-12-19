@@ -6,6 +6,7 @@
  */
 
 import { hexFromBuffer, textEncode } from '../../codec/mod.ts';
+import type { DataSource } from '../../defines.ts';
 import { bufferSource2U8a } from '../../utils/mod.ts';
 
 const BLOCK_SIZE = 64 as const;
@@ -143,7 +144,7 @@ export class Md5 {
      * Update internal state.
      * @param data data to update, data cannot exceed 2^32 bytes.
      */
-    update(data: string | BufferSource): this {
+    update(data: DataSource): this {
         const msg = typeof data === 'string'
             ? textEncode(data)
             : bufferSource2U8a(data);
