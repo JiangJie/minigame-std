@@ -1,4 +1,4 @@
-[**minigame-std**](../../../README.md) • **Docs**
+[**minigame-std**](../../../README.md)
 
 ***
 
@@ -36,7 +36,7 @@ Returns final hash.
 
 #### Defined in
 
-[src/std/crypto/md/md5.ts:183](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/crypto/md/md5.ts#L183)
+[src/std/crypto/md/md5.ts:184](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/crypto/md/md5.ts#L184)
 
 ***
 
@@ -54,7 +54,7 @@ Returns hash as a hex string.
 
 #### Defined in
 
-[src/std/crypto/md/md5.ts:217](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/crypto/md/md5.ts#L217)
+[src/std/crypto/md/md5.ts:218](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/crypto/md/md5.ts#L218)
 
 ***
 
@@ -70,7 +70,7 @@ Update internal state.
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `data` | `string` \| `BufferSource` | data to update, data cannot exceed 2^32 bytes. |
+| `data` | [`DataSource`](../../../type-aliases/DataSource.md) | data to update, data cannot exceed 2^32 bytes. |
 
 #### Returns
 
@@ -78,4 +78,4 @@ Update internal state.
 
 #### Defined in
 
-[src/std/crypto/md/md5.ts:146](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/crypto/md/md5.ts#L146)
+[src/std/crypto/md/md5.ts:147](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/crypto/md/md5.ts#L147)

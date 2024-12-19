@@ -1,4 +1,4 @@
-[**minigame-std**](../../../README.md) • **Docs**
+[**minigame-std**](../../../README.md)
 
 ***
 
@@ -16,7 +16,7 @@ function sha1(data): Promise<string>
 
 | Parameter | Type |
 | ------ | ------ |
-| `data` | `string` \| `BufferSource` |
+| `data` | [`DataSource`](../../../type-aliases/DataSource.md) |
 
 ## Returns
 
@@ -24,4 +24,4 @@ function sha1(data): Promise<string>
 
 ## Defined in
 
-[src/std/crypto/sha/mod.ts:13](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/crypto/sha/mod.ts#L13)
+[src/std/crypto/sha/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/crypto/sha/mod.ts#L14)

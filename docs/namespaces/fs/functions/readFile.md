@@ -1,4 +1,4 @@
-[**minigame-std**](../../../README.md) • **Docs**
+[**minigame-std**](../../../README.md)
 
 ***
 
@@ -26,4 +26,4 @@ function readFile(filePath): AsyncIOResult<ArrayBuffer>
 
 ## Defined in
 
-[src/std/fs/fs\_async.ts:94](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/fs/fs_async.ts#L94)
+[src/std/fs/fs\_async.ts:94](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fs/fs_async.ts#L94)

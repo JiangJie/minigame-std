@@ -1,4 +1,4 @@
-[**minigame-std**](../../../README.md) • **Docs**
+[**minigame-std**](../../../README.md)
 
 ***
 
@@ -16,7 +16,7 @@ function md5(data): string
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `data` | `string` \| `BufferSource` | 需要计算 MD5 值的数据。 |
+| `data` | [`DataSource`](../../../type-aliases/DataSource.md) | 需要计算 MD5 值的数据。 |
 
 ## Returns
 
@@ -26,4 +26,4 @@ function md5(data): string
 
 ## Defined in
 
-[src/std/crypto/md/mod.ts:10](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/crypto/md/mod.ts#L10)
+[src/std/crypto/md/mod.ts:11](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/crypto/md/mod.ts#L11)

@@ -1,4 +1,4 @@
-[**minigame-std**](../README.md) • **Docs**
+[**minigame-std**](../README.md)
 
 ***
 
@@ -30,4 +30,4 @@ function addNetworkChangeListener(listener): () => void
 
 ## Defined in
 
-[src/std/network/mod.ts:23](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/network/mod.ts#L23)
+[src/std/network/mod.ts:23](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/network/mod.ts#L23)

@@ -1,4 +1,4 @@
-**minigame-std** • **Docs**
+**minigame-std**
 
 ***
 
@@ -29,6 +29,7 @@
 
 | Type alias | Description |
 | ------ | ------ |
+| [DataSource](type-aliases/DataSource.md) | The data source. |
 | [NetworkType](type-aliases/NetworkType.md) | 网络状态，混合了 web 和小游戏环境。 |
 | [SocketOptions](type-aliases/SocketOptions.md) | 创建Socket的可选参数。 |
 | [UnionFetchInit](type-aliases/UnionFetchInit.md) | 联合网络请求初始化配置类型，结合了 FetchInit 和 MinaFetchInit。 |
@@ -59,13 +60,14 @@
 | [connectSocket](functions/connectSocket.md) | 创建并返回一个 WebSocket 连接。 |
 | [decodeBase64](functions/decodeBase64.md) | 将 Base64 格式的字符串数据解码。 |
 | [encodeBase64](functions/encodeBase64.md) | 将字符串数据编码为 Base64 格式。 |
-| [fetchT](functions/fetchT.md) | 发起一个可中断的文本类型响应的网络请求。 |
+| [fetchT](functions/fetchT.md) | 发起一个网络请求，根据初始化配置返回对应类型的 FetchTask。 |
 | [getNetworkType](functions/getNetworkType.md) | 获取网络状态。 |
 | [hexFromBuffer](functions/hexFromBuffer.md) | 将 BufferSource 转换为十六进制字符串。 |
 | [miniGameFailureToError](functions/miniGameFailureToError.md) | 将小游戏失败回调的结果转换为 `Error` 类型。 |
 | [miniGameFailureToResult](functions/miniGameFailureToResult.md) | 将错误对象转换为 IOResult 类型。 |
 | [textDecode](functions/textDecode.md) | 将二进制数据解码为字符串。 |
 | [textEncode](functions/textEncode.md) | 将字符串数据编码为 `Uint8Array` |
+| [toByteString](functions/toByteString.md) | 将 UTF-8 字符串转换为 ByteString。 |
 | [tryDOMAsyncOp](functions/tryDOMAsyncOp.md) | 执行异步函数，预期异常都是 `DOMException`。 |
 | [tryDOMSyncOp](functions/tryDOMSyncOp.md) | 执行同步函数，预期异常都是 `DOMException`。 |
 | [tryGeneralAsyncOp](functions/tryGeneralAsyncOp.md) | 执行异步函数，预期异常都是 `WechatMinigame.GeneralCallbackResult`。 |

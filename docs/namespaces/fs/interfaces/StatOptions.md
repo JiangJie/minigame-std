@@ -1,4 +1,4 @@
-[**minigame-std**](../../../README.md) • **Docs**
+[**minigame-std**](../../../README.md)
 
 ***
 
@@ -12,4 +12,4 @@ Options for stat operations.
 
 | Property | Type | Description | Defined in |
 | ------ | ------ | ------ | ------ |
-| `recursive` | `boolean` | Whether to recursively read the contents of directories. | [src/std/fs/fs\_define.ts:65](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/fs/fs_define.ts#L65) |
+| `recursive` | `boolean` | Whether to recursively read the contents of directories. | [src/std/fs/fs\_define.ts:65](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fs/fs_define.ts#L65) |

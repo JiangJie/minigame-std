@@ -1,4 +1,4 @@
-[**minigame-std**](../../../README.md) • **Docs**
+[**minigame-std**](../../../README.md)
 
 ***
 
@@ -20,4 +20,4 @@ function isMiniGameDevtools(): boolean
 
 ## Defined in
 
-[src/std/platform/target.ts:36](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/platform/target.ts#L36)
+[src/std/platform/target.ts:36](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/platform/target.ts#L36)

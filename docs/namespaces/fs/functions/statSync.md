@@ -1,4 +1,4 @@
-[**minigame-std**](../../../README.md) • **Docs**
+[**minigame-std**](../../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Function: statSync()
 
-## statSync(path)
+## Call Signature
 
 ```ts
 function statSync(path): IOResult<WechatMinigame.Stats>
@@ -26,13 +26,15 @@ function statSync(path): IOResult<WechatMinigame.Stats>
 
 ### Defined in
 
-[src/std/fs/fs\_sync.ts:83](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/fs/fs_sync.ts#L83)
+[src/std/fs/fs\_sync.ts:83](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fs/fs_sync.ts#L83)
 
-## statSync(path, options)
+## Call Signature
 
 ```ts
 function statSync(path, options): IOResult<WechatMinigame.FileStats[]>
 ```
+
+`stat` 的同步版本。
 
 ### Parameters
 
@@ -47,13 +49,15 @@ function statSync(path, options): IOResult<WechatMinigame.FileStats[]>
 
 ### Defined in
 
-[src/std/fs/fs\_sync.ts:84](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/fs/fs_sync.ts#L84)
+[src/std/fs/fs\_sync.ts:84](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fs/fs_sync.ts#L84)
 
-## statSync(path, options)
+## Call Signature
 
 ```ts
 function statSync(path, options?): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>
 ```
+
+`stat` 的同步版本。
 
 ### Parameters
 
@@ -68,4 +72,4 @@ function statSync(path, options?): IOResult<WechatMinigame.Stats | WechatMinigam
 
 ### Defined in
 
-[src/std/fs/fs\_sync.ts:87](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/fs/fs_sync.ts#L87)
+[src/std/fs/fs\_sync.ts:87](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fs/fs_sync.ts#L87)

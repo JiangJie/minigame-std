@@ -1,4 +1,4 @@
-[**minigame-std**](../README.md) • **Docs**
+[**minigame-std**](../README.md)
 
 ***
 
@@ -20,7 +20,7 @@
 
 请求的初始化配置。
 
-## fetchT(url, init)
+## Call Signature
 
 ```ts
 function fetchT(url, init): FetchTask<string>
@@ -57,9 +57,9 @@ FetchTask。
 
 ### Defined in
 
-[src/std/fetch/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/fetch/mod.ts#L14)
+[src/std/fetch/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fetch/mod.ts#L14)
 
-## fetchT(url, init)
+## Call Signature
 
 ```ts
 function fetchT(url, init): FetchTask<ArrayBuffer>
@@ -96,9 +96,9 @@ FetchTask。
 
 ### Defined in
 
-[src/std/fetch/mod.ts:24](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/fetch/mod.ts#L24)
+[src/std/fetch/mod.ts:24](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fetch/mod.ts#L24)
 
-## fetchT(url, init)
+## Call Signature
 
 ```ts
 function fetchT<T>(url, init): FetchTask<T>
@@ -141,9 +141,9 @@ FetchTask。
 
 ### Defined in
 
-[src/std/fetch/mod.ts:35](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/fetch/mod.ts#L35)
+[src/std/fetch/mod.ts:35](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fetch/mod.ts#L35)
 
-## fetchT(url, init)
+## Call Signature
 
 ```ts
 function fetchT(url, init?): FetchTask<string | Response>
@@ -180,4 +180,4 @@ FetchTask。
 
 ### Defined in
 
-[src/std/fetch/mod.ts:46](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/fetch/mod.ts#L46)
+[src/std/fetch/mod.ts:46](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fetch/mod.ts#L46)

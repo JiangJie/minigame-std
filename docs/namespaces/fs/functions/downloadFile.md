@@ -1,4 +1,4 @@
-[**minigame-std**](../../../README.md) • **Docs**
+[**minigame-std**](../../../README.md)
 
 ***
 
@@ -6,10 +6,12 @@
 
 # Function: downloadFile()
 
-## downloadFile(fileUrl, options)
+## Call Signature
 
 ```ts
-function downloadFile(fileUrl, options?): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | DownloadFileTempResponse>
+function downloadFile(fileUrl, options?): FetchTask<
+  | WechatMinigame.DownloadFileSuccessCallbackResult
+| DownloadFileTempResponse>
 ```
 
 下载文件并保存到临时文件。
@@ -23,15 +25,17 @@ function downloadFile(fileUrl, options?): FetchTask<WechatMinigame.DownloadFileS
 
 ### Returns
 
-`FetchTask`\<`WechatMinigame.DownloadFileSuccessCallbackResult` \| `DownloadFileTempResponse`\>
+`FetchTask`\<
+  \| `WechatMinigame.DownloadFileSuccessCallbackResult`
+  \| `DownloadFileTempResponse`\>
 
 下载操作的异步结果，成功时返回 true。
 
 ### Defined in
 
-[src/std/fs/fs\_async.ts:222](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/fs/fs_async.ts#L222)
+[src/std/fs/fs\_async.ts:222](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fs/fs_async.ts#L222)
 
-## downloadFile(fileUrl, filePath, options)
+## Call Signature
 
 ```ts
 function downloadFile(
@@ -58,4 +62,4 @@ options?): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | Response
 
 ### Defined in
 
-[src/std/fs/fs\_async.ts:230](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/fs/fs_async.ts#L230)
+[src/std/fs/fs\_async.ts:230](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fs/fs_async.ts#L230)

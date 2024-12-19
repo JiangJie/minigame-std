@@ -1,4 +1,4 @@
-[**minigame-std**](../README.md) • **Docs**
+[**minigame-std**](../README.md)
 
 ***
 
@@ -7,11 +7,11 @@
 # Type Alias: SocketOptions
 
 ```ts
-type SocketOptions: Omit<WechatMinigame.ConnectSocketOption, "url" | "complete" | "success" | "fail">;
+type SocketOptions = Omit<WechatMinigame.ConnectSocketOption, "url" | "complete" | "success" | "fail">;
 ```
 
 创建Socket的可选参数。
 
 ## Defined in
 
-[src/std/socket/socket\_define.ts:90](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/socket/socket_define.ts#L90)
+[src/std/socket/socket\_define.ts:91](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/socket/socket_define.ts#L91)

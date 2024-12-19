@@ -1,4 +1,4 @@
-[**minigame-std**](../README.md) • **Docs**
+[**minigame-std**](../README.md)
 
 ***
 
@@ -32,4 +32,4 @@ IOResult。
 
 ## Defined in
 
-[src/std/utils/mod.ts:56](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/utils/mod.ts#L56)
+[src/std/utils/mod.ts:56](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/utils/mod.ts#L56)

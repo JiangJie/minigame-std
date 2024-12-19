@@ -1,4 +1,4 @@
-[**minigame-std**](../../../README.md) • **Docs**
+[**minigame-std**](../../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Function: zip()
 
-## zip(sourcePath, options)
+## Call Signature
 
 ```ts
 function zip(sourcePath, options?): AsyncIOResult<Uint8Array>
@@ -29,9 +29,9 @@ function zip(sourcePath, options?): AsyncIOResult<Uint8Array>
 
 ### Defined in
 
-[src/std/fs/fs\_async.ts:281](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/fs/fs_async.ts#L281)
+[src/std/fs/fs\_async.ts:281](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fs/fs_async.ts#L281)
 
-## zip(sourcePath, zipFilePath, options)
+## Call Signature
 
 ```ts
 function zip(
@@ -58,4 +58,4 @@ function zip(
 
 ### Defined in
 
-[src/std/fs/fs\_async.ts:289](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/fs/fs_async.ts#L289)
+[src/std/fs/fs\_async.ts:289](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fs/fs_async.ts#L289)

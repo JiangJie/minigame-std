@@ -1,4 +1,4 @@
-[**minigame-std**](../../../../README.md) • **Docs**
+[**minigame-std**](../../../../README.md)
 
 ***
 

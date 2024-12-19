@@ -1,4 +1,4 @@
-[**minigame-std**](../../../README.md) • **Docs**
+[**minigame-std**](../../../README.md)
 
 ***
 
@@ -20,4 +20,4 @@ function getGlobalAudioContext(): AudioContext
 
 ## Defined in
 
-[src/std/audio/web\_audio.ts:16](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/audio/web_audio.ts#L16)
+[src/std/audio/web\_audio.ts:16](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/audio/web_audio.ts#L16)

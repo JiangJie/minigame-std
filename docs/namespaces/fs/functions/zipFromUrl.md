@@ -1,4 +1,4 @@
-[**minigame-std**](../../../README.md) • **Docs**
+[**minigame-std**](../../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Function: zipFromUrl()
 
-## zipFromUrl(sourceUrl, options)
+## Call Signature
 
 ```ts
 function zipFromUrl(sourceUrl, options?): AsyncIOResult<Uint8Array>
@@ -27,9 +27,9 @@ function zipFromUrl(sourceUrl, options?): AsyncIOResult<Uint8Array>
 
 ### Defined in
 
-[src/std/fs/fs\_async.ts:307](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/fs/fs_async.ts#L307)
+[src/std/fs/fs\_async.ts:307](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fs/fs_async.ts#L307)
 
-## zipFromUrl(sourceUrl, zipFilePath, options)
+## Call Signature
 
 ```ts
 function zipFromUrl(
@@ -54,4 +54,4 @@ function zipFromUrl(
 
 ### Defined in
 
-[src/std/fs/fs\_async.ts:314](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/fs/fs_async.ts#L314)
+[src/std/fs/fs\_async.ts:314](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fs/fs_async.ts#L314)

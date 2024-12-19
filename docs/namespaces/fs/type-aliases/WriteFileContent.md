@@ -1,4 +1,4 @@
-[**minigame-std**](../../../README.md) • **Docs**
+[**minigame-std**](../../../README.md)
 
 ***
 
@@ -7,11 +7,11 @@
 # Type Alias: WriteFileContent
 
 ```ts
-type WriteFileContent: Exclude<OPFSWriteFileContent, Blob>;
+type WriteFileContent = Exclude<OPFSWriteFileContent, Blob>;
 ```
 
 File content type for write, support `ArrayBuffer` `TypedArray` `string`.
 
 ## Defined in
 
-[src/std/fs/fs\_define.ts:7](https://github.com/JiangJie/minigame-std/blob/d842b492eda479274cfeb38a06f4c4255b5493bc/src/std/fs/fs_define.ts#L7)
+[src/std/fs/fs\_define.ts:7](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fs/fs_define.ts#L7)

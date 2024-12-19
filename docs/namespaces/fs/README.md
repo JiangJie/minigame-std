@@ -1,4 +1,4 @@
-[**minigame-std**](../../README.md) • **Docs**
+[**minigame-std**](../../README.md)
 
 ***
 
@@ -55,7 +55,7 @@
 | [readTextFileSync](functions/readTextFileSync.md) | `readTextFile` 的同步版本。 |
 | [remove](functions/remove.md) | 删除文件或目录。 |
 | [removeSync](functions/removeSync.md) | `remove` 的同步版本。 |
-| [stat](functions/stat.md) | - |
+| [stat](functions/stat.md) | 获取文件或目录的状态信息。 |
 | [statSync](functions/statSync.md) | `stat` 的同步版本。 |
 | [unzip](functions/unzip.md) | 解压 zip 文件。 |
 | [unzipFromUrl](functions/unzipFromUrl.md) | 从网络下载 zip 文件并解压。 |
