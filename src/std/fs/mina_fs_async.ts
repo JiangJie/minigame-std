@@ -226,11 +226,27 @@ export async function writeFile(filePath: string, contents: WriteFileContent, op
         }
     }
 
+    const fs = getFs();
+    let method: typeof fs.appendFile | typeof fs.writeFile = fs.writeFile;
+
+    if (append) {
+        // append先判断文件是否存在
+        const res = await exists(absPath);
+        if (res.isErr()) {
+            return res.asErr();
+        }
+
+        if (res.unwrap()) {
+            // 文件存在才能使用appendFile
+            method = fs.appendFile;
+        }
+    }
+
     const { data, encoding } = getWriteFileContents(contents);
 
     const future = new Future<VoidIOResult>();
 
-    (append ? getFs().appendFile : getFs().writeFile)({
+    method({
         filePath: absPath,
         data,
         encoding,
