@@ -5,19 +5,35 @@ export async function getCurrentPosition(): AsyncResult<WechatMinigame.GetFuzzyL
     const future = new Future<Result<WechatMinigame.GetFuzzyLocationSuccessCallbackResult, WechatMinigame.GeneralCallbackResult>>();
 
     try {
-        await wx.authorize({
-            scope: 'scope.userFuzzyLocation',
-        });
+        if (typeof wx.getFuzzyLocation === 'function') {
+            await wx.authorize({
+                scope: 'scope.userFuzzyLocation',
+            });
 
-        wx.getFuzzyLocation({
-            type: 'wgs84',
-            success(res) {
-                future.resolve(Ok(res));
-            },
-            fail(err) {
-                future.resolve(Err(err));
-            },
-        });
+            wx.getFuzzyLocation({
+                type: 'wgs84',
+                success(res) {
+                    future.resolve(Ok(res));
+                },
+                fail(err) {
+                    future.resolve(Err(err));
+                },
+            });
+        } else {
+            await wx.authorize({
+                scope: 'scope.userLocation',
+            });
+
+            wx.getLocation({
+                type: 'wgs84',
+                success(res) {
+                    future.resolve(Ok(res));
+                },
+                fail(err) {
+                    future.resolve(Err(err));
+                },
+            });
+        }
     } catch (e) {
         future.resolve(Err(e as WechatMinigame.GeneralCallbackResult));
     }
