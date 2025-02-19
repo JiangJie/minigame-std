@@ -3,7 +3,7 @@
   "description": "Mini Game Standard Development Library.",
   "author": "jiang115jie@gmail.com",
   "license": "GPL-3.0",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "source": "src/std/mod.ts",
   "main": "dist/main.cjs",
   "module": "dist/main.mjs",
@@ -80,6 +80,5 @@
     "rsa-oaep-encryption": "^1.0.1",
     "tiny-future": "^1.0.0",
     "tiny-invariant": "^1.3.3"
-  },
-  "packageManager": "pnpm@9.8.0"
+  }
 }
