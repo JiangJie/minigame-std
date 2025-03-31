@@ -15,12 +15,19 @@ import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath
  * @param dirPath - 需要创建的目录路径。
  * @returns 创建结果的异步操作，成功时返回 true。
  */
-export function mkdir(dirPath: string): AsyncVoidIOResult {
+export async function mkdir(dirPath: string): AsyncVoidIOResult {
     const absPath = getAbsolutePath(dirPath);
 
     // 根目录无需创建
     if (absPath === getRootUsrPath()) {
-        return Promise.resolve(RESULT_VOID);
+        return RESULT_VOID;
+    }
+
+    const statRes = await stat(absPath);
+
+    if (statRes.isOk()) {
+        // 存在则不创建
+        return RESULT_VOID;
     }
 
     const future = new Future<VoidIOResult>();
