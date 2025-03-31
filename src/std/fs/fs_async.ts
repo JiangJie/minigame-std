@@ -20,6 +20,7 @@ import {
     zip as webZip,
     zipFromUrl as webZipFromUrl,
     type DownloadFileTempResponse,
+    type WriteOptions,
     type ZipOptions,
 } from 'happy-opfs';
 import { Ok, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
@@ -150,10 +151,11 @@ export async function stat(path: string, options?: StatOptions): AsyncIOResult<W
  * 写入文件，不存在则创建，同时创建对应目录，contents只支持ArrayBuffer和string，并且需要确保string一定是utf8编码的。
  * @param filePath - 文件路径。
  * @param contents - 要写入的内容。
+ * @param options - 可选选项。
  * @returns 写入成功返回 true 的异步操作结果。
  */
-export function writeFile(filePath: string, contents: WriteFileContent): AsyncVoidIOResult {
-    return (isMinaEnv() ? minaWriteFile : webWriteFile)(filePath, contents);
+export function writeFile(filePath: string, contents: WriteFileContent, options?: WriteOptions): AsyncVoidIOResult {
+    return (isMinaEnv() ? minaWriteFile : webWriteFile)(filePath, contents, options);
 }
 
 /**
