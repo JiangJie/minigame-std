@@ -1,14 +1,14 @@
 import type { FetchResponse, FetchTask } from '@happy-ts/fetch-t';
 import { basename, dirname, join } from '@std/path/posix';
 import * as fflate from 'fflate/browser';
-import { type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
+import type { ExistsOptions, WriteOptions, ZipOptions } from 'happy-opfs';
 import { Err, Ok, RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import { assertSafeUrl } from '../assert/assertions.ts';
 import { miniGameFailureToResult } from '../utils/mod.ts';
 import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
 import { createAbortError } from './fs_helpers.ts';
-import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError } from './mina_fs_shared.ts';
+import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getRootUsrPath, getWriteFileContents, isNotFoundError } from './mina_fs_shared.ts';
 
 /**
  * 递归创建文件夹，相当于`mkdir -p`。
@@ -17,6 +17,11 @@ import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath
  */
 export function mkdir(dirPath: string): AsyncVoidIOResult {
     const absPath = getAbsolutePath(dirPath);
+
+    // 根目录无需创建
+    if (absPath === getRootUsrPath()) {
+        return Promise.resolve(RESULT_VOID);
+    }
 
     const future = new Future<VoidIOResult>();
 

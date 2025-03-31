@@ -42,7 +42,7 @@ let rootUsrPath: string;
  * 获取文件系统的根路径。
  * @returns 文件系统的根路径。
  */
-function getRootUsrPath(): string {
+export function getRootUsrPath(): string {
     rootUsrPath ??= wx.env.USER_DATA_PATH;
     // trim `usr`
     rootPath ??= rootUsrPath.slice(0, rootUsrPath.indexOf('usr'));
