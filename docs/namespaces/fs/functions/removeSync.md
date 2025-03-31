@@ -24,4 +24,4 @@ function removeSync(path): VoidIOResult
 
 ## Defined in
 
-[src/std/fs/fs\_sync.ts:76](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fs/fs_sync.ts#L76)
+[src/std/fs/fs\_sync.ts:76](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/fs/fs_sync.ts#L76)

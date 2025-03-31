@@ -14,4 +14,4 @@ type SocketOptions = Omit<WechatMinigame.ConnectSocketOption, "url" | "complete"
 
 ## Defined in
 
-[src/std/socket/socket\_define.ts:91](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/socket/socket_define.ts#L91)
+[src/std/socket/socket\_define.ts:91](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/socket/socket_define.ts#L91)

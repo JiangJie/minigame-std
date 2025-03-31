@@ -26,4 +26,4 @@ function getRandomValues(length): AsyncIOResult<Uint8Array>
 
 ## Defined in
 
-[src/std/crypto/random/mod.ts:20](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/crypto/random/mod.ts#L20)
+[src/std/crypto/random/mod.ts:20](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/crypto/random/mod.ts#L20)

@@ -25,4 +25,4 @@ function setItemSync(key, data): VoidIOResult
 
 ## Defined in
 
-[src/std/storage/mod.ts:80](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/storage/mod.ts#L80)
+[src/std/storage/mod.ts:80](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/storage/mod.ts#L80)

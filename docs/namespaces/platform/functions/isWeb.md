@@ -20,4 +20,4 @@ function isWeb(): boolean
 
 ## Defined in
 
-[src/std/platform/target.ts:44](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/platform/target.ts#L44)
+[src/std/platform/target.ts:44](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/platform/target.ts#L44)

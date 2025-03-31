@@ -57,7 +57,7 @@ FetchTask。
 
 ### Defined in
 
-[src/std/fetch/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fetch/mod.ts#L14)
+[src/std/fetch/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/fetch/mod.ts#L14)
 
 ## Call Signature
 
@@ -96,7 +96,7 @@ FetchTask。
 
 ### Defined in
 
-[src/std/fetch/mod.ts:24](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fetch/mod.ts#L24)
+[src/std/fetch/mod.ts:24](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/fetch/mod.ts#L24)
 
 ## Call Signature
 
@@ -141,7 +141,7 @@ FetchTask。
 
 ### Defined in
 
-[src/std/fetch/mod.ts:35](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fetch/mod.ts#L35)
+[src/std/fetch/mod.ts:35](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/fetch/mod.ts#L35)
 
 ## Call Signature
 
@@ -180,4 +180,4 @@ FetchTask。
 
 ### Defined in
 
-[src/std/fetch/mod.ts:46](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fetch/mod.ts#L46)
+[src/std/fetch/mod.ts:46](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/fetch/mod.ts#L46)

@@ -27,7 +27,7 @@ function zipFromUrl(sourceUrl, options?): AsyncIOResult<Uint8Array>
 
 ### Defined in
 
-[src/std/fs/fs\_async.ts:307](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fs/fs_async.ts#L307)
+[src/std/fs/fs\_async.ts:309](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/fs/fs_async.ts#L309)
 
 ## Call Signature
 
@@ -54,4 +54,4 @@ function zipFromUrl(
 
 ### Defined in
 
-[src/std/fs/fs\_async.ts:314](https://github.com/JiangJie/minigame-std/blob/eeac001add8ab13d21bab6e48cf53f07cd0a9aad/src/std/fs/fs_async.ts#L314)
+[src/std/fs/fs\_async.ts:316](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/fs/fs_async.ts#L316)
