@@ -436,44 +436,59 @@ export function downloadFile(fileUrl: string, filePath?: string | DownloadFileOp
 
     const future = new Future<IOResult<T>>();
 
-    const task = wx.downloadFile({
-        ...rest,
-        url: fileUrl,
-        filePath: absFilePath,
-        async success(res): Promise<void> {
-            if (aborted) {
-                future.resolve(Err(createAbortError()));
-                return;
-            }
+    let task: WechatMinigame.DownloadTask;
 
-            const { statusCode } = res;
+    // create the directory if not exists
+    mkdir(dirname(absFilePath as string)).then(res => {
+        if (aborted) {
+            future.resolve(Err(createAbortError()));
+            return;
+        }
 
-            if (statusCode >= 200 && statusCode < 300) {
-                future.resolve(Ok(res));
-                return;
-            }
+        if (res.isErr()) {
+            future.resolve(res.asErr());
+            return;
+        }
 
-            // remove the not expected file but no need to actively delete the temporary file
-            if (res.filePath) {
-                await remove(res.filePath);
-            }
+        task = wx.downloadFile({
+            ...rest,
+            url: fileUrl,
+            filePath: absFilePath,
+            async success(res): Promise<void> {
+                if (aborted) {
+                    future.resolve(Err(createAbortError()));
+                    return;
+                }
 
-            future.resolve(Err(new Error(statusCode.toString())));
-        },
-        fail(err): void {
-            future.resolve(aborted ? Err(createAbortError()) : miniGameFailureToResult(err));
-        },
-    });
+                const { statusCode } = res;
 
-    if (typeof onProgress === 'function') {
-        task.onProgressUpdate(res => {
-            const { totalBytesExpectedToWrite, totalBytesWritten } = res;
-            onProgress(typeof totalBytesExpectedToWrite === 'number' && typeof totalBytesWritten === 'number' ? Ok({
-                totalByteLength: totalBytesExpectedToWrite,
-                completedByteLength: totalBytesWritten,
-            }) : Err(new Error(`Unknown download progress ${ totalBytesWritten }/${ totalBytesExpectedToWrite }`)));
+                if (statusCode >= 200 && statusCode < 300) {
+                    future.resolve(Ok(res));
+                    return;
+                }
+
+                // remove the not expected file but no need to actively delete the temporary file
+                if (res.filePath) {
+                    await remove(res.filePath);
+                }
+
+                future.resolve(Err(new Error(statusCode.toString())));
+            },
+            fail(err): void {
+                future.resolve(aborted ? Err(createAbortError()) : miniGameFailureToResult(err));
+            },
         });
-    }
+
+        if (typeof onProgress === 'function') {
+            task.onProgressUpdate(res => {
+                const { totalBytesExpectedToWrite, totalBytesWritten } = res;
+                onProgress(typeof totalBytesExpectedToWrite === 'number' && typeof totalBytesWritten === 'number' ? Ok({
+                    totalByteLength: totalBytesExpectedToWrite,
+                    completedByteLength: totalBytesWritten,
+                }) : Err(new Error(`Unknown download progress ${ totalBytesWritten }/${ totalBytesExpectedToWrite }`)));
+            });
+        }
+    });
 
     return {
         abort(): void {
