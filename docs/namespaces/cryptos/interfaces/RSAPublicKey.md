@@ -32,7 +32,7 @@ Encrypted data.
 
 #### Defined in
 
-[src/std/crypto/crypto\_defines.ts:10](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/crypto/crypto_defines.ts#L10)
+[src/std/crypto/crypto\_defines.ts:10](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/crypto/crypto_defines.ts#L10)
 
 ***
 
@@ -56,4 +56,4 @@ encryptToString(data): Promise<string>
 
 #### Defined in
 
-[src/std/crypto/crypto\_defines.ts:15](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/crypto/crypto_defines.ts#L15)
+[src/std/crypto/crypto\_defines.ts:15](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/crypto/crypto_defines.ts#L15)

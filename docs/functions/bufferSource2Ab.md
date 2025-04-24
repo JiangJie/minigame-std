@@ -26,4 +26,4 @@ ArrayBuffer。
 
 ## Defined in
 
-[src/std/utils/mod.ts:103](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/utils/mod.ts#L103)
+[src/std/utils/mod.ts:103](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/utils/mod.ts#L103)

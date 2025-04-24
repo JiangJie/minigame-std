@@ -27,4 +27,4 @@ function unzip(zipFilePath, targetPath): AsyncVoidIOResult
 
 ## Defined in
 
-[src/std/fs/fs\_async.ts:262](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/fs/fs_async.ts#L262)
+[src/std/fs/fs\_async.ts:262](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/fs/fs_async.ts#L262)

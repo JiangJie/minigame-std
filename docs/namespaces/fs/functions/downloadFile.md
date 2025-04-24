@@ -33,7 +33,7 @@ function downloadFile(fileUrl, options?): FetchTask<
 
 ### Defined in
 
-[src/std/fs/fs\_async.ts:224](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/fs/fs_async.ts#L224)
+[src/std/fs/fs\_async.ts:224](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/fs/fs_async.ts#L224)
 
 ## Call Signature
 
@@ -62,4 +62,4 @@ options?): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | Response
 
 ### Defined in
 
-[src/std/fs/fs\_async.ts:232](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/fs/fs_async.ts#L232)
+[src/std/fs/fs\_async.ts:232](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/fs/fs_async.ts#L232)

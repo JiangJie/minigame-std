@@ -30,4 +30,4 @@ function getWindowInfo(): Pick<WechatMinigame.WindowInfo,
 
 ## Defined in
 
-[src/std/platform/mod.ts:9](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/platform/mod.ts#L9)
+[src/std/platform/mod.ts:10](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/platform/mod.ts#L10)

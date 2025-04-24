@@ -34,7 +34,7 @@ function stat(path): AsyncIOResult<WechatMinigame.Stats>
 
 ### Defined in
 
-[src/std/fs/fs\_async.ts:108](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/fs/fs_async.ts#L108)
+[src/std/fs/fs\_async.ts:108](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/fs/fs_async.ts#L108)
 
 ## Call Signature
 
@@ -55,7 +55,7 @@ function stat(path, options): AsyncIOResult<WechatMinigame.FileStats[]>
 
 ### Defined in
 
-[src/std/fs/fs\_async.ts:109](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/fs/fs_async.ts#L109)
+[src/std/fs/fs\_async.ts:109](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/fs/fs_async.ts#L109)
 
 ## Call Signature
 
@@ -76,4 +76,4 @@ function stat(path, options?): AsyncIOResult<WechatMinigame.Stats | WechatMiniga
 
 ### Defined in
 
-[src/std/fs/fs\_async.ts:112](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/fs/fs_async.ts#L112)
+[src/std/fs/fs\_async.ts:112](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/fs/fs_async.ts#L112)

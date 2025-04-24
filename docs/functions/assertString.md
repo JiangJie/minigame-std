@@ -24,4 +24,4 @@ function assertString(str): void
 
 ## Defined in
 
-[src/std/assert/assertions.ts:7](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/assert/assertions.ts#L7)
+[src/std/assert/assertions.ts:7](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/assert/assertions.ts#L7)

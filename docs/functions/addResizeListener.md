@@ -30,4 +30,4 @@ function addResizeListener(listener): () => void
 
 ## Defined in
 
-[src/std/event/mod.ts:49](https://github.com/JiangJie/minigame-std/blob/8633d80114dee6c79033ec094d8233bd8263bedc/src/std/event/mod.ts#L49)
+[src/std/event/mod.ts:49](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/event/mod.ts#L49)
