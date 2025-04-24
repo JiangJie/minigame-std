@@ -44,3 +44,43 @@ export function isMiniGameDevtools(): boolean {
 export function isWeb(): boolean {
     return getTargetType() === 'web';
 }
+
+/**
+ * 判断当前是否在小游戏的 iOS 环境中。
+ * @returns 如果在小游戏的 iOS 环境中返回 true，否则返回 false。
+ */
+export function isMiniGameIOS(): boolean {
+    return isMiniGame() && getDeviceInfo().platform === 'ios';
+}
+
+/**
+ * 判断当前是否在小游戏的 Android 环境中。
+ * @returns 如果在小游戏的 Android 环境中返回 true，否则返回 false。
+ */
+export function isMiniGameAndroid(): boolean {
+    return isMiniGame() && getDeviceInfo().platform === 'android';
+}
+
+/**
+ * 判断当前是否在小游戏的 Windows 环境中。
+ * @returns 如果在小游戏的 Windows 环境中返回 true，否则返回 false。
+ */
+export function isMiniGameWin(): boolean {
+    return isMiniGame() && getDeviceInfo().platform === 'windows';
+}
+
+/**
+ * 判断当前是否在小游戏的 Mac 环境中。
+ * @returns 如果在小游戏的 Mac 环境中返回 true，否则返回 false。
+ */
+export function isMiniGameMac(): boolean {
+    return isMiniGame() && getDeviceInfo().platform === 'mac';
+}
+
+/**
+ * 判断当前是否在小游戏的 HarmonyOS 环境中。
+ * @returns 如果在小游戏的 HarmonyOS 环境中返回 true，否则返回 false。
+ */
+export function isMiniGameHarmonyOS(): boolean {
+    return isMiniGame() && getDeviceInfo().platform === 'ohos';
+}

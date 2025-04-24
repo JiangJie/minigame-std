@@ -1,5 +1,6 @@
 import { isMinaEnv } from '../../macros/env.ts';
 
+export * from './device.ts';
 export * from './target.ts';
 
 /**
