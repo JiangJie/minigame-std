@@ -10,6 +10,8 @@
 function connectSocket(url, options?): ISocket
 ```
 
+Defined in: [src/std/socket/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/socket/mod.ts#L14)
+
 创建并返回一个 WebSocket 连接。
 
 ## Parameters
@@ -24,7 +26,3 @@ function connectSocket(url, options?): ISocket
 [`ISocket`](../interfaces/ISocket.md)
 
 返回一个实现了 ISocket 接口的 WebSocket 对象。
-
-## Defined in
-
-[src/std/socket/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/socket/mod.ts#L14)

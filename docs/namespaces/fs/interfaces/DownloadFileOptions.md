@@ -6,6 +6,8 @@
 
 # Interface: DownloadFileOptions
 
+Defined in: [src/std/fs/fs\_define.ts:34](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_define.ts#L34)
+
 Options for downloading files.
 
 ## Extends
@@ -16,4 +18,4 @@ Options for downloading files.
 
 | Property | Type | Defined in |
 | ------ | ------ | ------ |
-| `onProgress?` | (`progressResult`: `IOResult`\<`FetchProgress`\>) => `void` | [src/std/fs/fs\_define.ts:35](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/fs/fs_define.ts#L35) |
+| <a id="onprogress"></a> `onProgress?` | (`progressResult`: `IOResult`\<`FetchProgress`\>) => `void` | [src/std/fs/fs\_define.ts:35](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_define.ts#L35) |

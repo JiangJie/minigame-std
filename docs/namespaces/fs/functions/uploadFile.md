@@ -10,8 +10,10 @@
 function uploadFile(
    filePath, 
    fileUrl, 
-options?): FetchTask<WechatMinigame.UploadFileSuccessCallbackResult | Response>
+options?): FetchTask<UploadFileSuccessCallbackResult | Response>
 ```
+
+Defined in: [src/std/fs/fs\_async.ts:252](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_async.ts#L252)
 
 上传本地文件。
 
@@ -25,10 +27,6 @@ options?): FetchTask<WechatMinigame.UploadFileSuccessCallbackResult | Response>
 
 ## Returns
 
-`FetchTask`\<`WechatMinigame.UploadFileSuccessCallbackResult` \| `Response`\>
+`FetchTask`\<`UploadFileSuccessCallbackResult` \| `Response`\>
 
 上传成功返回原始结果。
-
-## Defined in
-
-[src/std/fs/fs\_async.ts:252](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/fs/fs_async.ts#L252)

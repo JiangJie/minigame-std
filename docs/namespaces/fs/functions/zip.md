@@ -9,8 +9,10 @@
 ## Call Signature
 
 ```ts
-function zip(sourcePath, options?): AsyncIOResult<Uint8Array>
+function zip(sourcePath, options?): AsyncIOResult<Uint8Array<ArrayBufferLike>>
 ```
+
+Defined in: [src/std/fs/fs\_async.ts:283](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_async.ts#L283)
 
 压缩文件到内存。
 
@@ -23,13 +25,9 @@ function zip(sourcePath, options?): AsyncIOResult<Uint8Array>
 
 ### Returns
 
-`AsyncIOResult`\<`Uint8Array`\>
+`AsyncIOResult`\<`Uint8Array`\<`ArrayBufferLike`\>\>
 
 压缩成功的异步结果。
-
-### Defined in
-
-[src/std/fs/fs\_async.ts:283](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/fs/fs_async.ts#L283)
 
 ## Call Signature
 
@@ -39,6 +37,8 @@ function zip(
    zipFilePath, 
    options?): AsyncVoidIOResult
 ```
+
+Defined in: [src/std/fs/fs\_async.ts:291](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_async.ts#L291)
 
 压缩文件。
 
@@ -55,7 +55,3 @@ function zip(
 `AsyncVoidIOResult`
 
 压缩成功的异步结果。
-
-### Defined in
-
-[src/std/fs/fs\_async.ts:291](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/fs/fs_async.ts#L291)

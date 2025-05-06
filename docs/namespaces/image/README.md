@@ -6,9 +6,7 @@
 
 # image
 
-## Index
-
-### Functions
+## Functions
 
 | Function | Description |
 | ------ | ------ |

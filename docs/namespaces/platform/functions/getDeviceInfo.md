@@ -7,17 +7,15 @@
 # Function: getDeviceInfo()
 
 ```ts
-function getDeviceInfo(): WechatMinigame.DeviceInfo
+function getDeviceInfo(): DeviceInfo
 ```
+
+Defined in: [src/std/platform/device.ts:7](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/platform/device.ts#L7)
 
 获取设备信息。
 
 ## Returns
 
-`WechatMinigame.DeviceInfo`
+`DeviceInfo`
 
 返回小游戏的设备信息对象。
-
-## Defined in
-
-[src/std/platform/device.ts:7](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/platform/device.ts#L7)

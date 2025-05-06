@@ -10,6 +10,8 @@
 function bufferSource2U8a(data): Uint8Array
 ```
 
+Defined in: [src/std/utils/mod.ts:82](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/utils/mod.ts#L82)
+
 将 BufferSource 转换为 Uint8Array。
 
 ## Parameters
@@ -23,7 +25,3 @@ function bufferSource2U8a(data): Uint8Array
 `Uint8Array`
 
 Uint8Array。
-
-## Defined in
-
-[src/std/utils/mod.ts:82](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/utils/mod.ts#L82)

@@ -6,9 +6,7 @@
 
 # clipboard
 
-## Index
-
-### Functions
+## Functions
 
 | Function | Description |
 | ------ | ------ |

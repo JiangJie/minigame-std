@@ -10,6 +10,8 @@
 function importPublicKey(pem, hash): Promise<RSAPublicKey>
 ```
 
+Defined in: [src/std/crypto/rsa/mod.ts:13](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/crypto/rsa/mod.ts#L13)
+
 Import a public key from a PEM encoded string for encryption.
 
 ## Parameters
@@ -22,7 +24,3 @@ Import a public key from a PEM encoded string for encryption.
 ## Returns
 
 `Promise`\<[`RSAPublicKey`](../../../interfaces/RSAPublicKey.md)\>
-
-## Defined in
-
-[src/std/crypto/rsa/mod.ts:13](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/crypto/rsa/mod.ts#L13)

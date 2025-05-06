@@ -10,8 +10,6 @@
 type SHA = "SHA-1" | "SHA-256" | "SHA-384" | "SHA-512";
 ```
 
+Defined in: [src/std/crypto/crypto\_defines.ts:21](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/crypto/crypto_defines.ts#L21)
+
 Supported hash algorithms.
-
-## Defined in
-
-[src/std/crypto/crypto\_defines.ts:21](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/crypto/crypto_defines.ts#L21)

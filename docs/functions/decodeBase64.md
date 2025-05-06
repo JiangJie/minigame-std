@@ -10,6 +10,8 @@
 function decodeBase64(data): string
 ```
 
+Defined in: [src/std/base64/mod.ts:20](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/base64/mod.ts#L20)
+
 将 Base64 格式的字符串数据解码。
 
 ## Parameters
@@ -23,7 +25,3 @@ function decodeBase64(data): string
 `string`
 
 解码后的字符串。
-
-## Defined in
-
-[src/std/base64/mod.ts:20](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/base64/mod.ts#L20)

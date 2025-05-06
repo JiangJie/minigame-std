@@ -10,6 +10,8 @@
 function readFile(filePath): AsyncIOResult<ArrayBuffer>
 ```
 
+Defined in: [src/std/fs/fs\_async.ts:95](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_async.ts#L95)
+
 读取文件内容。
 
 ## Parameters
@@ -23,7 +25,3 @@ function readFile(filePath): AsyncIOResult<ArrayBuffer>
 `AsyncIOResult`\<`ArrayBuffer`\>
 
 包含文件内容的 ArrayBuffer 的异步操作结果。
-
-## Defined in
-
-[src/std/fs/fs\_async.ts:95](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/fs/fs_async.ts#L95)

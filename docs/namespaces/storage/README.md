@@ -6,9 +6,7 @@
 
 # storage
 
-## Index
-
-### Functions
+## Functions
 
 | Function | Description |
 | ------ | ------ |

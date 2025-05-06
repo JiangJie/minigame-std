@@ -10,6 +10,8 @@
 function base64FromBuffer(data): string
 ```
 
+Defined in: [src/std/base64/base64.ts:38](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/base64/base64.ts#L38)
+
 Converts BufferSource into a base64 encoded string.
 
 ## Parameters
@@ -23,7 +25,3 @@ Converts BufferSource into a base64 encoded string.
 `string`
 
 The base64 encoded string.
-
-## Defined in
-
-[src/std/base64/base64.ts:38](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/base64/base64.ts#L38)

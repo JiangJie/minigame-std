@@ -6,9 +6,7 @@
 
 # rsa
 
-## Index
-
-### Functions
+## Functions
 
 | Function | Description |
 | ------ | ------ |

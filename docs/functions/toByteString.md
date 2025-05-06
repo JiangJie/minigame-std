@@ -10,6 +10,8 @@
 function toByteString(data): string
 ```
 
+Defined in: [src/std/codec/mod.ts:69](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/codec/mod.ts#L69)
+
 将 UTF-8 字符串转换为 ByteString。
 
 ## Parameters
@@ -23,7 +25,3 @@ function toByteString(data): string
 `string`
 
 转换后的 ByteString。
-
-## Defined in
-
-[src/std/codec/mod.ts:69](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/codec/mod.ts#L69)

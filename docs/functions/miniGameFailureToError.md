@@ -10,6 +10,8 @@
 function miniGameFailureToError(err): Error
 ```
 
+Defined in: [src/std/utils/mod.ts:11](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/utils/mod.ts#L11)
+
 将小游戏失败回调的结果转换为 `Error` 类型。
 
 如果是异步 API 的 `fail` 回调返回的结果通常是 `WechatMinigame.GeneralCallbackResult` 或者变体类型，
@@ -26,7 +28,3 @@ function miniGameFailureToError(err): Error
 `Error`
 
 转换后的 `Error` 对象。
-
-## Defined in
-
-[src/std/utils/mod.ts:11](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/utils/mod.ts#L11)

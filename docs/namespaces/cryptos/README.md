@@ -6,34 +6,32 @@
 
 # cryptos
 
-## Index
-
-### Namespaces
+## Namespaces
 
 | Namespace | Description |
 | ------ | ------ |
 | [rsa](namespaces/rsa/README.md) | - |
 
-### Classes
+## Classes
 
 | Class | Description |
 | ------ | ------ |
 | [Md5](classes/Md5.md) | Md5 hash |
 
-### Interfaces
+## Interfaces
 
 | Interface | Description |
 | ------ | ------ |
 | [RSAPublicKey](interfaces/RSAPublicKey.md) | The RSA public key. |
 
-### Type Aliases
+## Type Aliases
 
 | Type alias | Description |
 | ------ | ------ |
 | [SHA](type-aliases/SHA.md) | Supported hash algorithms. |
 | [UUID](type-aliases/UUID.md) | UUID. |
 
-### Functions
+## Functions
 
 | Function | Description |
 | ------ | ------ |

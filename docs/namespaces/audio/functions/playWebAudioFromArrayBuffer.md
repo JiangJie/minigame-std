@@ -10,6 +10,8 @@
 function playWebAudioFromArrayBuffer(buffer, options?): Promise<AudioBufferSourceNode>
 ```
 
+Defined in: [src/std/audio/web\_audio.ts:84](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/audio/web_audio.ts#L84)
+
 使用 Buffer 进行解码播放。
 
 ## Parameters
@@ -24,7 +26,3 @@ function playWebAudioFromArrayBuffer(buffer, options?): Promise<AudioBufferSourc
 `Promise`\<`AudioBufferSourceNode`\>
 
 正在播放的 AudioBufferSourceNode。
-
-## Defined in
-
-[src/std/audio/web\_audio.ts:84](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/audio/web_audio.ts#L84)

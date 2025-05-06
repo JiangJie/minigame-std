@@ -19,8 +19,10 @@
 ## Call Signature
 
 ```ts
-function stat(path): AsyncIOResult<WechatMinigame.Stats>
+function stat(path): AsyncIOResult<Stats>
 ```
+
+Defined in: [src/std/fs/fs\_async.ts:108](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_async.ts#L108)
 
 ### Parameters
 
@@ -30,17 +32,15 @@ function stat(path): AsyncIOResult<WechatMinigame.Stats>
 
 ### Returns
 
-`AsyncIOResult`\<`WechatMinigame.Stats`\>
-
-### Defined in
-
-[src/std/fs/fs\_async.ts:108](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/fs/fs_async.ts#L108)
+`AsyncIOResult`\<`Stats`\>
 
 ## Call Signature
 
 ```ts
-function stat(path, options): AsyncIOResult<WechatMinigame.FileStats[]>
+function stat(path, options): AsyncIOResult<FileStats[]>
 ```
+
+Defined in: [src/std/fs/fs\_async.ts:109](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_async.ts#L109)
 
 ### Parameters
 
@@ -51,17 +51,15 @@ function stat(path, options): AsyncIOResult<WechatMinigame.FileStats[]>
 
 ### Returns
 
-`AsyncIOResult`\<`WechatMinigame.FileStats`[]\>
-
-### Defined in
-
-[src/std/fs/fs\_async.ts:109](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/fs/fs_async.ts#L109)
+`AsyncIOResult`\<`FileStats`[]\>
 
 ## Call Signature
 
 ```ts
-function stat(path, options?): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>
+function stat(path, options?): AsyncIOResult<Stats | FileStats[]>
 ```
+
+Defined in: [src/std/fs/fs\_async.ts:112](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_async.ts#L112)
 
 ### Parameters
 
@@ -72,8 +70,4 @@ function stat(path, options?): AsyncIOResult<WechatMinigame.Stats | WechatMiniga
 
 ### Returns
 
-`AsyncIOResult`\<`WechatMinigame.Stats` \| `WechatMinigame.FileStats`[]\>
-
-### Defined in
-
-[src/std/fs/fs\_async.ts:112](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/fs/fs_async.ts#L112)
+`AsyncIOResult`\<`Stats` \| `FileStats`[]\>

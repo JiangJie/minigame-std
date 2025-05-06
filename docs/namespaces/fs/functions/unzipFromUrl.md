@@ -13,6 +13,8 @@ function unzipFromUrl(
    options?): AsyncVoidIOResult
 ```
 
+Defined in: [src/std/fs/fs\_async.ts:273](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_async.ts#L273)
+
 从网络下载 zip 文件并解压。
 
 ## Parameters
@@ -28,7 +30,3 @@ function unzipFromUrl(
 `AsyncVoidIOResult`
 
 下载并解压操作的异步结果。
-
-## Defined in
-
-[src/std/fs/fs\_async.ts:273](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/fs/fs_async.ts#L273)

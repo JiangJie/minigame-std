@@ -6,9 +6,7 @@
 
 # fs
 
-## Index
-
-### Interfaces
+## Interfaces
 
 | Interface | Description |
 | ------ | ------ |
@@ -17,7 +15,7 @@
 | [StatOptions](interfaces/StatOptions.md) | Options for stat operations. |
 | [UploadFileOptions](interfaces/UploadFileOptions.md) | Options for uploading files. |
 
-### Type Aliases
+## Type Aliases
 
 | Type alias | Description |
 | ------ | ------ |
@@ -28,7 +26,7 @@
 | [WriteFileContent](type-aliases/WriteFileContent.md) | File content type for write, support `ArrayBuffer` `TypedArray` `string`. |
 | [ZipFromUrlOptions](type-aliases/ZipFromUrlOptions.md) | Union options for `unzipFromUrl`. |
 
-### Functions
+## Functions
 
 | Function | Description |
 | ------ | ------ |

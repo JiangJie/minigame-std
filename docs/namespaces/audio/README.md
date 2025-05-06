@@ -6,15 +6,13 @@
 
 # audio
 
-## Index
-
-### Interfaces
+## Interfaces
 
 | Interface | Description |
 | ------ | ------ |
 | [PlayOptions](interfaces/PlayOptions.md) | 播放音频的选项。 |
 
-### Functions
+## Functions
 
 | Function | Description |
 | ------ | ------ |

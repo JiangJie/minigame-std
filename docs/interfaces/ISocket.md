@@ -6,13 +6,15 @@
 
 # Interface: ISocket
 
+Defined in: [src/std/socket/socket\_define.ts:58](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/socket/socket_define.ts#L58)
+
 WebSocket 接口定义，描述了 WebSocket 的基本操作方法。
 
 ## Properties
 
 | Property | Modifier | Type | Description | Defined in |
 | ------ | ------ | ------ | ------ | ------ |
-| `readyState` | `readonly` | `number` | WebSocket 的连接状态。 | [src/std/socket/socket\_define.ts:62](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/socket/socket_define.ts#L62) |
+| <a id="readystate"></a> `readyState` | `readonly` | `number` | WebSocket 的连接状态。 | [src/std/socket/socket\_define.ts:62](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/socket/socket_define.ts#L62) |
 
 ## Methods
 
@@ -21,6 +23,8 @@ WebSocket 接口定义，描述了 WebSocket 的基本操作方法。
 ```ts
 addEventListener<K>(type, listener): () => void
 ```
+
+Defined in: [src/std/socket/socket\_define.ts:71](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/socket/socket_define.ts#L71)
 
 添加事件监听器到 WebSocket 对象。
 
@@ -47,10 +51,6 @@ addEventListener<K>(type, listener): () => void
 
 `void`
 
-#### Defined in
-
-[src/std/socket/socket\_define.ts:71](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/socket/socket_define.ts#L71)
-
 ***
 
 ### close()
@@ -58,6 +58,8 @@ addEventListener<K>(type, listener): () => void
 ```ts
 close(code?, reason?): void
 ```
+
+Defined in: [src/std/socket/socket\_define.ts:85](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/socket/socket_define.ts#L85)
 
 关闭 WebSocket 连接。
 
@@ -72,10 +74,6 @@ close(code?, reason?): void
 
 `void`
 
-#### Defined in
-
-[src/std/socket/socket\_define.ts:85](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/socket/socket_define.ts#L85)
-
 ***
 
 ### send()
@@ -83,6 +81,8 @@ close(code?, reason?): void
 ```ts
 send(data): AsyncVoidIOResult
 ```
+
+Defined in: [src/std/socket/socket\_define.ts:78](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/socket/socket_define.ts#L78)
 
 发送数据到 WebSocket 服务器。
 
@@ -97,7 +97,3 @@ send(data): AsyncVoidIOResult
 `AsyncVoidIOResult`
 
 返回一个 Promise，其解析为发送结果，成功时返回 true，失败时返回 Error。
-
-#### Defined in
-
-[src/std/socket/socket\_define.ts:78](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/socket/socket_define.ts#L78)

@@ -10,6 +10,8 @@
 function existsSync(path): IOResult<boolean>
 ```
 
+Defined in: [src/std/fs/fs\_sync.ts:143](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_sync.ts#L143)
+
 `exists` 的同步版本。
 
 ## Parameters
@@ -21,7 +23,3 @@ function existsSync(path): IOResult<boolean>
 ## Returns
 
 `IOResult`\<`boolean`\>
-
-## Defined in
-
-[src/std/fs/fs\_sync.ts:143](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/fs/fs_sync.ts#L143)

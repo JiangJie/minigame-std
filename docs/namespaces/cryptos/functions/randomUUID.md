@@ -7,17 +7,15 @@
 # Function: randomUUID()
 
 ```ts
-function randomUUID(): AsyncIOResult<UUID>
+function randomUUID(): AsyncIOResult<`${string}-${string}-${string}-${string}-${string}`>
 ```
+
+Defined in: [src/std/crypto/random/mod.ts:30](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/crypto/random/mod.ts#L30)
 
 生成 UUID。
 
 ## Returns
 
-`AsyncIOResult`\<[`UUID`](../type-aliases/UUID.md)\>
+`AsyncIOResult`\<`` `${string}-${string}-${string}-${string}-${string}` ``\>
 
 UUID 字符串。
-
-## Defined in
-
-[src/std/crypto/random/mod.ts:30](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/crypto/random/mod.ts#L30)

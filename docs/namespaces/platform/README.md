@@ -6,15 +6,13 @@
 
 # platform
 
-## Index
-
-### Type Aliases
+## Type Aliases
 
 | Type alias | Description |
 | ------ | ------ |
 | [TargetType](type-aliases/TargetType.md) | 平台类型，Web 或者小游戏。 |
 
-### Functions
+## Functions
 
 | Function | Description |
 | ------ | ------ |

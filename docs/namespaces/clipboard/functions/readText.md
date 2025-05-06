@@ -10,6 +10,8 @@
 function readText(): AsyncIOResult<string>
 ```
 
+Defined in: [src/std/clipboard/mod.ts:19](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/clipboard/mod.ts#L19)
+
 异步读取剪贴板文本数据。
 
 ## Returns
@@ -17,7 +19,3 @@ function readText(): AsyncIOResult<string>
 `AsyncIOResult`\<`string`\>
 
 读取操作的结果。
-
-## Defined in
-
-[src/std/clipboard/mod.ts:19](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/clipboard/mod.ts#L19)

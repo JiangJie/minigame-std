@@ -6,15 +6,13 @@
 
 # lbs
 
-## Index
-
-### Interfaces
+## Interfaces
 
 | Interface | Description |
 | ------ | ------ |
 | [GeoPosition](interfaces/GeoPosition.md) | geo 坐标。 |
 
-### Functions
+## Functions
 
 | Function | Description |
 | ------ | ------ |

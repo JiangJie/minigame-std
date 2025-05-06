@@ -6,6 +6,8 @@
 
 # Interface: SocketListenerMap
 
+Defined in: [src/std/socket/socket\_define.ts:29](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/socket/socket_define.ts#L29)
+
 WebSocket 事件监听器映射接口，定义了与 WebSocket 事件对应的回调函数类型。
 
 ## Methods
@@ -15,6 +17,8 @@ WebSocket 事件监听器映射接口，定义了与 WebSocket 事件对应的�
 ```ts
 close(code, reason): void
 ```
+
+Defined in: [src/std/socket/socket\_define.ts:40](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/socket/socket_define.ts#L40)
 
 当 WebSocket 连接关闭时触发。
 
@@ -29,10 +33,6 @@ close(code, reason): void
 
 `void`
 
-#### Defined in
-
-[src/std/socket/socket\_define.ts:40](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/socket/socket_define.ts#L40)
-
 ***
 
 ### error()
@@ -40,6 +40,8 @@ close(code, reason): void
 ```ts
 error(err): void
 ```
+
+Defined in: [src/std/socket/socket\_define.ts:52](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/socket/socket_define.ts#L52)
 
 当 WebSocket 连接发生错误时触发。
 
@@ -53,10 +55,6 @@ error(err): void
 
 `void`
 
-#### Defined in
-
-[src/std/socket/socket\_define.ts:52](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/socket/socket_define.ts#L52)
-
 ***
 
 ### message()
@@ -64,6 +62,8 @@ error(err): void
 ```ts
 message(data): void
 ```
+
+Defined in: [src/std/socket/socket\_define.ts:46](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/socket/socket_define.ts#L46)
 
 当 WebSocket 接收到消息时触发。
 
@@ -77,10 +77,6 @@ message(data): void
 
 `void`
 
-#### Defined in
-
-[src/std/socket/socket\_define.ts:46](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/socket/socket_define.ts#L46)
-
 ***
 
 ### open()
@@ -89,12 +85,10 @@ message(data): void
 open(): void
 ```
 
+Defined in: [src/std/socket/socket\_define.ts:33](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/socket/socket_define.ts#L33)
+
 当 WebSocket 连接成功打开时触发。
 
 #### Returns
 
 `void`
-
-#### Defined in
-
-[src/std/socket/socket\_define.ts:33](https://github.com/JiangJie/minigame-std/blob/ddafbfd7359780ec38a81aeff021a80d33e07eb0/src/std/socket/socket_define.ts#L33)
