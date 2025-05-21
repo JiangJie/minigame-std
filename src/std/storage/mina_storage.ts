@@ -2,7 +2,7 @@ import { type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOR
 import { assertString } from '../assert/assertions.ts';
 import { tryGeneralAsyncOp, tryGeneralSyncOp } from '../utils/mod.ts';
 
-export async function setItem(key: string, data: string): AsyncVoidIOResult {
+export function setItem(key: string, data: string): AsyncVoidIOResult {
     assertString(key);
     assertString(data);
 
@@ -14,7 +14,7 @@ export async function setItem(key: string, data: string): AsyncVoidIOResult {
     });
 }
 
-export async function getItem(key: string): AsyncIOResult<string> {
+export function getItem(key: string): AsyncIOResult<string> {
     assertString(key);
 
     return tryGeneralAsyncOp(async () => {
@@ -25,7 +25,7 @@ export async function getItem(key: string): AsyncIOResult<string> {
     });
 }
 
-export async function removeItem(key: string): AsyncVoidIOResult {
+export function removeItem(key: string): AsyncVoidIOResult {
     assertString(key);
 
     return tryGeneralAsyncOp(async () => {
@@ -35,20 +35,20 @@ export async function removeItem(key: string): AsyncVoidIOResult {
     });
 }
 
-export async function clear(): AsyncVoidIOResult {
+export function clear(): AsyncVoidIOResult {
     return tryGeneralAsyncOp(async () => {
         await wx.clearStorage();
     });
 }
 
-export async function getLength(): AsyncIOResult<number> {
+export function getLength(): AsyncIOResult<number> {
     return tryGeneralAsyncOp(async () => {
         const info = await wx.getStorageInfo();
         return info.keys.length;
     });
 }
 
-export async function hasItem(key: string): AsyncIOResult<boolean> {
+export function hasItem(key: string): AsyncIOResult<boolean> {
     assertString(key);
 
     return tryGeneralAsyncOp(async () => {

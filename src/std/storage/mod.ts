@@ -29,9 +29,9 @@ import {
  * @param data - 要存储的数据。
  * @returns 返回一个 Promise，表示操作完成。
  */
-export async function setItem(key: string, data: string): AsyncVoidIOResult {
+export function setItem(key: string, data: string): AsyncVoidIOResult {
     return isMinaEnv()
-        ? await minaSetItem(key, data)
+        ? minaSetItem(key, data)
         : Promise.resolve(webSetItem(key, data));
 }
 
@@ -40,7 +40,7 @@ export async function setItem(key: string, data: string): AsyncVoidIOResult {
  * @param key - 数据的键名。
  * @returns 返回一个 Promise，表示操作完成。
  */
-export async function getItem(key: string): AsyncIOResult<string> {
+export function getItem(key: string): AsyncIOResult<string> {
     return isMinaEnv()
         ? minaGetItem(key)
         : Promise.resolve(webGetItem(key));
@@ -51,9 +51,9 @@ export async function getItem(key: string): AsyncIOResult<string> {
  * @param key - 数据的键名。
  * @returns 返回一个 Promise，表示操作完成。
  */
-export async function removeItem(key: string): AsyncVoidIOResult {
+export function removeItem(key: string): AsyncVoidIOResult {
     return isMinaEnv()
-        ? await minaRemoveItem(key)
+        ? minaRemoveItem(key)
         : Promise.resolve(webRemoveItem(key));
 }
 
@@ -61,9 +61,9 @@ export async function removeItem(key: string): AsyncVoidIOResult {
  * 清除所有的本地存储数据。
  * @returns 返回一个 Promise，表示操作完成。
  */
-export async function clear(): AsyncVoidIOResult {
+export function clear(): AsyncVoidIOResult {
     return isMinaEnv()
-        ? await minaClear()
+        ? minaClear()
         : Promise.resolve(webClear());
 }
 
@@ -71,9 +71,9 @@ export async function clear(): AsyncVoidIOResult {
  * 获取本地存储数据的长度。
  * @returns 返回一个 Promise，表示操作完成。
  */
-export async function getLength(): AsyncIOResult<number> {
+export function getLength(): AsyncIOResult<number> {
     return isMinaEnv()
-        ? await minaGetLength()
+        ? minaGetLength()
         : Promise.resolve(getLength());
 }
 
@@ -82,9 +82,9 @@ export async function getLength(): AsyncIOResult<number> {
  * @param key - 数据的键名。
  * @returns 返回一个 Promise，表示操作完成。
  */
-export async function hasItem(key: string): AsyncIOResult<boolean> {
+export function hasItem(key: string): AsyncIOResult<boolean> {
     return isMinaEnv()
-        ? await minaHasItem(key)
+        ? minaHasItem(key)
         : Promise.resolve(webHasItem(key));
 }
 
