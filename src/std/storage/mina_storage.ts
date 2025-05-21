@@ -48,6 +48,15 @@ export async function getLength(): AsyncIOResult<number> {
     });
 }
 
+export async function hasItem(key: string): AsyncIOResult<boolean> {
+    assertString(key);
+
+    return tryGeneralAsyncOp(async () => {
+        const info = await wx.getStorageInfo();
+        return info.keys.includes(key);
+    });
+}
+
 export function setItemSync(key: string, data: string): VoidIOResult {
     assertString(key);
     assertString(data);
@@ -83,5 +92,14 @@ export function getLengthSync(): IOResult<number> {
     return tryGeneralSyncOp(() => {
         const info = wx.getStorageInfoSync();
         return info.keys.length;
+    });
+}
+
+export function hasItemSync(key: string): IOResult<boolean> {
+    assertString(key);
+
+    return tryGeneralSyncOp(() => {
+        const info = wx.getStorageInfoSync();
+        return info.keys.includes(key);
     });
 }

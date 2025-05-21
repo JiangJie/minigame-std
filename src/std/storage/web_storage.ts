@@ -42,3 +42,11 @@ export function getLength(): IOResult<number> {
         return localStorage.length;
     });
 }
+
+export function hasItem(key: string): IOResult<boolean> {
+    assertString(key);
+
+    return callOp(() => {
+        return localStorage.getItem(key) != null;
+    });
+}

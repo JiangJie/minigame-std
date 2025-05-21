@@ -7,6 +7,8 @@ import {
     getItemSync as minaGetItemSync,
     getLength as minaGetLength,
     getLengthSync as minaGetLengthSync,
+    hasItem as minaHasItem,
+    hasItemSync as minaHasItemSync,
     removeItem as minaRemoveItem,
     removeItemSync as minaRemoveItemSync,
     setItem as minaSetItem,
@@ -16,6 +18,7 @@ import {
     clear as webClear,
     getItem as webGetItem,
     getLength as webGetLength,
+    hasItem as webHasItem,
     removeItem as webRemoveItem,
     setItem as webSetItem,
 } from './web_storage.ts';
@@ -75,6 +78,17 @@ export async function getLength(): AsyncIOResult<number> {
 }
 
 /**
+ * 检查本地存储中是否存在指定的数据。
+ * @param key - 数据的键名。
+ * @returns 返回一个 Promise，表示操作完成。
+ */
+export async function hasItem(key: string): AsyncIOResult<boolean> {
+    return isMinaEnv()
+        ? await minaHasItem(key)
+        : Promise.resolve(webHasItem(key));
+}
+
+/**
  * `setItem` 的同步版本。
  */
 export function setItemSync(key: string, data: string): VoidIOResult {
@@ -107,4 +121,12 @@ export function clearSync(): VoidIOResult {
  */
 export function getLengthSync(): IOResult<number> {
     return (isMinaEnv() ? minaGetLengthSync : webGetLength)();
+}
+
+/**
+ * `hasItem` 的同步版本。
+ * @param key - 数据的键名。
+ */
+export function hasItemSync(key: string): IOResult<boolean> {
+    return (isMinaEnv() ? minaHasItemSync : webHasItem)(key);
 }
