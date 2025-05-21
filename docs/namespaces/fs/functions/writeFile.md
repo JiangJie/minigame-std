@@ -13,7 +13,7 @@ function writeFile(
    options?): AsyncVoidIOResult
 ```
 
-Defined in: [src/std/fs/fs\_async.ts:157](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_async.ts#L157)
+Defined in: [src/std/fs/fs\_async.ts:157](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/fs/fs_async.ts#L157)
 
 写入文件，不存在则创建，同时创建对应目录，contents只支持ArrayBuffer和string，并且需要确保string一定是utf8编码的。
 

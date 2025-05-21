@@ -10,7 +10,7 @@
 function randomUUID(): AsyncIOResult<`${string}-${string}-${string}-${string}-${string}`>
 ```
 
-Defined in: [src/std/crypto/random/mod.ts:30](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/crypto/random/mod.ts#L30)
+Defined in: [src/std/crypto/random/mod.ts:30](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/crypto/random/mod.ts#L30)
 
 生成 UUID。
 

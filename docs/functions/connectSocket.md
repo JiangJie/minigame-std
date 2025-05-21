@@ -10,7 +10,7 @@
 function connectSocket(url, options?): ISocket
 ```
 
-Defined in: [src/std/socket/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/socket/mod.ts#L14)
+Defined in: [src/std/socket/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/socket/mod.ts#L14)
 
 创建并返回一个 WebSocket 连接。
 

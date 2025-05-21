@@ -10,7 +10,7 @@
 function md5(data): string
 ```
 
-Defined in: [src/std/crypto/md/mod.ts:11](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/crypto/md/mod.ts#L11)
+Defined in: [src/std/crypto/md/mod.ts:11](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/crypto/md/mod.ts#L11)
 
 计算字符串或者 buffer 的 MD5 值，结果用16进制字符串表示。
 

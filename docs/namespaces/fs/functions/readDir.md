@@ -10,7 +10,7 @@
 function readDir(dirPath): AsyncIOResult<string[]>
 ```
 
-Defined in: [src/std/fs/fs\_async.ts:76](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_async.ts#L76)
+Defined in: [src/std/fs/fs\_async.ts:76](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/fs/fs_async.ts#L76)
 
 异步读取指定目录下的所有文件和子目录。
 

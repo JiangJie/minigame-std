@@ -12,7 +12,7 @@
 function statSync(path): IOResult<Stats>
 ```
 
-Defined in: [src/std/fs/fs\_sync.ts:83](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_sync.ts#L83)
+Defined in: [src/std/fs/fs\_sync.ts:83](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/fs/fs_sync.ts#L83)
 
 `stat` 的同步版本。
 
@@ -32,7 +32,7 @@ Defined in: [src/std/fs/fs\_sync.ts:83](https://github.com/JiangJie/minigame-std
 function statSync(path, options): IOResult<FileStats[]>
 ```
 
-Defined in: [src/std/fs/fs\_sync.ts:84](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_sync.ts#L84)
+Defined in: [src/std/fs/fs\_sync.ts:84](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/fs/fs_sync.ts#L84)
 
 `stat` 的同步版本。
 
@@ -53,7 +53,7 @@ Defined in: [src/std/fs/fs\_sync.ts:84](https://github.com/JiangJie/minigame-std
 function statSync(path, options?): IOResult<Stats | FileStats[]>
 ```
 
-Defined in: [src/std/fs/fs\_sync.ts:87](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_sync.ts#L87)
+Defined in: [src/std/fs/fs\_sync.ts:87](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/fs/fs_sync.ts#L87)
 
 `stat` 的同步版本。
 

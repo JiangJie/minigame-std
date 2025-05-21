@@ -6,7 +6,7 @@
 
 # Interface: RSAPublicKey
 
-Defined in: [src/std/crypto/crypto\_defines.ts:4](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/crypto/crypto_defines.ts#L4)
+Defined in: [src/std/crypto/crypto\_defines.ts:4](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/crypto/crypto_defines.ts#L4)
 
 The RSA public key.
 
@@ -18,7 +18,7 @@ The RSA public key.
 encrypt(data): Promise<ArrayBuffer>
 ```
 
-Defined in: [src/std/crypto/crypto\_defines.ts:10](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/crypto/crypto_defines.ts#L10)
+Defined in: [src/std/crypto/crypto\_defines.ts:10](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/crypto/crypto_defines.ts#L10)
 
 Use the RSA-OAEP algorithm to encrypt the data.
 
@@ -42,7 +42,7 @@ Encrypted data.
 encryptToString(data): Promise<string>
 ```
 
-Defined in: [src/std/crypto/crypto\_defines.ts:15](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/crypto/crypto_defines.ts#L15)
+Defined in: [src/std/crypto/crypto\_defines.ts:15](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/crypto/crypto_defines.ts#L15)
 
 `encrypt` then convert to base64 string.
 

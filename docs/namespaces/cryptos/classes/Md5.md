@@ -6,7 +6,7 @@
 
 # Class: Md5
 
-Defined in: [src/std/crypto/md/md5.ts:17](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/crypto/md/md5.ts#L17)
+Defined in: [src/std/crypto/md/md5.ts:17](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/crypto/md/md5.ts#L17)
 
 Md5 hash
 
@@ -30,7 +30,7 @@ new Md5(): Md5
 digest(): ArrayBuffer
 ```
 
-Defined in: [src/std/crypto/md/md5.ts:184](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/crypto/md/md5.ts#L184)
+Defined in: [src/std/crypto/md/md5.ts:184](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/crypto/md/md5.ts#L184)
 
 Returns final hash.
 
@@ -46,7 +46,7 @@ Returns final hash.
 toString(): string
 ```
 
-Defined in: [src/std/crypto/md/md5.ts:218](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/crypto/md/md5.ts#L218)
+Defined in: [src/std/crypto/md/md5.ts:218](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/crypto/md/md5.ts#L218)
 
 Returns hash as a hex string.
 
@@ -62,7 +62,7 @@ Returns hash as a hex string.
 update(data): this
 ```
 
-Defined in: [src/std/crypto/md/md5.ts:147](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/crypto/md/md5.ts#L147)
+Defined in: [src/std/crypto/md/md5.ts:147](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/crypto/md/md5.ts#L147)
 
 Update internal state.
 

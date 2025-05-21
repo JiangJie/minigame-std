@@ -10,7 +10,7 @@
 function sha1(data): Promise<string>
 ```
 
-Defined in: [src/std/crypto/sha/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/crypto/sha/mod.ts#L14)
+Defined in: [src/std/crypto/sha/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/crypto/sha/mod.ts#L14)
 
 计算 SHA-1。
 

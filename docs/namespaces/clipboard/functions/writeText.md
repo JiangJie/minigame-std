@@ -10,7 +10,7 @@
 function writeText(data): AsyncVoidIOResult
 ```
 
-Defined in: [src/std/clipboard/mod.ts:11](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/clipboard/mod.ts#L11)
+Defined in: [src/std/clipboard/mod.ts:11](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/clipboard/mod.ts#L11)
 
 异步写入文本数据到剪贴板。
 

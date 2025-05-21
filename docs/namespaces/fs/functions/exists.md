@@ -10,7 +10,7 @@
 function exists(path): AsyncIOResult<boolean>
 ```
 
-Defined in: [src/std/fs/fs\_async.ts:187](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_async.ts#L187)
+Defined in: [src/std/fs/fs\_async.ts:187](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/fs/fs_async.ts#L187)
 
 检查指定路径的文件或目录是否存在。
 

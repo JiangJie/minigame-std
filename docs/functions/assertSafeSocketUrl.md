@@ -10,7 +10,7 @@
 function assertSafeSocketUrl(url): void
 ```
 
-Defined in: [src/std/assert/assertions.ts:24](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/assert/assertions.ts#L24)
+Defined in: [src/std/assert/assertions.ts:24](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/assert/assertions.ts#L24)
 
 断言传入的 WebSocket URL 是否为 `wss` 协议。
 

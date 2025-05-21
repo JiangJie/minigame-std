@@ -10,7 +10,7 @@
 function miniGameFailureToError(err): Error
 ```
 
-Defined in: [src/std/utils/mod.ts:11](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/utils/mod.ts#L11)
+Defined in: [src/std/utils/mod.ts:11](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/utils/mod.ts#L11)
 
 将小游戏失败回调的结果转换为 `Error` 类型。
 

@@ -13,7 +13,7 @@ function unzipFromUrl(
    options?): AsyncVoidIOResult
 ```
 
-Defined in: [src/std/fs/fs\_async.ts:273](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_async.ts#L273)
+Defined in: [src/std/fs/fs\_async.ts:273](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/fs/fs_async.ts#L273)
 
 从网络下载 zip 文件并解压。
 

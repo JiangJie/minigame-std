@@ -10,7 +10,7 @@
 function getRandomValues(length): AsyncIOResult<Uint8Array<ArrayBufferLike>>
 ```
 
-Defined in: [src/std/crypto/random/mod.ts:20](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/crypto/random/mod.ts#L20)
+Defined in: [src/std/crypto/random/mod.ts:20](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/crypto/random/mod.ts#L20)
 
 获取密码学安全随机数。
 

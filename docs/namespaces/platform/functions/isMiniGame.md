@@ -10,7 +10,7 @@
 function isMiniGame(): boolean
 ```
 
-Defined in: [src/std/platform/target.ts:28](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/platform/target.ts#L28)
+Defined in: [src/std/platform/target.ts:28](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/platform/target.ts#L28)
 
 判断当前是否在小游戏环境中。
 

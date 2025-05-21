@@ -10,7 +10,7 @@
 function addResizeListener(listener): () => void
 ```
 
-Defined in: [src/std/event/mod.ts:49](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/event/mod.ts#L49)
+Defined in: [src/std/event/mod.ts:49](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/event/mod.ts#L49)
 
 添加窗口大小变化监听器。
 

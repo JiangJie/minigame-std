@@ -10,7 +10,7 @@
 function getLengthSync(): IOResult<number>
 ```
 
-Defined in: [src/std/storage/mod.ts:108](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/storage/mod.ts#L108)
+Defined in: [src/std/storage/mod.ts:122](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/storage/mod.ts#L122)
 
 `getLength` 的同步版本。
 

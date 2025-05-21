@@ -10,7 +10,7 @@
 function isMiniGameAndroid(): boolean
 ```
 
-Defined in: [src/std/platform/target.ts:64](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/platform/target.ts#L64)
+Defined in: [src/std/platform/target.ts:64](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/platform/target.ts#L64)
 
 判断当前是否在小游戏的 Android 环境中。
 

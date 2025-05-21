@@ -10,7 +10,7 @@
 function emptyDir(dirPath): AsyncVoidIOResult
 ```
 
-Defined in: [src/std/fs/fs\_async.ts:196](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_async.ts#L196)
+Defined in: [src/std/fs/fs\_async.ts:196](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/fs/fs_async.ts#L196)
 
 清空指定目录下的所有文件和子目录。
 

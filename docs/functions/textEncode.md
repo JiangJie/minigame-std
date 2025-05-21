@@ -10,7 +10,7 @@
 function textEncode(data): Uint8Array
 ```
 
-Defined in: [src/std/codec/mod.ts:12](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/codec/mod.ts#L12)
+Defined in: [src/std/codec/mod.ts:12](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/codec/mod.ts#L12)
 
 将字符串数据编码为 `Uint8Array`
 

@@ -10,7 +10,7 @@
 function sha1HMAC(key, data): Promise<string>
 ```
 
-Defined in: [src/std/crypto/hmac/mod.ts:21](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/crypto/hmac/mod.ts#L21)
+Defined in: [src/std/crypto/hmac/mod.ts:21](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/crypto/hmac/mod.ts#L21)
 
 计算 SHA-1 HMAC。
 

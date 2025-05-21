@@ -6,7 +6,7 @@
 
 # Interface: ReadOptions
 
-Defined in: [src/std/fs/fs\_define.ts:17](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_define.ts#L17)
+Defined in: [src/std/fs/fs\_define.ts:17](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/fs/fs_define.ts#L17)
 
 Options for reading files with specified encoding.
 
@@ -14,4 +14,4 @@ Options for reading files with specified encoding.
 
 | Property | Type | Default value | Description | Defined in |
 | ------ | ------ | ------ | ------ | ------ |
-| <a id="encoding"></a> `encoding?` | [`FileEncoding`](../type-aliases/FileEncoding.md) | `'binary'` | Read file encoding type, support `binary(ArrayBuffer)` `utf8(string)` `blob(Blob)` | [src/std/fs/fs\_define.ts:23](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_define.ts#L23) |
+| <a id="encoding"></a> `encoding?` | [`FileEncoding`](../type-aliases/FileEncoding.md) | `'binary'` | Read file encoding type, support `binary(ArrayBuffer)` `utf8(string)` `blob(Blob)` | [src/std/fs/fs\_define.ts:23](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/fs/fs_define.ts#L23) |

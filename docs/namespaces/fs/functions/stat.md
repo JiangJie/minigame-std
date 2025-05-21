@@ -22,7 +22,7 @@
 function stat(path): AsyncIOResult<Stats>
 ```
 
-Defined in: [src/std/fs/fs\_async.ts:108](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_async.ts#L108)
+Defined in: [src/std/fs/fs\_async.ts:108](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/fs/fs_async.ts#L108)
 
 ### Parameters
 
@@ -40,7 +40,7 @@ Defined in: [src/std/fs/fs\_async.ts:108](https://github.com/JiangJie/minigame-s
 function stat(path, options): AsyncIOResult<FileStats[]>
 ```
 
-Defined in: [src/std/fs/fs\_async.ts:109](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_async.ts#L109)
+Defined in: [src/std/fs/fs\_async.ts:109](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/fs/fs_async.ts#L109)
 
 ### Parameters
 
@@ -59,7 +59,7 @@ Defined in: [src/std/fs/fs\_async.ts:109](https://github.com/JiangJie/minigame-s
 function stat(path, options?): AsyncIOResult<Stats | FileStats[]>
 ```
 
-Defined in: [src/std/fs/fs\_async.ts:112](https://github.com/JiangJie/minigame-std/blob/8c5db4b9c3dabb4d0435a493922f29b60a730f0d/src/std/fs/fs_async.ts#L112)
+Defined in: [src/std/fs/fs\_async.ts:112](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/fs/fs_async.ts#L112)
 
 ### Parameters
 
