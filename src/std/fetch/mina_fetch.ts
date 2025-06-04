@@ -97,6 +97,8 @@ export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> {
     } else {
         // default responseType is text
         options.responseType = responseType;
+        // responseType设置为text还不够，否则返回类型还是json
+        options.dataType = '其他';
     }
 
     const task = wx.request(options);
