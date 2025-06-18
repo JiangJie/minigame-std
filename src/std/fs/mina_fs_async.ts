@@ -438,18 +438,7 @@ export function downloadFile(fileUrl: string, filePath?: string | DownloadFileOp
 
     let task: WechatMinigame.DownloadTask;
 
-    // create the directory if not exists
-    mkdir(dirname(absFilePath as string)).then(res => {
-        if (aborted) {
-            future.resolve(Err(createAbortError()));
-            return;
-        }
-
-        if (res.isErr()) {
-            future.resolve(res.asErr());
-            return;
-        }
-
+    const download = () => {
         task = wx.downloadFile({
             ...rest,
             url: fileUrl,
@@ -488,7 +477,27 @@ export function downloadFile(fileUrl: string, filePath?: string | DownloadFileOp
                 }) : Err(new Error(`Unknown download progress ${ totalBytesWritten }/${ totalBytesExpectedToWrite }`)));
             });
         }
-    });
+    };
+
+    // maybe download to a temp file
+    if (typeof absFilePath === 'string' && absFilePath) {
+        // create the directory if not exists
+        mkdir(dirname(absFilePath)).then(res => {
+            if (aborted) {
+                future.resolve(Err(createAbortError()));
+                return;
+            }
+
+            if (res.isErr()) {
+                future.resolve(res.asErr());
+                return;
+            }
+
+            download();
+        });
+    } else {
+        download();
+    }
 
     return {
         abort(): void {
