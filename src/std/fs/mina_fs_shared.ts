@@ -148,7 +148,7 @@ export function errToRemoveResult(err: WechatMinigame.FileError): VoidIOResult {
 
 interface GetWriteFileContents {
     data: string | ArrayBuffer;
-    encoding: FileEncoding;
+    encoding: FileEncoding | undefined;
 }
 /**
  * 获取写入文件的参数。
@@ -156,7 +156,7 @@ interface GetWriteFileContents {
 export function getWriteFileContents(contents: WriteFileContent): GetWriteFileContents {
     const isBin = typeof contents !== 'string';
 
-    const encoding = isBin ? 'binary' : 'utf8'
+    const encoding = isBin ? undefined : 'utf8'
     const data = isBin ? bufferSource2Ab(contents) : contents;
 
     const res: GetWriteFileContents = {
