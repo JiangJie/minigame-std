@@ -1,4 +1,5 @@
 import type { FetchInit } from '@happy-ts/fetch-t';
+export { ABORT_ERROR, FetchError, TIMEOUT_ERROR, type FetchTask } from '@happy-ts/fetch-t';
 
 /**
  * 微信小游戏网络请求初始化配置接口，继承自微信小游戏请求选项，除去'url'和'responseType'。

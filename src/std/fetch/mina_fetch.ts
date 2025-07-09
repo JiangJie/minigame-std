@@ -1,9 +1,8 @@
-import { ABORT_ERROR, FetchError, TIMEOUT_ERROR, type FetchTask } from '@happy-ts/fetch-t';
 import { Err, Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import { assertSafeUrl } from '../assert/assertions.ts';
 import { miniGameFailureToError } from '../utils/mod.ts';
-import type { MinaFetchInit } from './fetch_defines.ts';
+import { ABORT_ERROR, FetchError, TIMEOUT_ERROR, type FetchTask, type MinaFetchInit } from './fetch_defines.ts';
 
 /**
  * 发起一个可中断的 ArrayBuffer 类型响应的网络请求。
