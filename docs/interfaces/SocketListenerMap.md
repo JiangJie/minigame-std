@@ -6,7 +6,7 @@
 
 # Interface: SocketListenerMap
 
-Defined in: [src/std/socket/socket\_define.ts:29](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/socket/socket_define.ts#L29)
+Defined in: [src/std/socket/socket\_define.ts:29](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/socket/socket_define.ts#L29)
 
 WebSocket 事件监听器映射接口，定义了与 WebSocket 事件对应的回调函数类型。
 
@@ -18,7 +18,7 @@ WebSocket 事件监听器映射接口，定义了与 WebSocket 事件对应的�
 close(code, reason): void
 ```
 
-Defined in: [src/std/socket/socket\_define.ts:40](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/socket/socket_define.ts#L40)
+Defined in: [src/std/socket/socket\_define.ts:40](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/socket/socket_define.ts#L40)
 
 当 WebSocket 连接关闭时触发。
 
@@ -41,7 +41,7 @@ Defined in: [src/std/socket/socket\_define.ts:40](https://github.com/JiangJie/mi
 error(err): void
 ```
 
-Defined in: [src/std/socket/socket\_define.ts:52](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/socket/socket_define.ts#L52)
+Defined in: [src/std/socket/socket\_define.ts:52](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/socket/socket_define.ts#L52)
 
 当 WebSocket 连接发生错误时触发。
 
@@ -63,7 +63,7 @@ Defined in: [src/std/socket/socket\_define.ts:52](https://github.com/JiangJie/mi
 message(data): void
 ```
 
-Defined in: [src/std/socket/socket\_define.ts:46](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/socket/socket_define.ts#L46)
+Defined in: [src/std/socket/socket\_define.ts:46](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/socket/socket_define.ts#L46)
 
 当 WebSocket 接收到消息时触发。
 
@@ -85,7 +85,7 @@ Defined in: [src/std/socket/socket\_define.ts:46](https://github.com/JiangJie/mi
 open(): void
 ```
 
-Defined in: [src/std/socket/socket\_define.ts:33](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/socket/socket_define.ts#L33)
+Defined in: [src/std/socket/socket\_define.ts:33](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/socket/socket_define.ts#L33)
 
 当 WebSocket 连接成功打开时触发。
 

@@ -15,7 +15,7 @@ const SocketReadyState: {
 };
 ```
 
-Defined in: [src/std/socket/socket\_define.ts:7](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/socket/socket_define.ts#L7)
+Defined in: [src/std/socket/socket\_define.ts:7](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/socket/socket_define.ts#L7)
 
 WebSocket 连接状态，小游戏环境可用。
 
@@ -23,7 +23,7 @@ WebSocket 连接状态，小游戏环境可用。
 
 | Name | Type | Default value | Description | Defined in |
 | ------ | ------ | ------ | ------ | ------ |
-| <a id="closed"></a> `CLOSED` | `3` | 3 | WebSocket.CLOSED | [src/std/socket/socket\_define.ts:23](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/socket/socket_define.ts#L23) |
-| <a id="closing"></a> `CLOSING` | `2` | 2 | WebSocket.CLOSING | [src/std/socket/socket\_define.ts:19](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/socket/socket_define.ts#L19) |
-| <a id="connecting"></a> `CONNECTING` | `0` | 0 | WebSocket.CONNECTING | [src/std/socket/socket\_define.ts:11](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/socket/socket_define.ts#L11) |
-| <a id="open"></a> `OPEN` | `1` | 1 | WebSocket.OPEN | [src/std/socket/socket\_define.ts:15](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/socket/socket_define.ts#L15) |
+| <a id="closed"></a> `CLOSED` | `3` | 3 | WebSocket.CLOSED | [src/std/socket/socket\_define.ts:23](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/socket/socket_define.ts#L23) |
+| <a id="closing"></a> `CLOSING` | `2` | 2 | WebSocket.CLOSING | [src/std/socket/socket\_define.ts:19](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/socket/socket_define.ts#L19) |
+| <a id="connecting"></a> `CONNECTING` | `0` | 0 | WebSocket.CONNECTING | [src/std/socket/socket\_define.ts:11](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/socket/socket_define.ts#L11) |
+| <a id="open"></a> `OPEN` | `1` | 1 | WebSocket.OPEN | [src/std/socket/socket\_define.ts:15](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/socket/socket_define.ts#L15) |

@@ -26,7 +26,7 @@
 function fetchT(url, init): FetchTask<string>
 ```
 
-Defined in: [src/std/fetch/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/fetch/mod.ts#L14)
+Defined in: [src/std/fetch/mod.ts:14](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/fetch/mod.ts#L14)
 
 发起一个可中断的文本类型响应的网络请求。
 
@@ -63,7 +63,7 @@ FetchTask。
 function fetchT(url, init): FetchTask<ArrayBuffer>
 ```
 
-Defined in: [src/std/fetch/mod.ts:24](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/fetch/mod.ts#L24)
+Defined in: [src/std/fetch/mod.ts:24](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/fetch/mod.ts#L24)
 
 发起一个可中断的 ArrayBuffer 类型响应的网络请求。
 
@@ -100,7 +100,7 @@ FetchTask。
 function fetchT<T>(url, init): FetchTask<T>
 ```
 
-Defined in: [src/std/fetch/mod.ts:35](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/fetch/mod.ts#L35)
+Defined in: [src/std/fetch/mod.ts:35](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/fetch/mod.ts#L35)
 
 发起一个可中断的 JSON 类型响应的网络请求。
 
@@ -143,7 +143,7 @@ FetchTask。
 function fetchT(url, init?): FetchTask<string | Response>
 ```
 
-Defined in: [src/std/fetch/mod.ts:46](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/fetch/mod.ts#L46)
+Defined in: [src/std/fetch/mod.ts:46](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/fetch/mod.ts#L46)
 
 发起一个可中断的网络请求，默认返回文本类型响应。
 

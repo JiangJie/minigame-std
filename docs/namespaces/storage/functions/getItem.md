@@ -10,7 +10,7 @@
 function getItem(key): AsyncIOResult<string>
 ```
 
-Defined in: [src/std/storage/mod.ts:43](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/storage/mod.ts#L43)
+Defined in: [src/std/storage/mod.ts:43](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/storage/mod.ts#L43)
 
 从本地缓存中读取数据。
 

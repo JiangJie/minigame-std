@@ -6,7 +6,7 @@
 
 # Interface: PlayOptions
 
-Defined in: [src/std/audio/audio\_defines.ts:4](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/audio/audio_defines.ts#L4)
+Defined in: [src/std/audio/audio\_defines.ts:4](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/audio/audio_defines.ts#L4)
 
 播放音频的选项。
 
@@ -14,5 +14,5 @@ Defined in: [src/std/audio/audio\_defines.ts:4](https://github.com/JiangJie/mini
 
 | Property | Type | Default value | Description | Defined in |
 | ------ | ------ | ------ | ------ | ------ |
-| <a id="autodisconnect"></a> `autoDisconnect?` | `boolean` | `true` | 播放完后是否自动调用 `source.disconnect`。 | [src/std/audio/audio\_defines.ts:15](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/audio/audio_defines.ts#L15) |
-| <a id="loop"></a> `loop?` | `boolean` | `false` | 是否循环播放。 | [src/std/audio/audio\_defines.ts:9](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/audio/audio_defines.ts#L9) |
+| <a id="autodisconnect"></a> `autoDisconnect?` | `boolean` | `true` | 播放完后是否自动调用 `source.disconnect`。 | [src/std/audio/audio\_defines.ts:15](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/audio/audio_defines.ts#L15) |
+| <a id="loop"></a> `loop?` | `boolean` | `false` | 是否循环播放。 | [src/std/audio/audio\_defines.ts:9](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/audio/audio_defines.ts#L9) |

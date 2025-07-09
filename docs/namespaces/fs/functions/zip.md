@@ -12,7 +12,7 @@
 function zip(sourcePath, options?): AsyncIOResult<Uint8Array<ArrayBufferLike>>
 ```
 
-Defined in: [src/std/fs/fs\_async.ts:283](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/fs/fs_async.ts#L283)
+Defined in: [src/std/fs/fs\_async.ts:283](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/fs/fs_async.ts#L283)
 
 压缩文件到内存。
 
@@ -38,7 +38,7 @@ function zip(
    options?): AsyncVoidIOResult
 ```
 
-Defined in: [src/std/fs/fs\_async.ts:291](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/fs/fs_async.ts#L291)
+Defined in: [src/std/fs/fs\_async.ts:291](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/fs/fs_async.ts#L291)
 
 压缩文件。
 

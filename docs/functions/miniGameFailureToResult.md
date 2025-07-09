@@ -10,7 +10,7 @@
 function miniGameFailureToResult<T>(err): IOResult<T>
 ```
 
-Defined in: [src/std/utils/mod.ts:21](https://github.com/JiangJie/minigame-std/blob/ff3594872b1efbdbc13aabe99588385e855b50dc/src/std/utils/mod.ts#L21)
+Defined in: [src/std/utils/mod.ts:21](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/utils/mod.ts#L21)
 
 将错误对象转换为 IOResult 类型。
 
