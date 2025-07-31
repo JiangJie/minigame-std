@@ -3,11 +3,10 @@
 (globalThis as any).__MINIGAME_STD_MINA__ = false;
 
 import { assert } from '@std/assert';
-import { Future } from 'tiny-future';
 import { connectSocket } from '../src/mod.ts';
 
 Deno.test('socket echo', () => {
-    const future = new Future<void>();
+    const { promise, resolve } = Promise.withResolvers<void>();
 
     const data = 'minigame-std';
 
@@ -34,12 +33,12 @@ Deno.test('socket echo', () => {
         removeMessageListener();
         assert(code === 1005);
 
-        future.resolve();
+        resolve();
     });
 
     socket.addEventListener('open', () => {
         socket.send(data);
     });
 
-    return future.promise;
+    return promise;
 });
