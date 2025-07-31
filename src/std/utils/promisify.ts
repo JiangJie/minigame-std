@@ -6,7 +6,6 @@ import { Future } from 'tiny-future';
  * 类型工具：判断 API 是否符合 promisify 条件。
  */
 export type ValidAPI<T> = T extends (params: infer P) => infer R
-    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
     ? R extends void | Promise<any>
     ? P extends { success?: any; } | undefined
     ? true
