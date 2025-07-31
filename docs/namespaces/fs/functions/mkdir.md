@@ -10,7 +10,7 @@
 function mkdir(dirPath): AsyncVoidIOResult
 ```
 
-Defined in: [src/std/fs/fs\_async.ts:57](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/fs/fs_async.ts#L57)
+Defined in: [src/std/fs/fs\_async.ts:57](https://github.com/JiangJie/minigame-std/blob/fdb22241c47c2e98329a4c62befde728957e03ee/src/std/fs/fs_async.ts#L57)
 
 递归创建文件夹，相当于`mkdir -p`。
 

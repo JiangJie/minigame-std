@@ -10,7 +10,7 @@
 function isMiniGameMac(): boolean
 ```
 
-Defined in: [src/std/platform/target.ts:80](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/platform/target.ts#L80)
+Defined in: [src/std/platform/target.ts:52](https://github.com/JiangJie/minigame-std/blob/fdb22241c47c2e98329a4c62befde728957e03ee/src/std/platform/target.ts#L52)
 
 判断当前是否在小游戏的 Mac 环境中。
 

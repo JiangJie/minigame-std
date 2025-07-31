@@ -10,7 +10,7 @@
 function getTargetType(): TargetType
 ```
 
-Defined in: [src/std/platform/target.ts:12](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/platform/target.ts#L12)
+Defined in: [src/std/platform/base.ts:10](https://github.com/JiangJie/minigame-std/blob/fdb22241c47c2e98329a4c62befde728957e03ee/src/std/platform/base.ts#L10)
 
 获取当前的平台类型。
 

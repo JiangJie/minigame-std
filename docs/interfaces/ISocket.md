@@ -6,7 +6,7 @@
 
 # Interface: ISocket
 
-Defined in: [src/std/socket/socket\_define.ts:58](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/socket/socket_define.ts#L58)
+Defined in: [src/std/socket/socket\_define.ts:58](https://github.com/JiangJie/minigame-std/blob/fdb22241c47c2e98329a4c62befde728957e03ee/src/std/socket/socket_define.ts#L58)
 
 WebSocket 接口定义，描述了 WebSocket 的基本操作方法。
 
@@ -14,7 +14,7 @@ WebSocket 接口定义，描述了 WebSocket 的基本操作方法。
 
 | Property | Modifier | Type | Description | Defined in |
 | ------ | ------ | ------ | ------ | ------ |
-| <a id="readystate"></a> `readyState` | `readonly` | `number` | WebSocket 的连接状态。 | [src/std/socket/socket\_define.ts:62](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/socket/socket_define.ts#L62) |
+| <a id="readystate"></a> `readyState` | `readonly` | `number` | WebSocket 的连接状态。 | [src/std/socket/socket\_define.ts:62](https://github.com/JiangJie/minigame-std/blob/fdb22241c47c2e98329a4c62befde728957e03ee/src/std/socket/socket_define.ts#L62) |
 
 ## Methods
 
@@ -24,7 +24,7 @@ WebSocket 接口定义，描述了 WebSocket 的基本操作方法。
 addEventListener<K>(type, listener): () => void
 ```
 
-Defined in: [src/std/socket/socket\_define.ts:71](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/socket/socket_define.ts#L71)
+Defined in: [src/std/socket/socket\_define.ts:71](https://github.com/JiangJie/minigame-std/blob/fdb22241c47c2e98329a4c62befde728957e03ee/src/std/socket/socket_define.ts#L71)
 
 添加事件监听器到 WebSocket 对象。
 
@@ -59,7 +59,7 @@ Defined in: [src/std/socket/socket\_define.ts:71](https://github.com/JiangJie/mi
 close(code?, reason?): void
 ```
 
-Defined in: [src/std/socket/socket\_define.ts:85](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/socket/socket_define.ts#L85)
+Defined in: [src/std/socket/socket\_define.ts:85](https://github.com/JiangJie/minigame-std/blob/fdb22241c47c2e98329a4c62befde728957e03ee/src/std/socket/socket_define.ts#L85)
 
 关闭 WebSocket 连接。
 
@@ -82,7 +82,7 @@ Defined in: [src/std/socket/socket\_define.ts:85](https://github.com/JiangJie/mi
 send(data): AsyncVoidIOResult
 ```
 
-Defined in: [src/std/socket/socket\_define.ts:78](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/socket/socket_define.ts#L78)
+Defined in: [src/std/socket/socket\_define.ts:78](https://github.com/JiangJie/minigame-std/blob/fdb22241c47c2e98329a4c62befde728957e03ee/src/std/socket/socket_define.ts#L78)
 
 发送数据到 WebSocket 服务器。
 

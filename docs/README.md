@@ -30,9 +30,12 @@
 | Type alias | Description |
 | ------ | ------ |
 | [DataSource](type-aliases/DataSource.md) | The data source. |
+| [FailType](type-aliases/FailType.md) | 类型工具：提取失败回调参数类型。 |
 | [NetworkType](type-aliases/NetworkType.md) | 网络状态，混合了 web 和小游戏环境。 |
 | [SocketOptions](type-aliases/SocketOptions.md) | 创建Socket的可选参数。 |
+| [SuccessType](type-aliases/SuccessType.md) | 类型工具：提取成功回调参数类型。 |
 | [UnionFetchInit](type-aliases/UnionFetchInit.md) | 联合网络请求初始化配置类型，结合了 FetchInit 和 MinaFetchInit。 |
+| [ValidAPI](type-aliases/ValidAPI.md) | 类型工具：判断 API 是否符合 promisify 条件。 |
 
 ## Variables
 
@@ -65,6 +68,7 @@
 | [hexFromBuffer](functions/hexFromBuffer.md) | 将 BufferSource 转换为十六进制字符串。 |
 | [miniGameFailureToError](functions/miniGameFailureToError.md) | 将小游戏失败回调的结果转换为 `Error` 类型。 |
 | [miniGameFailureToResult](functions/miniGameFailureToResult.md) | 将错误对象转换为 IOResult 类型。 |
+| [promisifyWithResult](functions/promisifyWithResult.md) | 将小游戏异步 API 转换为返回 `AsyncResult<T, E>` 的新函数，需要转换的 API 必须是接受可选 `success` 和 `fail` 回调的函数，并且其返回值必须是 `void` 或 `Promise`。 |
 | [textDecode](functions/textDecode.md) | 将二进制数据解码为字符串。 |
 | [textEncode](functions/textEncode.md) | 将字符串数据编码为 `Uint8Array` |
 | [toByteString](functions/toByteString.md) | 将 UTF-8 字符串转换为 ByteString。 |

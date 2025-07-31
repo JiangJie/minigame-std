@@ -10,7 +10,7 @@
 function tryDOMAsyncOp<T>(op): AsyncIOResult<T>
 ```
 
-Defined in: [src/std/utils/mod.ts:69](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/utils/mod.ts#L69)
+Defined in: [src/std/utils/mod.ts:70](https://github.com/JiangJie/minigame-std/blob/fdb22241c47c2e98329a4c62befde728957e03ee/src/std/utils/mod.ts#L70)
 
 执行异步函数，预期异常都是 `DOMException`。
 

@@ -10,7 +10,7 @@
 function byteStringToBuffer(str): Uint8Array
 ```
 
-Defined in: [src/std/codec/mod.ts:43](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/codec/mod.ts#L43)
+Defined in: [src/std/codec/mod.ts:43](https://github.com/JiangJie/minigame-std/blob/fdb22241c47c2e98329a4c62befde728957e03ee/src/std/codec/mod.ts#L43)
 
 将字符串转换为 Uint8Array。
 

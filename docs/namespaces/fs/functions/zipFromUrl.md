@@ -12,7 +12,7 @@
 function zipFromUrl(sourceUrl, options?): AsyncIOResult<Uint8Array<ArrayBufferLike>>
 ```
 
-Defined in: [src/std/fs/fs\_async.ts:309](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/fs/fs_async.ts#L309)
+Defined in: [src/std/fs/fs\_async.ts:309](https://github.com/JiangJie/minigame-std/blob/fdb22241c47c2e98329a4c62befde728957e03ee/src/std/fs/fs_async.ts#L309)
 
 下载文件并压缩到内存。
 
@@ -36,7 +36,7 @@ function zipFromUrl(
    options?): AsyncVoidIOResult
 ```
 
-Defined in: [src/std/fs/fs\_async.ts:316](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/fs/fs_async.ts#L316)
+Defined in: [src/std/fs/fs\_async.ts:316](https://github.com/JiangJie/minigame-std/blob/fdb22241c47c2e98329a4c62befde728957e03ee/src/std/fs/fs_async.ts#L316)
 
 下载文件并压缩为 zip 文件。
 

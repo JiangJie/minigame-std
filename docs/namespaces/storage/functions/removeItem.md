@@ -10,7 +10,7 @@
 function removeItem(key): AsyncVoidIOResult
 ```
 
-Defined in: [src/std/storage/mod.ts:54](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/storage/mod.ts#L54)
+Defined in: [src/std/storage/mod.ts:54](https://github.com/JiangJie/minigame-std/blob/fdb22241c47c2e98329a4c62befde728957e03ee/src/std/storage/mod.ts#L54)
 
 从本地缓存中移除指定的数据。
 

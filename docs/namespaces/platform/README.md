@@ -16,6 +16,7 @@
 
 | Function | Description |
 | ------ | ------ |
+| [getDeviceBenchmarkLevel](functions/getDeviceBenchmarkLevel.md) | 获取设备性能等级， web 环境返回 -2。 |
 | [getDeviceInfo](functions/getDeviceInfo.md) | 获取设备信息。 |
 | [getTargetType](functions/getTargetType.md) | 获取当前的平台类型。 |
 | [getWindowInfo](functions/getWindowInfo.md) | 获取窗口信息。 |

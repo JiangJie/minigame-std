@@ -10,7 +10,7 @@
 function assertSafeUrl(url): void
 ```
 
-Defined in: [src/std/assert/assertions.ts:15](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/assert/assertions.ts#L15)
+Defined in: [src/std/assert/assertions.ts:15](https://github.com/JiangJie/minigame-std/blob/fdb22241c47c2e98329a4c62befde728957e03ee/src/std/assert/assertions.ts#L15)
 
 断言传入的 URL 是否为 `https` 协议。
 

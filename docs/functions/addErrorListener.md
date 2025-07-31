@@ -10,7 +10,7 @@
 function addErrorListener(listener): () => void
 ```
 
-Defined in: [src/std/event/mod.ts:18](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/event/mod.ts#L18)
+Defined in: [src/std/event/mod.ts:18](https://github.com/JiangJie/minigame-std/blob/fdb22241c47c2e98329a4c62befde728957e03ee/src/std/event/mod.ts#L18)
 
 添加错误监听器，用于监听标准的错误事件。
 

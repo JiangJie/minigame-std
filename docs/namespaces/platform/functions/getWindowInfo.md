@@ -16,7 +16,7 @@ function getWindowInfo(): Pick<WindowInfo,
 | "windowWidth">
 ```
 
-Defined in: [src/std/platform/mod.ts:10](https://github.com/JiangJie/minigame-std/blob/c702c23d8258d9dd96d873df515d0027c84fb302/src/std/platform/mod.ts#L10)
+Defined in: [src/std/platform/mod.ts:11](https://github.com/JiangJie/minigame-std/blob/fdb22241c47c2e98329a4c62befde728957e03ee/src/std/platform/mod.ts#L11)
 
 获取窗口信息。
 
