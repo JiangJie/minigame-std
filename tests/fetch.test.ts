@@ -3,7 +3,7 @@
 (globalThis as any).__MINIGAME_STD_MINA__ = false;
 
 import { assert } from '@std/assert';
-import { fetchT } from '../src/mod.ts';
+import { fetchT } from 'minigame-std';
 
 Deno.test('fetch json', async () => {
     const fetchTask = fetchT<{

@@ -3,7 +3,7 @@
 (globalThis as any).__MINIGAME_STD_MINA__ = false;
 
 import { assert } from '@std/assert';
-import { textDecode, textEncode } from '../src/mod.ts';
+import { textDecode, textEncode } from 'minigame-std';
 
 Deno.test('encode/decode between utf8 string and binary', () => {
     const data = 'minigame-std';

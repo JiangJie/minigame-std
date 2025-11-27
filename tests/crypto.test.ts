@@ -3,7 +3,7 @@
 (globalThis as any).__MINIGAME_STD_MINA__ = false;
 
 import { assert, assertRejects, assertThrows } from '@std/assert';
-import { base64ToBuffer, byteStringToBuffer, cryptos, textDecode, textEncode, type DataSource } from '../src/mod.ts';
+import { base64ToBuffer, byteStringToBuffer, cryptos, textDecode, textEncode, type DataSource } from 'minigame-std';
 
 Deno.test('calculate md5', () => {
     const data = 'minigame-std-中文';

@@ -3,7 +3,7 @@
 (globalThis as any).__MINIGAME_STD_MINA__ = false;
 
 import { assert } from '@std/assert';
-import { platform } from '../src/mod.ts';
+import { platform } from 'minigame-std';
 
 Deno.test('targetType is web', () => {
     assert(platform.isWeb());

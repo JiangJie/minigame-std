@@ -3,7 +3,7 @@
 (globalThis as any).__MINIGAME_STD_MINA__ = false;
 
 import { assert } from '@std/assert';
-import { connectSocket } from '../src/mod.ts';
+import { connectSocket } from 'minigame-std';
 
 Deno.test('socket echo', () => {
     const { promise, resolve } = Promise.withResolvers<void>();

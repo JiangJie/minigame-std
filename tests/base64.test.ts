@@ -3,7 +3,7 @@
 (globalThis as any).__MINIGAME_STD_MINA__ = false;
 
 import { assert } from '@std/assert';
-import { decodeBase64, encodeBase64 } from '../src/mod.ts';
+import { decodeBase64, encodeBase64 } from 'minigame-std';
 
 Deno.test('encode/decode string to/from base64 string', () => {
     const data = 'minigame-std';
