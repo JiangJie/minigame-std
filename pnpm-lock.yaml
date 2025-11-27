@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@happy-ts/fetch-t':
-        specifier: ^1.3.2
-        version: 1.3.2
+        specifier: ^1.3.3
+        version: 1.3.3
       '@std/path':
         specifier: npm:@jsr/std__path@^1.1.3
         version: '@jsr/std__path@1.1.3'
@@ -18,8 +18,8 @@ importers:
         specifier: ^0.8.2
         version: 0.8.2
       happy-opfs:
-        specifier: ^1.8.7
-        version: 1.8.7
+        specifier: ^1.9.0
+        version: 1.9.0
       happy-rusty:
         specifier: ^1.5.0
         version: 1.5.0
@@ -256,8 +256,8 @@ packages:
   '@gerrit0/mini-shiki@1.27.2':
     resolution: {integrity: sha512-GeWyHz8ao2gBiUW4OJnQDxXQnFgZQwwQk05t/CVVgNBN7/rK8XZ7xY6YhLVv9tH3VppWWmr9DCl3MwemB/i+Og==}
 
-  '@happy-ts/fetch-t@1.3.2':
-    resolution: {integrity: sha512-rtwpwv+v5e4V9L3HkJmq10vrWdNnDXWEQ26sI9z2/KBPliuCNJ1pGUioKkcSqE8355hLuKhwIlDoB4ggQ99nag==}
+  '@happy-ts/fetch-t@1.3.3':
+    resolution: {integrity: sha512-TXx6NfvhZFZiVgNplBJ3UWh7GcweU/R+6BympU4kKiz/OYjd+RGrf+YO/oKbgXhzNaq932zDO+uK435BjYLVYw==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -656,8 +656,8 @@ packages:
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
 
-  happy-opfs@1.8.7:
-    resolution: {integrity: sha512-vXBnuuMGeIGrMG6oRJOvwDrIEgwwOv+5TymbO2aXMk5SHrh6zTzhDRW4guZGHEdy9qP5aC3wzxeFJ4ziAOIZQA==}
+  happy-opfs@1.9.0:
+    resolution: {integrity: sha512-ef0nrGGt1GvX4AlL0CIr/IpsAMMJz5rknPUZNtjZ2k6Vgnot+7ZcKUuBMOhs6+EY8iuhfeIUfIPgyro35rzzww==}
 
   happy-rusty@1.5.0:
     resolution: {integrity: sha512-aWQInvIhBr8GREGICaY2wtAVwCYZcktu74a3Oagoy00VuahNU5Dphk6hBg1XiwE0yUtImCa2UVJWPBjkag128g==}
@@ -1060,7 +1060,7 @@ snapshots:
       '@shikijs/types': 1.29.2
       '@shikijs/vscode-textmate': 10.0.2
 
-  '@happy-ts/fetch-t@1.3.2':
+  '@happy-ts/fetch-t@1.3.3':
     dependencies:
       happy-rusty: 1.5.0
       tiny-invariant: 1.3.3
@@ -1470,9 +1470,9 @@ snapshots:
 
   graphemer@1.4.0: {}
 
-  happy-opfs@1.8.7:
+  happy-opfs@1.9.0:
     dependencies:
-      '@happy-ts/fetch-t': 1.3.2
+      '@happy-ts/fetch-t': 1.3.3
       '@std/path': '@jsr/std__path@1.1.3'
       fflate: 0.8.2
       happy-rusty: 1.5.0
