@@ -1,0 +1,192 @@
+# CODEBUDDY.md
+
+This file provides guidance to CodeBuddy Code when working with code in this repository.
+
+## Project Overview
+
+**minigame-std** is a cross-platform standard development library that provides unified APIs for both mini-game environments (WeChat, QQ, etc.) and web browsers. The library abstracts platform-specific differences, allowing developers to write code once and run it on both platforms.
+
+### Key Concept: Platform Abstraction
+
+The core architecture uses a compile-time macro `__MINIGAME_STD_MINA__` to determine which platform code to include:
+- When `true`: bundles mini-game (Mina) platform code, excludes web code
+- When `false`: bundles web platform code, excludes mini-game code
+
+This is defined in `src/macros/env.ts` and used throughout the codebase via `isMinaEnv()`.
+
+## Development Commands
+
+### Package Manager
+This project uses **pnpm** as the package manager.
+
+### Essential Commands
+
+```bash
+# Install dependencies
+pnpm install
+
+# Type checking (must pass before commits)
+pnpm run check
+
+# Linting (must pass before commits)
+pnpm run lint
+
+# Run all tests (uses Deno)
+pnpm test
+
+# Run tests with HTML coverage report
+pnpm run test:html
+
+# Build the library (runs check + lint first)
+pnpm run build
+
+# Generate API documentation
+pnpm run docs
+```
+
+### Testing Notes
+
+- Tests run in **Deno** (not Node.js) with web platform configuration (`__MINIGAME_STD_MINA__: false`)
+- Test files are located in `tests/` directory
+- Coverage reports are generated in `coverage/` directory
+- Mini-game platform tests are located in a separate demo repository
+
+## Code Architecture
+
+### Directory Structure
+
+```
+src/
+├── macros/
+│   └── env.ts              # Platform detection macro (__MINIGAME_STD_MINA__)
+├── mod.ts                  # Main entry point (exports all modules)
+└── std/                    # Standard library modules
+    ├── assert/             # Assertion utilities
+    ├── audio/              # WebAudio API abstraction
+    ├── base64/             # Base64 encoding/decoding
+    ├── clipboard/          # Clipboard operations
+    ├── codec/              # Text encoding (UTF-8 ↔ ArrayBuffer)
+    ├── crypto/             # Cryptographic functions
+    │   ├── hmac/           # HMAC algorithms
+    │   ├── md/             # MD5 hashing
+    │   ├── random/         # Random number generation
+    │   ├── rsa/            # RSA encryption
+    │   └── sha/            # SHA algorithms
+    ├── event/              # Global error/unhandledrejection handlers
+    ├── fetch/              # HTTP requests (fetch API)
+    ├── fs/                 # File system operations (with zip support)
+    ├── image/              # Image processing
+    ├── lbs/                # Location-based services
+    ├── network/            # Network status/type detection
+    ├── performance/        # Performance timing utilities
+    ├── platform/           # Platform detection (device, target)
+    ├── socket/             # WebSocket abstraction
+    ├── storage/            # Storage (localStorage equivalent)
+    └── utils/              # Common utilities
+```
+
+### Platform-Specific Code Pattern
+
+Each module follows a consistent pattern with three files:
+
+1. **`mod.ts`** - Platform-agnostic entry point that:
+   - Imports platform-specific implementations (`mina_*.ts` and `web_*.ts`)
+   - Uses `isMinaEnv()` to dispatch to correct implementation
+   - Exports unified API
+
+2. **`mina_*.ts`** - Mini-game platform implementation using `wx.*` APIs
+
+3. **`web_*.ts`** - Browser platform implementation using standard Web APIs
+
+**Example from `src/std/base64/mod.ts`:**
+```typescript
+import { isMinaEnv } from '../../macros/env.ts';
+import { encodeBase64 as minaEncodeBase64 } from './mina_base64.ts';
+import { encodeBase64 as webEncodeBase64 } from './web_base64.ts';
+
+export function encodeBase64(data: string): string {
+    return (isMinaEnv() ? minaEncodeBase64 : webEncodeBase64)(data);
+}
+```
+
+### Build System
+
+- **Bundler**: Rollup with esbuild plugin
+- **Configuration**: `rollup.config.mjs`
+- **Output**: 
+  - `dist/main.cjs` - CommonJS bundle
+  - `dist/main.mjs` - ES module bundle
+  - `dist/types.d.ts` - TypeScript declarations
+- **Tree-shaking**: Enabled with `treeshake: 'smallest'`
+- **Side effects**: `"sideEffects": false` in package.json for optimal tree-shaking
+
+### TypeScript Configuration
+
+- Target: `ESNext`
+- Module resolution: `bundler` mode
+- Strict mode enabled with additional strictness flags
+- Uses `minigame-api-typings` for WeChat mini-game type definitions
+- Import `.ts` extensions required (no automatic resolution)
+
+### Type Compatibility Notes
+
+When updating `minigame-api-typings`, be aware that WeChat API types may change:
+- Check for deprecated types (e.g., `WechatMinigame.Error` → `WechatMinigame.ListenerError`)
+- Update affected files (usually in `src/std/event/` and callback handlers)
+- Run `pnpm run check` to catch type errors early
+
+## Code Conventions
+
+### Import Paths
+- Always use `.ts` file extensions in imports
+- Use the `minigame-std` alias in tests (configured in `deno.json`)
+
+### Type Safety
+- Return types must explicitly specify `Uint8Array<ArrayBuffer>` instead of generic `Uint8Array`
+- Use type assertions when necessary for platform compatibility
+- All code must pass strict TypeScript checks
+
+### Error Handling
+- Use `happy-rusty` for Result types (Ok/Err pattern)
+- Async operations return `AsyncIOResult<T>` or `IOResult<T>`
+
+### Exports
+- Module exports use namespace pattern for some modules: `export * as fs from './std/fs/mod.ts'`
+- This avoids naming conflicts (e.g., `cryptos` instead of `crypto` to avoid global conflict)
+
+## Dependencies
+
+### Runtime Dependencies
+- `@happy-ts/fetch-t` - Enhanced fetch implementation
+- `happy-rusty` - Rust-like Result types for error handling
+- `happy-opfs` - OPFS (Origin Private File System) support
+- `fflate` - Compression/decompression (zip support)
+- `tiny-future`, `tiny-invariant` - Utility libraries
+- `minigame-api-typings` - WeChat mini-game TypeScript definitions
+
+### Build Tools
+- `rollup` + `rollup-plugin-esbuild` + `rollup-plugin-dts` for bundling
+- `typescript` + `typescript-eslint` for type checking and linting
+- `typedoc` + `typedoc-plugin-markdown` for documentation generation
+
+## Git Commit Conventions
+
+This project follows **Conventional Commits** specification. Common commit types:
+- `feat`: New features
+- `fix`: Bug fixes
+- `refactor`: Code refactoring
+- `chore`: Maintenance tasks (deps, config, ci)
+- `docs`: Documentation changes
+- `test`: Test updates
+
+Scopes frequently used: `deps`, `ci`, `types`, `config`, `tests`
+
+## Important Files
+
+- `src/mod.ts` - Main entry point, exports all public APIs
+- `src/macros/env.ts` - Platform detection mechanism
+- `package.json` - Scripts and dependencies
+- `deno.json` - Test configuration and import mappings
+- `rollup.config.mjs` - Build configuration
+- `tsconfig.json` - TypeScript compiler options
+- `eslint.config.mjs` - ESLint rules
