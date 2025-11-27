@@ -15,15 +15,14 @@ import {
  * @param listener - 错误事件的回调函数。
  * @returns 返回一个函数，调用该函数可以移除监听器。
  */
-export function addErrorListener(listener: (ev: WechatMinigame.Error) => void): () => void {
+export function addErrorListener(listener: (ev: WechatMinigame.ListenerError) => void): () => void {
     if (isMinaEnv()) {
         return minaAddErrorListener(listener);
     }
 
     const webListener = (ev: ErrorEvent) => {
         listener({
-            message: ev.message,
-            stack: ev.error.stack,
+            message: `${ev.message}${ev.error?.stack ? `\n${ev.error.stack}` : ''}`,
         });
     };
 
