@@ -20,7 +20,7 @@ function getDecoder(): TextDecoder {
  * @param data - 需要编码的字符串数据。
  * @returns 编码后的 `Uint8Array`
  */
-export function textEncode(data: string): Uint8Array {
+export function textEncode(data: string): Uint8Array<ArrayBuffer> {
     return getEncoder().encode(data);
 }
 

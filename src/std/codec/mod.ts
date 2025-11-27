@@ -9,7 +9,7 @@ import { textDecode as webTextDecode, textEncode as webTextEncode } from './web_
  * @param data - 需要编码的字符串数据。
  * @returns 编码后的 `Uint8Array`
  */
-export function textEncode(data: string): Uint8Array {
+export function textEncode(data: string): Uint8Array<ArrayBuffer> {
     return isMinaEnv()
         ? bufferSource2U8a(minaTextEncode(data))
         : webTextEncode(data);
@@ -40,7 +40,7 @@ export function hexFromBuffer(buffer: BufferSource): string {
  * @param str - 需要转换的字符串。
  * @returns Uint8Array。
  */
-export function byteStringToBuffer(str: string): Uint8Array {
+export function byteStringToBuffer(str: string): Uint8Array<ArrayBuffer> {
     const { length } = str;
     const u8a = new Uint8Array(length);
 

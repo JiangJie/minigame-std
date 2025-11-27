@@ -675,7 +675,7 @@ export async function zip<T>(sourcePath: string, zipFilePath?: string | ZipOptio
             }
 
             if (absZipFilePath) {
-                const res = await writeFile(absZipFilePath, u8a);
+                const res = await writeFile(absZipFilePath, u8a as Uint8Array<ArrayBuffer>);
                 future.resolve(res as IOResult<T>);
             } else {
                 future.resolve(Ok(u8a as T));

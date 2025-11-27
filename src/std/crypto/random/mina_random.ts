@@ -4,8 +4,8 @@ import { hexFromBuffer } from '../../codec/mod.ts';
 import { miniGameFailureToResult } from '../../utils/mod.ts';
 import type { UUID } from './random_defines.ts';
 
-export function getRandomValues(length: number): AsyncIOResult<Uint8Array> {
-    const future = new Future<IOResult<Uint8Array>>();
+export function getRandomValues(length: number): AsyncIOResult<Uint8Array<ArrayBuffer>> {
+    const future = new Future<IOResult<Uint8Array<ArrayBuffer>>>();
 
     wx.getUserCryptoManager().getRandomValues({
         length,

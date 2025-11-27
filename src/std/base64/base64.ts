@@ -83,7 +83,7 @@ export function base64FromBuffer(data: BufferSource): string {
  * @param data - Base64 encoded string
  * @returns The decoded data as an Uint8Array.
  */
-export function base64ToBuffer(data: string): Uint8Array {
+export function base64ToBuffer(data: string): Uint8Array<ArrayBuffer> {
     const len = data.length;
 
     let bufferLength = len * 0.75;

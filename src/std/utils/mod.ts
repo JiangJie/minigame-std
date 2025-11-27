@@ -80,9 +80,9 @@ export async function tryDOMAsyncOp<T>(op: () => Promise<T>): AsyncIOResult<T> {
  * @param data - 需要转换的 BufferSource。
  * @returns Uint8Array。
  */
-export function bufferSource2U8a(data: BufferSource): Uint8Array {
+export function bufferSource2U8a(data: BufferSource): Uint8Array<ArrayBuffer> {
     if (data instanceof Uint8Array) {
-        return data;
+        return data as Uint8Array<ArrayBuffer>;
     }
 
     if (data instanceof ArrayBuffer) {

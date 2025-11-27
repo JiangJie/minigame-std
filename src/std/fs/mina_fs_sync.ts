@@ -238,7 +238,7 @@ export function unzipSync(zipFilePath: string, targetPath: string): VoidIOResult
                 // ignore directory
                 if (path.at(-1) !== SEPARATOR) {
                     // 不能用 json，否则 http://usr 会变成 http:/usr
-                    const res = writeFileSync(`${ absTargetPath }/${ path }`, unzipped[path]);
+                    const res = writeFileSync(`${ absTargetPath }/${ path }`, unzipped[path] as Uint8Array<ArrayBuffer>);
                     if (res.isErr()) {
                         return res.asErr();
                     }
@@ -300,7 +300,7 @@ export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOp
 
         try {
             const u8a = fflate.zipSync(zipped);
-            return writeFileSync(absZipPath, u8a);
+            return writeFileSync(absZipPath, u8a as Uint8Array<ArrayBuffer>);
         } catch (e) {
             return Err(e as fflate.FlateError);
         }
