@@ -51,6 +51,19 @@ pnpm run docs
 - Coverage reports are generated in `coverage/` directory
 - Mini-game platform tests are located in a separate demo repository
 
+### Running Individual Tests
+
+```bash
+# Run a specific test file
+pnpm exec deno test tests/base64.test.ts
+
+# Run tests matching a pattern
+pnpm exec deno test tests/**/crypto*.test.ts
+
+# Run tests with specific permissions
+pnpm exec deno test --allow-read --allow-write tests/fs.test.ts
+```
+
 ## Code Architecture
 
 ### Directory Structure
@@ -109,6 +122,32 @@ export function encodeBase64(data: string): string {
 }
 ```
 
+### API Wrapping Pattern for Mini-Game APIs
+
+When wrapping WeChat mini-game APIs that use callback-based patterns, use `promisifyWithResult`:
+
+**Requirements for `promisifyWithResult`:**
+- API must accept optional `success` and `fail` callbacks
+- API must return `void` or `Promise` (NOT Task objects like `RequestTask`, `DownloadTask`, `UploadTask`)
+
+**Example:**
+```typescript
+// ✅ Good - wx.setStorage returns void
+export async function setItem(key: string, data: string): AsyncVoidIOResult {
+    return (await promisifyWithResult(wx.setStorage)({
+        key,
+        data,
+    }))
+        .and(RESULT_VOID)
+        .mapErr(miniGameFailureToError);
+}
+
+// ❌ Bad - wx.downloadFile returns DownloadTask, cannot use promisifyWithResult
+// Must manually handle callbacks with Future pattern instead
+```
+
+**APIs that return Task objects** (like `wx.request`, `wx.downloadFile`, `wx.uploadFile`) must use manual callback handling with `Future` because they need to support abort functionality and progress callbacks.
+
 ### Build System
 
 - **Bundler**: Rollup with esbuild plugin
@@ -119,6 +158,18 @@ export function encodeBase64(data: string): string {
   - `dist/types.d.ts` - TypeScript declarations
 - **Tree-shaking**: Enabled with `treeshake: 'smallest'`
 - **Side effects**: `"sideEffects": false` in package.json for optimal tree-shaking
+
+### Build Process
+
+The build runs these steps in order:
+1. Type checking (`pnpm run check`)
+2. Linting (`pnpm run lint`)
+3. Rollup bundling with platform-specific code elimination
+4. TypeScript declaration generation
+
+The build uses `__MINIGAME_STD_MINA__` macro for compile-time platform detection:
+- Set to `true` for mini-game builds (removes web platform code)
+- Set to `false` for web builds (removes mini-game platform code)
 
 ### TypeScript Configuration
 
@@ -150,6 +201,21 @@ When updating `minigame-api-typings`, be aware that WeChat API types may change:
 - Use `happy-rusty` for Result types (Ok/Err pattern)
 - Async operations return `AsyncIOResult<T>` or `IOResult<T>`
 
+### API Wrapper Utilities
+
+The project provides several utilities for wrapping platform-specific APIs:
+
+- **`promisifyWithResult(api)`** - Converts callback-based mini-game APIs to Result-based async functions
+  - Use for APIs with `success`/`fail` callbacks that return `void` or `Promise`
+  - Located in `src/std/utils/promisify.ts`
+  
+- **`tryGeneralAsyncOp(fn)`** / **`tryGeneralSyncOp(fn)`** - Wraps operations that may throw
+  - Use for APIs that already return Promise but may throw errors
+  - Converts exceptions to `IOResult<T>`
+
+- **`miniGameFailureToError(err)`** / **`miniGameFailureToResult(err)`** - Error converters
+  - Converts WeChat mini-game error objects to standard Error objects or Results
+
 ### Exports
 - Module exports use namespace pattern for some modules: `export * as fs from './std/fs/mod.ts'`
 - This avoids naming conflicts (e.g., `cryptos` instead of `crypto` to avoid global conflict)
@@ -180,6 +246,24 @@ This project follows **Conventional Commits** specification. Common commit types
 - `test`: Test updates
 
 Scopes frequently used: `deps`, `ci`, `types`, `config`, `tests`
+
+## Common Pitfalls
+
+### Memory Leaks
+- Always revoke object URLs after use (e.g., `URL.revokeObjectURL()` for images)
+- Clean up event listeners when no longer needed
+
+### Type Assertions
+- Use explicit `Uint8Array<ArrayBuffer>` type annotations, not generic `Uint8Array`
+- WeChat API types may change between versions of `minigame-api-typings`
+
+### Import Extensions
+- Always include `.ts` extensions in import statements
+- TypeScript doesn't auto-resolve extensions in this project
+
+### Platform Detection
+- Use `isMinaEnv()` from `src/macros/env.ts` for runtime platform checks
+- Never use direct checks like `typeof wx !== 'undefined'` in library code
 
 ## Important Files
 
