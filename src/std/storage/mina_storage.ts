@@ -1,60 +1,57 @@
-import { type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';
+import { RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { assertString } from '../assert/assertions.ts';
-import { tryGeneralAsyncOp, tryGeneralSyncOp } from '../utils/mod.ts';
+import { miniGameFailureToError, promisifyWithResult, tryGeneralSyncOp } from '../utils/mod.ts';
 
-export function setItem(key: string, data: string): AsyncVoidIOResult {
+export async function setItem(key: string, data: string): AsyncVoidIOResult {
     assertString(key);
     assertString(data);
 
-    return tryGeneralAsyncOp(async () => {
-        await wx.setStorage({
-            key,
-            data,
-        });
-    });
+    return (await promisifyWithResult(wx.setStorage)({
+        key,
+        data,
+    }))
+        .and(RESULT_VOID)
+        .mapErr(miniGameFailureToError);
 }
 
-export function getItem(key: string): AsyncIOResult<string> {
+export async function getItem(key: string): AsyncIOResult<string> {
     assertString(key);
 
-    return tryGeneralAsyncOp(async () => {
-        const res = await wx.getStorage<string>({
-            key,
-        });
-        return res.data;
-    });
+    return (await promisifyWithResult(wx.getStorage<string>)({
+        key,
+    }))
+        .map(x => x.data)
+        .mapErr(miniGameFailureToError);
 }
 
-export function removeItem(key: string): AsyncVoidIOResult {
+export async function removeItem(key: string): AsyncVoidIOResult {
     assertString(key);
 
-    return tryGeneralAsyncOp(async () => {
-        await wx.removeStorage({
-            key,
-        });
-    });
+    return (await promisifyWithResult(wx.removeStorage)({
+        key,
+    }))
+        .and(RESULT_VOID)
+        .mapErr(miniGameFailureToError);
 }
 
-export function clear(): AsyncVoidIOResult {
-    return tryGeneralAsyncOp(async () => {
-        await wx.clearStorage();
-    });
+export async function clear(): AsyncVoidIOResult {
+    return (await promisifyWithResult(wx.clearStorage)({}))
+        .and(RESULT_VOID)
+        .mapErr(miniGameFailureToError);
 }
 
-export function getLength(): AsyncIOResult<number> {
-    return tryGeneralAsyncOp(async () => {
-        const info = await wx.getStorageInfo();
-        return info.keys.length;
-    });
+export async function getLength(): AsyncIOResult<number> {
+    return (await promisifyWithResult(wx.getStorageInfo)({}))
+        .map(x => x.keys.length)
+        .mapErr(miniGameFailureToError);
 }
 
-export function hasItem(key: string): AsyncIOResult<boolean> {
+export async function hasItem(key: string): AsyncIOResult<boolean> {
     assertString(key);
 
-    return tryGeneralAsyncOp(async () => {
-        const info = await wx.getStorageInfo();
-        return info.keys.includes(key);
-    });
+    return (await promisifyWithResult(wx.getStorageInfo)({}))
+        .map(x => x.keys.includes(key))
+        .mapErr(miniGameFailureToError);
 }
 
 export function setItemSync(key: string, data: string): VoidIOResult {

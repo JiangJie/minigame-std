@@ -1,23 +1,14 @@
-import { Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
-import { Future } from 'tiny-future';
+import { type AsyncIOResult } from 'happy-rusty';
 import { hexFromBuffer } from '../../codec/mod.ts';
-import { miniGameFailureToResult } from '../../utils/mod.ts';
+import { miniGameFailureToError, promisifyWithResult } from '../../utils/mod.ts';
 import type { UUID } from './random_defines.ts';
 
-export function getRandomValues(length: number): AsyncIOResult<Uint8Array<ArrayBuffer>> {
-    const future = new Future<IOResult<Uint8Array<ArrayBuffer>>>();
-
-    wx.getUserCryptoManager().getRandomValues({
+export async function getRandomValues(length: number): AsyncIOResult<Uint8Array<ArrayBuffer>> {
+    return (await promisifyWithResult(wx.getUserCryptoManager().getRandomValues)({
         length,
-        success(res): void {
-            future.resolve(Ok(new Uint8Array(res.randomValues)));
-        },
-        fail(err): void {
-            future.resolve(miniGameFailureToResult(err));
-        },
-    });
-
-    return future.promise;
+    }))
+        .map(x => new Uint8Array(x.randomValues))
+        .mapErr(miniGameFailureToError);
 }
 
 export async function randomUUID(): AsyncIOResult<UUID> {

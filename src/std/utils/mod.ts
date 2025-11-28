@@ -37,19 +37,6 @@ export function tryGeneralSyncOp<T>(op: () => T): IOResult<T> {
 }
 
 /**
- * 执行异步函数，预期异常都是 `WechatMinigame.GeneralCallbackResult`。
- * @param op - 需要执行的异步函数。
- * @returns AsyncIOResult。
- */
-export async function tryGeneralAsyncOp<T>(op: () => Promise<T>): AsyncIOResult<T> {
-    try {
-        return Ok(await op());
-    } catch (e) {
-        return miniGameFailureToResult(e as WechatMinigame.GeneralCallbackResult);
-    }
-}
-
-/**
  * 执行同步函数，预期异常都是 `DOMException`。
  * @param op - 需要执行的同步函数。
  * @returns IOResult。

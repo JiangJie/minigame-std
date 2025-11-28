@@ -1,8 +1,7 @@
-import { RESULT_VOID, type AsyncVoidIOResult, type VoidIOResult } from 'happy-rusty';
-import { Future } from 'tiny-future';
+import { RESULT_VOID, type AsyncVoidIOResult } from 'happy-rusty';
 import { assertSafeSocketUrl } from '../assert/assertions.ts';
 import type { DataSource } from '../defines.ts';
-import { bufferSource2Ab, miniGameFailureToError, miniGameFailureToResult } from '../utils/mod.ts';
+import { bufferSource2Ab, miniGameFailureToError, promisifyWithResult } from '../utils/mod.ts';
 import { SocketReadyState, type ISocket, type SocketListenerMap, type SocketOptions } from './socket_define.ts';
 
 /**
@@ -74,24 +73,16 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
             }
         },
 
-        send(data: DataSource): AsyncVoidIOResult {
-            const future = new Future<VoidIOResult>();
-
+        async send(data: DataSource): AsyncVoidIOResult {
             const sendData = typeof data === 'string'
                 ? data
                 : bufferSource2Ab(data);
 
-            socket.send({
+            return (await promisifyWithResult(socket.send)({
                 data: sendData,
-                success(): void {
-                    future.resolve(RESULT_VOID);
-                },
-                fail(err): void {
-                    future.resolve(miniGameFailureToResult(err));
-                },
-            });
-
-            return future.promise;
+            }))
+                .and(RESULT_VOID)
+                .mapErr(miniGameFailureToError);
         },
 
         close(code?: number, reason?: string): void {

@@ -1,3 +1,4 @@
+import { promisifyWithResult } from '../utils/promisify.ts';
 import type { NetworkType } from './network_define.ts';
 
 /**
@@ -5,12 +6,8 @@ import type { NetworkType } from './network_define.ts';
  * @returns 返回值可能为 `wifi` | `none` | `unknown` | `2g` | `3g` | `4g`
  */
 export async function getNetworkType(): Promise<NetworkType> {
-    try {
-        const res = await wx.getNetworkType();
-        return res.networkType;
-    } catch {
-        return 'unknown';
-    }
+    return (await promisifyWithResult(wx.getNetworkType)())
+        .mapOr('unknown', x => x.networkType);
 }
 
 /**

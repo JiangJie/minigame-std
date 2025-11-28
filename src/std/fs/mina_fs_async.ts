@@ -2,10 +2,10 @@ import type { FetchResponse, FetchTask } from '@happy-ts/fetch-t';
 import { basename, dirname, join } from '@std/path/posix';
 import * as fflate from 'fflate/browser';
 import type { ExistsOptions, WriteOptions, ZipOptions } from 'happy-opfs';
-import { Err, Ok, RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';
+import { Err, Ok, RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult, type IOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import { assertSafeUrl } from '../assert/assertions.ts';
-import { miniGameFailureToResult } from '../utils/mod.ts';
+import { miniGameFailureToResult, promisifyWithResult } from '../utils/mod.ts';
 import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
 import { createAbortError } from './fs_helpers.ts';
 import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getRootUsrPath, getWriteFileContents, isNotFoundError } from './mina_fs_shared.ts';
@@ -30,20 +30,12 @@ export async function mkdir(dirPath: string): AsyncVoidIOResult {
         return RESULT_VOID;
     }
 
-    const future = new Future<VoidIOResult>();
-
-    getFs().mkdir({
+    return (await promisifyWithResult(getFs().mkdir)({
         dirPath: absPath,
         recursive: true,
-        success(): void {
-            future.resolve(RESULT_VOID);
-        },
-        fail(err): void {
-            future.resolve(errToMkdirResult(err));
-        },
-    });
-
-    return future.promise;
+    }))
+        .and(RESULT_VOID)
+        .orElse(errToMkdirResult);
 }
 
 /**
@@ -52,24 +44,16 @@ export async function mkdir(dirPath: string): AsyncVoidIOResult {
  * @param destPath - 新路径。
  * @returns 重命名操作的异步结果，成功时返回 true。
  */
-export function move(srcPath: string, destPath: string): AsyncVoidIOResult {
+export async function move(srcPath: string, destPath: string): AsyncVoidIOResult {
     const absSrcPath = getAbsolutePath(srcPath);
     const absDestPath = getAbsolutePath(destPath);
 
-    const future = new Future<VoidIOResult>();
-
-    getFs().rename({
+    return (await promisifyWithResult(getFs().rename)({
         oldPath: absSrcPath,
         newPath: absDestPath,
-        success(): void {
-            future.resolve(RESULT_VOID);
-        },
-        fail(err): void {
-            future.resolve(fileErrorToResult(err));
-        },
-    });
-
-    return future.promise;
+    }))
+        .and(RESULT_VOID)
+        .orElse(fileErrorToResult);
 }
 
 /**
@@ -77,22 +61,14 @@ export function move(srcPath: string, destPath: string): AsyncVoidIOResult {
  * @param dirPath - 目录路径。
  * @returns 包含目录内容的字符串数组的异步操作。
  */
-export function readDir(dirPath: string): AsyncIOResult<string[]> {
+export async function readDir(dirPath: string): AsyncIOResult<string[]> {
     const absPath = getAbsolutePath(dirPath);
 
-    const future = new Future<IOResult<string[]>>();
-
-    getFs().readdir({
+    return (await promisifyWithResult(getFs().readdir)({
         dirPath: absPath,
-        success(res): void {
-            future.resolve(Ok(res.files));
-        },
-        fail(err): void {
-            future.resolve(fileErrorToResult(err));
-        },
-    });
-
-    return future.promise;
+    }))
+        .map(x => x.files)
+        .orElse(fileErrorToResult);
 }
 
 /**
@@ -122,24 +98,16 @@ export function readFile(filePath: string, options?: ReadOptions & {
  * @param options - 可选的读取选项。
  * @returns 包含文件内容的异步操作。
  */
-export function readFile<T extends ReadFileContent>(filePath: string, options?: ReadOptions): AsyncIOResult<T> {
+export async function readFile<T extends ReadFileContent>(filePath: string, options?: ReadOptions): AsyncIOResult<T> {
     const absPath = getAbsolutePath(filePath);
     const encoding = getReadFileEncoding(options);
 
-    const future = new Future<IOResult<T>>();
-
-    getFs().readFile({
+    return (await promisifyWithResult(getFs().readFile)({
         filePath: absPath,
         encoding,
-        success(res): void {
-            future.resolve(Ok(res.data as T));
-        },
-        fail(err): void {
-            future.resolve(fileErrorToResult(err));
-        },
-    });
-
-    return future.promise;
+    }))
+        .map(x => x.data as T)
+        .orElse(fileErrorToResult);
 }
 
 /**
@@ -157,33 +125,19 @@ export async function remove(path: string): AsyncVoidIOResult {
 
     const absPath = getAbsolutePath(path);
 
-    const future = new Future<VoidIOResult>();
-
     // 文件夹还是文件
-    if (statRes.unwrap().isDirectory()) {
-        getFs().rmdir({
+    const res = statRes.unwrap().isDirectory()
+        ? promisifyWithResult(getFs().rmdir)({
             dirPath: absPath,
             recursive: true,
-            success(): void {
-                future.resolve(RESULT_VOID);
-            },
-            fail(err): void {
-                future.resolve(errToRemoveResult(err));
-            },
-        });
-    } else {
-        getFs().unlink({
+        })
+        : promisifyWithResult(getFs().unlink)({
             filePath: absPath,
-            success(): void {
-                future.resolve(RESULT_VOID);
-            },
-            fail(err): void {
-                future.resolve(errToRemoveResult(err));
-            },
         });
-    }
 
-    return future.promise;
+    return (await res)
+        .and(RESULT_VOID)
+        .orElse(errToRemoveResult);
 }
 
 /**
@@ -197,25 +151,15 @@ export function stat(path: string, options: StatOptions & {
     recursive: true;
 }): AsyncIOResult<WechatMinigame.FileStats[]>;
 export function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
-export function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
-    type T = WechatMinigame.Stats | WechatMinigame.FileStats[];
-
+export async function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     const absPath = getAbsolutePath(path);
 
-    const future = new Future<IOResult<T>>();
-
-    getFs().stat({
+    return (await promisifyWithResult(getFs().stat)({
         path: absPath,
         recursive: options?.recursive ?? false,
-        success(res): void {
-            future.resolve(Ok(res.stats));
-        },
-        fail(err): void {
-            future.resolve(fileErrorToResult(err));
-        },
-    });
-
-    return future.promise;
+    }))
+        .map(x => x.stats)
+        .orElse(fileErrorToResult);
 }
 
 /**
@@ -256,21 +200,13 @@ export async function writeFile(filePath: string, contents: WriteFileContent, op
 
     const { data, encoding } = getWriteFileContents(contents);
 
-    const future = new Future<VoidIOResult>();
-
-    method({
+    return (await promisifyWithResult(method)({
         filePath: absPath,
         data,
         encoding,
-        success(): void {
-            future.resolve(RESULT_VOID);
-        },
-        fail(err): void {
-            future.resolve(fileErrorToResult(err));
-        },
-    });
-
-    return future.promise;
+    }))
+        .and(RESULT_VOID)
+        .orElse(fileErrorToResult);
 }
 
 /**
@@ -285,21 +221,13 @@ export function appendFile(filePath: string, contents: WriteFileContent): AsyncV
     });
 }
 
-function copyFile(srcPath: string, destPath: string): AsyncVoidIOResult {
-    const future = new Future<VoidIOResult>();
-
-    getFs().copyFile({
+async function copyFile(srcPath: string, destPath: string): AsyncVoidIOResult {
+    return (await promisifyWithResult(getFs().copyFile)({
         srcPath,
         destPath,
-        success(): void {
-            future.resolve(RESULT_VOID);
-        },
-        fail(err): void {
-            future.resolve(fileErrorToResult(err));
-        },
-    });
-
-    return future.promise;
+    }))
+        .and(RESULT_VOID)
+        .orElse(fileErrorToResult);
 }
 
 /**
@@ -567,24 +495,16 @@ export function uploadFile(filePath: string, fileUrl: string, options?: UploadFi
  * @param targetPath - 要解压到的目标文件夹路径。
  * @returns 解压操作的异步结果。
  */
-export function unzip(zipFilePath: string, targetPath: string): AsyncVoidIOResult {
+export async function unzip(zipFilePath: string, targetPath: string): AsyncVoidIOResult {
     const absZipPath = getAbsolutePath(zipFilePath);
     const absTargetPath = getAbsolutePath(targetPath);
 
-    const future = new Future<VoidIOResult>();
-
-    getFs().unzip({
+    return (await promisifyWithResult(getFs().unzip)({
         zipFilePath: absZipPath,
         targetPath: absTargetPath,
-        success(): void {
-            future.resolve(RESULT_VOID);
-        },
-        fail(err): void {
-            future.resolve(fileErrorToResult(err));
-        },
-    });
-
-    return future.promise;
+    }))
+        .and(RESULT_VOID)
+        .orElse(fileErrorToResult);
 }
 
 /**

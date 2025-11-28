@@ -1,42 +1,21 @@
-import { Err, Ok, type AsyncResult, type Result } from 'happy-rusty';
-import { Future } from 'tiny-future';
+import { type AsyncResult } from 'happy-rusty';
+import { promisifyWithResult } from '../utils/mod.ts';
 
 export async function getCurrentPosition(): AsyncResult<WechatMinigame.GetFuzzyLocationSuccessCallbackResult, WechatMinigame.GeneralCallbackResult> {
-    const future = new Future<Result<WechatMinigame.GetFuzzyLocationSuccessCallbackResult, WechatMinigame.GeneralCallbackResult>>();
+    const hasFuzzy = typeof wx.getFuzzyLocation === 'function';
 
-    try {
-        if (typeof wx.getFuzzyLocation === 'function') {
-            await wx.authorize({
-                scope: 'scope.userFuzzyLocation',
-            });
+    const getLocation = hasFuzzy ? wx.getFuzzyLocation : wx.getLocation;
+    const scope = hasFuzzy ? 'scope.userFuzzyLocation' : 'scope.userLocation';
 
-            wx.getFuzzyLocation({
-                type: 'wgs84',
-                success(res) {
-                    future.resolve(Ok(res));
-                },
-                fail(err) {
-                    future.resolve(Err(err));
-                },
-            });
-        } else {
-            await wx.authorize({
-                scope: 'scope.userLocation',
-            });
+    const res = await promisifyWithResult(wx.authorize)({
+        scope,
+    });
 
-            wx.getLocation({
-                type: 'wgs84',
-                success(res) {
-                    future.resolve(Ok(res));
-                },
-                fail(err) {
-                    future.resolve(Err(err));
-                },
-            });
-        }
-    } catch (e) {
-        future.resolve(Err(e as WechatMinigame.GeneralCallbackResult));
+    if (res.isErr()) {
+        return res.asErr();
     }
 
-    return future.promise;
+    return promisifyWithResult(getLocation)({
+        type: 'wgs84',
+    });
 }
