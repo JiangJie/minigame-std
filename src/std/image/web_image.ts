@@ -17,6 +17,13 @@ export async function createImageFromFile(filePath: string): AsyncIOResult<HTMLI
         const img = new Image();
         img.src = url;
 
+        img.addEventListener('load', () => {
+            URL.revokeObjectURL(url);
+        });
+        img.addEventListener('error', () => {
+            URL.revokeObjectURL(url);
+        });
+
         return Ok(img);
     });
 }
