@@ -35,6 +35,35 @@ Deno.test('calculate hmac', async () => {
     assert(await cryptos.sha512HMAC(key, data) === 'e781e747d4358000756e7752086dbf37822bd5f4733df2953a6eb96945b670cad1df950d4ba2f09cdf0e90beba1cdab9f0798ce6814b5aad7521d41bf3b4d0f3');
 });
 
+Deno.test('calculate hmac with ArrayBuffer', async () => {
+    const key = textEncode('密码');
+    const data = textEncode('minigame-std-中文');
+
+    assert(await cryptos.sha1HMAC(key, data) === 'c039c11a31199388dfb540f989d27f1ec099a43e');
+    assert(await cryptos.sha256HMAC(key, data) === '5e6bcf9fd1f62617773c18d420ef200dfd46dc15373d1192ff02cf648d703748');
+});
+
+Deno.test('calculate hmac with empty string', async () => {
+    const key = 'key';
+    const data = '';
+
+    const result = await cryptos.sha256HMAC(key, data);
+    assert(typeof result === 'string', 'Should return a string');
+    assert(result.length === 64, 'SHA-256 HMAC should be 64 hex characters');
+});
+
+Deno.test('calculate md5 with empty string', () => {
+    const md5Empty = cryptos.md5('');
+    assert(md5Empty === 'd41d8cd98f00b204e9800998ecf8427e', 'MD5 of empty string should match');
+});
+
+Deno.test('calculate sha256 with ArrayBuffer', async () => {
+    const data = textEncode('test');
+    const sha256Str = await cryptos.sha256(data);
+    
+    assert(sha256Str === '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08');
+});
+
 Deno.test('Generate random bytes', async () => {
     (await cryptos.getRandomValues(10)).inspect(bytes => {
         for (const n of bytes) {
