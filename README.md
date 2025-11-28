@@ -1,4 +1,4 @@
-# 小游戏“标准开发库”
+# 小游戏"标准开发库"
 
 [![NPM version](https://img.shields.io/npm/v/minigame-std.svg)](https://npmjs.org/package/minigame-std)
 [![NPM downloads](https://badgen.net/npm/dm/minigame-std)](https://npmjs.org/package/minigame-std)
@@ -6,10 +6,12 @@
 [![JSR Score](https://jsr.io/badges/@happy-js/minigame-std/score)](https://jsr.io/@happy-js/minigame-std/score)
 [![Build Status](https://github.com/jiangjie/minigame-std/actions/workflows/test.yml/badge.svg)](https://github.com/jiangjie/minigame-std/actions/workflows/test.yml)
 
+[English](./README.en.md) | 简体中文
+
 > [!NOTE]
 > 这不是任何一家小游戏平台的官方项目。
 
-> 以下文档以微信小游戏为例进行说明，其他小游戏平台基本也是一样的（dddd）。
+> 以下文档以微信小游戏为例进行说明，其他小游戏平台基本也是一样的。
 
 ---
 
@@ -57,57 +59,110 @@ jsr add @happy-js/minigame-std
 
 ## 特性
 
--   平台相关
+### 核心功能
+
+-   **平台检测与适配**
     ```js
     import { platform } from 'minigame-std';
+    // 检测当前运行环境
+    platform.isWeb();
+    platform.isMiniGame();
     ```
--   UTF-8 字符串和 ArrayBuffer 之间编解码
+
+-   **文本编解码**
     ```js
     import { textDecode, textEncode } from 'minigame-std';
+    // UTF-8 字符串 ↔ ArrayBuffer
     ```
--   base64 编解码
+
+-   **Base64 编解码**
     ```js
     import { decodeBase64, encodeBase64 } from 'minigame-std';
     ```
--   文件系统
-    - 支持 `zip` `unzip` `zipSync` `unzipSync`
+
+-   **文件系统操作**
     ```js
     import { fs } from 'minigame-std';
+    // 支持 zip/unzip、读写文件、目录操作等
+    await fs.writeFile('path/to/file.txt', 'content');
+    await fs.readFile('path/to/file.txt');
+    await fs.zip('source', 'target.zip');
     ```
--   剪贴板
+
+-   **剪贴板操作**
     ```js
     import { clipboard } from 'minigame-std';
+    await clipboard.writeText('text');
+    const text = await clipboard.readText();
     ```
--   全局 error 和 unhandledrejection 处理
+
+-   **全局事件处理**
     ```js
     import { addErrorListener, addUnhandledrejectionListener } from 'minigame-std';
--   网络状态/类型
+    // 统一的错误和 Promise rejection 处理
+    ```
+
+-   **网络状态监听**
     ```js
     import { addNetworkChangeListener, getNetworkType } from 'minigame-std';
     ```
--   https 请求（fetch）
+
+-   **HTTP 请求**
     ```js
     import { fetchT } from 'minigame-std';
+    // 支持可中断的请求，兼容平台特定参数
+    const task = fetchT(url, { abortable: true });
+    task.abort(); // 中断请求
     ```
--   socket（WebSocket）
+
+-   **WebSocket**
     ```js
     import { connectSocket } from 'minigame-std';
+    const socket = connectSocket('wss://example.com');
     ```
--   storage（localStorage）
+
+-   **本地存储**
     ```js
     import { storage } from 'minigame-std';
+    // localStorage 兼容 API
+    await storage.setItem('key', 'value');
+    const value = await storage.getItem('key');
     ```
--   WebAudio
+
+-   **WebAudio**
     ```js
     import { audio } from 'minigame-std';
--   加密 md5/sha/rsa
+    const context = audio.createAudioContext();
+    ```
+
+-   **加密算法**
     ```js
     import { cryptos } from 'minigame-std';
--   LBS
+    // MD5, SHA-1/256/384/512, HMAC, RSA
+    cryptos.md5('data');
+    await cryptos.sha256('data');
+    await cryptos.sha256HMAC('key', 'data');
+    ```
+
+-   **地理位置**
     ```js
     import { lbs } from 'minigame-std';
+    const position = await lbs.getCurrentPosition();
     ```
--   更多特性请查看[文档](docs/README.md)
+
+-   **性能测量**
+    ```js
+    import { getPerformanceNow } from 'minigame-std';
+    const timestamp = getPerformanceNow();
+    ```
+
+-   **图像处理**
+    ```js
+    import { image } from 'minigame-std';
+    const img = image.createImageFromUrl(url);
+    ```
+
+更多功能请查看[完整文档](docs/README.md)。
 
 ## 和 Adapter 是什么关系
 
@@ -180,7 +235,7 @@ jsr add @happy-js/minigame-std
 
 ## 测试
 
-```
+```bash
 pnpm install
 pnpm test
 ```
@@ -188,10 +243,34 @@ pnpm test
 > [!NOTE]
 > 由于测试环境的局限性，测试用例并不能覆盖所有功能。
 
-`tests` 目录下的测试用例是基于 web 平台的测试场景，相当于设置 `__MINIGAME_STD_MINA__: false` 的代码，测试工具为 [deno](https://deno.com/)。
+-   **Web 平台测试**: `tests` 目录下的测试用例基于 web 平台（`__MINIGAME_STD_MINA__: false`），使用 [Deno](https://deno.com/) 作为测试运行时
+-   **文件系统测试**: Web 平台的 OPFS 文件系统测试请参考 [happy-opfs](https://github.com/JiangJie/happy-opfs)
+-   **小游戏平台测试**: 小游戏环境的测试用例请参考 [minigame-std-demo](https://github.com/JiangJie/minigame-std-demo)
 
-对 web 平台文件系统的测试可以转到 [happy-opfs](https://github.com/JiangJie/happy-opfs)。
+### 测试覆盖率
 
-小游戏平台的测试用例请转到 [minigame-std-demo](https://github.com/JiangJie/minigame-std-demo)。
+当前测试覆盖率：
+- 总体行覆盖率：**34.2%**
+- 分支覆盖率：**40.0%**
+- 测试用例数：**47 个**
+
+主要测试模块：
+- ✅ 断言工具 (assertions)
+- ✅ 本地存储 (storage)
+- ✅ 事件处理 (event)
+- ✅ 加密算法 (crypto)
+- ✅ 性能测量 (performance)
+- ✅ Base64 编解码
+- ✅ 文本编解码
+- ✅ 网络请求
+- ✅ WebSocket
+
+## 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+## 许可证
+
+MIT
 
 ## [文档](docs/README.md)
