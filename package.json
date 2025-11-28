@@ -55,7 +55,8 @@
     "rsa",
     "random",
     "uuid",
-    "webaudio"
+    "webaudio",
+    "performance"
   ],
   "devDependencies": {
     "@eslint/js": "^9.39.1",
