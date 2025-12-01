@@ -16,3 +16,4 @@ export * as platform from './std/platform/mod.ts';
 export * from './std/socket/mod.ts';
 export * as storage from './std/storage/mod.ts';
 export * from './std/utils/mod.ts';
+export * as video from './std/video/mod.ts';
