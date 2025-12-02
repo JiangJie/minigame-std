@@ -24,6 +24,11 @@ export function addUnhandledrejectionListener(listener: (ev: PromiseRejectionEve
     };
 }
 
+/**
+ * 添加窗口大小改变事件监听器。
+ * @param listener - 窗口大小改变事件的回调函数。
+ * @returns 返回一个函数，调用该函数可以移除监听器。
+ */
 export function addResizeListener(listener: (ev: UIEvent) => void): () => void {
     addEventListener('resize', listener);
 
