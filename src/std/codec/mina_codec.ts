@@ -40,11 +40,11 @@ export function textDecode(data: ArrayBuffer): string {
  * @returns ArrayBuffer。
  */
 function utf8String2AB(str: string): ArrayBuffer {
-    // 创建一个 Uint8Array，长度为字符串的 UTF-8 编码后的字节数
     const utf8: number[] = [];
 
     for (let i = 0; i < str.length; i++) {
-        const codePoint = str.charCodeAt(i);
+        // 使用 codePointAt 获取完整的 Unicode 码点，正确处理代理对
+        const codePoint = str.codePointAt(i) as number;
 
         // 处理不同的 Unicode 范围
         if (codePoint < 0x80) {
@@ -56,9 +56,15 @@ function utf8String2AB(str: string): ArrayBuffer {
         } else if (codePoint < 0x10000) {
             // 3字节
             utf8.push(0xe0 | (codePoint >> 12), 0x80 | ((codePoint >> 6) & 0x3f), 0x80 | (codePoint & 0x3f));
-        } else if (codePoint < 0x110000) {
-            // 4字节
-            utf8.push(0xf0 | (codePoint >> 18), 0x80 | ((codePoint >> 12) & 0x3f), 0x80 | ((codePoint >> 6) & 0x3f), 0x80 | (codePoint & 0x3f));
+        } else {
+            // 4字节 (U+10000 及以上)，需要跳过代理对的第二个代码单元
+            utf8.push(
+                0xf0 | (codePoint >> 18),
+                0x80 | ((codePoint >> 12) & 0x3f),
+                0x80 | ((codePoint >> 6) & 0x3f),
+                0x80 | (codePoint & 0x3f),
+            );
+            i++; // 跳过代理对的低位部分
         }
     }
 
