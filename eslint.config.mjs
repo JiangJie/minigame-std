@@ -1,18 +1,23 @@
 import eslint from '@eslint/js';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
-export default tseslint.config(
+export default defineConfig([
+    globalIgnores([
+        'dist',
+        'coverage',
+    ]),
     {
-        ignores: [
-            'dist',
+        files: ['**/*.ts'],
+        extends: [
+            eslint.configs.recommended,
+            tseslint.configs.strict,
+            tseslint.configs.stylistic,
+            {
+                rules: {
+                    '@typescript-eslint/no-invalid-void-type': 'off',
+                },
+            },
         ],
     },
-    eslint.configs.recommended,
-    ...tseslint.configs.strict,
-    ...tseslint.configs.stylistic,
-    {
-        rules: {
-            '@typescript-eslint/no-invalid-void-type': 'off',
-        },
-    },
-);
+]);
