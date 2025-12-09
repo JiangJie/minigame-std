@@ -68,7 +68,7 @@ export function promisifyWithResult<F extends (...args: any[]) => any, T = Succe
         // 也支持其他返回Promise的API
         if (res instanceof Promise) {
             return promiseToAsyncResult(res);
-        } else if (res != null) {
+        } else if (res != undefined) {
             throw new Error('API must return void or Promise. Otherwise the return value will be discarded.');
         }
 
