@@ -25,10 +25,10 @@
     "noPropertyAccessFromIndexSignature": true,
 
     "types": [
-        "minigame-api-typings"
-    ]
-  },
-  "include": [
-    "./src"
-  ]
+      "minigame-api-typings"
+    ],
+    "paths": {
+      "minigame-std": ["./src/mod.ts"]
+    }
+  }
 }

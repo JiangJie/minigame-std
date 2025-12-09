@@ -1,11 +1,7 @@
-// deno-lint-ignore-file no-explicit-any
-/* eslint-disable @typescript-eslint/no-explicit-any */
-(globalThis as any).__MINIGAME_STD_MINA__ = false;
-
-import { assert } from '@std/assert';
 import { fetchT } from 'minigame-std';
+import { expect, test } from 'vitest';
 
-Deno.test('fetch json', async () => {
+test('fetch json', async () => {
     const fetchTask = fetchT<{
         name: string;
     }>('https://jsr.io/@happy-js/minigame-std/meta.json', {
@@ -21,8 +17,8 @@ Deno.test('fetch json', async () => {
 
     res.inspect(data => {
         clearTimeout(timer);
-        assert(data.name === 'minigame-std');
+        expect(data.name).toBe('minigame-std');
     }).inspectErr(err => {
-        assert((err as Error).name === 'AbortError');
+        expect((err as Error).name).toBe('AbortError');
     });
 });

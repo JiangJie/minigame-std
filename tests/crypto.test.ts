@@ -1,86 +1,155 @@
-// deno-lint-ignore-file no-explicit-any
-/* eslint-disable @typescript-eslint/no-explicit-any */
-(globalThis as any).__MINIGAME_STD_MINA__ = false;
-
-import { assert, assertRejects, assertThrows } from '@std/assert';
+import { expect, test } from 'vitest';
 import { base64ToBuffer, byteStringToBuffer, cryptos, textDecode, textEncode, type DataSource } from 'minigame-std';
 
-Deno.test('calculate md5', () => {
+test('calculate md5', () => {
     const data = 'minigame-std-中文';
     const md5Str = '3395c7db2e34c56338bec2bad454f224';
 
-    assert(cryptos.md5(data) === md5Str);
-    assert(cryptos.md5(textEncode(data)) === md5Str);
+    expect(cryptos.md5(data)).toBe(md5Str);
+    expect(cryptos.md5(textEncode(data))).toBe(md5Str);
 });
 
-Deno.test('calculate sha', async () => {
+test('calculate sha', async () => {
     const data = 'minigame-std-中文';
     const sha1Str = '431de9a89a769f4fb56a1c128fb7208bebb37960';
 
-    assert(await cryptos.sha1(data) === sha1Str);
-    assert(await cryptos.sha1(textEncode(data)) === sha1Str);
+    expect(await cryptos.sha1(data)).toBe(sha1Str);
+    expect(await cryptos.sha1(textEncode(data))).toBe(sha1Str);
 
-    assert(await cryptos.sha256(data) === '9cff73e4d0e15d78089294a8519788df44f306411e8d20f5f3770e564a73467f');
-    assert(await cryptos.sha384(data) === '23ba7aac72c86e88befc6094e8f903645e2531cf14ac57edf1796e74e40a6e567b0255502a342d3085493d34e87b0541');
-    assert(await cryptos.sha512(data) === 'b4ebfef03638039622452ce378974fba515a8cb46c07e667bf80cdae06e69127123d5c32d85deb0ccc9ce563e5939b3340a604b45bd6493e663ae266c203d694');
+    expect(await cryptos.sha256(data)).toBe('9cff73e4d0e15d78089294a8519788df44f306411e8d20f5f3770e564a73467f');
+    expect(await cryptos.sha384(data)).toBe('23ba7aac72c86e88befc6094e8f903645e2531cf14ac57edf1796e74e40a6e567b0255502a342d3085493d34e87b0541');
+    expect(await cryptos.sha512(data)).toBe('b4ebfef03638039622452ce378974fba515a8cb46c07e667bf80cdae06e69127123d5c32d85deb0ccc9ce563e5939b3340a604b45bd6493e663ae266c203d694');
 });
 
-Deno.test('calculate hmac', async () => {
+test('calculate hmac', async () => {
     const key = '密码';
     const data = 'minigame-std-中文';
 
-    assert(await cryptos.sha1HMAC(key, data) === 'c039c11a31199388dfb540f989d27f1ec099a43e');
-    assert(await cryptos.sha256HMAC(key, data) === '5e6bcf9fd1f62617773c18d420ef200dfd46dc15373d1192ff02cf648d703748');
-    assert(await cryptos.sha384HMAC(key, data) === '7e011216b97450f06de084cdc6bd5f6e206dba1aa87519129dfc289ae9aa6231800188a0defe9543321365db2acc91f6');
-    assert(await cryptos.sha512HMAC(key, data) === 'e781e747d4358000756e7752086dbf37822bd5f4733df2953a6eb96945b670cad1df950d4ba2f09cdf0e90beba1cdab9f0798ce6814b5aad7521d41bf3b4d0f3');
+    expect(await cryptos.sha1HMAC(key, data)).toBe('c039c11a31199388dfb540f989d27f1ec099a43e');
+    expect(await cryptos.sha256HMAC(key, data)).toBe('5e6bcf9fd1f62617773c18d420ef200dfd46dc15373d1192ff02cf648d703748');
+    expect(await cryptos.sha384HMAC(key, data)).toBe('7e011216b97450f06de084cdc6bd5f6e206dba1aa87519129dfc289ae9aa6231800188a0defe9543321365db2acc91f6');
+    expect(await cryptos.sha512HMAC(key, data)).toBe('e781e747d4358000756e7752086dbf37822bd5f4733df2953a6eb96945b670cad1df950d4ba2f09cdf0e90beba1cdab9f0798ce6814b5aad7521d41bf3b4d0f3');
 });
 
-Deno.test('calculate hmac with ArrayBuffer', async () => {
+test('calculate hmac with ArrayBuffer', async () => {
     const key = textEncode('密码');
     const data = textEncode('minigame-std-中文');
 
-    assert(await cryptos.sha1HMAC(key, data) === 'c039c11a31199388dfb540f989d27f1ec099a43e');
-    assert(await cryptos.sha256HMAC(key, data) === '5e6bcf9fd1f62617773c18d420ef200dfd46dc15373d1192ff02cf648d703748');
+    expect(await cryptos.sha1HMAC(key, data)).toBe('c039c11a31199388dfb540f989d27f1ec099a43e');
+    expect(await cryptos.sha256HMAC(key, data)).toBe('5e6bcf9fd1f62617773c18d420ef200dfd46dc15373d1192ff02cf648d703748');
 });
 
-Deno.test('calculate hmac with empty string', async () => {
+test('calculate hmac with empty string', async () => {
     const key = 'key';
     const data = '';
 
     const result = await cryptos.sha256HMAC(key, data);
-    assert(typeof result === 'string', 'Should return a string');
-    assert(result.length === 64, 'SHA-256 HMAC should be 64 hex characters');
+    expect(typeof result).toBe('string');
+    expect(result.length).toBe(64);
 });
 
-Deno.test('calculate md5 with empty string', () => {
+test('calculate md5 with empty string', () => {
     const md5Empty = cryptos.md5('');
-    assert(md5Empty === 'd41d8cd98f00b204e9800998ecf8427e', 'MD5 of empty string should match');
+    expect(md5Empty).toBe('d41d8cd98f00b204e9800998ecf8427e');
 });
 
-Deno.test('calculate sha256 with ArrayBuffer', async () => {
+test('calculate sha256 with ArrayBuffer', async () => {
     const data = textEncode('test');
     const sha256Str = await cryptos.sha256(data);
     
-    assert(sha256Str === '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08');
+    expect(sha256Str).toBe('9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08');
 });
 
-Deno.test('Generate random bytes', async () => {
-    (await cryptos.getRandomValues(10)).inspect(bytes => {
+test('Generate random bytes', async () => {
+    const result = await cryptos.getRandomValues(10);
+    expect(result.isOk()).toBe(true);
+    
+    result.inspect(bytes => {
+        expect(bytes.length).toBe(10);
         for (const n of bytes) {
-            assert(n >= 0 && n < 256);
+            expect(n).toBeGreaterThanOrEqual(0);
+            expect(n).toBeLessThan(256);
         }
     });
 });
 
-Deno.test('Generate random UUID', async () => {
+test('Generate random bytes with different sizes', async () => {
+    const sizes = [1, 16, 32, 64, 128];
+    
+    for (const size of sizes) {
+        const result = await cryptos.getRandomValues(size);
+        expect(result.isOk()).toBe(true);
+        result.inspect(bytes => {
+            expect(bytes.length).toBe(size);
+        });
+    }
+});
+
+test('Generate random UUID', async () => {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-    (await cryptos.randomUUID()).inspect(uuid => {
-        assert(uuidRegex.test(uuid));
+    const result = await cryptos.randomUUID();
+    
+    expect(result.isOk()).toBe(true);
+    result.inspect(uuid => {
+        expect(uuidRegex.test(uuid)).toBe(true);
     });
 });
 
-Deno.test('RSA encryption', async () => {
+test('Generate unique random UUIDs', async () => {
+    const uuids = new Set<string>();
+    
+    for (let i = 0; i < 10; i++) {
+        const result = await cryptos.randomUUID();
+        result.inspect(uuid => {
+            uuids.add(uuid);
+        });
+    }
+    
+    // All UUIDs should be unique
+    expect(uuids.size).toBe(10);
+});
+
+test('RSA encryption', async () => {
     const data = 'minigame-std';
+
+    const publicKeyStr = `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAix682LW8jwpZEGjFfoom
+GvLHCDh8ttPgSB5CBvXZLglimVfVkA7FiGdJqlKkf2kKXqrwSICbgcYUjFHMFdy9
+fvUwrKXzFXP46AzzV3ivkam2LB97eDSMI8gaIjumDaIFZAD3E9osYz4LMSI2A0nC
+qs+5xZ66JeC/Dtr5W9nobushAhFzZQWS/4I7iSUkV4WFmSG1ACB267z8YZ7YFmlT
+1hMFvp+biIsZIx7mebQNqjFjFPP0ZTskXg4UfQt6yyuaPqL55pQ7Wc8iI3umlsSV
+hDL1q3+ry7L8VDg7EtDBbodyYT5R62zBuhe7sJrvhtt/R6fZIfISPvRbumwusbf5
+XQIDAQAB
+-----END PUBLIC KEY-----`;
+
+    const privateKeyStr = `-----BEGIN PRIVATE KEY-----
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCLHrzYtbyPClkQ
+aMV+iiYa8scIOHy20+BIHkIG9dkuCWKZV9WQDsWIZ0mqUqR/aQpeqvBIgJuBxhSM
+UcwV3L1+9TCspfMVc/joDPNXeK+RqbYsH3t4NIwjyBoiO6YNogVkAPcT2ixjPgsx
+IjYDScKqz7nFnrol4L8O2vlb2ehu6yECEXNlBZL/gjuJJSRXhYWZIbUAIHbrvPxh
+ntgWaVPWEwW+n5uIixkjHuZ5tA2qMWMU8/RlOyReDhR9C3rLK5o+ovnmlDtZzyIj
+e6aWxJWEMvWrf6vLsvxUODsS0MFuh3JhPlHrbMG6F7uwmu+G239Hp9kh8hI+9Fu6
+bC6xt/ldAgMBAAECggEABMjYQf68FFJM3lowF/Tshbw9mUbcuSqfxHMv86PUZeIs
+6desu1vasiEqlijp9IzPrmekGbuR6Dxq+/7F1/xOaGr1KIGQ6DcObif13YIDzcIV
+BxRHxN+lGzJC/dQ91tWwkvAlOeGkvv6vrVn/GrgDHH3w5mmZ/s/+2iYF8ev/CQN6
+/2t68F7OGx93IwQZnet1L/fDEJbvpKNlc9FOHz9fDeh769RzMxD/QJsiV6zcJuFX
+p0EFrQflFQ51sP9jKLpXgK6kKH3ugveQL0fhKHDmNFKUpz9BX2WRZh+3ix1XNk5M
+Ppyhg/oeKXvphtubUEZfZRXYBLmACMqVw9ta94n5YQKBgQC/jhESKALWLl7Oc08m
+GyQA03z3j3/JNaqXALSRcND38j/mpR+abI9ANDV7njwO8jtrqfXIBTGna9sqOoey
+XAnLsvFkB1ndGcz7rcKi6A1CAFcEN7J6E0iePhC1HKqoY7qPMi1HLsyIKctEo20A
+J7UNNSylVbUi084Dt6jTo2LPIQKBgQC57KUbHDI557km5RoisVwjyucANDs5oicr
+vaSXjDhgvf0b07D5ElhSeJyzLp/LydwasUnYNM/S6az1BFSI5sAtcGiecQ36FXus
+UnyWWB1B3bTa/hYPqFAT+QIIRqIqdcg8ARcaoDJgjESDYdG8Yz8N48+Dp98R22Qk
+1KU4XolOvQKBgQCP7tPs7JuVDCq4vfQPEf2vkTopWm4OZoDUDfegAUFDzYcua4yf
+oErTV2eIh5FhOapkb8T6ksyInIaF6Izl/DpwEPlIzC098ZEQ27OQbQTpPxAjXyaA
+i9TY8pHjRLMG7EjWKEHVZtjQx3axEItqvmtQjVAKu6frj3MRYAM/Y1lvgQKBgFk9
+1m4x1YXnzP53X1khqqlffguiBn9+brDXIUbAvlrpNrGBpeOXw58qV4TGL1tg8+44
+BMrrZonFMgiVYIIpyDrHRuAuQdg1MZygJz7+4mQ4J9Qpu6seTfmYPzp7tOEOkeMD
+XvSfyi5/hW9Op552QNDI9VUrYa4vkV0AWKG69ss9AoGAZYuK/nbQv81+AExY2vr7
+KaO+FLoszYHNiFbwvjt0e10a2X4wdVrUqiiT4gujrpQEWJigrNjbAmstmjDE1zgW
+VxnzlrCOTTZT7/jD4wf53nCQiqRCg2NsIq6/JYOi+tjr6dC8HA8pd58xYAkB+hbZ
+wIy0/kd6szCcWK5Ld1kH9R0=
+-----END PRIVATE KEY-----`;
 
     function importDecryptKey(pem: string, sha: string): Promise<CryptoKey> {
         pem = pem.replace(/(-----(BEGIN|END) PRIVATE KEY-----|\s)/g, '');
@@ -102,54 +171,145 @@ Deno.test('RSA encryption', async () => {
     }
 
     async function decrypt(encryptedData: DataSource, hash: string) {
-        const data = typeof encryptedData === 'string'
+        const buffer = typeof encryptedData === 'string'
             ? base64ToBuffer(encryptedData)
             : encryptedData;
-        const privateKey = await importDecryptKey(Deno.readTextFileSync(`${ import.meta.dirname }/keys/private_key.pem`), hash);
+        const privateKey = await importDecryptKey(privateKeyStr, hash);
         const decryptedData = textDecode(await crypto.subtle.decrypt(
             {
                 name: 'RSA-OAEP',
             },
             privateKey,
-            data
+            buffer
         ));
 
         return decryptedData;
     }
 
-    const publicKeyStr = Deno.readTextFileSync(`${ import.meta.dirname }/keys/public_key.pem`);
+    // Test invalid hash algorithm
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect(() => cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-2' as any)).toThrow();
+    
+    // Test invalid PEM format
+    await expect(cryptos.rsa.importPublicKey(publicKeyStr.slice(1), 'SHA-256')).rejects.toThrow();
+    await expect(cryptos.rsa.importPublicKey(publicKeyStr.replace('PUBLIC', 'AES PUBLIC'), 'SHA-256')).rejects.toThrow();
 
+    // Test encryption with different hash algorithms
     {
-        assertThrows(() => cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-2' as any));
-        assertRejects(() => cryptos.rsa.importPublicKey(publicKeyStr.slice(1), 'SHA-256'));
-        assertRejects(() => cryptos.rsa.importPublicKey(publicKeyStr.replace('PUBLIC', 'AES PUBLIC'), 'SHA-256'));
+        const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-256')).encryptToString(data);
+        const decryptedData = await decrypt(encryptedData, 'SHA-256');
+        expect(decryptedData).toBe(data);
+    }
+    {
+        const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-1')).encrypt(data);
+        const decryptedData = await decrypt(encryptedData, 'SHA-1');
+        expect(decryptedData).toBe(data);
+    }
+    {
+        const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-256')).encrypt(data);
+        const decryptedData = await decrypt(encryptedData, 'SHA-256');
+        expect(decryptedData).toBe(data);
+    }
+    {
+        const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-384')).encrypt(data);
+        const decryptedData = await decrypt(encryptedData, 'SHA-384');
+        expect(decryptedData).toBe(data);
+    }
+    {
+        const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-512')).encrypt(data);
+        const decryptedData = await decrypt(encryptedData, 'SHA-512');
+        expect(decryptedData).toBe(data);
+    }
+});
+
+test('RSA encryption with unicode data', async () => {
+    const data = 'Hello, 世界! 🎮';
+
+    const publicKeyStr = `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAix682LW8jwpZEGjFfoom
+GvLHCDh8ttPgSB5CBvXZLglimVfVkA7FiGdJqlKkf2kKXqrwSICbgcYUjFHMFdy9
+fvUwrKXzFXP46AzzV3ivkam2LB97eDSMI8gaIjumDaIFZAD3E9osYz4LMSI2A0nC
+qs+5xZ66JeC/Dtr5W9nobushAhFzZQWS/4I7iSUkV4WFmSG1ACB267z8YZ7YFmlT
+1hMFvp+biIsZIx7mebQNqjFjFPP0ZTskXg4UfQt6yyuaPqL55pQ7Wc8iI3umlsSV
+hDL1q3+ry7L8VDg7EtDBbodyYT5R62zBuhe7sJrvhtt/R6fZIfISPvRbumwusbf5
+XQIDAQAB
+-----END PUBLIC KEY-----`;
+
+    const privateKeyStr = `-----BEGIN PRIVATE KEY-----
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCLHrzYtbyPClkQ
+aMV+iiYa8scIOHy20+BIHkIG9dkuCWKZV9WQDsWIZ0mqUqR/aQpeqvBIgJuBxhSM
+UcwV3L1+9TCspfMVc/joDPNXeK+RqbYsH3t4NIwjyBoiO6YNogVkAPcT2ixjPgsx
+IjYDScKqz7nFnrol4L8O2vlb2ehu6yECEXNlBZL/gjuJJSRXhYWZIbUAIHbrvPxh
+ntgWaVPWEwW+n5uIixkjHuZ5tA2qMWMU8/RlOyReDhR9C3rLK5o+ovnmlDtZzyIj
+e6aWxJWEMvWrf6vLsvxUODsS0MFuh3JhPlHrbMG6F7uwmu+G239Hp9kh8hI+9Fu6
+bC6xt/ldAgMBAAECggEABMjYQf68FFJM3lowF/Tshbw9mUbcuSqfxHMv86PUZeIs
+6desu1vasiEqlijp9IzPrmekGbuR6Dxq+/7F1/xOaGr1KIGQ6DcObif13YIDzcIV
+BxRHxN+lGzJC/dQ91tWwkvAlOeGkvv6vrVn/GrgDHH3w5mmZ/s/+2iYF8ev/CQN6
+/2t68F7OGx93IwQZnet1L/fDEJbvpKNlc9FOHz9fDeh769RzMxD/QJsiV6zcJuFX
+p0EFrQflFQ51sP9jKLpXgK6kKH3ugveQL0fhKHDmNFKUpz9BX2WRZh+3ix1XNk5M
+Ppyhg/oeKXvphtubUEZfZRXYBLmACMqVw9ta94n5YQKBgQC/jhESKALWLl7Oc08m
+GyQA03z3j3/JNaqXALSRcND38j/mpR+abI9ANDV7njwO8jtrqfXIBTGna9sqOoey
+XAnLsvFkB1ndGcz7rcKi6A1CAFcEN7J6E0iePhC1HKqoY7qPMi1HLsyIKctEo20A
+J7UNNSylVbUi084Dt6jTo2LPIQKBgQC57KUbHDI557km5RoisVwjyucANDs5oicr
+vaSXjDhgvf0b07D5ElhSeJyzLp/LydwasUnYNM/S6az1BFSI5sAtcGiecQ36FXus
+UnyWWB1B3bTa/hYPqFAT+QIIRqIqdcg8ARcaoDJgjESDYdG8Yz8N48+Dp98R22Qk
+1KU4XolOvQKBgQCP7tPs7JuVDCq4vfQPEf2vkTopWm4OZoDUDfegAUFDzYcua4yf
+oErTV2eIh5FhOapkb8T6ksyInIaF6Izl/DpwEPlIzC098ZEQ27OQbQTpPxAjXyaA
+i9TY8pHjRLMG7EjWKEHVZtjQx3axEItqvmtQjVAKu6frj3MRYAM/Y1lvgQKBgFk9
+1m4x1YXnzP53X1khqqlffguiBn9+brDXIUbAvlrpNrGBpeOXw58qV4TGL1tg8+44
+BMrrZonFMgiVYIIpyDrHRuAuQdg1MZygJz7+4mQ4J9Qpu6seTfmYPzp7tOEOkeMD
+XvSfyi5/hW9Op552QNDI9VUrYa4vkV0AWKG69ss9AoGAZYuK/nbQv81+AExY2vr7
+KaO+FLoszYHNiFbwvjt0e10a2X4wdVrUqiiT4gujrpQEWJigrNjbAmstmjDE1zgW
+VxnzlrCOTTZT7/jD4wf53nCQiqRCg2NsIq6/JYOi+tjr6dC8HA8pd58xYAkB+hbZ
+wIy0/kd6szCcWK5Ld1kH9R0=
+-----END PRIVATE KEY-----`;
+
+    function importDecryptKey(pem: string, sha: string): Promise<CryptoKey> {
+        pem = pem.replace(/(-----(BEGIN|END) PRIVATE KEY-----|\s)/g, '');
+        const privateKey = byteStringToBuffer(atob(pem));
+        return crypto.subtle.importKey(
+            'pkcs8',
+            privateKey,
+            { name: 'RSA-OAEP', hash: sha },
+            false,
+            ['decrypt']
+        );
     }
 
-    for (let index = 0; index < 1; index++) {
-        {
-            const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-256')).encryptToString(data);
-            const decryptedData = await decrypt(encryptedData, 'SHA-256');
-            assert(decryptedData === data);
-        }
-        {
-            const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-1')).encrypt(data);
-            const decryptedData = await decrypt(encryptedData, 'SHA-1');
-            assert(decryptedData === data);
-        }
-        {
-            const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-256')).encrypt(data);
-            const decryptedData = await decrypt(encryptedData, 'SHA-256');
-            assert(decryptedData === data);
-        }
-        {
-            const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-384')).encrypt(data);
-            const decryptedData = await decrypt(encryptedData, 'SHA-384');
-            assert(decryptedData === data);
-        }
-        {
-            const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-512')).encrypt(data);
-            const decryptedData = await decrypt(encryptedData, 'SHA-512');
-            assert(decryptedData === data);
-        }
-    }
+    const rsaKey = await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-256');
+    const encryptedData = await rsaKey.encrypt(data);
+    
+    const privateKey = await importDecryptKey(privateKeyStr, 'SHA-256');
+    const decryptedData = textDecode(await crypto.subtle.decrypt(
+        { name: 'RSA-OAEP' },
+        privateKey,
+        encryptedData
+    ));
+    
+    expect(decryptedData).toBe(data);
+});
+
+test('MD5 with binary data', () => {
+    const data = new Uint8Array([0x00, 0x01, 0x02, 0x03, 0xff]);
+    const md5 = cryptos.md5(data);
+    
+    expect(typeof md5).toBe('string');
+    expect(md5.length).toBe(32);
+});
+
+test('SHA with binary data', async () => {
+    const data = new Uint8Array([0x00, 0x01, 0x02, 0x03, 0xff]);
+    
+    const sha1 = await cryptos.sha1(data);
+    expect(typeof sha1).toBe('string');
+    expect(sha1.length).toBe(40);
+    
+    const sha256 = await cryptos.sha256(data);
+    expect(sha256.length).toBe(64);
+    
+    const sha384 = await cryptos.sha384(data);
+    expect(sha384.length).toBe(96);
+    
+    const sha512 = await cryptos.sha512(data);
+    expect(sha512.length).toBe(128);
 });

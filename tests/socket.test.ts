@@ -1,11 +1,7 @@
-// deno-lint-ignore-file no-explicit-any
-/* eslint-disable @typescript-eslint/no-explicit-any */
-(globalThis as any).__MINIGAME_STD_MINA__ = false;
-
-import { assert } from '@std/assert';
+import { expect, test } from 'vitest';
 import { connectSocket } from 'minigame-std';
 
-Deno.test('socket echo', () => {
+test('socket echo', () => {
     const { promise, resolve } = Promise.withResolvers<void>();
 
     const data = 'minigame-std';
@@ -18,9 +14,9 @@ Deno.test('socket echo', () => {
         count += 1;
 
         if (count === 1) {
-            assert((msg as string).startsWith('Request served by'));
+            expect((msg as string).startsWith('Request served by')).toBe(true);
         } else if (count === 2) {
-            assert(msg === data);
+            expect(msg).toBe(data);
             socket.close();
         }
     });
@@ -31,7 +27,7 @@ Deno.test('socket echo', () => {
 
     socket.addEventListener('close', (code) => {
         removeMessageListener();
-        assert(code === 1005);
+        expect(code).toBe(1005);
 
         resolve();
     });

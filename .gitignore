@@ -1,3 +1,6 @@
 node_modules
-dist
+/dist
+
+# Test coverage
 coverage
+__screenshots__

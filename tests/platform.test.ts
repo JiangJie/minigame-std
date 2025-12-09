@@ -1,33 +1,64 @@
-// deno-lint-ignore-file no-explicit-any
-/* eslint-disable @typescript-eslint/no-explicit-any */
-(globalThis as any).__MINIGAME_STD_MINA__ = false;
-
-import { assert } from '@std/assert';
+import { expect, test } from 'vitest';
 import { platform } from 'minigame-std';
 
-Deno.test('targetType is web', () => {
-    assert(platform.isWeb());
-    assert(!platform.isMiniGame());
+test('targetType is web', () => {
+    expect(platform.isWeb()).toBe(true);
+    expect(platform.isMiniGame()).toBe(false);
 });
 
-Deno.test('getTargetType returns web', () => {
+test('getTargetType returns web', () => {
     const targetType = platform.getTargetType();
-    assert(targetType === 'web', 'Target type should be web in test environment');
+    expect(targetType).toBe('web');
 });
 
-Deno.test('platform detection is consistent', () => {
+test('platform detection is consistent', () => {
     // All platform detection methods should be consistent
     const isWeb = platform.isWeb();
     const isMiniGame = platform.isMiniGame();
     const targetType = platform.getTargetType();
     
     if (isWeb) {
-        assert(!isMiniGame, 'Cannot be both web and minigame');
-        assert(targetType === 'web', 'Target type should match isWeb');
+        expect(isMiniGame).toBe(false);
+        expect(targetType).toBe('web');
     }
     
     if (isMiniGame) {
-        assert(!isWeb, 'Cannot be both minigame and web');
-        assert(targetType === 'minigame', 'Target type should match isMiniGame');
+        expect(isWeb).toBe(false);
+        expect(targetType).toBe('minigame');
     }
+});
+
+test('getDeviceBenchmarkLevel returns -2 in web environment', async () => {
+    const result = await platform.getDeviceBenchmarkLevel();
+    expect(result.isOk()).toBe(true);
+    expect(result.unwrap()).toBe(-2);
+});
+
+// MiniGame specific functions return false in web environment
+test('isMiniGameRuntime returns false in web', () => {
+    expect(platform.isMiniGameRuntime()).toBe(false);
+});
+
+test('isMiniGameDevtools returns false in web', () => {
+    expect(platform.isMiniGameDevtools()).toBe(false);
+});
+
+test('isMiniGameIOS returns false in web', () => {
+    expect(platform.isMiniGameIOS()).toBe(false);
+});
+
+test('isMiniGameAndroid returns false in web', () => {
+    expect(platform.isMiniGameAndroid()).toBe(false);
+});
+
+test('isMiniGameWin returns false in web', () => {
+    expect(platform.isMiniGameWin()).toBe(false);
+});
+
+test('isMiniGameMac returns false in web', () => {
+    expect(platform.isMiniGameMac()).toBe(false);
+});
+
+test('isMiniGameHarmonyOS returns false in web', () => {
+    expect(platform.isMiniGameHarmonyOS()).toBe(false);
 });

@@ -1,11 +1,10 @@
-// deno-lint-ignore-file no-explicit-any
-/* eslint-disable @typescript-eslint/no-explicit-any */
-(globalThis as any).__MINIGAME_STD_MINA__ = false;
-
-import { assertEquals } from '@std/assert';
+import { expect, test } from 'vitest';
 import { storage } from 'minigame-std';
 
-Deno.test('storage setItemSync and getItemSync', () => {
+// localStorage in jsdom is not fully implemented, so we skip these tests in jsdom environment
+const isJsdom = typeof window !== 'undefined' && typeof localStorage !== 'undefined' && typeof localStorage.clear !== 'function';
+
+test.skipIf(isJsdom)('storage setItemSync and getItemSync', () => {
     const key = 'test-key';
     const value = 'test-value';
     
@@ -14,40 +13,40 @@ Deno.test('storage setItemSync and getItemSync', () => {
     
     // Set item
     const setResult = storage.setItemSync(key, value);
-    assertEquals(setResult.isOk(), true, 'setItemSync should succeed');
+    expect(setResult.isOk()).toBe(true);
     
     // Get item
     const getResult = storage.getItemSync(key);
-    assertEquals(getResult.isOk(), true, 'getItemSync should succeed');
-    assertEquals(getResult.unwrap(), value, 'Retrieved value should match');
+    expect(getResult.isOk()).toBe(true);
+    expect(getResult.unwrap()).toBe(value);
 });
 
-Deno.test('storage getItemSync non-existent item', () => {
+test.skipIf(isJsdom)('storage getItemSync non-existent item', () => {
     storage.clearSync();
     
     const getResult = storage.getItemSync('non-existent-key');
-    assertEquals(getResult.isErr(), true, 'getItemSync should fail for non-existent key');
+    expect(getResult.isErr()).toBe(true);
 });
 
-Deno.test('storage hasItemSync', () => {
+test.skipIf(isJsdom)('storage hasItemSync', () => {
     storage.clearSync();
     
     const key = 'test-has-key';
     
     // Check before setting
     let hasResult = storage.hasItemSync(key);
-    assertEquals(hasResult.isOk(), true, 'hasItemSync should return Ok');
-    assertEquals(hasResult.unwrap(), false, 'Key should not exist initially');
+    expect(hasResult.isOk()).toBe(true);
+    expect(hasResult.unwrap()).toBe(false);
     
     // Set item
     storage.setItemSync(key, 'value');
     
     // Check after setting
     hasResult = storage.hasItemSync(key);
-    assertEquals(hasResult.unwrap(), true, 'Key should exist after setting');
+    expect(hasResult.unwrap()).toBe(true);
 });
 
-Deno.test('storage removeItemSync', () => {
+test.skipIf(isJsdom)('storage removeItemSync', () => {
     storage.clearSync();
     
     const key = 'test-remove-key';
@@ -55,17 +54,17 @@ Deno.test('storage removeItemSync', () => {
     
     // Set and verify
     storage.setItemSync(key, value);
-    assertEquals(storage.hasItemSync(key).unwrap(), true);
+    expect(storage.hasItemSync(key).unwrap()).toBe(true);
     
     // Remove
     const removeResult = storage.removeItemSync(key);
-    assertEquals(removeResult.isOk(), true, 'removeItemSync should succeed');
+    expect(removeResult.isOk()).toBe(true);
     
     // Verify removal
-    assertEquals(storage.hasItemSync(key).unwrap(), false, 'Key should not exist after removal');
+    expect(storage.hasItemSync(key).unwrap()).toBe(false);
 });
 
-Deno.test('storage clearSync', () => {
+test.skipIf(isJsdom)('storage clearSync', () => {
     // Add multiple items
     storage.setItemSync('key1', 'value1');
     storage.setItemSync('key2', 'value2');
@@ -73,21 +72,21 @@ Deno.test('storage clearSync', () => {
     
     // Clear all
     const clearResult = storage.clearSync();
-    assertEquals(clearResult.isOk(), true, 'clearSync should succeed');
+    expect(clearResult.isOk()).toBe(true);
     
     // Verify all cleared
-    assertEquals(storage.hasItemSync('key1').unwrap(), false);
-    assertEquals(storage.hasItemSync('key2').unwrap(), false);
-    assertEquals(storage.hasItemSync('key3').unwrap(), false);
+    expect(storage.hasItemSync('key1').unwrap()).toBe(false);
+    expect(storage.hasItemSync('key2').unwrap()).toBe(false);
+    expect(storage.hasItemSync('key3').unwrap()).toBe(false);
 });
 
-Deno.test('storage getLengthSync', () => {
+test.skipIf(isJsdom)('storage getLengthSync', () => {
     storage.clearSync();
     
     // Initial length should be 0
     let lengthResult = storage.getLengthSync();
-    assertEquals(lengthResult.isOk(), true);
-    assertEquals(lengthResult.unwrap(), 0, 'Initial length should be 0');
+    expect(lengthResult.isOk()).toBe(true);
+    expect(lengthResult.unwrap()).toBe(0);
     
     // Add items
     storage.setItemSync('key1', 'value1');
@@ -95,10 +94,10 @@ Deno.test('storage getLengthSync', () => {
     
     // Length should be 2
     lengthResult = storage.getLengthSync();
-    assertEquals(lengthResult.unwrap(), 2, 'Length should be 2 after adding 2 items');
+    expect(lengthResult.unwrap()).toBe(2);
 });
 
-Deno.test('storage special characters sync', () => {
+test.skipIf(isJsdom)('storage special characters sync', () => {
     storage.clearSync();
     
     const key = '特殊-key-🔑';
@@ -107,23 +106,23 @@ Deno.test('storage special characters sync', () => {
     storage.setItemSync(key, value);
     
     const getResult = storage.getItemSync(key);
-    assertEquals(getResult.isOk(), true);
-    assertEquals(getResult.unwrap(), value, 'Special characters should be preserved');
+    expect(getResult.isOk()).toBe(true);
+    expect(getResult.unwrap()).toBe(value);
 });
 
-Deno.test('storage overwrite existing key sync', () => {
+test.skipIf(isJsdom)('storage overwrite existing key sync', () => {
     storage.clearSync();
     
     const key = 'overwrite-key';
     
     storage.setItemSync(key, 'original-value');
-    assertEquals(storage.getItemSync(key).unwrap(), 'original-value');
+    expect(storage.getItemSync(key).unwrap()).toBe('original-value');
     
     storage.setItemSync(key, 'new-value');
-    assertEquals(storage.getItemSync(key).unwrap(), 'new-value', 'Value should be overwritten');
+    expect(storage.getItemSync(key).unwrap()).toBe('new-value');
 });
 
-Deno.test('storage async setItem and getItem', async () => {
+test.skipIf(isJsdom)('storage async setItem and getItem', async () => {
     const key = 'test-async-key';
     const value = 'test-async-value';
     
@@ -131,36 +130,36 @@ Deno.test('storage async setItem and getItem', async () => {
     
     // Set item
     const setResult = await storage.setItem(key, value);
-    assertEquals(setResult.isOk(), true, 'setItem should succeed');
+    expect(setResult.isOk()).toBe(true);
     
     // Get item
     const getResult = await storage.getItem(key);
-    assertEquals(getResult.isOk(), true, 'getItem should succeed');
-    assertEquals(getResult.unwrap(), value, 'Retrieved value should match');
+    expect(getResult.isOk()).toBe(true);
+    expect(getResult.unwrap()).toBe(value);
 });
 
-Deno.test('storage async removeItem', async () => {
+test.skipIf(isJsdom)('storage async removeItem', async () => {
     const key = 'test-async-remove';
     
     await storage.clear();
     await storage.setItem(key, 'value');
     
     const removeResult = await storage.removeItem(key);
-    assertEquals(removeResult.isOk(), true, 'removeItem should succeed');
+    expect(removeResult.isOk()).toBe(true);
     
     const hasResult = await storage.hasItem(key);
-    assertEquals(hasResult.unwrap(), false, 'Key should not exist after removal');
+    expect(hasResult.unwrap()).toBe(false);
 });
 
-Deno.test('storage async clear', async () => {
+test.skipIf(isJsdom)('storage async clear', async () => {
     await storage.setItem('key1', 'value1');
     await storage.setItem('key2', 'value2');
     
     const clearResult = await storage.clear();
-    assertEquals(clearResult.isOk(), true, 'clear should succeed');
+    expect(clearResult.isOk()).toBe(true);
     
     const hasResult1 = await storage.hasItem('key1');
     const hasResult2 = await storage.hasItem('key2');
-    assertEquals(hasResult1.unwrap(), false);
-    assertEquals(hasResult2.unwrap(), false);
+    expect(hasResult1.unwrap()).toBe(false);
+    expect(hasResult2.unwrap()).toBe(false);
 });
