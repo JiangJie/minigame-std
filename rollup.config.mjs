@@ -51,7 +51,7 @@ export default [
         output: {
             file: 'dist/types.d.ts',
             format: 'esm',
-            sourcemap: true,
+            sourcemap: false,
         },
         external,
         treeshake: 'smallest',
