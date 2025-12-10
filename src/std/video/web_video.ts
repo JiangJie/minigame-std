@@ -356,8 +356,39 @@ export function createVideo(options: WechatMinigame.CreateVideoOption): WechatMi
             return Promise.resolve();
         },
 
-        requestFullScreen(): Promise<void> {
-            return video.requestFullscreen() as Promise<void>;
+        async requestFullScreen(direction: 0 | 90 | -90): Promise<void> {
+            // 先进入全屏
+            await video.requestFullscreen();
+
+            // 根据 direction 参数锁定屏幕方向
+            // 0: 正常竖向 (portrait)
+            // 90: 屏幕逆时针90度 (landscape-secondary，home键在右)
+            // -90: 屏幕顺时针90度 (landscape-primary，home键在左)
+            const orientationApi = screen.orientation as ScreenOrientation & {
+                lock?: (orientation: string) => Promise<void>;
+            };
+
+            if (orientationApi?.lock) {
+                try {
+                    let orientation: string;
+                    switch (direction) {
+                        case 0:
+                            orientation = 'portrait';
+                            break;
+                        case 90:
+                            orientation = 'landscape-secondary';
+                            break;
+                        case -90:
+                            orientation = 'landscape-primary';
+                            break;
+                        default:
+                            return;
+                    }
+                    await orientationApi.lock(orientation);
+                } catch {
+                    // 屏幕方向锁定可能不被支持或被拒绝，忽略错误
+                }
+            }
         },
 
         exitFullScreen(): Promise<void> {
