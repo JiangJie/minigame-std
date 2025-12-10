@@ -74,7 +74,7 @@ export function clear(): AsyncVoidIOResult {
 export function getLength(): AsyncIOResult<number> {
     return isMinaEnv()
         ? minaGetLength()
-        : Promise.resolve(getLength());
+        : Promise.resolve(webGetLength());
 }
 
 /**

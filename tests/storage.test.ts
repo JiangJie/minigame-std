@@ -1,10 +1,7 @@
 import { expect, test } from 'vitest';
 import { storage } from 'minigame-std';
 
-// localStorage in jsdom is not fully implemented, so we skip these tests in jsdom environment
-const isJsdom = typeof window !== 'undefined' && typeof localStorage !== 'undefined' && typeof localStorage.clear !== 'function';
-
-test.skipIf(isJsdom)('storage setItemSync and getItemSync', () => {
+test('storage setItemSync and getItemSync', () => {
     const key = 'test-key';
     const value = 'test-value';
     
@@ -21,14 +18,14 @@ test.skipIf(isJsdom)('storage setItemSync and getItemSync', () => {
     expect(getResult.unwrap()).toBe(value);
 });
 
-test.skipIf(isJsdom)('storage getItemSync non-existent item', () => {
+test('storage getItemSync non-existent item', () => {
     storage.clearSync();
     
     const getResult = storage.getItemSync('non-existent-key');
     expect(getResult.isErr()).toBe(true);
 });
 
-test.skipIf(isJsdom)('storage hasItemSync', () => {
+test('storage hasItemSync', () => {
     storage.clearSync();
     
     const key = 'test-has-key';
@@ -46,7 +43,7 @@ test.skipIf(isJsdom)('storage hasItemSync', () => {
     expect(hasResult.unwrap()).toBe(true);
 });
 
-test.skipIf(isJsdom)('storage removeItemSync', () => {
+test('storage removeItemSync', () => {
     storage.clearSync();
     
     const key = 'test-remove-key';
@@ -64,7 +61,7 @@ test.skipIf(isJsdom)('storage removeItemSync', () => {
     expect(storage.hasItemSync(key).unwrap()).toBe(false);
 });
 
-test.skipIf(isJsdom)('storage clearSync', () => {
+test('storage clearSync', () => {
     // Add multiple items
     storage.setItemSync('key1', 'value1');
     storage.setItemSync('key2', 'value2');
@@ -80,7 +77,7 @@ test.skipIf(isJsdom)('storage clearSync', () => {
     expect(storage.hasItemSync('key3').unwrap()).toBe(false);
 });
 
-test.skipIf(isJsdom)('storage getLengthSync', () => {
+test('storage getLengthSync', () => {
     storage.clearSync();
     
     // Initial length should be 0
@@ -97,7 +94,7 @@ test.skipIf(isJsdom)('storage getLengthSync', () => {
     expect(lengthResult.unwrap()).toBe(2);
 });
 
-test.skipIf(isJsdom)('storage special characters sync', () => {
+test('storage special characters sync', () => {
     storage.clearSync();
     
     const key = '特殊-key-🔑';
@@ -110,7 +107,7 @@ test.skipIf(isJsdom)('storage special characters sync', () => {
     expect(getResult.unwrap()).toBe(value);
 });
 
-test.skipIf(isJsdom)('storage overwrite existing key sync', () => {
+test('storage overwrite existing key sync', () => {
     storage.clearSync();
     
     const key = 'overwrite-key';
@@ -122,7 +119,7 @@ test.skipIf(isJsdom)('storage overwrite existing key sync', () => {
     expect(storage.getItemSync(key).unwrap()).toBe('new-value');
 });
 
-test.skipIf(isJsdom)('storage async setItem and getItem', async () => {
+test('storage async setItem and getItem', async () => {
     const key = 'test-async-key';
     const value = 'test-async-value';
     
@@ -138,7 +135,7 @@ test.skipIf(isJsdom)('storage async setItem and getItem', async () => {
     expect(getResult.unwrap()).toBe(value);
 });
 
-test.skipIf(isJsdom)('storage async removeItem', async () => {
+test('storage async removeItem', async () => {
     const key = 'test-async-remove';
     
     await storage.clear();
@@ -151,7 +148,7 @@ test.skipIf(isJsdom)('storage async removeItem', async () => {
     expect(hasResult.unwrap()).toBe(false);
 });
 
-test.skipIf(isJsdom)('storage async clear', async () => {
+test('storage async clear', async () => {
     await storage.setItem('key1', 'value1');
     await storage.setItem('key2', 'value2');
     
@@ -162,4 +159,54 @@ test.skipIf(isJsdom)('storage async clear', async () => {
     const hasResult2 = await storage.hasItem('key2');
     expect(hasResult1.unwrap()).toBe(false);
     expect(hasResult2.unwrap()).toBe(false);
+});
+
+test('storage async getLength', async () => {
+    await storage.clear();
+    
+    // Initial length should be 0
+    let lengthResult = await storage.getLength();
+    expect(lengthResult.isOk()).toBe(true);
+    expect(lengthResult.unwrap()).toBe(0);
+    
+    // Add items
+    await storage.setItem('async-key1', 'value1');
+    await storage.setItem('async-key2', 'value2');
+    await storage.setItem('async-key3', 'value3');
+    
+    // Length should be 3
+    lengthResult = await storage.getLength();
+    expect(lengthResult.isOk()).toBe(true);
+    expect(lengthResult.unwrap()).toBe(3);
+    
+    // Remove one item
+    await storage.removeItem('async-key2');
+    
+    // Length should be 2
+    lengthResult = await storage.getLength();
+    expect(lengthResult.unwrap()).toBe(2);
+    
+    // Clear all
+    await storage.clear();
+    
+    // Length should be 0 again
+    lengthResult = await storage.getLength();
+    expect(lengthResult.unwrap()).toBe(0);
+});
+
+test('storage getLength and getLengthSync consistency', async () => {
+    await storage.clear();
+    
+    // Add items
+    storage.setItemSync('sync-key1', 'value1');
+    await storage.setItem('async-key2', 'value2');
+    
+    // Both sync and async getLength should return same value
+    const syncLength = storage.getLengthSync();
+    const asyncLength = await storage.getLength();
+    
+    expect(syncLength.isOk()).toBe(true);
+    expect(asyncLength.isOk()).toBe(true);
+    expect(syncLength.unwrap()).toBe(asyncLength.unwrap());
+    expect(syncLength.unwrap()).toBe(2);
 });
