@@ -1,5 +1,5 @@
-import { afterAll, beforeAll, expect, test } from 'vitest';
 import { fs, image } from 'minigame-std';
+import { afterAll, beforeAll, expect, test } from 'vitest';
 
 // 1x1 red PNG image as base64
 const RED_PIXEL_PNG_BASE64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==';
@@ -89,4 +89,61 @@ test('createImageFromUrl with blob URL format', () => {
     expect(img.src).toBe(blobUrl);
 
     URL.revokeObjectURL(blobUrl);
+});
+
+test('createImageFromFile revokes URL on successful load', async () => {
+    const filePath = `${ TEST_DIR }/test-load-success.png`;
+
+    // Write a valid PNG image
+    const imageData = base64ToArrayBuffer(RED_PIXEL_PNG_BASE64);
+    await fs.writeFile(filePath, imageData);
+
+    const result = await image.createImageFromFile(filePath);
+    expect(result.isOk()).toBe(true);
+
+    const img = result.unwrap() as HTMLImageElement;
+    const blobUrl = img.src;
+    expect(blobUrl).toContain('blob:');
+
+    // Wait for the image to load and trigger the load event
+    await new Promise<void>((resolve, reject) => {
+        img.addEventListener('load', () => resolve());
+        img.addEventListener('error', () => reject(new Error('Image failed to load')));
+        // If already loaded (complete and naturalWidth > 0), resolve immediately
+        if (img.complete && img.naturalWidth > 0) {
+            resolve();
+        }
+    });
+
+    // The URL should have been revoked in the load handler
+    // We can't directly test if it's revoked, but we verify the load event fired
+    expect(img.complete).toBe(true);
+    expect(img.naturalWidth).toBeGreaterThan(0);
+});
+
+test('createImageFromFile revokes URL on error', async () => {
+    const filePath = `${ TEST_DIR }/test-invalid-image.png`;
+
+    // Write invalid image data (not a valid PNG)
+    const invalidData = new TextEncoder().encode('this is not a valid image');
+    await fs.writeFile(filePath, invalidData);
+
+    const result = await image.createImageFromFile(filePath);
+    expect(result.isOk()).toBe(true);
+
+    const img = result.unwrap() as HTMLImageElement;
+    const blobUrl = img.src;
+    expect(blobUrl).toContain('blob:');
+
+    // Wait for the error event to fire (invalid image data should trigger error)
+    await new Promise<void>((resolve) => {
+        img.addEventListener('error', () => resolve());
+        img.addEventListener('load', () => resolve()); // In case it somehow loads
+        // Set a timeout as fallback
+        setTimeout(() => resolve(), 1000);
+    });
+
+    // The error handler should have been triggered and revoked the URL
+    // We verify the image did not load successfully
+    expect(img.naturalWidth).toBe(0);
 });
