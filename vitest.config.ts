@@ -22,6 +22,8 @@ export default defineConfig({
             reporter: ['text', 'json', 'html', 'lcov'],
             include: ['src/**/*.ts'],
             exclude: [
+                'src/std/platform/device.ts',
+                'src/std/fs/fs_sync.ts',
                 'src/**/*mina*.ts',
             ],
         },
