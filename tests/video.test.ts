@@ -346,3 +346,484 @@ test('createVideo with no optional properties', () => {
 
     v.destroy();
 });
+
+test('video play method', async () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+        muted: true, // Muted to allow autoplay in browser
+    });
+
+    // play() returns a promise that may reject if not allowed
+    try {
+        await v.play();
+    } catch {
+        // Browser may block autoplay, that's fine
+    }
+
+    v.destroy();
+});
+
+test('video requestFullScreen method', async () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+    });
+
+    // requestFullScreen will likely fail in test environment
+    try {
+        await v.requestFullScreen(0);
+    } catch {
+        // Expected to fail in test environment
+    }
+
+    v.destroy();
+});
+
+test('video requestFullScreen with direction 0 (portrait)', async () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+    });
+
+    const videoEl = document.querySelector('video') as HTMLVideoElement;
+
+    // Mock requestFullscreen
+    videoEl.requestFullscreen = vi.fn().mockResolvedValue(undefined);
+
+    // Mock screen.orientation.lock
+    const mockLock = vi.fn().mockResolvedValue(undefined);
+    const originalOrientation = screen.orientation;
+    Object.defineProperty(screen, 'orientation', {
+        value: { ...originalOrientation, lock: mockLock },
+        configurable: true,
+    });
+
+    await v.requestFullScreen(0);
+
+    expect(videoEl.requestFullscreen).toHaveBeenCalled();
+    expect(mockLock).toHaveBeenCalledWith('portrait');
+
+    // Restore
+    Object.defineProperty(screen, 'orientation', {
+        value: originalOrientation,
+        configurable: true,
+    });
+
+    v.destroy();
+});
+
+test('video requestFullScreen with direction 90 (landscape-secondary)', async () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+    });
+
+    const videoEl = document.querySelector('video') as HTMLVideoElement;
+
+    videoEl.requestFullscreen = vi.fn().mockResolvedValue(undefined);
+
+    const mockLock = vi.fn().mockResolvedValue(undefined);
+    const originalOrientation = screen.orientation;
+    Object.defineProperty(screen, 'orientation', {
+        value: { ...originalOrientation, lock: mockLock },
+        configurable: true,
+    });
+
+    await v.requestFullScreen(90);
+
+    expect(videoEl.requestFullscreen).toHaveBeenCalled();
+    expect(mockLock).toHaveBeenCalledWith('landscape-secondary');
+
+    Object.defineProperty(screen, 'orientation', {
+        value: originalOrientation,
+        configurable: true,
+    });
+
+    v.destroy();
+});
+
+test('video requestFullScreen with direction -90 (landscape-primary)', async () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+    });
+
+    const videoEl = document.querySelector('video') as HTMLVideoElement;
+
+    videoEl.requestFullscreen = vi.fn().mockResolvedValue(undefined);
+
+    const mockLock = vi.fn().mockResolvedValue(undefined);
+    const originalOrientation = screen.orientation;
+    Object.defineProperty(screen, 'orientation', {
+        value: { ...originalOrientation, lock: mockLock },
+        configurable: true,
+    });
+
+    await v.requestFullScreen(-90);
+
+    expect(videoEl.requestFullscreen).toHaveBeenCalled();
+    expect(mockLock).toHaveBeenCalledWith('landscape-primary');
+
+    Object.defineProperty(screen, 'orientation', {
+        value: originalOrientation,
+        configurable: true,
+    });
+
+    v.destroy();
+});
+
+test('video requestFullScreen without direction does not lock orientation', async () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+    });
+
+    const videoEl = document.querySelector('video') as HTMLVideoElement;
+
+    videoEl.requestFullscreen = vi.fn().mockResolvedValue(undefined);
+
+    const mockLock = vi.fn().mockResolvedValue(undefined);
+    const originalOrientation = screen.orientation;
+    Object.defineProperty(screen, 'orientation', {
+        value: { ...originalOrientation, lock: mockLock },
+        configurable: true,
+    });
+
+    // Call without direction parameter
+    await v.requestFullScreen(undefined as unknown as 0);
+
+    expect(videoEl.requestFullscreen).toHaveBeenCalled();
+    expect(mockLock).not.toHaveBeenCalled();
+
+    Object.defineProperty(screen, 'orientation', {
+        value: originalOrientation,
+        configurable: true,
+    });
+
+    v.destroy();
+});
+
+test('video requestFullScreen handles orientation lock failure gracefully', async () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+    });
+
+    const videoEl = document.querySelector('video') as HTMLVideoElement;
+
+    videoEl.requestFullscreen = vi.fn().mockResolvedValue(undefined);
+
+    // Mock lock to reject
+    const mockLock = vi.fn().mockRejectedValue(new Error('Orientation lock not supported'));
+    const originalOrientation = screen.orientation;
+    Object.defineProperty(screen, 'orientation', {
+        value: { ...originalOrientation, lock: mockLock },
+        configurable: true,
+    });
+
+    // Should not throw even if lock fails
+    await v.requestFullScreen(0);
+
+    expect(videoEl.requestFullscreen).toHaveBeenCalled();
+    expect(mockLock).toHaveBeenCalledWith('portrait');
+
+    Object.defineProperty(screen, 'orientation', {
+        value: originalOrientation,
+        configurable: true,
+    });
+
+    v.destroy();
+});
+
+test('video requestFullScreen works when orientation.lock is not available', async () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+    });
+
+    const videoEl = document.querySelector('video') as HTMLVideoElement;
+
+    videoEl.requestFullscreen = vi.fn().mockResolvedValue(undefined);
+
+    // Mock orientation without lock method
+    const originalOrientation = screen.orientation;
+    Object.defineProperty(screen, 'orientation', {
+        value: { type: 'portrait-primary', angle: 0 },
+        configurable: true,
+    });
+
+    // Should not throw when lock is not available
+    await v.requestFullScreen(0);
+
+    expect(videoEl.requestFullscreen).toHaveBeenCalled();
+
+    Object.defineProperty(screen, 'orientation', {
+        value: originalOrientation,
+        configurable: true,
+    });
+
+    v.destroy();
+});
+
+test('createVideo with only x position', () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+        x: 50,
+    });
+
+    expect(v.x).toBe(50);
+    // y should default to 0
+    expect(v.y).toBe(0);
+
+    v.destroy();
+});
+
+test('createVideo with only y position', () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+        y: 100,
+    });
+
+    // x should default to 0
+    expect(v.x).toBe(0);
+    expect(v.y).toBe(100);
+
+    v.destroy();
+});
+
+test('video playbackRate can be modified', () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+    });
+
+    v.playbackRate = 2;
+    expect(v.playbackRate).toBe(2);
+
+    v.playbackRate = 0.5;
+    expect(v.playbackRate).toBe(0.5);
+
+    v.destroy();
+});
+
+test('video event listeners are called when events fire', async () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+        muted: true,
+    });
+
+    const playListener = vi.fn();
+    const pauseListener = vi.fn();
+
+    v.onPlay(playListener);
+    v.onPause(pauseListener);
+
+    // Get the actual video element to dispatch events
+    const videoEl = document.querySelector('video') as HTMLVideoElement;
+
+    // Dispatch play event
+    videoEl.dispatchEvent(new Event('play'));
+    expect(playListener).toHaveBeenCalled();
+
+    // Dispatch pause event
+    videoEl.dispatchEvent(new Event('pause'));
+    expect(pauseListener).toHaveBeenCalled();
+
+    v.destroy();
+});
+
+test('video ended event listener is called', () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+    });
+
+    const endedListener = vi.fn();
+    v.onEnded(endedListener);
+
+    const videoEl = document.querySelector('video') as HTMLVideoElement;
+    videoEl.dispatchEvent(new Event('ended'));
+
+    expect(endedListener).toHaveBeenCalled();
+
+    v.destroy();
+});
+
+test('video waiting event listener is called', () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+    });
+
+    const waitingListener = vi.fn();
+    v.onWaiting(waitingListener);
+
+    const videoEl = document.querySelector('video') as HTMLVideoElement;
+    videoEl.dispatchEvent(new Event('waiting'));
+
+    expect(waitingListener).toHaveBeenCalled();
+
+    v.destroy();
+});
+
+test('video timeupdate event listener receives position and duration', () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+    });
+
+    const timeUpdateListener = vi.fn();
+    v.onTimeUpdate(timeUpdateListener);
+
+    const videoEl = document.querySelector('video') as HTMLVideoElement;
+    videoEl.dispatchEvent(new Event('timeupdate'));
+
+    expect(timeUpdateListener).toHaveBeenCalledWith(expect.objectContaining({
+        position: expect.any(Number),
+        duration: expect.any(Number),
+    }));
+
+    v.destroy();
+});
+
+test('video error event listener receives error message', () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+    });
+
+    const errorListener = vi.fn();
+    v.onError(errorListener);
+
+    const videoEl = document.querySelector('video') as HTMLVideoElement;
+    videoEl.dispatchEvent(new Event('error'));
+
+    expect(errorListener).toHaveBeenCalledWith(expect.objectContaining({
+        errMsg: expect.any(String),
+    }));
+
+    v.destroy();
+});
+
+test('video progress event listener receives buffered percentage', () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+    });
+
+    const progressListener = vi.fn();
+    v.onProgress(progressListener);
+
+    const videoEl = document.querySelector('video') as HTMLVideoElement;
+    videoEl.dispatchEvent(new Event('progress'));
+
+    expect(progressListener).toHaveBeenCalledWith(expect.objectContaining({
+        buffered: expect.any(Number),
+    }));
+
+    v.destroy();
+});
+
+test('video initialTime sets currentTime on loadedmetadata', () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+        initialTime: 15,
+    });
+
+    const videoEl = document.querySelector('video') as HTMLVideoElement;
+
+    // Dispatch loadedmetadata event
+    videoEl.dispatchEvent(new Event('loadedmetadata'));
+
+    // currentTime should be set to initialTime
+    expect(videoEl.currentTime).toBe(15);
+
+    v.destroy();
+});
+
+test('video with no initialTime does not set currentTime on loadedmetadata', () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+    });
+
+    const videoEl = document.querySelector('video') as HTMLVideoElement;
+
+    // Store initial currentTime
+    const initialCurrentTime = videoEl.currentTime;
+
+    // Dispatch loadedmetadata event
+    videoEl.dispatchEvent(new Event('loadedmetadata'));
+
+    // currentTime should not have been changed by initialTime handling
+    expect(videoEl.currentTime).toBe(initialCurrentTime);
+
+    v.destroy();
+});
+
+test('video multiple listeners for same event type', () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+    });
+
+    const listener1 = vi.fn();
+    const listener2 = vi.fn();
+    const listener3 = vi.fn();
+
+    v.onPlay(listener1);
+    v.onPlay(listener2);
+    v.onPlay(listener3);
+
+    const videoEl = document.querySelector('video') as HTMLVideoElement;
+    videoEl.dispatchEvent(new Event('play'));
+
+    expect(listener1).toHaveBeenCalled();
+    expect(listener2).toHaveBeenCalled();
+    expect(listener3).toHaveBeenCalled();
+
+    v.destroy();
+});
+
+test('video offPlay removes only specified listener', () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+    });
+
+    const listener1 = vi.fn();
+    const listener2 = vi.fn();
+
+    v.onPlay(listener1);
+    v.onPlay(listener2);
+
+    // Remove only listener1
+    v.offPlay(listener1);
+
+    const videoEl = document.querySelector('video') as HTMLVideoElement;
+    videoEl.dispatchEvent(new Event('play'));
+
+    expect(listener1).not.toHaveBeenCalled();
+    expect(listener2).toHaveBeenCalled();
+
+    v.destroy();
+});
+
+test('video playsinline attributes are set', () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+    });
+
+    const videoEl = document.querySelector('video') as HTMLVideoElement;
+
+    expect(videoEl.getAttribute('playsinline')).toBe('true');
+    expect(videoEl.getAttribute('webkit-playsinline')).toBe('true');
+
+    v.destroy();
+});
+
+test('video x getter returns 0 when style.left is not set', () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+    });
+
+    // x should return 0 when not set
+    expect(v.x).toBe(0);
+
+    v.destroy();
+});
+
+test('video y getter returns 0 when style.top is not set', () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+    });
+
+    // y should return 0 when not set
+    expect(v.y).toBe(0);
+
+    v.destroy();
+});
