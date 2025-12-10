@@ -139,6 +139,90 @@ test('playWebAudioFromAudioBuffer with autoDisconnect false', async () => {
     source.stop();
 });
 
+test('playWebAudioFromAudioBuffer autoDisconnect true sets onended handler', async () => {
+    const context = audio.getGlobalAudioContext();
+    const wavBuffer = generateSilentWavBuffer();
+    const audioBuffer = await context.decodeAudioData(wavBuffer);
+
+    const source = audio.playWebAudioFromAudioBuffer(audioBuffer, { autoDisconnect: true });
+
+    // onended should be set when autoDisconnect is true
+    expect(source.onended).not.toBe(null);
+    expect(typeof source.onended).toBe('function');
+
+    // The onended handler should call disconnect when triggered
+    // We verify this by checking the handler exists and is a function
+    // The actual disconnect behavior is tested implicitly through the handler
+
+    source.stop();
+});
+
+test('playWebAudioFromAudioBuffer autoDisconnect false does not set onended handler', async () => {
+    const context = audio.getGlobalAudioContext();
+    const wavBuffer = generateSilentWavBuffer();
+    const audioBuffer = await context.decodeAudioData(wavBuffer);
+
+    const source = audio.playWebAudioFromAudioBuffer(audioBuffer, { autoDisconnect: false });
+
+    // onended should be null when autoDisconnect is false
+    expect(source.onended).toBe(null);
+
+    source.stop();
+});
+
+test('playWebAudioFromAudioBuffer default autoDisconnect is true', async () => {
+    const context = audio.getGlobalAudioContext();
+    const wavBuffer = generateSilentWavBuffer();
+    const audioBuffer = await context.decodeAudioData(wavBuffer);
+
+    // Call without options - default autoDisconnect should be true
+    const source = audio.playWebAudioFromAudioBuffer(audioBuffer);
+
+    // onended should be set (default autoDisconnect is true)
+    expect(source.onended).not.toBe(null);
+    expect(typeof source.onended).toBe('function');
+
+    source.stop();
+});
+
+test('playWebAudioFromAudioBuffer onended handler calls disconnect', async () => {
+    const context = audio.getGlobalAudioContext();
+    const wavBuffer = generateSilentWavBuffer();
+    const audioBuffer = await context.decodeAudioData(wavBuffer);
+
+    const source = audio.playWebAudioFromAudioBuffer(audioBuffer, { autoDisconnect: true });
+
+    // Get the original onended handler
+    const originalOnended = source.onended;
+    expect(originalOnended).not.toBe(null);
+
+    // Manually trigger the onended handler to verify it calls disconnect
+    // Create a mock event
+    const mockEvent = new Event('ended');
+
+    // Track if disconnect was called
+    let disconnectCalled = false;
+    const originalDisconnect = source.disconnect.bind(source);
+    source.disconnect = () => {
+        disconnectCalled = true;
+        originalDisconnect();
+    };
+
+    // Trigger the handler
+    if (originalOnended) {
+        originalOnended.call(source, mockEvent);
+    }
+
+    expect(disconnectCalled).toBe(true);
+
+    // Clean up - stop the source (may already be stopped/disconnected)
+    try {
+        source.stop();
+    } catch {
+        // Ignore errors if already stopped
+    }
+});
+
 test('playWebAudioFromArrayBuffer decodes and plays', async () => {
     const wavBuffer = generateSilentWavBuffer();
 
