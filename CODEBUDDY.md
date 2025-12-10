@@ -31,11 +31,14 @@ pnpm run check
 # Linting (must pass before commits)
 pnpm run lint
 
-# Run all tests (uses Deno)
+# Run all tests (uses Vitest + Playwright in browser)
 pnpm test
 
-# Run tests with HTML coverage report
-pnpm run test:html
+# Run tests in watch mode
+pnpm run test:watch
+
+# Run tests with UI
+pnpm run test:ui
 
 # Build the library (runs check + lint first)
 pnpm run build
@@ -46,7 +49,8 @@ pnpm run docs
 
 ### Testing Notes
 
-- Tests run in **Deno** (not Node.js) with web platform configuration (`__MINIGAME_STD_MINA__: false`)
+- Tests run in **Vitest** with **Playwright** browser provider (Chromium)
+- Web platform configuration (`__MINIGAME_STD_MINA__: false`)
 - Test files are located in `tests/` directory
 - Coverage reports are generated in `coverage/` directory
 - Mini-game platform tests are located in a separate demo repository
@@ -55,13 +59,13 @@ pnpm run docs
 
 ```bash
 # Run a specific test file
-pnpm exec deno test tests/base64.test.ts
+pnpm exec vitest run tests/base64.test.ts
 
 # Run tests matching a pattern
-pnpm exec deno test tests/**/crypto*.test.ts
+pnpm exec vitest run --testNamePattern "base64"
 
-# Run tests with specific permissions
-pnpm exec deno test --allow-read --allow-write tests/fs.test.ts
+# Run tests in watch mode for a specific file
+pnpm exec vitest watch tests/crypto.test.ts
 ```
 
 ## Code Architecture
@@ -95,7 +99,8 @@ src/
     ├── platform/           # Platform detection (device, target)
     ├── socket/             # WebSocket abstraction
     ├── storage/            # Storage (localStorage equivalent)
-    └── utils/              # Common utilities
+    ├── utils/              # Common utilities
+    └── video/              # Video playback
 ```
 
 ### Platform-Specific Code Pattern
@@ -190,7 +195,7 @@ When updating `minigame-api-typings`, be aware that WeChat API types may change:
 
 ### Import Paths
 - Always use `.ts` file extensions in imports
-- Use the `minigame-std` alias in tests (configured in `deno.json`)
+- Use the `minigame-std` alias in tests (configured in `vitest.config.ts`)
 
 ### Type Safety
 - Return types must explicitly specify `Uint8Array<ArrayBuffer>` instead of generic `Uint8Array`
@@ -270,7 +275,7 @@ Scopes frequently used: `deps`, `ci`, `types`, `config`, `tests`
 - `src/mod.ts` - Main entry point, exports all public APIs
 - `src/macros/env.ts` - Platform detection mechanism
 - `package.json` - Scripts and dependencies
-- `deno.json` - Test configuration and import mappings
+- `vitest.config.ts` - Test configuration and import mappings
 - `rollup.config.mjs` - Build configuration
 - `tsconfig.json` - TypeScript compiler options
 - `eslint.config.mjs` - ESLint rules
