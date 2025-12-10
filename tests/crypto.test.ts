@@ -48,6 +48,108 @@ test('calculate hmac with empty string', async () => {
     expect(result.length).toBe(64);
 });
 
+test('calculate hmac with empty key throws error', async () => {
+    const key = '';
+    const data = 'test data';
+
+    // Web Crypto API does not allow empty HMAC keys
+    await expect(cryptos.sha1HMAC(key, data)).rejects.toThrow();
+    await expect(cryptos.sha256HMAC(key, data)).rejects.toThrow();
+    await expect(cryptos.sha384HMAC(key, data)).rejects.toThrow();
+    await expect(cryptos.sha512HMAC(key, data)).rejects.toThrow();
+});
+
+test('calculate hmac with binary key and data', async () => {
+    const key = new Uint8Array([0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b]);
+    const data = textEncode('Hi There');
+
+    // RFC 4231 test vector for HMAC-SHA-256
+    const sha256Result = await cryptos.sha256HMAC(key, data);
+    expect(sha256Result).toBe('b0344c61d8db38535ca8afceaf0bf12b881dc200c9833da726e9376c2e32cff7');
+});
+
+test('hmac produces consistent results', async () => {
+    const key = 'consistent-key';
+    const data = 'consistent-data';
+
+    const result1 = await cryptos.sha256HMAC(key, data);
+    const result2 = await cryptos.sha256HMAC(key, data);
+
+    expect(result1).toBe(result2);
+});
+
+test('hmac with different keys produces different results', async () => {
+    const key1 = 'key1';
+    const key2 = 'key2';
+    const data = 'same data';
+
+    const result1 = await cryptos.sha256HMAC(key1, data);
+    const result2 = await cryptos.sha256HMAC(key2, data);
+
+    expect(result1).not.toBe(result2);
+});
+
+test('hmac with different data produces different results', async () => {
+    const key = 'same key';
+    const data1 = 'data1';
+    const data2 = 'data2';
+
+    const result1 = await cryptos.sha256HMAC(key, data1);
+    const result2 = await cryptos.sha256HMAC(key, data2);
+
+    expect(result1).not.toBe(result2);
+});
+
+test('hmac with long key', async () => {
+    // Key longer than block size should be hashed first
+    const longKey = 'a'.repeat(200);
+    const data = 'test data';
+
+    const result = await cryptos.sha256HMAC(longKey, data);
+    expect(typeof result).toBe('string');
+    expect(result.length).toBe(64);
+});
+
+test('hmac with long data', async () => {
+    const key = 'key';
+    const longData = 'x'.repeat(10000);
+
+    const result = await cryptos.sha256HMAC(key, longData);
+    expect(typeof result).toBe('string');
+    expect(result.length).toBe(64);
+});
+
+test('all hmac algorithms return correct length', async () => {
+    const key = 'test-key';
+    const data = 'test-data';
+
+    // SHA-1 produces 160-bit (40 hex chars) output
+    const sha1Result = await cryptos.sha1HMAC(key, data);
+    expect(sha1Result.length).toBe(40);
+
+    // SHA-256 produces 256-bit (64 hex chars) output
+    const sha256Result = await cryptos.sha256HMAC(key, data);
+    expect(sha256Result.length).toBe(64);
+
+    // SHA-384 produces 384-bit (96 hex chars) output
+    const sha384Result = await cryptos.sha384HMAC(key, data);
+    expect(sha384Result.length).toBe(96);
+
+    // SHA-512 produces 512-bit (128 hex chars) output
+    const sha512Result = await cryptos.sha512HMAC(key, data);
+    expect(sha512Result.length).toBe(128);
+});
+
+test('hmac output is lowercase hex', async () => {
+    const key = 'key';
+    const data = 'data';
+
+    const result = await cryptos.sha256HMAC(key, data);
+    
+    // Should be all lowercase hex characters
+    expect(result).toMatch(/^[0-9a-f]+$/);
+});
+
 test('calculate md5 with empty string', () => {
     const md5Empty = cryptos.md5('');
     expect(md5Empty).toBe('d41d8cd98f00b204e9800998ecf8427e');
