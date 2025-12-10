@@ -5,6 +5,7 @@
 [![JSR Version](https://jsr.io/badges/@happy-js/minigame-std)](https://jsr.io/@happy-js/minigame-std)
 [![JSR Score](https://jsr.io/badges/@happy-js/minigame-std/score)](https://jsr.io/@happy-js/minigame-std/score)
 [![Build Status](https://github.com/jiangjie/minigame-std/actions/workflows/test.yml/badge.svg)](https://github.com/jiangjie/minigame-std/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/JiangJie/minigame-std/graph/badge.svg)](https://codecov.io/gh/JiangJie/minigame-std)
 
 [English](./README.en.md) | 简体中文
 
@@ -162,6 +163,14 @@ jsr add @happy-js/minigame-std
     const img = image.createImageFromUrl(url);
     ```
 
+-   **视频播放**
+    ```js
+    import { video } from 'minigame-std';
+    const v = video.createVideo({ src: 'video.mp4' });
+    v.play();
+    v.requestFullScreen(0); // 0: 竖屏, 90/-90: 横屏
+    ```
+
 更多功能请查看[完整文档](docs/README.md)。
 
 ## 和 Adapter 是什么关系
@@ -243,27 +252,35 @@ pnpm test
 > [!NOTE]
 > 由于测试环境的局限性，测试用例并不能覆盖所有功能。
 
--   **Web 平台测试**: `tests` 目录下的测试用例基于 web 平台（`__MINIGAME_STD_MINA__: false`），使用 [Deno](https://deno.com/) 作为测试运行时
+-   **Web 平台测试**: `tests` 目录下的测试用例基于 web 平台（`__MINIGAME_STD_MINA__: false`），使用 [Vitest](https://vitest.dev/) + [Playwright](https://playwright.dev/) 在真实浏览器环境中运行
 -   **文件系统测试**: Web 平台的 OPFS 文件系统测试请参考 [happy-opfs](https://github.com/JiangJie/happy-opfs)
 -   **小游戏平台测试**: 小游戏环境的测试用例请参考 [minigame-std-demo](https://github.com/JiangJie/minigame-std-demo)
 
 ### 测试覆盖率
 
 当前测试覆盖率：
-- 总体行覆盖率：**34.2%**
-- 分支覆盖率：**40.0%**
-- 测试用例数：**47 个**
+- 总体行覆盖率：**95.74%**
+- 分支覆盖率：**67.60%**
+- 测试用例数：**253 个**
 
 主要测试模块：
-- ✅ 断言工具 (assertions)
+- ✅ 断言工具 (assert)
 - ✅ 本地存储 (storage)
 - ✅ 事件处理 (event)
-- ✅ 加密算法 (crypto)
+- ✅ 加密算法 (crypto) - MD5/SHA/HMAC/RSA
 - ✅ 性能测量 (performance)
 - ✅ Base64 编解码
-- ✅ 文本编解码
-- ✅ 网络请求
-- ✅ WebSocket
+- ✅ 文本编解码 (codec)
+- ✅ 网络请求 (fetch)
+- ✅ WebSocket (socket)
+- ✅ 平台检测 (platform)
+- ✅ 剪贴板 (clipboard)
+- ✅ 网络状态 (network)
+- ✅ 图像处理 (image)
+- ✅ 视频播放 (video)
+- ✅ 文件系统 (fs)
+- ✅ 地理位置 (lbs)
+- ✅ 音频 (audio)
 
 ## 贡献
 
@@ -271,6 +288,6 @@ pnpm test
 
 ## 许可证
 
-MIT
+GPL-3.0
 
 ## [文档](docs/README.md)

@@ -5,6 +5,7 @@
 [![JSR Version](https://jsr.io/badges/@happy-js/minigame-std)](https://jsr.io/@happy-js/minigame-std)
 [![JSR Score](https://jsr.io/badges/@happy-js/minigame-std/score)](https://jsr.io/@happy-js/minigame-std/score)
 [![Build Status](https://github.com/jiangjie/minigame-std/actions/workflows/test.yml/badge.svg)](https://github.com/jiangjie/minigame-std/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/JiangJie/minigame-std/graph/badge.svg)](https://codecov.io/gh/JiangJie/minigame-std)
 
 English | [简体中文](./README.md)
 
@@ -162,6 +163,14 @@ jsr add @happy-js/minigame-std
     const img = image.createImageFromUrl(url);
     ```
 
+-   **Video Playback**
+    ```js
+    import { video } from 'minigame-std';
+    const v = video.createVideo({ src: 'video.mp4' });
+    v.play();
+    v.requestFullScreen(0); // 0: portrait, 90/-90: landscape
+    ```
+
 For more features, see the [complete documentation](docs/README.md).
 
 ## Comparison with Adapter
@@ -248,27 +257,35 @@ pnpm test
 > [!NOTE]
 > Due to testing environment limitations, test cases don't cover all functionality.
 
--   **Web Platform Tests**: Test cases in the `tests` directory are based on the web platform (`__MINIGAME_STD_MINA__: false`), using [Deno](https://deno.com/) as the test runtime
+-   **Web Platform Tests**: Test cases in the `tests` directory are based on the web platform (`__MINIGAME_STD_MINA__: false`), using [Vitest](https://vitest.dev/) + [Playwright](https://playwright.dev/) to run in a real browser environment
 -   **File System Tests**: For web platform OPFS file system tests, see [happy-opfs](https://github.com/JiangJie/happy-opfs)
 -   **Mini-Game Platform Tests**: For mini-game environment test cases, see [minigame-std-demo](https://github.com/JiangJie/minigame-std-demo)
 
 ### Test Coverage
 
 Current test coverage:
-- Overall line coverage: **34.2%**
-- Branch coverage: **40.0%**
-- Number of test cases: **47**
+- Overall line coverage: **95.74%**
+- Branch coverage: **67.60%**
+- Number of test cases: **253**
 
 Main tested modules:
-- ✅ Assertion utilities
-- ✅ Local storage
-- ✅ Event handling
-- ✅ Cryptographic algorithms
-- ✅ Performance measurement
+- ✅ Assertion utilities (assert)
+- ✅ Local storage (storage)
+- ✅ Event handling (event)
+- ✅ Cryptographic algorithms (crypto) - MD5/SHA/HMAC/RSA
+- ✅ Performance measurement (performance)
 - ✅ Base64 encoding/decoding
-- ✅ Text encoding/decoding
-- ✅ Network requests
-- ✅ WebSocket
+- ✅ Text encoding/decoding (codec)
+- ✅ HTTP requests (fetch)
+- ✅ WebSocket (socket)
+- ✅ Platform detection (platform)
+- ✅ Clipboard (clipboard)
+- ✅ Network status (network)
+- ✅ Image processing (image)
+- ✅ Video playback (video)
+- ✅ File system (fs)
+- ✅ Geolocation (lbs)
+- ✅ Audio (audio)
 
 ## Contributing
 
@@ -276,6 +293,6 @@ Issues and Pull Requests are welcome!
 
 ## License
 
-MIT
+GPL-3.0
 
 ## [Documentation](docs/README.md)
