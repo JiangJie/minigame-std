@@ -23,6 +23,7 @@ export default defineConfig({
             include: ['src/**/*.ts'],
             exclude: [
                 'src/std/platform/device.ts',
+                'src/std/fs/fs_async.ts',
                 'src/std/fs/fs_sync.ts',
                 'src/**/*mina*.ts',
             ],
