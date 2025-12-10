@@ -234,3 +234,158 @@ describe('fs async operations', () => {
 // because they require Web Workers with OPFS synchronous access handles,
 // which is not available in the main thread of a browser environment.
 // These sync APIs work correctly in WeChat MiniGame environment.
+
+describe('fs download/upload operations', () => {
+    const DOWNLOAD_TEST_DIR = '/fs-download-test';
+
+    beforeAll(async () => {
+        await fs.remove(DOWNLOAD_TEST_DIR);
+        await fs.mkdir(DOWNLOAD_TEST_DIR);
+    });
+
+    afterAll(async () => {
+        await fs.remove(DOWNLOAD_TEST_DIR);
+    });
+
+    // Network tests only verify API structure without waiting for response
+    // Actual network success depends on environment and CORS settings
+    test('downloadFile returns FetchTask structure', () => {
+        const task = fs.downloadFile('https://example.com/file.bin');
+        // Verify FetchTask structure
+        expect(task).toHaveProperty('response');
+        expect(task).toHaveProperty('abort');
+        expect(task.response).toBeInstanceOf(Promise);
+        // Abort immediately to prevent hanging
+        task.abort();
+    });
+
+    test('downloadFile with path returns FetchTask structure', () => {
+        const filePath = `${DOWNLOAD_TEST_DIR}/downloaded.bin`;
+        const task = fs.downloadFile('https://example.com/file.bin', filePath);
+        expect(task).toHaveProperty('response');
+        expect(task).toHaveProperty('abort');
+        task.abort();
+    });
+
+    test('uploadFile returns FetchTask structure', async () => {
+        // Create a file to upload
+        const filePath = `${DOWNLOAD_TEST_DIR}/upload-test.txt`;
+        await fs.writeFile(filePath, 'Hello, Upload Test!');
+
+        const task = fs.uploadFile(filePath, 'https://example.com/upload', {
+            name: 'file',
+        });
+
+        expect(task).toHaveProperty('response');
+        expect(task).toHaveProperty('abort');
+        task.abort();
+    });
+});
+
+describe('fs zip/unzip operations', () => {
+    const ZIP_TEST_DIR = '/fs-zip-test';
+
+    beforeAll(async () => {
+        await fs.remove(ZIP_TEST_DIR);
+        await fs.mkdir(ZIP_TEST_DIR);
+    });
+
+    afterAll(async () => {
+        await fs.remove(ZIP_TEST_DIR);
+    });
+
+    test('zip file to memory', async () => {
+        // Create a file to zip
+        const filePath = `${ZIP_TEST_DIR}/to-zip.txt`;
+        await fs.writeFile(filePath, 'Content to be zipped');
+
+        // Zip to memory
+        const result = await fs.zip(filePath);
+        expect(result.isOk()).toBe(true);
+
+        const zipData = result.unwrap();
+        expect(zipData).toBeInstanceOf(Uint8Array);
+        expect(zipData.length).toBeGreaterThan(0);
+        // ZIP files start with PK (0x50, 0x4B)
+        expect(zipData[0]).toBe(0x50);
+        expect(zipData[1]).toBe(0x4B);
+    });
+
+    test('zip file to disk', async () => {
+        const filePath = `${ZIP_TEST_DIR}/to-zip2.txt`;
+        const zipFilePath = `${ZIP_TEST_DIR}/output.zip`;
+        await fs.writeFile(filePath, 'Another content to zip');
+
+        const result = await fs.zip(filePath, zipFilePath);
+        expect(result.isOk()).toBe(true);
+
+        // Verify zip file exists
+        const existsResult = await fs.exists(zipFilePath);
+        expect(existsResult.unwrap()).toBe(true);
+
+        // Verify it's a valid ZIP
+        const readResult = await fs.readFile(zipFilePath);
+        const data = new Uint8Array(readResult.unwrap());
+        expect(data[0]).toBe(0x50);
+        expect(data[1]).toBe(0x4B);
+    });
+
+    test('zip directory to memory', async () => {
+        const dirPath = `${ZIP_TEST_DIR}/dir-to-zip`;
+        await fs.mkdir(dirPath);
+        await fs.writeFile(`${dirPath}/file1.txt`, 'File 1 content');
+        await fs.writeFile(`${dirPath}/file2.txt`, 'File 2 content');
+
+        const result = await fs.zip(dirPath);
+        expect(result.isOk()).toBe(true);
+
+        const zipData = result.unwrap();
+        expect(zipData[0]).toBe(0x50);
+        expect(zipData[1]).toBe(0x4B);
+    });
+
+    test('unzip file', async () => {
+        // Create and zip a file first
+        const srcDir = `${ZIP_TEST_DIR}/unzip-src`;
+        const zipPath = `${ZIP_TEST_DIR}/to-unzip.zip`;
+        const targetDir = `${ZIP_TEST_DIR}/unzipped`;
+
+        await fs.mkdir(srcDir);
+        await fs.writeFile(`${srcDir}/unzip-test.txt`, 'Unzip me!');
+        await fs.zip(srcDir, zipPath);
+
+        // Now unzip
+        const result = await fs.unzip(zipPath, targetDir);
+        expect(result.isOk()).toBe(true);
+
+        // Verify contents exist
+        const existsResult = await fs.exists(targetDir);
+        expect(existsResult.unwrap()).toBe(true);
+    });
+
+    test('unzipFromUrl returns promise', () => {
+        const targetDir = `${ZIP_TEST_DIR}/unzip-from-url`;
+
+        // Just verify the function returns a promise (don't await network)
+        const result = fs.unzipFromUrl(
+            'https://example.com/file.zip',
+            targetDir
+        );
+
+        expect(result).toBeInstanceOf(Promise);
+    });
+
+    test('zipFromUrl returns promise', () => {
+        // Just verify the function returns a promise
+        const result = fs.zipFromUrl('https://example.com/file.txt');
+
+        expect(result).toBeInstanceOf(Promise);
+    });
+
+    test('zipFromUrl to disk returns promise', () => {
+        const zipPath = `${ZIP_TEST_DIR}/from-url.zip`;
+        const result = fs.zipFromUrl('https://example.com/file.txt', zipPath);
+
+        expect(result).toBeInstanceOf(Promise);
+    });
+})
