@@ -2,7 +2,7 @@
   "name": "minigame-std",
   "description": "Mini Game Standard Development Library.",
   "author": "jiang115jie@gmail.com",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "version": "1.10.0",
   "type": "module",
   "source": "src/std/mod.ts",
