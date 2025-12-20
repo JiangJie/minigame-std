@@ -1,5 +1,5 @@
-import { promisifyWithResult } from 'minigame-std';
 import { expect, test } from 'vitest';
+import { promisifyWithResult } from '../src/mod.ts';
 
 interface CallbackParams<S, E> {
     success?: (res: S) => void;
@@ -72,7 +72,7 @@ test('promisifyWithResult preserves original fail callback', async () => {
 });
 
 test('promisifyWithResult handles API returning Promise', async () => {
-     
+
     const mockApi = async (_: CallbackParams<string, Error>) => {
         return 'async result';
     };
@@ -85,7 +85,7 @@ test('promisifyWithResult handles API returning Promise', async () => {
 });
 
 test('promisifyWithResult handles API returning rejected Promise', async () => {
-     
+
     const mockApi = async (_: CallbackParams<string, Error>) => {
         throw new Error('async error');
     };
@@ -99,7 +99,7 @@ test('promisifyWithResult handles API returning rejected Promise', async () => {
 
 test('promisifyWithResult throws on invalid API return', () => {
     // API that returns something other than void/Promise
-     
+
     const mockApi = (_: { success?: (res: string) => void; }) => {
         return 'invalid return' as unknown as void; // Trick the type system
     };

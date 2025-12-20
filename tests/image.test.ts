@@ -1,5 +1,5 @@
-import { fs, image } from 'minigame-std';
 import { afterAll, beforeAll, expect, test } from 'vitest';
+import { fs, image } from '../src/mod.ts';
 
 // 1x1 red PNG image as base64
 const RED_PIXEL_PNG_BASE64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==';

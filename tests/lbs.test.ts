@@ -1,5 +1,5 @@
-import { lbs } from 'minigame-std';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { lbs } from '../src/mod.ts';
 
 // Store original geolocation
 let originalGeolocation: Geolocation;

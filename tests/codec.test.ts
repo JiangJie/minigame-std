@@ -6,7 +6,7 @@ import {
     textDecode,
     textEncode,
     toByteString,
-} from 'minigame-std';
+} from '../src/mod.ts';
 
 test('encode/decode between utf8 string and binary', () => {
     const data = 'minigame-std';
@@ -95,7 +95,7 @@ test('byteStringFromBuffer works with DataView', () => {
     const buffer = new ArrayBuffer(8);
     const fullView = new Uint8Array(buffer);
     fullView.set([0, 0, 72, 101, 108, 108, 111, 0]);
-    
+
     const dataView = new DataView(buffer, 2, 5);
     expect(byteStringFromBuffer(dataView)).toBe('Hello');
 });

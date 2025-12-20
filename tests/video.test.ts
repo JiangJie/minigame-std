@@ -1,5 +1,5 @@
 import { afterEach, expect, test, vi } from 'vitest';
-import { video } from 'minigame-std';
+import { video } from '../src/mod.ts';
 
 // Clean up video elements after each test
 afterEach(() => {

@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { platform } from 'minigame-std';
+import { platform } from '../src/mod.ts';
 
 test('targetType is web', () => {
     expect(platform.isWeb()).toBe(true);
@@ -16,12 +16,12 @@ test('platform detection is consistent', () => {
     const isWeb = platform.isWeb();
     const isMiniGame = platform.isMiniGame();
     const targetType = platform.getTargetType();
-    
+
     if (isWeb) {
         expect(isMiniGame).toBe(false);
         expect(targetType).toBe('web');
     }
-    
+
     if (isMiniGame) {
         expect(isWeb).toBe(false);
         expect(targetType).toBe('minigame');

@@ -1,5 +1,5 @@
-import { connectSocket, SocketReadyState } from 'minigame-std';
 import { expect, test } from 'vitest';
+import { connectSocket, SocketReadyState } from '../src/mod.ts';
 
 test('socket echo', () => {
     const { promise, resolve } = Promise.withResolvers<void>();

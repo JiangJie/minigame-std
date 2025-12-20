@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { assertSafeSocketUrl, assertSafeUrl, assertString } from 'minigame-std';
+import { assertSafeSocketUrl, assertSafeUrl, assertString } from '../src/mod.ts';
 
 test('assertString accepts valid strings', () => {
     assertString('hello');

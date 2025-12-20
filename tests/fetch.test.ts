@@ -1,5 +1,5 @@
-import { fetchT } from 'minigame-std';
 import { expect, test } from 'vitest';
+import { fetchT } from '../src/mod.ts';
 
 test('fetch json', async () => {
     const fetchTask = fetchT<{

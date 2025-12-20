@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { base64ToBuffer, byteStringToBuffer, cryptos, textDecode, textEncode, type DataSource } from 'minigame-std';
+import { base64ToBuffer, byteStringToBuffer, cryptos, textDecode, textEncode, type DataSource } from '../src/mod.ts';
 
 test('calculate md5', () => {
     const data = 'minigame-std-中文';
@@ -145,7 +145,7 @@ test('hmac output is lowercase hex', async () => {
     const data = 'data';
 
     const result = await cryptos.sha256HMAC(key, data);
-    
+
     // Should be all lowercase hex characters
     expect(result).toMatch(/^[0-9a-f]+$/);
 });
@@ -158,14 +158,14 @@ test('calculate md5 with empty string', () => {
 test('calculate sha256 with ArrayBuffer', async () => {
     const data = textEncode('test');
     const sha256Str = await cryptos.sha256(data);
-    
+
     expect(sha256Str).toBe('9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08');
 });
 
 test('Generate random bytes', async () => {
     const result = await cryptos.getRandomValues(10);
     expect(result.isOk()).toBe(true);
-    
+
     result.inspect(bytes => {
         expect(bytes.length).toBe(10);
         for (const n of bytes) {
@@ -177,7 +177,7 @@ test('Generate random bytes', async () => {
 
 test('Generate random bytes with different sizes', async () => {
     const sizes = [1, 16, 32, 64, 128];
-    
+
     for (const size of sizes) {
         const result = await cryptos.getRandomValues(size);
         expect(result.isOk()).toBe(true);
@@ -190,7 +190,7 @@ test('Generate random bytes with different sizes', async () => {
 test('Generate random UUID', async () => {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     const result = await cryptos.randomUUID();
-    
+
     expect(result.isOk()).toBe(true);
     result.inspect(uuid => {
         expect(uuidRegex.test(uuid)).toBe(true);
@@ -199,14 +199,14 @@ test('Generate random UUID', async () => {
 
 test('Generate unique random UUIDs', async () => {
     const uuids = new Set<string>();
-    
+
     for (let i = 0; i < 10; i++) {
         const result = await cryptos.randomUUID();
         result.inspect(uuid => {
             uuids.add(uuid);
         });
     }
-    
+
     // All UUIDs should be unique
     expect(uuids.size).toBe(10);
 });
@@ -291,7 +291,7 @@ wIy0/kd6szCcWK5Ld1kH9R0=
     // Test invalid hash algorithm
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect(() => cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-2' as any)).toThrow();
-    
+
     // Test invalid PEM format
     await expect(cryptos.rsa.importPublicKey(publicKeyStr.slice(1), 'SHA-256')).rejects.toThrow();
     await expect(cryptos.rsa.importPublicKey(publicKeyStr.replace('PUBLIC', 'AES PUBLIC'), 'SHA-256')).rejects.toThrow();
@@ -380,38 +380,38 @@ wIy0/kd6szCcWK5Ld1kH9R0=
 
     const rsaKey = await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-256');
     const encryptedData = await rsaKey.encrypt(data);
-    
+
     const privateKey = await importDecryptKey(privateKeyStr, 'SHA-256');
     const decryptedData = textDecode(await crypto.subtle.decrypt(
         { name: 'RSA-OAEP' },
         privateKey,
         encryptedData,
     ));
-    
+
     expect(decryptedData).toBe(data);
 });
 
 test('MD5 with binary data', () => {
     const data = new Uint8Array([0x00, 0x01, 0x02, 0x03, 0xff]);
     const md5 = cryptos.md5(data);
-    
+
     expect(typeof md5).toBe('string');
     expect(md5.length).toBe(32);
 });
 
 test('SHA with binary data', async () => {
     const data = new Uint8Array([0x00, 0x01, 0x02, 0x03, 0xff]);
-    
+
     const sha1 = await cryptos.sha1(data);
     expect(typeof sha1).toBe('string');
     expect(sha1.length).toBe(40);
-    
+
     const sha256 = await cryptos.sha256(data);
     expect(sha256.length).toBe(64);
-    
+
     const sha384 = await cryptos.sha384(data);
     expect(sha384.length).toBe(96);
-    
+
     const sha512 = await cryptos.sha512(data);
     expect(sha512.length).toBe(128);
 });

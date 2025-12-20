@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
-import { fs } from 'minigame-std';
+import { fs } from '../src/mod.ts';
 
 // Test directory for all fs operations
 const TEST_DIR = '/fs-test';

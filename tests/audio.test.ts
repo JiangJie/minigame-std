@@ -1,5 +1,5 @@
 import { afterAll, afterEach, beforeAll, expect, test } from 'vitest';
-import { audio, fs } from 'minigame-std';
+import { audio, fs } from '../src/mod.ts';
 
 // Generate a simple WAV file buffer (100ms of silence)
 function generateSilentWavBuffer(): ArrayBuffer {

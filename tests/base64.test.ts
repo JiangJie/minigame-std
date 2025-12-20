@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { base64FromBuffer, base64ToBuffer, decodeBase64, encodeBase64, textEncode } from 'minigame-std';
+import { base64FromBuffer, base64ToBuffer, decodeBase64, encodeBase64, textEncode } from '../src/mod.ts';
 
 test('encode/decode string to/from base64 string', () => {
     const data = 'minigame-std';
@@ -70,7 +70,7 @@ test('base64FromBuffer with DataView', () => {
     const buffer = new ArrayBuffer(8);
     const fullView = new Uint8Array(buffer);
     fullView.set([0, 0, 72, 101, 108, 108, 111, 0]);
-    
+
     // Create a DataView with offset
     const dataView = new DataView(buffer, 2, 5);
     expect(base64FromBuffer(dataView)).toBe('SGVsbG8=');
@@ -82,9 +82,9 @@ test('base64 handles binary data correctly', () => {
     for (let i = 0; i < 256; i++) {
         allBytes[i] = i;
     }
-    
+
     const encoded = base64FromBuffer(allBytes);
     const decoded = base64ToBuffer(encoded);
-    
+
     expect(decoded).toEqual(allBytes);
 });

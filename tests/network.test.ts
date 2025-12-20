@@ -1,5 +1,5 @@
-import { addNetworkChangeListener, getNetworkType } from 'minigame-std';
 import { expect, test, vi } from 'vitest';
+import { addNetworkChangeListener, getNetworkType } from '../src/mod.ts';
 
 test('getNetworkType returns none when offline', async () => {
     const originalOnLine = navigator.onLine;

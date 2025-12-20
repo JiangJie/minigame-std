@@ -26,9 +26,6 @@
 
     "types": [
       "minigame-api-typings"
-    ],
-    "paths": {
-      "minigame-std": ["./src/mod.ts"]
-    }
+    ]
   }
 }

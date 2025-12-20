@@ -1,5 +1,5 @@
-import { addErrorListener, addResizeListener, addUnhandledrejectionListener } from 'minigame-std';
 import { expect, test } from 'vitest';
+import { addErrorListener, addResizeListener, addUnhandledrejectionListener } from '../src/mod.ts';
 
 test('addErrorListener and remove', () => {
     let errorCaught = false;
@@ -83,7 +83,7 @@ test('addUnhandledrejectionListener and remove', async () => {
 test('addResizeListener and remove', () => {
     let resizeCaught = false;
 
-     
+
     const listener = (_: Event) => {
         resizeCaught = true;
     };

@@ -8,7 +8,7 @@ import {
     tryDOMSyncOp,
     tryGeneralAsyncOp,
     tryGeneralSyncOp,
-} from 'minigame-std';
+} from '../src/mod.ts';
 
 // bufferSource2U8a tests
 test('bufferSource2U8a returns same Uint8Array if input is Uint8Array', () => {
@@ -21,7 +21,7 @@ test('bufferSource2U8a converts ArrayBuffer to Uint8Array', () => {
     const buffer = new ArrayBuffer(3);
     const view = new Uint8Array(buffer);
     view.set([1, 2, 3]);
-    
+
     const result = bufferSource2U8a(buffer);
     expect(result).toBeInstanceOf(Uint8Array);
     expect(result).toEqual(new Uint8Array([1, 2, 3]));
@@ -31,7 +31,7 @@ test('bufferSource2U8a converts DataView to Uint8Array', () => {
     const buffer = new ArrayBuffer(5);
     const fullView = new Uint8Array(buffer);
     fullView.set([0, 1, 2, 3, 0]);
-    
+
     const dataView = new DataView(buffer, 1, 3);
     const result = bufferSource2U8a(dataView);
     expect(result).toEqual(new Uint8Array([1, 2, 3]));
@@ -48,7 +48,7 @@ test('bufferSource2U8a handles TypedArray with offset', () => {
     const buffer = new ArrayBuffer(6);
     const fullView = new Uint8Array(buffer);
     fullView.set([0, 0, 1, 2, 3, 0]);
-    
+
     // Create a view with offset
     const offsetView = new Uint8Array(buffer, 2, 3);
     const result = bufferSource2U8a(offsetView);
@@ -71,7 +71,7 @@ test('bufferSource2Ab extracts ArrayBuffer from Uint8Array', () => {
     const buffer = new ArrayBuffer(3);
     const view = new Uint8Array(buffer);
     view.set([1, 2, 3]);
-    
+
     const result = bufferSource2Ab(view);
     expect(result).toBe(buffer);
 });
@@ -80,11 +80,11 @@ test('bufferSource2Ab handles TypedArray with offset', () => {
     const buffer = new ArrayBuffer(6);
     const fullView = new Uint8Array(buffer);
     fullView.set([0, 0, 1, 2, 3, 0]);
-    
+
     // Create a view with offset - should slice the buffer
     const offsetView = new Uint8Array(buffer, 2, 3);
     const result = bufferSource2Ab(offsetView);
-    
+
     // Should be a sliced buffer, not the original
     expect(result.byteLength).toBe(3);
     expect(new Uint8Array(result)).toEqual(new Uint8Array([1, 2, 3]));
@@ -151,7 +151,7 @@ test('tryDOMAsyncOp handles delayed async operations', async () => {
 test('miniGameFailureToError converts GeneralCallbackResult to Error', () => {
     const callbackResult = { errMsg: 'Test error message' };
     const error = miniGameFailureToError(callbackResult);
-    
+
     expect(error).toBeInstanceOf(Error);
     expect(error.message).toBe('Test error message');
 });
@@ -159,7 +159,7 @@ test('miniGameFailureToError converts GeneralCallbackResult to Error', () => {
 test('miniGameFailureToError converts Error-like object to Error', () => {
     const originalError = new Error('Original error');
     const error = miniGameFailureToError(originalError);
-    
+
     expect(error).toBeInstanceOf(Error);
     expect(error.message).toBe('Original error');
 });
@@ -167,7 +167,7 @@ test('miniGameFailureToError converts Error-like object to Error', () => {
 test('miniGameFailureToError handles empty errMsg', () => {
     const callbackResult = { errMsg: '' };
     const error = miniGameFailureToError(callbackResult);
-    
+
     expect(error).toBeInstanceOf(Error);
     expect(error.message).toBe('');
 });
@@ -176,7 +176,7 @@ test('miniGameFailureToError prefers errMsg over message', () => {
     // Object with both errMsg and message
     const mixedObject = { errMsg: 'errMsg value', message: 'message value' } as unknown as WechatMinigame.GeneralCallbackResult;
     const error = miniGameFailureToError(mixedObject);
-    
+
     expect(error.message).toBe('errMsg value');
 });
 
@@ -184,7 +184,7 @@ test('miniGameFailureToError prefers errMsg over message', () => {
 test('miniGameFailureToResult returns Err result', () => {
     const callbackResult = { errMsg: 'API failed' };
     const result = miniGameFailureToResult<string>(callbackResult);
-    
+
     expect(result.isErr()).toBe(true);
     expect(result.unwrapErr()).toBeInstanceOf(Error);
     expect(result.unwrapErr().message).toBe('API failed');
@@ -193,7 +193,7 @@ test('miniGameFailureToResult returns Err result', () => {
 test('miniGameFailureToResult preserves error message', () => {
     const callbackResult = { errMsg: 'setStorage:fail permission denied' };
     const result = miniGameFailureToResult<void>(callbackResult);
-    
+
     expect(result.isErr()).toBe(true);
     expect(result.unwrapErr().message).toBe('setStorage:fail permission denied');
 });
@@ -261,7 +261,7 @@ test('tryGeneralAsyncOp returns Err on async exception with errMsg', async () =>
 });
 
 test('tryGeneralAsyncOp returns Err on Promise rejection', async () => {
-    const result = await tryGeneralAsyncOp(() => 
+    const result = await tryGeneralAsyncOp(() =>
         Promise.reject({ errMsg: 'promise rejected' }),
     );
     expect(result.isErr()).toBe(true);
@@ -278,7 +278,7 @@ test('tryGeneralAsyncOp handles delayed async operations', async () => {
 
 test('tryGeneralAsyncOp handles delayed rejection', async () => {
     const result = await tryGeneralAsyncOp(
-        () => new Promise<string>((_, reject) => 
+        () => new Promise<string>((_, reject) =>
             setTimeout(() => reject({ errMsg: 'delayed failure' }), 10),
         ),
     );
@@ -329,10 +329,10 @@ test('bufferSource2Ab handles DataView', () => {
     const buffer = new ArrayBuffer(8);
     const fullView = new Uint8Array(buffer);
     fullView.set([0, 1, 2, 3, 4, 5, 6, 7]);
-    
+
     const dataView = new DataView(buffer, 2, 4);
     const result = bufferSource2Ab(dataView);
-    
+
     expect(result.byteLength).toBe(4);
     expect(new Uint8Array(result)).toEqual(new Uint8Array([2, 3, 4, 5]));
 });
@@ -341,7 +341,7 @@ test('bufferSource2Ab handles DataView with zero offset', () => {
     const buffer = new ArrayBuffer(4);
     const dataView = new DataView(buffer, 0, 4);
     const result = bufferSource2Ab(dataView);
-    
+
     // Should return original buffer since offset is 0
     expect(result).toBe(buffer);
 });
