@@ -78,7 +78,7 @@ export async function readDir(dirPath: string): AsyncIOResult<string[]> {
  * @returns 包含文件内容的字符串的异步操作。
  */
 export function readFile(filePath: string, options: ReadOptions & {
-    encoding: 'utf8',
+    encoding: 'utf8';
 }): AsyncIOResult<string>;
 
 /**
@@ -88,7 +88,7 @@ export function readFile(filePath: string, options: ReadOptions & {
  * @returns 包含文件内容的 ArrayBuffer 的异步操作。
  */
 export function readFile(filePath: string, options?: ReadOptions & {
-    encoding: 'binary',
+    encoding: 'binary';
 }): AsyncIOResult<ArrayBuffer>;
 
 /**
@@ -534,7 +534,7 @@ export async function zip(sourcePath: string, options?: ZipOptions): AsyncIOResu
  * @param options - 可选的压缩参数。
  * @returns 压缩成功的异步结果。
  */
-export async function zip(sourcePath: string, zipFilePath: string, options?: ZipOptions): AsyncVoidIOResult
+export async function zip(sourcePath: string, zipFilePath: string, options?: ZipOptions): AsyncVoidIOResult;
 export async function zip<T>(sourcePath: string, zipFilePath?: string | ZipOptions, options?: ZipOptions): AsyncIOResult<T> {
     const absSourcePath = getAbsolutePath(sourcePath);
 

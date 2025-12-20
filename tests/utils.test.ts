@@ -141,7 +141,7 @@ test('tryDOMAsyncOp handles Promise rejection', async () => {
 
 test('tryDOMAsyncOp handles delayed async operations', async () => {
     const result = await tryDOMAsyncOp(
-        () => new Promise<number>((resolve) => setTimeout(() => resolve(123), 10))
+        () => new Promise<number>((resolve) => setTimeout(() => resolve(123), 10)),
     );
     expect(result.isOk()).toBe(true);
     expect(result.unwrap()).toBe(123);
@@ -262,7 +262,7 @@ test('tryGeneralAsyncOp returns Err on async exception with errMsg', async () =>
 
 test('tryGeneralAsyncOp returns Err on Promise rejection', async () => {
     const result = await tryGeneralAsyncOp(() => 
-        Promise.reject({ errMsg: 'promise rejected' })
+        Promise.reject({ errMsg: 'promise rejected' }),
     );
     expect(result.isErr()).toBe(true);
     expect(result.unwrapErr().message).toBe('promise rejected');
@@ -270,7 +270,7 @@ test('tryGeneralAsyncOp returns Err on Promise rejection', async () => {
 
 test('tryGeneralAsyncOp handles delayed async operations', async () => {
     const result = await tryGeneralAsyncOp(
-        () => new Promise<string>((resolve) => setTimeout(() => resolve('delayed'), 10))
+        () => new Promise<string>((resolve) => setTimeout(() => resolve('delayed'), 10)),
     );
     expect(result.isOk()).toBe(true);
     expect(result.unwrap()).toBe('delayed');
@@ -279,8 +279,8 @@ test('tryGeneralAsyncOp handles delayed async operations', async () => {
 test('tryGeneralAsyncOp handles delayed rejection', async () => {
     const result = await tryGeneralAsyncOp(
         () => new Promise<string>((_, reject) => 
-            setTimeout(() => reject({ errMsg: 'delayed failure' }), 10)
-        )
+            setTimeout(() => reject({ errMsg: 'delayed failure' }), 10),
+        ),
     );
     expect(result.isErr()).toBe(true);
     expect(result.unwrapErr().message).toBe('delayed failure');

@@ -20,7 +20,7 @@ function encrypt(publicKey: CryptoKey, data: DataSource): Promise<ArrayBuffer> {
             name: 'RSA-OAEP',
         },
         publicKey,
-        encodedData
+        encodedData,
     );
 }
 
@@ -52,7 +52,7 @@ export async function importPublicKey(pem: string, hash: SHA): Promise<RSAPublic
         false,
         [
             'encrypt',
-        ]
+        ],
     );
 
     return {

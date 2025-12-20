@@ -17,14 +17,14 @@ export async function createHMAC(hash: SHA, key: DataSource, data: DataSource): 
         encodedKey, // 密钥数据
         { name: 'HMAC', hash: { name: hash } }, // 算法
         false, // 是否可导出
-        ['sign'] // 用途
+        ['sign'], // 用途
     );
 
     // 生成 HMAC
     const hashBuffer = await crypto.subtle.sign(
         'HMAC', // 算法
         cryptoKey, // 密钥
-        encodedData // 消息
+        encodedData, // 消息
     );
 
     return hexFromBuffer(hashBuffer);

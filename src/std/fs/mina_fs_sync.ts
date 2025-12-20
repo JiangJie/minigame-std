@@ -52,10 +52,10 @@ export function readDirSync(dirPath: string): IOResult<string[]> {
  * `readFile` 的同步版本。
  */
 export function readFileSync(filePath: string, options: ReadOptions & {
-    encoding: 'utf8',
+    encoding: 'utf8';
 }): IOResult<string>;
 export function readFileSync(filePath: string, options?: ReadOptions & {
-    encoding: 'binary',
+    encoding: 'binary';
 }): IOResult<ArrayBuffer>;
 export function readFileSync<T extends ReadFileContent>(filePath: string, options?: ReadOptions): IOResult<T> {
     const absPath = getAbsolutePath(filePath);

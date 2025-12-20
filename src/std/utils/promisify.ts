@@ -19,7 +19,7 @@ export type ValidAPI<T> = T extends (params: infer P) => infer R
  * 类型工具：提取成功回调参数类型。
  */
 export type SuccessType<T> = T extends (params: infer P) => any
-    ? P extends { success?: (res: infer S) => any }
+    ? P extends { success?: (res: infer S) => any; }
     ? S
     : never
     : never;
@@ -28,7 +28,7 @@ export type SuccessType<T> = T extends (params: infer P) => any
  * 类型工具：提取失败回调参数类型。
  */
 export type FailType<T> = T extends (params: infer P) => any
-    ? P extends { fail?: (err: infer E) => any }
+    ? P extends { fail?: (err: infer E) => any; }
     ? E
     : never
     : never;

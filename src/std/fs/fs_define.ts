@@ -42,7 +42,7 @@ export interface UploadFileOptions extends Omit<WechatMinigame.UploadFileOption,
     /**
      * Optional file name.
      */
-    name?: string
+    name?: string;
 }
 
 /**

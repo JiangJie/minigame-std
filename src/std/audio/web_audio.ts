@@ -97,5 +97,5 @@ export async function playWebAudioFromArrayBuffer(buffer: BufferSource, options?
 export async function playWebAudioFromFile(filePath: string, options?: PlayOptions): AsyncIOResult<AudioBufferSourceNode> {
     return (await readFile(filePath)).andThenAsync(async buffer => {
         return Ok(await playWebAudioFromArrayBuffer(buffer, options));
-    })
+    });
 }

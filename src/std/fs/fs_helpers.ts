@@ -16,7 +16,7 @@ export function convertFileSystemHandleLikeToStats(handleLike: FileSystemHandleL
     if (isFile) {
         const file = handleLike as FileSystemFileHandleLike;
 
-        size = file.size
+        size = file.size;
         lastModifiedTime = file.lastModified;
     }
 

@@ -83,7 +83,7 @@ test('addUnhandledrejectionListener and remove', async () => {
 test('addResizeListener and remove', () => {
     let resizeCaught = false;
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     const listener = (_: Event) => {
         resizeCaught = true;
     };

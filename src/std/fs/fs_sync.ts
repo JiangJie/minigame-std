@@ -84,7 +84,7 @@ export function statSync(path: string): IOResult<WechatMinigame.Stats>;
 export function statSync(path: string, options: StatOptions & {
     recursive: true;
 }): IOResult<WechatMinigame.FileStats[]>;
-export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>
+export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
 export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     if (isMinaEnv()) {
         return minaStatSync(path, options);
@@ -108,7 +108,7 @@ export function statSync(path: string, options?: StatOptions): IOResult<WechatMi
                 statsArr.push({
                     path,
                     stats: convertFileSystemHandleLikeToStats(handle),
-                })
+                });
             }
 
             return Ok(statsArr);

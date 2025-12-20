@@ -268,7 +268,7 @@ wIy0/kd6szCcWK5Ld1kH9R0=
             false,
             [
                 'decrypt',
-            ]
+            ],
         );
     }
 
@@ -282,7 +282,7 @@ wIy0/kd6szCcWK5Ld1kH9R0=
                 name: 'RSA-OAEP',
             },
             privateKey,
-            buffer
+            buffer,
         ));
 
         return decryptedData;
@@ -374,7 +374,7 @@ wIy0/kd6szCcWK5Ld1kH9R0=
             privateKey,
             { name: 'RSA-OAEP', hash: sha },
             false,
-            ['decrypt']
+            ['decrypt'],
         );
     }
 
@@ -385,7 +385,7 @@ wIy0/kd6szCcWK5Ld1kH9R0=
     const decryptedData = textDecode(await crypto.subtle.decrypt(
         { name: 'RSA-OAEP' },
         privateKey,
-        encryptedData
+        encryptedData,
     ));
     
     expect(decryptedData).toBe(data);

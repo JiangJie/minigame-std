@@ -8,7 +8,7 @@ interface CallbackParams<S, E> {
 
 test('promisifyWithResult converts callback API to async result - success', async () => {
     // Mock a callback-style API
-    const mockApi = (params: CallbackParams<{ data: string }, { code: number }>) => {
+    const mockApi = (params: CallbackParams<{ data: string; }, { code: number; }>) => {
         setTimeout(() => {
             params.success?.({ data: 'success data' });
         }, 10);
@@ -22,7 +22,7 @@ test('promisifyWithResult converts callback API to async result - success', asyn
 });
 
 test('promisifyWithResult converts callback API to async result - failure', async () => {
-    const mockApi = (params: CallbackParams<{ data: string }, { code: number }>) => {
+    const mockApi = (params: CallbackParams<{ data: string; }, { code: number; }>) => {
         setTimeout(() => {
             params.fail?.({ code: 500 });
         }, 10);
@@ -38,7 +38,7 @@ test('promisifyWithResult converts callback API to async result - failure', asyn
 test('promisifyWithResult preserves original success callback', async () => {
     let originalSuccessCalled = false;
 
-    const mockApi = (params: CallbackParams<{ data: string }, { code: number }>) => {
+    const mockApi = (params: CallbackParams<{ data: string; }, { code: number; }>) => {
         setTimeout(() => {
             params.success?.({ data: 'test' });
         }, 10);
@@ -56,7 +56,7 @@ test('promisifyWithResult preserves original success callback', async () => {
 test('promisifyWithResult preserves original fail callback', async () => {
     let originalFailCalled = false;
 
-    const mockApi = (params: CallbackParams<{ data: string }, { code: number }>) => {
+    const mockApi = (params: CallbackParams<{ data: string; }, { code: number; }>) => {
         setTimeout(() => {
             params.fail?.({ code: 500 });
         }, 10);
@@ -72,7 +72,7 @@ test('promisifyWithResult preserves original fail callback', async () => {
 });
 
 test('promisifyWithResult handles API returning Promise', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     const mockApi = async (_: CallbackParams<string, Error>) => {
         return 'async result';
     };
@@ -85,7 +85,7 @@ test('promisifyWithResult handles API returning Promise', async () => {
 });
 
 test('promisifyWithResult handles API returning rejected Promise', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     const mockApi = async (_: CallbackParams<string, Error>) => {
         throw new Error('async error');
     };
@@ -99,19 +99,19 @@ test('promisifyWithResult handles API returning rejected Promise', async () => {
 
 test('promisifyWithResult throws on invalid API return', () => {
     // API that returns something other than void/Promise
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const mockApi = (_: { success?: (res: string) => void }) => {
+     
+    const mockApi = (_: { success?: (res: string) => void; }) => {
         return 'invalid return' as unknown as void; // Trick the type system
     };
 
     // Use type assertion to bypass the ValidAPI check
-    const promisified = promisifyWithResult(mockApi) as (params: { success?: (res: string) => void }) => Promise<unknown>;
+    const promisified = promisifyWithResult(mockApi) as (params: { success?: (res: string) => void; }) => Promise<unknown>;
 
     expect(() => promisified({})).toThrow('API must return void or Promise');
 });
 
 test('promisifyWithResult handles undefined params', async () => {
-    const mockApi = (params?: CallbackParams<{ data: string }, { code: number }>) => {
+    const mockApi = (params?: CallbackParams<{ data: string; }, { code: number; }>) => {
         setTimeout(() => {
             params?.success?.({ data: 'success' });
         }, 10);

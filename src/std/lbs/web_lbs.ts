@@ -10,7 +10,7 @@ export function getCurrentPosition(): AsyncResult<GeolocationPosition, Geolocati
         },
         err => {
             future.resolve(Err(err));
-        }
+        },
     );
 
     return future.promise;

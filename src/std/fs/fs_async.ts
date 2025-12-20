@@ -109,7 +109,7 @@ export async function stat(path: string): AsyncIOResult<WechatMinigame.Stats>;
 export async function stat(path: string, options: StatOptions & {
     recursive: true;
 }): AsyncIOResult<WechatMinigame.FileStats[]>;
-export async function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>
+export async function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
 /**
  * 获取文件或目录的状态信息。
  * @param path - 文件或目录的路径。
@@ -139,7 +139,7 @@ export async function stat(path: string, options?: StatOptions): AsyncIOResult<W
                 statsArr.push({
                     path,
                     stats: await convertFileSystemHandleToStats(handle),
-                })
+                });
             }
 
             return Ok(statsArr);
@@ -229,7 +229,7 @@ export function downloadFile(fileUrl: string, options?: UnionDownloadFileOptions
  * @param options - 可选的请求初始化参数。
  * @returns 下载成功返回原始结果。
  */
-export function downloadFile(fileUrl: string, filePath: string, options?: UnionDownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | Response>
+export function downloadFile(fileUrl: string, filePath: string, options?: UnionDownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | Response>;
 export function downloadFile(fileUrl: string, filePath?: string | UnionDownloadFileOptions, options?: UnionDownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | DownloadFileTempResponse | Response> {
     if (typeof filePath === 'string') {
         return isMinaEnv()
