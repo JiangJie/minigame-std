@@ -40,10 +40,10 @@ export function createVideo(options: WechatMinigame.CreateVideoOption): WechatMi
     }
 
     // 设置尺寸
-    if (height != undefined) {
+    if (height !== undefined) {
         video.height = height;
     }
-    if (width != undefined) {
+    if (width !== undefined) {
         video.width = width;
     }
 
@@ -56,12 +56,12 @@ export function createVideo(options: WechatMinigame.CreateVideoOption): WechatMi
     }
 
     // 设置定位
-    if (x != undefined || y != undefined) {
+    if (x !== undefined || y !== undefined) {
         video.style.position = 'absolute';
-        if (x != undefined) {
+        if (x !== undefined) {
             video.style.left = `${ x }px`;
         }
-        if (y != undefined) {
+        if (y !== undefined) {
             video.style.top = `${ y }px`;
         }
     }
@@ -70,7 +70,7 @@ export function createVideo(options: WechatMinigame.CreateVideoOption): WechatMi
     document.body.appendChild(video);
 
     // 如果设置了初始播放位置，在元数据加载后跳转
-    if (initialTime != undefined) {
+    if (initialTime !== undefined) {
         video.addEventListener('loadedmetadata', () => {
             video.currentTime = initialTime;
         }, {

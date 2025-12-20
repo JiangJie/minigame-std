@@ -30,10 +30,15 @@ const lookup = ((): Uint8Array => {
 })();
 
 /**
- * Converts BufferSource into a base64 encoded string.
- *
- * @param data - The data to encode.
- * @returns The base64 encoded string.
+ * 将 BufferSource 转换为 Base64 编码的字符串。
+ * @param data - 需要编码的数据，可以是 ArrayBuffer、TypedArray 或 DataView。
+ * @returns Base64 编码的字符串。
+ * @example
+ * ```ts
+ * const buffer = new Uint8Array([72, 101, 108, 108, 111]);
+ * const base64 = base64FromBuffer(buffer);
+ * console.log(base64); // 'SGVsbG8='
+ * ```
  */
 export function base64FromBuffer(data: BufferSource): string {
     let result = '';
@@ -78,10 +83,14 @@ export function base64FromBuffer(data: BufferSource): string {
 }
 
 /**
- * Converts a base64 encoded string to an Uint8Array
- *
- * @param data - Base64 encoded string
- * @returns The decoded data as an Uint8Array.
+ * 将 Base64 编码的字符串转换为 Uint8Array。
+ * @param data - Base64 编码的字符串。
+ * @returns 解码后的 Uint8Array。
+ * @example
+ * ```ts
+ * const buffer = base64ToBuffer('SGVsbG8=');
+ * console.log(buffer); // Uint8Array [72, 101, 108, 108, 111]
+ * ```
  */
 export function base64ToBuffer(data: string): Uint8Array<ArrayBuffer> {
     const len = data.length;

@@ -13,6 +13,13 @@ import {
  * 从URL创建图片。
  * @param url - 图片URL。
  * @returns Image对象。
+ * @example
+ * ```ts
+ * const img = createImageFromUrl('https://example.com/image.png');
+ * img.onload = () => {
+ *     console.log('图片加载完成', img.width, img.height);
+ * };
+ * ```
  */
 export function createImageFromUrl(url: string): HTMLImageElement | WechatMinigame.Image {
     return (isMinaEnv() ? minaCreateImageFromUrl : webCreateImageFromUrl)(url);
@@ -22,6 +29,14 @@ export function createImageFromUrl(url: string): HTMLImageElement | WechatMiniga
  * 从文件创建图片。
  * @param filePath - 文件路径。
  * @returns 异步的Image对象。
+ * @example
+ * ```ts
+ * const result = await createImageFromFile('/path/to/image.png');
+ * if (result.isOk()) {
+ *     const img = result.unwrap();
+ *     console.log('图片尺寸:', img.width, 'x', img.height);
+ * }
+ * ```
  */
 export function createImageFromFile(filePath: string): AsyncIOResult<HTMLImageElement | WechatMinigame.Image> {
     return isMinaEnv()

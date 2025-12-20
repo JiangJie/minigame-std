@@ -10,6 +10,30 @@ export * from './socket_define.ts';
  * @param url - WebSocket 服务器的 URL。
  * @param options - 可选的参数。
  * @returns 返回一个实现了 ISocket 接口的 WebSocket 对象。
+ * @example
+ * ```ts
+ * const socket = connectSocket('wss://echo.websocket.org');
+ *
+ * socket.addEventListener('open', () => {
+ *     console.log('连接已建立');
+ *     socket.send('Hello, Server!');
+ * });
+ *
+ * socket.addEventListener('message', (data) => {
+ *     console.log('收到消息:', data);
+ * });
+ *
+ * socket.addEventListener('close', (code, reason) => {
+ *     console.log('连接已关闭:', code, reason);
+ * });
+ *
+ * socket.addEventListener('error', (error) => {
+ *     console.error('连接错误:', error);
+ * });
+ *
+ * // 关闭连接
+ * socket.close();
+ * ```
  */
 export function connectSocket(url: string, options?: SocketOptions): ISocket {
     return isMinaEnv()

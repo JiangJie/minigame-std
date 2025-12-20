@@ -14,6 +14,15 @@ import {
  * 添加错误监听器，用于监听标准的错误事件。
  * @param listener - 错误事件的回调函数。
  * @returns 返回一个函数，调用该函数可以移除监听器。
+ * @example
+ * ```ts
+ * const removeListener = addErrorListener((ev) => {
+ *     console.error('捕获到错误:', ev.message);
+ * });
+ *
+ * // 移除监听器
+ * removeListener();
+ * ```
  */
 export function addErrorListener(listener: (ev: WechatMinigame.ListenerError) => void): () => void {
     if (isMinaEnv()) {
@@ -33,6 +42,15 @@ export function addErrorListener(listener: (ev: WechatMinigame.ListenerError) =>
  * 添加未处理的 Promise 拒绝事件监听器。
  * @param listener - 未处理的 Promise 拒绝事件的回调函数。
  * @returns  返回一个函数，调用该函数可以移除监听器。
+ * @example
+ * ```ts
+ * const removeListener = addUnhandledrejectionListener((ev) => {
+ *     console.error('未处理的 Promise 拒绝:', ev.reason);
+ * });
+ *
+ * // 移除监听器
+ * removeListener();
+ * ```
  */
 export function addUnhandledrejectionListener(listener: (ev: Pick<PromiseRejectionEvent, 'reason' | 'promise'>) => void): () => void {
     return isMinaEnv()
@@ -44,6 +62,15 @@ export function addUnhandledrejectionListener(listener: (ev: Pick<PromiseRejecti
  * 添加窗口大小变化监听器。
  * @param listener - 窗口大小变化的回调函数。
  * @returns 返回一个函数，调用该函数可以移除监听器。
+ * @example
+ * ```ts
+ * const removeListener = addResizeListener((size) => {
+ *     console.log('窗口大小变化:', size.windowWidth, 'x', size.windowHeight);
+ * });
+ *
+ * // 移除监听器
+ * removeListener();
+ * ```
  */
 export function addResizeListener(listener: WechatMinigame.OnWindowResizeCallback): () => void {
     return isMinaEnv()

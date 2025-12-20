@@ -40,6 +40,17 @@ export type FailType<T> = T extends (params: infer P) => any
  *
  * @param api - 小游戏异步 API。
  * @returns 返回一个新的函数，该函数返回 `AsyncResult<T, E>`。
+ * @example
+ * ```ts
+ * // 将 wx.setStorage 转换为 Promise 风格
+ * const setStorageAsync = promisifyWithResult(wx.setStorage);
+ * const result = await setStorageAsync({ key: 'test', data: 'value' });
+ * if (result.isOk()) {
+ *     console.log('存储成功');
+ * } else {
+ *     console.error('存储失败:', result.unwrapErr());
+ * }
+ * ```
  */
 export function promisifyWithResult<F extends (...args: any[]) => any, T = SuccessType<F>, E = FailType<F>>(api: F) : ValidAPI<F> extends true
     ? (...args: Parameters<F>) => AsyncResult<T, E>
@@ -68,7 +79,7 @@ export function promisifyWithResult<F extends (...args: any[]) => any, T = Succe
         // 也支持其他返回Promise的API
         if (res instanceof Promise) {
             return promiseToAsyncResult(res);
-        } else if (res != undefined) {
+        } else if (res !== undefined) {
             throw new Error('API must return void or Promise. Otherwise the return value will be discarded.');
         }
 

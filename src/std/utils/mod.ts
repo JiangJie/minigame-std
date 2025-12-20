@@ -8,6 +8,12 @@ export * from './promisify.ts';
  * 如果是同步 API throw 的异常通常是一个类似 `Error` 的类型。
  * @param err - 小游戏错误对象。
  * @returns 转换后的 `Error` 对象。
+ * @example
+ * ```ts
+ * const err = { errMsg: 'request:fail timeout' };
+ * const error = miniGameFailureToError(err);
+ * console.log(error.message); // 'request:fail timeout'
+ * ```
  */
 export function miniGameFailureToError(err: WechatMinigame.GeneralCallbackResult | Error): Error {
     return new Error((err as WechatMinigame.GeneralCallbackResult).errMsg ?? (err as Error).message);
@@ -18,6 +24,12 @@ export function miniGameFailureToError(err: WechatMinigame.GeneralCallbackResult
  * @typeParam T - Result 的 Ok 类型。
  * @param err - 错误对象。
  * @returns 转换后的 IOResult 对象。
+ * @example
+ * ```ts
+ * const err = { errMsg: 'operation failed' };
+ * const result = miniGameFailureToResult<string>(err);
+ * console.log(result.isErr()); // true
+ * ```
  */
 export function miniGameFailureToResult<T>(err: WechatMinigame.GeneralCallbackResult): IOResult<T> {
     return Err(miniGameFailureToError(err));
@@ -27,6 +39,15 @@ export function miniGameFailureToResult<T>(err: WechatMinigame.GeneralCallbackRe
  * 执行同步函数，预期异常都是 `WechatMinigame.GeneralCallbackResult`。
  * @param op - 需要执行的同步函数。
  * @returns IOResult。
+ * @example
+ * ```ts
+ * const result = tryGeneralSyncOp(() => {
+ *     return wx.getStorageSync('key');
+ * });
+ * if (result.isOk()) {
+ *     console.log('读取成功:', result.unwrap());
+ * }
+ * ```
  */
 export function tryGeneralSyncOp<T>(op: () => T): IOResult<T> {
     try {
@@ -40,6 +61,15 @@ export function tryGeneralSyncOp<T>(op: () => T): IOResult<T> {
  * 执行异步函数，预期异常都是 `WechatMinigame.GeneralCallbackResult`。
  * @param op - 需要执行的异步函数。
  * @returns AsyncIOResult。
+ * @example
+ * ```ts
+ * const result = await tryGeneralAsyncOp(async () => {
+ *     return await someAsyncOperation();
+ * });
+ * if (result.isOk()) {
+ *     console.log('操作成功:', result.unwrap());
+ * }
+ * ```
  */
 export async function tryGeneralAsyncOp<T>(op: () => Promise<T>): AsyncIOResult<T> {
     try {
@@ -53,6 +83,15 @@ export async function tryGeneralAsyncOp<T>(op: () => Promise<T>): AsyncIOResult<
  * 执行同步函数，预期异常都是 `DOMException`。
  * @param op - 需要执行的同步函数。
  * @returns IOResult。
+ * @example
+ * ```ts
+ * const result = tryDOMSyncOp(() => {
+ *     return document.querySelector('#app');
+ * });
+ * if (result.isOk()) {
+ *     console.log('元素:', result.unwrap());
+ * }
+ * ```
  */
 export function tryDOMSyncOp<T>(op: () => T): IOResult<T> {
     try {
@@ -66,6 +105,15 @@ export function tryDOMSyncOp<T>(op: () => T): IOResult<T> {
  * 执行异步函数，预期异常都是 `DOMException`。
  * @param op - 需要执行的异步函数。
  * @returns AsyncIOResult。
+ * @example
+ * ```ts
+ * const result = await tryDOMAsyncOp(async () => {
+ *     return await navigator.clipboard.readText();
+ * });
+ * if (result.isOk()) {
+ *     console.log('剪贴板内容:', result.unwrap());
+ * }
+ * ```
  */
 export async function tryDOMAsyncOp<T>(op: () => Promise<T>): AsyncIOResult<T> {
     try {
@@ -79,6 +127,16 @@ export async function tryDOMAsyncOp<T>(op: () => Promise<T>): AsyncIOResult<T> {
  * 将 BufferSource 转换为 Uint8Array。
  * @param data - 需要转换的 BufferSource。
  * @returns Uint8Array。
+ * @example
+ * ```ts
+ * const buffer = new ArrayBuffer(8);
+ * const u8a = bufferSource2U8a(buffer);
+ * console.log(u8a.byteLength); // 8
+ *
+ * const view = new DataView(buffer);
+ * const u8a2 = bufferSource2U8a(view);
+ * console.log(u8a2.byteLength); // 8
+ * ```
  */
 export function bufferSource2U8a(data: BufferSource): Uint8Array<ArrayBuffer> {
     if (data instanceof Uint8Array) {
@@ -100,6 +158,12 @@ export function bufferSource2U8a(data: BufferSource): Uint8Array<ArrayBuffer> {
  * 将 BufferSource 转换为 ArrayBuffer。
  * @param data - 需要转换的 BufferSource。
  * @returns ArrayBuffer。
+ * @example
+ * ```ts
+ * const u8a = new Uint8Array([1, 2, 3]);
+ * const ab = bufferSource2Ab(u8a);
+ * console.log(ab.byteLength); // 3
+ * ```
  */
 export function bufferSource2Ab(data: BufferSource): ArrayBuffer {
     if (data instanceof ArrayBuffer) {

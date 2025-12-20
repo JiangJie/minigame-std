@@ -27,7 +27,14 @@ import {
  * 将数据存储在本地缓存中。
  * @param key - 数据的键名。
  * @param data - 要存储的数据。
- * @returns 返回一个 Promise，表示操作完成。
+ * @returns 存储操作的异步结果。
+ * @example
+ * ```ts
+ * const result = await setItem('username', 'john');
+ * if (result.isOk()) {
+ *     console.log('存储成功');
+ * }
+ * ```
  */
 export function setItem(key: string, data: string): AsyncVoidIOResult {
     return isMinaEnv()
@@ -38,7 +45,14 @@ export function setItem(key: string, data: string): AsyncVoidIOResult {
 /**
  * 从本地缓存中读取数据。
  * @param key - 数据的键名。
- * @returns 返回一个 Promise，表示操作完成。
+ * @returns 包含数据的异步结果，如果不存在则返回空字符串。
+ * @example
+ * ```ts
+ * const result = await getItem('username');
+ * if (result.isOk()) {
+ *     console.log('用户名:', result.unwrap());
+ * }
+ * ```
  */
 export function getItem(key: string): AsyncIOResult<string> {
     return isMinaEnv()
@@ -49,7 +63,14 @@ export function getItem(key: string): AsyncIOResult<string> {
 /**
  * 从本地缓存中移除指定的数据。
  * @param key - 数据的键名。
- * @returns 返回一个 Promise，表示操作完成。
+ * @returns 移除操作的异步结果。
+ * @example
+ * ```ts
+ * const result = await removeItem('username');
+ * if (result.isOk()) {
+ *     console.log('移除成功');
+ * }
+ * ```
  */
 export function removeItem(key: string): AsyncVoidIOResult {
     return isMinaEnv()
@@ -59,7 +80,14 @@ export function removeItem(key: string): AsyncVoidIOResult {
 
 /**
  * 清除所有的本地存储数据。
- * @returns 返回一个 Promise，表示操作完成。
+ * @returns 清除操作的异步结果。
+ * @example
+ * ```ts
+ * const result = await clear();
+ * if (result.isOk()) {
+ *     console.log('所有数据已清除');
+ * }
+ * ```
  */
 export function clear(): AsyncVoidIOResult {
     return isMinaEnv()
@@ -68,8 +96,15 @@ export function clear(): AsyncVoidIOResult {
 }
 
 /**
- * 获取本地存储数据的长度。
- * @returns 返回一个 Promise，表示操作完成。
+ * 获取本地存储数据的项数。
+ * @returns 包含存储项数的异步结果。
+ * @example
+ * ```ts
+ * const result = await getLength();
+ * if (result.isOk()) {
+ *     console.log('存储项数:', result.unwrap());
+ * }
+ * ```
  */
 export function getLength(): AsyncIOResult<number> {
     return isMinaEnv()
@@ -80,7 +115,14 @@ export function getLength(): AsyncIOResult<number> {
 /**
  * 检查本地存储中是否存在指定的数据。
  * @param key - 数据的键名。
- * @returns 返回一个 Promise，表示操作完成。
+ * @returns 包含是否存在的布尔值的异步结果。
+ * @example
+ * ```ts
+ * const result = await hasItem('username');
+ * if (result.isOk() && result.unwrap()) {
+ *     console.log('键存在');
+ * }
+ * ```
  */
 export function hasItem(key: string): AsyncIOResult<boolean> {
     return isMinaEnv()
@@ -89,43 +131,95 @@ export function hasItem(key: string): AsyncIOResult<boolean> {
 }
 
 /**
- * `setItem` 的同步版本。
+ * `setItem` 的同步版本，将数据存储在本地缓存中。
+ * @param key - 数据的键名。
+ * @param data - 要存储的数据。
+ * @returns 存储操作的结果。
+ * @example
+ * ```ts
+ * const result = setItemSync('username', 'john');
+ * if (result.isOk()) {
+ *     console.log('存储成功');
+ * }
+ * ```
  */
 export function setItemSync(key: string, data: string): VoidIOResult {
     return (isMinaEnv() ? minaSetItemSync : webSetItem)(key, data);
 }
 
 /**
- * `getItem` 的同步版本。
+ * `getItem` 的同步版本，从本地缓存中读取数据。
+ * @param key - 数据的键名。
+ * @returns 包含数据的操作结果。
+ * @example
+ * ```ts
+ * const result = getItemSync('username');
+ * if (result.isOk()) {
+ *     console.log('用户名:', result.unwrap());
+ * }
+ * ```
  */
 export function getItemSync(key: string): IOResult<string> {
     return (isMinaEnv() ? minaGetItemSync : webGetItem)(key);
 }
 
 /**
- * `removeItem` 的同步版本。
+ * `removeItem` 的同步版本，从本地缓存中移除指定的数据。
+ * @param key - 数据的键名。
+ * @returns 移除操作的结果。
+ * @example
+ * ```ts
+ * const result = removeItemSync('username');
+ * if (result.isOk()) {
+ *     console.log('移除成功');
+ * }
+ * ```
  */
 export function removeItemSync(key: string): VoidIOResult {
     return (isMinaEnv() ? minaRemoveItemSync : webRemoveItem)(key);
 }
 
 /**
- * `clear` 的同步版本。
+ * `clear` 的同步版本，清除所有的本地存储数据。
+ * @returns 清除操作的结果。
+ * @example
+ * ```ts
+ * const result = clearSync();
+ * if (result.isOk()) {
+ *     console.log('所有数据已清除');
+ * }
+ * ```
  */
 export function clearSync(): VoidIOResult {
     return (isMinaEnv() ? minaClearSync : webClear)();
 }
 
 /**
- * `getLength` 的同步版本。
+ * `getLength` 的同步版本，获取本地存储数据的项数。
+ * @returns 包含存储项数的操作结果。
+ * @example
+ * ```ts
+ * const result = getLengthSync();
+ * if (result.isOk()) {
+ *     console.log('存储项数:', result.unwrap());
+ * }
+ * ```
  */
 export function getLengthSync(): IOResult<number> {
     return (isMinaEnv() ? minaGetLengthSync : webGetLength)();
 }
 
 /**
- * `hasItem` 的同步版本。
+ * `hasItem` 的同步版本，检查本地存储中是否存在指定的数据。
  * @param key - 数据的键名。
+ * @returns 包含是否存在的布尔值的操作结果。
+ * @example
+ * ```ts
+ * const result = hasItemSync('username');
+ * if (result.isOk() && result.unwrap()) {
+ *     console.log('键存在');
+ * }
+ * ```
  */
 export function hasItemSync(key: string): IOResult<boolean> {
     return (isMinaEnv() ? minaHasItemSync : webHasItem)(key);
