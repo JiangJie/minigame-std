@@ -12,9 +12,8 @@
   "files": [
     "LICENSE",
     "README.md",
-    "package.json",
-    "docs",
-    "src",
+    "README.en.md",
+    "CHANGELOG.md",
     "dist"
   ],
   "sideEffects": false,

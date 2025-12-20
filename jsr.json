@@ -19,9 +19,8 @@
     "include": [
       "LICENSE",
       "README.md",
-      "package.json",
-      "jsr.json",
-      "docs",
+      "README.en.md",
+      "CHANGELOG.md",
       "src"
     ]
   }
