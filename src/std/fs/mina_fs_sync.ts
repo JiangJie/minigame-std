@@ -213,6 +213,17 @@ export function readJsonFileSync<T>(filePath: string): IOResult<T> {
 }
 
 /**
+ * `writeJsonFile` 的同步版本。
+ */
+export function writeJsonFileSync<T>(filePath: string, data: T): VoidIOResult {
+    try {
+        return writeFileSync(filePath, JSON.stringify(data));
+    } catch (e) {
+        return Err(e as Error);
+    }
+}
+
+/**
  * `readTextFile` 的同步版本。
  */
 export function readTextFileSync(filePath: string): IOResult<string> {

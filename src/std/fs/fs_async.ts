@@ -11,6 +11,7 @@ import {
     readFile as webReadFile,
     readJsonFile as webReadJsonFile,
     readTextFile as webReadTextFile,
+    writeJsonFile as webWriteJsonFile,
     remove as webRemove,
     stat as webStat,
     unzip as webUnzip,
@@ -39,6 +40,7 @@ import {
     readFile as minaReadFile,
     readJsonFile as minaReadJsonFile,
     readTextFile as minaReadTextFile,
+    writeJsonFile as minaWriteJsonFile,
     remove as minaRemove,
     stat as minaStat,
     unzip as minaUnzip,
@@ -306,6 +308,24 @@ export function readJsonFile<T>(filePath: string): AsyncIOResult<T> {
  */
 export function readTextFile(filePath: string): AsyncIOResult<string> {
     return (isMinaEnv() ? minaReadTextFile : webReadTextFile)(filePath);
+}
+
+/**
+ * 将数据序列化为 JSON 并写入文件。
+ * @typeParam T - 要写入数据的类型。
+ * @param filePath - 文件路径。
+ * @param data - 要写入的数据。
+ * @returns 写入操作的异步结果。
+ * @example
+ * ```ts
+ * const result = await writeJsonFile('/path/to/config.json', { name: 'test' });
+ * if (result.isOk()) {
+ *     console.log('写入成功');
+ * }
+ * ```
+ */
+export function writeJsonFile<T>(filePath: string, data: T): AsyncVoidIOResult {
+    return (isMinaEnv() ? minaWriteJsonFile : webWriteJsonFile)(filePath, data);
 }
 
 /**

@@ -9,6 +9,7 @@ import {
     readFileSync as webReadFileSync,
     readJsonFileSync as webReadJsonFileSync,
     readTextFileSync as webReadTextFileSync,
+    writeJsonFileSync as webWriteJsonFileSync,
     removeSync as webRemoveSync,
     statSync as webStatSync,
     unzipSync as webUnzipSync,
@@ -31,6 +32,7 @@ import {
     readFileSync as minaReadFileSync,
     readJsonFileSync as minaReadJsonFileSync,
     readTextFileSync as minaReadTextFileSync,
+    writeJsonFileSync as minaWriteJsonFileSync,
     removeSync as minaRemoveSync,
     statSync as minaStatSync,
     unzipSync as minaUnzipSync,
@@ -287,6 +289,24 @@ export function readJsonFileSync<T>(filePath: string): IOResult<T> {
  */
 export function readTextFileSync(filePath: string): IOResult<string> {
     return (isMinaEnv() ? minaReadTextFileSync : webReadTextFileSync)(filePath);
+}
+
+/**
+ * `writeJsonFile` 的同步版本，将数据序列化为 JSON 并写入文件。
+ * @typeParam T - 要写入数据的类型。
+ * @param filePath - 文件路径。
+ * @param data - 要写入的数据。
+ * @returns 写入操作的结果。
+ * @example
+ * ```ts
+ * const result = writeJsonFileSync('/path/to/config.json', { name: 'test' });
+ * if (result.isOk()) {
+ *     console.log('写入成功');
+ * }
+ * ```
+ */
+export function writeJsonFileSync<T>(filePath: string, data: T): VoidIOResult {
+    return (isMinaEnv() ? minaWriteJsonFileSync : webWriteJsonFileSync)(filePath, data);
 }
 
 /**

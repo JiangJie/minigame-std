@@ -318,6 +318,20 @@ export async function readJsonFile<T>(filePath: string): AsyncIOResult<T> {
 }
 
 /**
+ * 将数据序列化为 JSON 并写入文件。
+ * @param filePath - 文件路径。
+ * @param data - 要写入的数据。
+ * @returns 写入结果。
+ */
+export async function writeJsonFile<T>(filePath: string, data: T): AsyncVoidIOResult {
+    try {
+        return await writeFile(filePath, JSON.stringify(data));
+    } catch (e) {
+        return Err(e as Error);
+    }
+}
+
+/**
  * 读取文本文件的内容。
  * @param filePath - 文件路径。
  * @returns 包含文件文本内容的异步操作。

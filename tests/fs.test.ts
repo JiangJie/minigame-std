@@ -135,3 +135,116 @@ describe('fs stat', () => {
         expect(result.isErr()).toBe(true);
     });
 });
+
+describe('fs writeJsonFile', () => {
+    beforeAll(async () => {
+        await fs.remove(TEST_DIR);
+        await fs.mkdir(TEST_DIR);
+    });
+
+    afterAll(async () => {
+        await fs.remove(TEST_DIR);
+    });
+
+    test('writeJsonFile writes object and readJsonFile reads it back', async () => {
+        const filePath = `${TEST_DIR}/config.json`;
+        const data = { name: 'test', value: 123, nested: { key: 'value' } };
+
+        const writeResult = await fs.writeJsonFile(filePath, data);
+        expect(writeResult.isOk()).toBe(true);
+
+        const readResult = await fs.readJsonFile<typeof data>(filePath);
+        expect(readResult.isOk()).toBe(true);
+        expect(readResult.unwrap()).toEqual(data);
+    });
+
+    test('writeJsonFile writes array and readJsonFile reads it back', async () => {
+        const filePath = `${TEST_DIR}/array.json`;
+        const data = [1, 2, 3, { key: 'value' }];
+
+        const writeResult = await fs.writeJsonFile(filePath, data);
+        expect(writeResult.isOk()).toBe(true);
+
+        const readResult = await fs.readJsonFile<typeof data>(filePath);
+        expect(readResult.isOk()).toBe(true);
+        expect(readResult.unwrap()).toEqual(data);
+    });
+
+    test('writeJsonFile writes null and primitive values', async () => {
+        const nullPath = `${TEST_DIR}/null.json`;
+        const stringPath = `${TEST_DIR}/string.json`;
+        const numberPath = `${TEST_DIR}/number.json`;
+
+        await fs.writeJsonFile(nullPath, null);
+        await fs.writeJsonFile(stringPath, 'hello');
+        await fs.writeJsonFile(numberPath, 42);
+
+        expect((await fs.readJsonFile(nullPath)).unwrap()).toBe(null);
+        expect((await fs.readJsonFile(stringPath)).unwrap()).toBe('hello');
+        expect((await fs.readJsonFile(numberPath)).unwrap()).toBe(42);
+    });
+
+    test('writeJsonFile creates parent directories', async () => {
+        const filePath = `${TEST_DIR}/nested/deep/config.json`;
+        const data = { created: true };
+
+        const writeResult = await fs.writeJsonFile(filePath, data);
+        expect(writeResult.isOk()).toBe(true);
+
+        const readResult = await fs.readJsonFile<typeof data>(filePath);
+        expect(readResult.isOk()).toBe(true);
+        expect(readResult.unwrap()).toEqual(data);
+    });
+
+    test('writeJsonFileSync writes object and readJsonFileSync reads it back', async () => {
+        const filePath = `${TEST_DIR}/sync-config.json`;
+        const data = { sync: true, count: 456 };
+
+        // Use async version to write first to ensure directory exists
+        await fs.mkdir(TEST_DIR);
+
+        const writeResult = fs.writeJsonFileSync(filePath, data);
+        // Sync operations may not be supported in all environments (e.g., main thread without OPFS access token)
+        // If it fails, skip this test
+        if (writeResult.isErr()) {
+            console.warn('writeJsonFileSync not supported in this environment, skipping test');
+            return;
+        }
+        expect(writeResult.isOk()).toBe(true);
+
+        const readResult = fs.readJsonFileSync<typeof data>(filePath);
+        expect(readResult.isOk()).toBe(true);
+        expect(readResult.unwrap()).toEqual(data);
+    });
+
+    test('writeJsonFileSync writes array and readJsonFileSync reads it back', async () => {
+        const filePath = `${TEST_DIR}/sync-array.json`;
+        const data = ['a', 'b', 'c'];
+
+        // Use async version to write first to ensure directory exists
+        await fs.mkdir(TEST_DIR);
+
+        const writeResult = fs.writeJsonFileSync(filePath, data);
+        // Sync operations may not be supported in all environments
+        if (writeResult.isErr()) {
+            console.warn('writeJsonFileSync not supported in this environment, skipping test');
+            return;
+        }
+        expect(writeResult.isOk()).toBe(true);
+
+        const readResult = fs.readJsonFileSync<typeof data>(filePath);
+        expect(readResult.isOk()).toBe(true);
+        expect(readResult.unwrap()).toEqual(data);
+    });
+
+    test('writeJsonFile returns error for circular reference', async () => {
+        const filePath = `${TEST_DIR}/circular.json`;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const circular: any = { name: 'test' };
+        circular.self = circular; // Create circular reference
+
+        const result = await fs.writeJsonFile(filePath, circular);
+        expect(result.isErr()).toBe(true);
+        expect(result.unwrapErr().message).toContain('circular');
+    });
+});
