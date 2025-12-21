@@ -1,8 +1,32 @@
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { fs } from '../src/mod.ts';
+import { createAbortError } from '../src/std/fs/fs_helpers.ts';
 
 // Test directory for all fs operations
 const TEST_DIR = '/fs-test';
+
+describe('createAbortError', () => {
+    test('creates an Error with name "AbortError"', () => {
+        const error = createAbortError();
+
+        expect(error).toBeInstanceOf(Error);
+        expect(error.name).toBe('AbortError');
+    });
+
+    test('error message is empty by default', () => {
+        const error = createAbortError();
+
+        expect(error.message).toBe('');
+    });
+
+    test('each call creates a new Error instance', () => {
+        const error1 = createAbortError();
+        const error2 = createAbortError();
+
+        expect(error1).not.toBe(error2);
+        expect(error1.name).toBe(error2.name);
+    });
+});
 
 // Only test functions with additional logic (data transformation)
 // Simple wrappers around happy-opfs are covered by happy-opfs itself
