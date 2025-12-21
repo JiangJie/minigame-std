@@ -155,6 +155,32 @@ test('calculate md5 with empty string', () => {
     expect(md5Empty).toBe('d41d8cd98f00b204e9800998ecf8427e');
 });
 
+test('calculate md5 with long data (multi-block)', () => {
+    // 测试超过 128 字节的数据，确保覆盖 while 循环分支
+    // BLOCK_SIZE = 64, 需要 msg.length >= free + BLOCK_SIZE 才会进入 while 循环
+    // 使用 200 字节的数据，足够触发多个块的处理
+    const longData = 'a'.repeat(200);
+    const md5Long = cryptos.md5(longData);
+
+    // 预期值通过 md5sum 命令验证: printf 'a%.0s' {1..200} | md5sum
+    expect(md5Long).toBe('887f30b43b2867f4a9accceee7d16e6c');
+    expect(md5Long.length).toBe(32);
+});
+
+test('calculate md5 with data requiring extra padding block', () => {
+    // 测试 digest() 中 padLen < 9 的分支（第 201 行）
+    // 当 pos > 55 时，padLen = 64 - pos < 9，需要额外添加一个块
+    // 使用 56-63 字节的数据可以触发这个分支
+    const data56 = 'a'.repeat(56);
+    const data60 = 'a'.repeat(60);
+    const data63 = 'a'.repeat(63);
+
+    // 预期值通过 md5sum 命令验证
+    expect(cryptos.md5(data56)).toBe('3b0c8ac703f828b04c6c197006d17218');
+    expect(cryptos.md5(data60)).toBe('cc7ed669cf88f201c3297c6a91e1d18d');
+    expect(cryptos.md5(data63)).toBe('b06521f39153d618550606be297466d5');
+});
+
 test('calculate sha256 with ArrayBuffer', async () => {
     const data = textEncode('test');
     const sha256Str = await cryptos.sha256(data);

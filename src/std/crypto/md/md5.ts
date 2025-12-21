@@ -12,7 +12,22 @@ import { bufferSource2U8a } from '../../utils/mod.ts';
 const BLOCK_SIZE = 64 as const;
 
 /**
- * Md5 hash
+ * MD5 哈希计算类，支持流式更新。
+ * @example
+ * ```ts
+ * // 基本用法
+ * const hash = new Md5().update('Hello, World!').toString();
+ * console.log(hash); // '65a8e27d8879283831b664bd8b7f0ad4'
+ *
+ * // 流式更新
+ * const md5 = new Md5();
+ * md5.update('Hello, ');
+ * md5.update('World!');
+ * console.log(md5.toString()); // '65a8e27d8879283831b664bd8b7f0ad4'
+ *
+ * // 获取 ArrayBuffer
+ * const buffer = new Md5().update('test').digest();
+ * ```
  */
 export class Md5 {
     private a = 0x67452301;
