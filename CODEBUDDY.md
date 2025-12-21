@@ -4,6 +4,8 @@ This file provides guidance to CodeBuddy Code when working with code in this rep
 
 ## Project Overview
 
+**License**: MIT
+
 **minigame-std** is a cross-platform standard development library that provides unified APIs for both mini-game environments (WeChat, QQ, etc.) and web browsers. The library abstracts platform-specific differences, allowing developers to write code once and run it on both platforms.
 
 ### Key Concept: Platform Abstraction
@@ -53,7 +55,8 @@ pnpm run docs
 - Web platform configuration (`__MINIGAME_STD_MINA__: false`)
 - Test files are located in `tests/` directory
 - Coverage reports are generated in `coverage/` directory
-- Mini-game platform tests are located in a separate demo repository
+- Mini-game platform tests are located in a separate demo repository ([minigame-std-demo](https://github.com/JiangJie/minigame-std-demo))
+- **Coverage Note**: Coverage is not 100% because some code only runs in the mini-game environment, which cannot be simulated by existing testing tools
 
 ### Running Individual Tests
 
@@ -279,3 +282,9 @@ Scopes frequently used: `deps`, `ci`, `types`, `config`, `tests`
 - `rollup.config.mjs` - Build configuration
 - `tsconfig.json` - TypeScript compiler options
 - `eslint.config.mjs` - ESLint rules
+
+## Documentation
+
+- **API Documentation**: [https://jiangjie.github.io/minigame-std/](https://jiangjie.github.io/minigame-std/) (auto-generated via TypeDoc and deployed to GitHub Pages)
+- **Generate locally**: `pnpm run docs`
+- Generated docs are NOT committed to the repository; they are deployed automatically via GitHub Actions

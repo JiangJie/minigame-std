@@ -7,9 +7,24 @@
 
 ## [未发布]
 
+### 新增
+- 新增 `fs.writeJsonFile` 和 `fs.writeJsonFileSync` 方法
+- 导出 `fs.createAbortError` 辅助函数
+
 ### 变更
 - 许可证从 GPL-3.0 切换到 MIT
+- 生成的 API 文档不再提交到仓库，改为通过 GitHub Pages 自动部署
 - 更新依赖到最新版本
+
+### 文档
+- 为 `Md5` 类添加完整的 JSDoc 文档和 `@example` 示例
+- 为 `createAbortError` 添加 `@example` 示例
+- 重写 README，更新许可证信息和文档链接
+
+### 测试
+- 新增 `writeJsonFile`/`writeJsonFileSync` 测试用例
+- 新增 `createAbortError` 测试用例
+- 新增 MD5 多块处理和填充边界情况的测试用例
 
 ## [1.10.0] - 2025-07-31
 

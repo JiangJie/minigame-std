@@ -1,4 +1,4 @@
-# Mini-Game Standard Library
+# minigame-std
 
 [![License](https://img.shields.io/npm/l/minigame-std.svg)](LICENSE)
 [![Build Status](https://github.com/jiangjie/minigame-std/actions/workflows/test.yml/badge.svg)](https://github.com/jiangjie/minigame-std/actions/workflows/test.yml)
@@ -8,12 +8,12 @@
 [![JSR Version](https://jsr.io/badges/@happy-js/minigame-std)](https://jsr.io/@happy-js/minigame-std)
 [![JSR Score](https://jsr.io/badges/@happy-js/minigame-std/score)](https://jsr.io/@happy-js/minigame-std/score)
 
+Cross-platform Standard Library for Mini-Games
+
 [简体中文](./README.md) | [API Documentation](https://jiangjie.github.io/minigame-std/)
 
 > [!NOTE]
 > This is not an official project of any mini-game platform.
-
-> The following documentation uses WeChat Mini-Game as an example, but other mini-game platforms work similarly.
 
 ---
 
@@ -42,9 +42,11 @@ wx.encode({
 });
 ```
 
+Additionally, not all mini-game platforms provide the `wx.encode` API (some platforms may lack this interface), which further complicates cross-platform development.
+
 Typically, mini-games are developed and debugged in browsers first, then published to mini-game platforms. Furthermore, the same codebase is often published to both mini-game and web platforms simultaneously.
 
-In this scenario, these differences become an unavoidable challenge. This project aims to smooth out these differences, helping developers use the same API across different platforms.
+In this scenario, these differences become an unavoidable challenge. This project aims to smooth out these differences, helping developers use the same API across different platforms, while also providing unified implementations for platforms that lack certain APIs.
 
 ## Installation
 
@@ -88,6 +90,7 @@ jsr add @happy-js/minigame-std
     // Supports zip/unzip, read/write files, directory operations, etc.
     await fs.writeFile('path/to/file.txt', 'content');
     await fs.readFile('path/to/file.txt');
+    await fs.writeJsonFile('path/to/data.json', { key: 'value' });
     await fs.zip('source', 'target.zip');
     ```
 
@@ -172,7 +175,7 @@ jsr add @happy-js/minigame-std
     v.requestFullScreen(0); // 0: portrait, 90/-90: landscape
     ```
 
-For more features, see the [complete documentation](docs/README.md).
+For more features, see the [API Documentation](https://jiangjie.github.io/minigame-std/).
 
 ## Comparison with Adapter
 
@@ -256,37 +259,11 @@ pnpm test
 ```
 
 > [!NOTE]
-> Due to testing environment limitations, test cases don't cover all functionality.
+> Due to testing environment limitations, test cases don't cover all functionality. Coverage is not 100% mainly because some code only runs in the mini-game environment, which cannot be simulated by existing testing tools.
 
 -   **Web Platform Tests**: Test cases in the `tests` directory are based on the web platform (`__MINIGAME_STD_MINA__: false`), using [Vitest](https://vitest.dev/) + [Playwright](https://playwright.dev/) to run in a real browser environment
 -   **File System Tests**: For web platform OPFS file system tests, see [happy-opfs](https://github.com/JiangJie/happy-opfs)
 -   **Mini-Game Platform Tests**: For mini-game environment test cases, see [minigame-std-demo](https://github.com/JiangJie/minigame-std-demo)
-
-### Test Coverage
-
-Current test coverage:
-- Overall line coverage: **95.74%**
-- Branch coverage: **67.60%**
-- Number of test cases: **253**
-
-Main tested modules:
-- ✅ Assertion utilities (assert)
-- ✅ Local storage (storage)
-- ✅ Event handling (event)
-- ✅ Cryptographic algorithms (crypto) - MD5/SHA/HMAC/RSA
-- ✅ Performance measurement (performance)
-- ✅ Base64 encoding/decoding
-- ✅ Text encoding/decoding (codec)
-- ✅ HTTP requests (fetch)
-- ✅ WebSocket (socket)
-- ✅ Platform detection (platform)
-- ✅ Clipboard (clipboard)
-- ✅ Network status (network)
-- ✅ Image processing (image)
-- ✅ Video playback (video)
-- ✅ File system (fs)
-- ✅ Geolocation (lbs)
-- ✅ Audio (audio)
 
 ## Contributing
 
@@ -294,6 +271,4 @@ Issues and Pull Requests are welcome!
 
 ## License
 
-GPL-3.0
-
-## [Documentation](docs/README.md)
+[MIT](LICENSE)

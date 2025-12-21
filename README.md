@@ -1,4 +1,4 @@
-# 小游戏"标准开发库"
+# minigame-std
 
 [![License](https://img.shields.io/npm/l/minigame-std.svg)](LICENSE)
 [![Build Status](https://github.com/jiangjie/minigame-std/actions/workflows/test.yml/badge.svg)](https://github.com/jiangjie/minigame-std/actions/workflows/test.yml)
@@ -8,12 +8,12 @@
 [![JSR Version](https://jsr.io/badges/@happy-js/minigame-std)](https://jsr.io/@happy-js/minigame-std)
 [![JSR Score](https://jsr.io/badges/@happy-js/minigame-std/score)](https://jsr.io/@happy-js/minigame-std/score)
 
+小游戏跨平台标准开发库
+
 [English](./README.en.md) | [API 文档](https://jiangjie.github.io/minigame-std/)
 
 > [!NOTE]
 > 这不是任何一家小游戏平台的官方项目。
-
-> 以下文档以微信小游戏为例进行说明，其他小游戏平台基本也是一样的。
 
 ---
 
@@ -21,11 +21,11 @@
 
 本项目的目的是提供一套能同时运行于小游戏环境和浏览器环境，具有相同 API 的常用开发库。
 
-鉴于小游戏平台通常在运行时之外还有一套官方的基础库（Core），而本项目是基于基础库的再次封装，定位为基础库的补充，希望可以作为“标准开发库（Std）”存在。
+鉴于小游戏平台通常在运行时之外还有一套官方的基础库（Core），而本项目是基于基础库的再次封装，定位为基础库的补充，希望可以作为"标准开发库（Std）"存在。
 
 按照[微信小游戏](https://developers.weixin.qq.com/minigame/dev/guide/)的官方说法（其他小游戏平台类似），小游戏和浏览器运行环境的主要差别在于没有 BOM 和 DOM API，而提供了类似功能的 wx API，但两者存在较大差异。
 
-比如将 UTF-8 字符串编码为 ArrayBuffer。
+比如将 UTF-8 字符串编码为 ArrayBuffer：
 
 **浏览器**
 
@@ -42,9 +42,11 @@ wx.encode({
 });
 ```
 
+此外，并非所有小游戏平台都提供了 `wx.encode` 接口（如部分平台可能缺失该 API），这进一步增加了跨平台开发的复杂性。
+
 首先，小游戏基本都是先在浏览器上进行开发调试，而后再发布到小游戏平台；进而，通常同一套代码还会同时发布到小游戏平台和 web 平台。
 
-在这种情况下，以上差异则是不得不面对的问题，处理这些差异将是一种繁琐的挑战，本项目就是为了抹平这种差异，帮助开发者做到使用相同的 API 兼容不同的平台。
+在这种情况下，以上差异则是不得不面对的问题，处理这些差异将是一种繁琐的挑战，本项目就是为了抹平这种差异，帮助开发者做到使用相同的 API 兼容不同的平台，同时为缺失某些 API 的平台提供统一的实现。
 
 ## 安装
 
@@ -53,7 +55,7 @@ wx.encode({
 pnpm add minigame-std
 # or via yarn
 yarn add minigame-std
-# or just from npm
+# or via npm
 npm install --save minigame-std
 # via JSR
 jsr add @happy-js/minigame-std
@@ -88,6 +90,7 @@ jsr add @happy-js/minigame-std
     // 支持 zip/unzip、读写文件、目录操作等
     await fs.writeFile('path/to/file.txt', 'content');
     await fs.readFile('path/to/file.txt');
+    await fs.writeJsonFile('path/to/data.json', { key: 'value' });
     await fs.zip('source', 'target.zip');
     ```
 
@@ -172,7 +175,7 @@ jsr add @happy-js/minigame-std
     v.requestFullScreen(0); // 0: 竖屏, 90/-90: 横屏
     ```
 
-更多功能请查看[完整文档](docs/README.md)。
+更多功能请查看 [API 文档](https://jiangjie.github.io/minigame-std/)。
 
 ## 和 Adapter 是什么关系
 
@@ -251,37 +254,11 @@ pnpm test
 ```
 
 > [!NOTE]
-> 由于测试环境的局限性，测试用例并不能覆盖所有功能。
+> 由于测试环境的局限性，测试用例并不能覆盖所有功能。覆盖率未达 100% 主要是因为部分代码仅运行在小游戏环境，而现有测试工具无法模拟小游戏运行时。
 
 -   **Web 平台测试**: `tests` 目录下的测试用例基于 web 平台（`__MINIGAME_STD_MINA__: false`），使用 [Vitest](https://vitest.dev/) + [Playwright](https://playwright.dev/) 在真实浏览器环境中运行
 -   **文件系统测试**: Web 平台的 OPFS 文件系统测试请参考 [happy-opfs](https://github.com/JiangJie/happy-opfs)
 -   **小游戏平台测试**: 小游戏环境的测试用例请参考 [minigame-std-demo](https://github.com/JiangJie/minigame-std-demo)
-
-### 测试覆盖率
-
-当前测试覆盖率：
-- 总体行覆盖率：**95.74%**
-- 分支覆盖率：**67.60%**
-- 测试用例数：**253 个**
-
-主要测试模块：
-- ✅ 断言工具 (assert)
-- ✅ 本地存储 (storage)
-- ✅ 事件处理 (event)
-- ✅ 加密算法 (crypto) - MD5/SHA/HMAC/RSA
-- ✅ 性能测量 (performance)
-- ✅ Base64 编解码
-- ✅ 文本编解码 (codec)
-- ✅ 网络请求 (fetch)
-- ✅ WebSocket (socket)
-- ✅ 平台检测 (platform)
-- ✅ 剪贴板 (clipboard)
-- ✅ 网络状态 (network)
-- ✅ 图像处理 (image)
-- ✅ 视频播放 (video)
-- ✅ 文件系统 (fs)
-- ✅ 地理位置 (lbs)
-- ✅ 音频 (audio)
 
 ## 贡献
 
@@ -289,6 +266,4 @@ pnpm test
 
 ## 许可证
 
-GPL-3.0
-
-## [文档](docs/README.md)
+[MIT](LICENSE)
