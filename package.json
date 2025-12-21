@@ -24,7 +24,7 @@
     "predocs": "pnpm dlx rimraf docs",
     "docs": "pnpm exec typedoc",
     "prepublishOnly": "pnpm run build",
-    "playwright:install": "pnpm exec playwright install",
+    "playwright:install": "pnpm exec playwright install chromium-headless-shell",
     "test": "pnpm exec vitest run --coverage",
     "test:watch": "pnpm exec vitest watch",
     "test:ui": "pnpm exec vitest --ui"
