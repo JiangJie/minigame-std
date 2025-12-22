@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Mini-game platform implementation for storage operations.
+ */
+
 import { RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { assertString } from '../assert/assertions.ts';
 import { miniGameFailureToError, promisifyWithResult, tryGeneralSyncOp } from '../utils/mod.ts';

@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Mini-game platform implementation for sync file system operations.
+ */
+
 import { basename, dirname, join, SEPARATOR } from '@std/path/posix';
 import * as fflate from 'fflate/browser';
 import { type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';

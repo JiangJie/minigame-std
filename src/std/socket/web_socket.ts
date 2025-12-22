@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Web platform implementation for WebSocket.
+ */
+
 import { RESULT_VOID, type AsyncVoidIOResult } from 'happy-rusty';
 import { assertSafeSocketUrl } from '../assert/assertions.ts';
 import type { DataSource } from '../defines.ts';

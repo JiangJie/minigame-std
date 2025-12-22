@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Web platform implementation for clipboard operations.
+ */
+
 import type { AsyncIOResult, AsyncVoidIOResult } from 'happy-rusty';
 import { assertString } from '../assert/assertions.ts';
 import { tryDOMAsyncOp } from '../utils/mod.ts';

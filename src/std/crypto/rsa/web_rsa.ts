@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Web platform implementation for RSA encryption.
+ */
+
 import { base64FromBuffer } from '../../base64/mod.ts';
 import { byteStringToBuffer, textEncode } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';

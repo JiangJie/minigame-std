@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Web platform implementation for SHA hashing.
+ */
+
 import { hexFromBuffer, textEncode } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
 import type { SHA } from '../crypto_defines.ts';

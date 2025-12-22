@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Mini-game platform implementation for clipboard operations.
+ */
+
 import { RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { assertString } from '../assert/assertions.ts';
 import { miniGameFailureToError, promisifyWithResult } from '../utils/mod.ts';

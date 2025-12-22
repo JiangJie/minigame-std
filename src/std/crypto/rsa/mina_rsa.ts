@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Mini-game platform implementation for RSA encryption.
+ */
+
 import { importPublicKey as importKey, sha1, sha256, sha384, sha512 } from 'rsa-oaep-encryption';
 import { base64FromBuffer } from '../../base64/mod.ts';
 import type { RSAPublicKey, SHA } from '../crypto_defines.ts';

@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Web platform implementation for network status.
+ */
+
 import type { NetworkType } from './network_define.ts';
 
 /**

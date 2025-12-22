@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Mini-game platform implementation for random number generation.
+ */
+
 import { type AsyncIOResult } from 'happy-rusty';
 import { hexFromBuffer } from '../../codec/mod.ts';
 import { miniGameFailureToError, promisifyWithResult } from '../../utils/mod.ts';

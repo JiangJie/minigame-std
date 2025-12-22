@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest';
-import { assertSafeSocketUrl, assertSafeUrl, assertString } from '../src/mod.ts';
+// Internal functions - import directly from source for testing
+import { assertSafeSocketUrl, assertSafeUrl, assertString } from '../src/std/assert/assertions.ts';
 
 test('assertString accepts valid strings', () => {
     assertString('hello');

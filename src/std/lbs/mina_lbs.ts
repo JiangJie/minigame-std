@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Mini-game platform implementation for location-based services.
+ */
+
 import { type AsyncResult } from 'happy-rusty';
 import { promisifyWithResult } from '../utils/mod.ts';
 

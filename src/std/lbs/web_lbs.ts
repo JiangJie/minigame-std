@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Web platform implementation for location-based services.
+ */
+
 import { Err, Ok, type AsyncResult, type Result } from 'happy-rusty';
 import { Future } from 'tiny-future';
 

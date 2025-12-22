@@ -1,4 +1,5 @@
 /**
+ * @internal
  * Hash-based Message Authentication Code implementation. Requires a message
  * digest object that can be obtained, for example, from forge.md.sha1 or
  * forge.md.md5.

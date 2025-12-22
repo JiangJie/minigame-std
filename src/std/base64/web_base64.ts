@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Web platform implementation for Base64 encoding/decoding.
+ */
+
 import { byteStringFromBuffer, byteStringToBuffer, textDecode, textEncode } from '../codec/mod.ts';
 
 /**

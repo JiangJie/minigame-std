@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Web platform implementation for storage operations.
+ */
+
 import { Err, Ok, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { assertString } from '../assert/assertions.ts';
 import { tryDOMSyncOp } from '../utils/mod.ts';

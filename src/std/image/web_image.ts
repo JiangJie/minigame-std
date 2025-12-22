@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Web platform implementation for image creation.
+ */
+
 import { readBlobFile } from 'happy-opfs';
 import { Ok, type AsyncIOResult } from 'happy-rusty';
 

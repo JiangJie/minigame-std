@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Mini-game platform implementation for image creation.
+ */
+
 export function createImageFromUrl(url: string): WechatMinigame.Image {
     const img = wx.createImage();
     img.src = url;

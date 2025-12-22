@@ -1,4 +1,5 @@
 /**
+ * @internal
  * 同步/异步的公共代码。
  */
 
@@ -10,6 +11,7 @@ import { bufferSource2Ab, miniGameFailureToError } from '../utils/mod.ts';
 import type { FileEncoding, ReadOptions, WriteFileContent } from './fs_define.ts';
 
 /**
+ * @internal
  * 小游戏文件系统管理器实例。
  *
  * for tree shake
@@ -17,6 +19,7 @@ import type { FileEncoding, ReadOptions, WriteFileContent } from './fs_define.ts
 let fs: WechatMinigame.FileSystemManager;
 
 /**
+ * @internal
  * 获取小游戏文件系统管理器实例。
  * @returns 文件系统管理器实例。
  */
@@ -26,6 +29,7 @@ export function getFs(): WechatMinigame.FileSystemManager {
 }
 
 /**
+ * @internal
  * 根路径，`wxfile://` 或 `http://`。
  *
  * for tree shake
@@ -33,6 +37,7 @@ export function getFs(): WechatMinigame.FileSystemManager {
 let rootPath: string;
 
 /**
+ * @internal
  * 用户可写的根路径， `wxfile://usr` 或 `http://usr`。
  *
  * for tree shake
@@ -40,6 +45,7 @@ let rootPath: string;
 let rootUsrPath: string;
 
 /**
+ * @internal
  * 获取文件系统的根路径。
  * @returns 文件系统的根路径。
  */
@@ -52,6 +58,7 @@ export function getRootUsrPath(): string {
 }
 
 /**
+ * @internal
  * 获取给定路径的绝对路径。
  * @param path - 相对USER_DATA_PATH的相对路径，也必须以`/`开头。
  * @returns 转换后的绝对路径。
@@ -71,6 +78,7 @@ export function getAbsolutePath(path: string): string {
 }
 
 /**
+ * @internal
  * 判断是否文件或者文件夹不存在。
  * @param err - 错误对象。
  */
@@ -82,6 +90,7 @@ export function isNotFoundIOError(err: WechatMinigame.FileError): boolean {
 }
 
 /**
+ * @internal
  * 判断是否文件或者文件夹已存在。
  * @param err - 错误对象。
  */
@@ -93,6 +102,7 @@ export function isAlreadyExistsIOError(err: WechatMinigame.FileError): boolean {
 }
 
 /**
+ * @internal
  * 将错误对象转换为 IOResult 类型。
  * @typeParam T - Result 的 Ok 类型。
  * @param err - 错误对象。
@@ -109,6 +119,7 @@ export function fileErrorToResult<T>(err: WechatMinigame.FileError): IOResult<T>
 }
 
 /**
+ * @internal
  * Whether the error is a `NotFoundError`.
  * @param err - The error to check.
  * @returns `true` if the error is a `NotFoundError`, otherwise `false`.
@@ -118,6 +129,7 @@ export function isNotFoundError(err: Error): boolean {
 }
 
 /**
+ * @internal
  * 处理 `mkdir` 的错误。
  */
 export function errToMkdirResult(err: WechatMinigame.FileError): VoidIOResult {
@@ -126,6 +138,7 @@ export function errToMkdirResult(err: WechatMinigame.FileError): VoidIOResult {
 }
 
 /**
+ * @internal
  * 获取读取文件的编码。
  */
 export function getReadFileEncoding(options?: ReadOptions): FileEncoding | undefined {
@@ -140,6 +153,7 @@ export function getReadFileEncoding(options?: ReadOptions): FileEncoding | undef
 }
 
 /**
+ * @internal
  * 处理 `remove` 的错误。
  */
 export function errToRemoveResult(err: WechatMinigame.FileError): VoidIOResult {
@@ -152,6 +166,7 @@ interface GetWriteFileContents {
     encoding: FileEncoding | undefined;
 }
 /**
+ * @internal
  * 获取写入文件的参数。
  */
 export function getWriteFileContents(contents: WriteFileContent): GetWriteFileContents {
@@ -169,6 +184,7 @@ export function getWriteFileContents(contents: WriteFileContent): GetWriteFileCo
 }
 
 /**
+ * @internal
  * 获取 `exists` 的结果。
  */
 export function getExistsResult(statsResult: IOResult<WechatMinigame.Stats>, options?: ExistsOptions): IOResult<boolean> {

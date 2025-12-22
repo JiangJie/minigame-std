@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Mini-game platform implementation for Base64 encoding/decoding.
+ */
+
 import { textDecode, textEncode } from '../codec/mod.ts';
 import { base64FromBuffer, base64ToBuffer } from './base64.ts';
 

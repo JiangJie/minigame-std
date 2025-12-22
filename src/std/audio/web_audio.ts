@@ -1,3 +1,7 @@
+/**
+ * Web platform implementation for audio playback.
+ */
+
 import { Err, Ok, RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import { readFile } from '../fs/mod.ts';
@@ -14,8 +18,7 @@ let audioContext: AudioContext | null;
  * @returns 返回缓存的 AudioContext。
  * @example
  * ```ts
- * const context = getGlobalAudioContext();
- * console.log('采样率:', context.sampleRate);
+ * const context = audio.getGlobalAudioContext();
  * ```
  */
 export function getGlobalAudioContext(): AudioContext {
@@ -28,10 +31,7 @@ export function getGlobalAudioContext(): AudioContext {
  * @returns 返回一个 AsyncVoidIOResult。
  * @example
  * ```ts
- * const result = await closeGlobalAudioContext();
- * if (result.isOk()) {
- *     console.log('AudioContext 已关闭');
- * }
+ * await audio.closeGlobalAudioContext();
  * ```
  */
 export async function closeGlobalAudioContext(): AsyncVoidIOResult {
@@ -51,9 +51,7 @@ export async function closeGlobalAudioContext(): AsyncVoidIOResult {
  * @returns 返回一个 AudioContext实例。
  * @example
  * ```ts
- * const context = createWebAudioContext();
- * // 使用完后记得关闭
- * await context.close();
+ * const context = audio.createWebAudioContext();
  * ```
  */
 export function createWebAudioContext(): AudioContext {
@@ -70,11 +68,7 @@ export function createWebAudioContext(): AudioContext {
  * @returns 正在播放的 AudioBufferSourceNode。
  * @example
  * ```ts
- * const context = getGlobalAudioContext();
- * const audioBuffer = await context.decodeAudioData(arrayBuffer);
- * const source = playWebAudioFromAudioBuffer(audioBuffer, { loop: true });
- * // 停止播放
- * source.stop();
+ * const source = audio.playWebAudioFromAudioBuffer(audioBuffer, { loop: true });
  * ```
  */
 export function playWebAudioFromAudioBuffer(buffer: AudioBuffer, options?: PlayOptions): AudioBufferSourceNode {
@@ -108,11 +102,7 @@ export function playWebAudioFromAudioBuffer(buffer: AudioBuffer, options?: PlayO
  * @returns 正在播放的 AudioBufferSourceNode。
  * @example
  * ```ts
- * const response = await fetch('https://example.com/audio.mp3');
- * const arrayBuffer = await response.arrayBuffer();
- * const source = await playWebAudioFromArrayBuffer(arrayBuffer);
- * // 停止播放
- * source.stop();
+ * const source = await audio.playWebAudioFromArrayBuffer(buffer);
  * ```
  */
 export async function playWebAudioFromArrayBuffer(buffer: BufferSource, options?: PlayOptions): Promise<AudioBufferSourceNode> {
@@ -129,11 +119,9 @@ export async function playWebAudioFromArrayBuffer(buffer: BufferSource, options?
  * @returns 正在播放的 AudioBufferSourceNode。
  * @example
  * ```ts
- * const result = await playWebAudioFromFile('/audio/background.mp3', { loop: true });
+ * const result = await audio.playWebAudioFromFile('/path/to/audio.mp3');
  * if (result.isOk()) {
  *     const source = result.unwrap();
- *     // 停止播放
- *     source.stop();
  * }
  * ```
  */

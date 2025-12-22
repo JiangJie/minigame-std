@@ -1,4 +1,9 @@
 /**
+ * @internal
+ * Web platform implementation for event listeners.
+ */
+
+/**
  * 添加错误监听器，用于监听标准的错误事件。
  * @param listener - 错误事件的回调函数。
  * @returns 返回一个函数，调用该函数可以移除监听器。

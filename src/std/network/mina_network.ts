@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Mini-game platform implementation for network status.
+ */
+
 import { promisifyWithResult } from '../utils/promisify.ts';
 import type { NetworkType } from './network_define.ts';
 

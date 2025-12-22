@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Mini-game platform implementation for SHA hashing.
+ */
+
 import { sha1 as SHA1, sha256 as SHA256, sha384 as SHA384, sha512 as SHA512 } from 'rsa-oaep-encryption';
 import { toByteString } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';

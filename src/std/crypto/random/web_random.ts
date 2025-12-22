@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Web platform implementation for random number generation.
+ */
+
 import type { UUID } from './random_defines.ts';
 
 export function getRandomValues(length: number): Uint8Array {

@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * Mini-game platform implementation for async file system operations.
+ */
+
 import type { FetchResponse, FetchTask } from '@happy-ts/fetch-t';
 import { basename, dirname, join } from '@std/path/posix';
 import * as fflate from 'fflate/browser';
