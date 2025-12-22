@@ -84,32 +84,37 @@ function ab2Utf8String(data: ArrayBuffer): string {
     while (i < u8a.length) {
         const byte1 = u8a[i];
 
+        let codePoint: number;
+
         if (byte1 < 0x80) {
             // 1字节字符
-            str += String.fromCharCode(byte1);
+            codePoint = byte1;
             i += 1;
         } else if (byte1 < 0xe0) {
             // 2字节字符
             const byte2 = u8a[i + 1];
-            str += String.fromCharCode(((byte1 & 0x1f) << 6) | (byte2 & 0x3f));
+            codePoint = ((byte1 & 0x1f) << 6) | (byte2 & 0x3f);
             i += 2;
         } else if (byte1 < 0xf0) {
             // 3字节字符
             const byte2 = u8a[i + 1];
             const byte3 = u8a[i + 2];
-            str += String.fromCharCode(((byte1 & 0x0f) << 12) | ((byte2 & 0x3f) << 6) | (byte3 & 0x3f));
+            codePoint = ((byte1 & 0x0f) << 12) | ((byte2 & 0x3f) << 6) | (byte3 & 0x3f);
             i += 3;
-        } else if (byte1 < 0xF8) {
-            // 4字节字符
+        } else if (byte1 < 0xf8) {
+            // 4字节字符（码点 >= U+10000，如 emoji）
             const byte2 = u8a[i + 1];
             const byte3 = u8a[i + 2];
             const byte4 = u8a[i + 3];
-            str += String.fromCharCode(((byte1 & 0x07) << 18) | ((byte2 & 0x3f) << 12) | ((byte3 & 0x3f) << 6) | (byte4 & 0x3f));
+            codePoint = ((byte1 & 0x07) << 18) | ((byte2 & 0x3f) << 12) | ((byte3 & 0x3f) << 6) | (byte4 & 0x3f);
             i += 4;
         } else {
             // 无效的 UTF-8 字节序列
             throw new Error('Invalid UTF-8 byte sequence');
         }
+
+        // 使用 fromCodePoint 正确处理所有 Unicode 码点（包括 >= U+10000）
+        str += String.fromCodePoint(codePoint);
     }
 
     return str;
