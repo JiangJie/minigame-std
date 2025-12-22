@@ -18,8 +18,8 @@ importers:
         specifier: ^0.8.2
         version: 0.8.2
       happy-opfs:
-        specifier: ^1.11.0
-        version: 1.11.0
+        specifier: ^1.12.0
+        version: 1.12.0
       happy-rusty:
         specifier: ^1.6.1
         version: 1.6.1
@@ -142,8 +142,8 @@ packages:
     peerDependencies:
       '@csstools/css-tokenizer': ^3.0.4
 
-  '@csstools/css-syntax-patches-for-csstree@1.0.21':
-    resolution: {integrity: sha512-plP8N8zKfEZ26figX4Nvajx8DuzfuRpLTqglQ5d0chfnt35Qt3X+m6ASZ+rG0D0kxe/upDVNwSIVJP5n4FuNfw==}
+  '@csstools/css-syntax-patches-for-csstree@1.0.22':
+    resolution: {integrity: sha512-qBcx6zYlhleiFfdtzkRgwNC7VVoAwfK76Vmsw5t+PbvtdknO9StgRk7ROvq9so1iqbdW4uLIDAsXRsTfUrIoOw==}
     engines: {node: '>=18'}
 
   '@csstools/css-tokenizer@3.0.4':
@@ -882,8 +882,8 @@ packages:
     resolution: {integrity: sha512-QsCdAUHAmiDeKeaNojb1OHOPF7NjcWPBR7obdu3NwH2a/oyQaLg5d0aaCy/9My6CdPChYF07dvz5chaXBGaD4g==}
     engines: {node: '>=20.0.0'}
 
-  happy-opfs@1.11.0:
-    resolution: {integrity: sha512-oCKQ7TGiYam8UbjQ9/fuJf3to3CVnZpORcIkRLNYRHSDs9rJRVUFaMx5lnIt+rkDgR+dbxCbvu/KWmmPsKufvw==}
+  happy-opfs@1.12.0:
+    resolution: {integrity: sha512-pTMmZcwrVNnhPy5tNQsxUDE4rDkzsKNNP8oAL+ko3DtB0rlI2z2TWpVcqxkHMHmt67k4EDc+NldzbElQ5a8hgA==}
 
   happy-rusty@1.6.1:
     resolution: {integrity: sha512-8mnnuzRoEKxkYtsMxIoDmwdHDiAaPGMspVBCRWdHYvEzuG0cnQZpiLCwqggOSdhCSJzgQ1hSXO//6lNV3Sx+6A==}
@@ -1490,7 +1490,7 @@ snapshots:
       '@csstools/css-tokenizer': 3.0.4
     optional: true
 
-  '@csstools/css-syntax-patches-for-csstree@1.0.21':
+  '@csstools/css-syntax-patches-for-csstree@1.0.22':
     optional: true
 
   '@csstools/css-tokenizer@3.0.4':
@@ -2057,7 +2057,7 @@ snapshots:
   cssstyle@5.3.5:
     dependencies:
       '@asamuzakjp/css-color': 4.1.1
-      '@csstools/css-syntax-patches-for-csstree': 1.0.21
+      '@csstools/css-syntax-patches-for-csstree': 1.0.22
       css-tree: 3.1.0
     optional: true
 
@@ -2233,7 +2233,7 @@ snapshots:
       whatwg-mimetype: 3.0.0
     optional: true
 
-  happy-opfs@1.11.0:
+  happy-opfs@1.12.0:
     dependencies:
       '@happy-ts/fetch-t': 1.4.0
       '@std/path': '@jsr/std__path@1.1.3'
