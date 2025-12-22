@@ -2,8 +2,9 @@
  * 同步/异步的公共代码。
  */
 
-import { assertAbsolutePath, NOT_FOUND_ERROR, type ExistsOptions } from 'happy-opfs';
+import { NOT_FOUND_ERROR, ROOT_DIR, type ExistsOptions } from 'happy-opfs';
 import { Err, Ok, RESULT_FALSE, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
+import invariant from 'tiny-invariant';
 import { assertString } from '../assert/assertions.ts';
 import { bufferSource2Ab, miniGameFailureToError } from '../utils/mod.ts';
 import type { FileEncoding, ReadOptions, WriteFileContent } from './fs_define.ts';
@@ -65,7 +66,7 @@ export function getAbsolutePath(path: string): string {
         return path;
     }
 
-    assertAbsolutePath(path);
+    invariant(path[0] === ROOT_DIR, () => `Path must start with / but received ${ path }`);
     return usrPath + path;
 }
 

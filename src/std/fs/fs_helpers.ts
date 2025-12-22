@@ -1,4 +1,4 @@
-import { ABORT_ERROR, toFileSystemHandleLike, type FileSystemFileHandleLike, type FileSystemHandleLike } from 'happy-opfs';
+import { ABORT_ERROR, isFileHandle, isFileHandleLike, type FileSystemHandleLike } from 'happy-opfs';
 
 /**
  * 将 `FileSystemHandleLike` 转换为小游戏 `Stats`。
@@ -6,30 +6,16 @@ import { ABORT_ERROR, toFileSystemHandleLike, type FileSystemFileHandleLike, typ
  * @returns
  */
 export function convertFileSystemHandleLikeToStats(handleLike: FileSystemHandleLike): WechatMinigame.Stats {
-    const { kind } = handleLike;
-    const isFile = kind === 'file';
-    const isDirectory = kind === 'directory';
+    const isFile = isFileHandleLike(handleLike);
 
-    let size = 0;
-    let lastModifiedTime = 0;
-
-    if (isFile) {
-        const file = handleLike as FileSystemFileHandleLike;
-
-        size = file.size;
-        lastModifiedTime = file.lastModified;
-    }
-
-    const stats: WechatMinigame.Stats = {
+    return {
         isFile: (): boolean => isFile,
-        isDirectory: (): boolean => isDirectory,
-        size,
-        lastModifiedTime,
+        isDirectory: (): boolean => !isFile,
+        size: isFile ? handleLike.size : 0,
+        lastModifiedTime: isFile ? handleLike.lastModified : 0,
         lastAccessedTime: 0,
         mode: 0,
     };
-
-    return stats;
 }
 
 /**
@@ -38,8 +24,23 @@ export function convertFileSystemHandleLikeToStats(handleLike: FileSystemHandleL
  * @returns
  */
 export async function convertFileSystemHandleToStats(handle: FileSystemHandle): Promise<WechatMinigame.Stats> {
-    const handleLike = await toFileSystemHandleLike(handle);
-    return convertFileSystemHandleLikeToStats(handleLike);
+    const isFile = isFileHandle(handle);
+    let size = 0;
+    let lastModified = 0;
+
+    if (isFile) {
+        const file = await handle.getFile();
+        ({ size, lastModified } = file);
+    }
+
+    return {
+        isFile: (): boolean => isFile,
+        isDirectory: (): boolean => !isFile,
+        size,
+        lastModifiedTime: lastModified,
+        lastAccessedTime: 0,
+        mode: 0,
+    };
 }
 
 /**
