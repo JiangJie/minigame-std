@@ -4,7 +4,7 @@
  */
 
 import { NOT_FOUND_ERROR, ROOT_DIR, type ExistsOptions } from 'happy-opfs';
-import { Err, Ok, RESULT_FALSE, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
+import { Err, Lazy, Ok, RESULT_FALSE, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
 import invariant from 'tiny-invariant';
 import { assertString } from '../assert/assertions.ts';
 import { bufferSource2Ab, miniGameFailureToError } from '../utils/mod.ts';
@@ -16,7 +16,7 @@ import type { FileEncoding, ReadOptions, WriteFileContent } from './fs_define.ts
  *
  * for tree shake
  */
-let fs: WechatMinigame.FileSystemManager;
+const fs = Lazy(() => wx.getFileSystemManager());
 
 /**
  * @internal
@@ -24,17 +24,8 @@ let fs: WechatMinigame.FileSystemManager;
  * @returns 文件系统管理器实例。
  */
 export function getFs(): WechatMinigame.FileSystemManager {
-    fs ??= wx.getFileSystemManager();
-    return fs;
+    return fs.force();
 }
-
-/**
- * @internal
- * 根路径，`wxfile://` 或 `http://`。
- *
- * for tree shake
- */
-let rootPath: string;
 
 /**
  * @internal
@@ -42,7 +33,19 @@ let rootPath: string;
  *
  * for tree shake
  */
-let rootUsrPath: string;
+const rootUsrPath = Lazy(() => wx.env.USER_DATA_PATH);
+
+/**
+ * @internal
+ * 根路径，`wxfile://` 或 `http://`。
+ *
+ * for tree shake
+ */
+const rootPath = Lazy(() => {
+    const usrPath = rootUsrPath.force();
+    // trim `usr`
+    return usrPath.slice(0, usrPath.indexOf('usr'));
+});
 
 /**
  * @internal
@@ -50,11 +53,7 @@ let rootUsrPath: string;
  * @returns 文件系统的根路径。
  */
 export function getRootUsrPath(): string {
-    rootUsrPath ??= wx.env.USER_DATA_PATH;
-    // trim `usr`
-    rootPath ??= rootUsrPath.slice(0, rootUsrPath.indexOf('usr'));
-
-    return rootUsrPath;
+    return rootUsrPath.force();
 }
 
 /**
@@ -69,7 +68,7 @@ export function getAbsolutePath(path: string): string {
     const usrPath = getRootUsrPath();
 
     // usr or tmp
-    if (path.startsWith(rootPath)) {
+    if (path.startsWith(rootPath.force())) {
         return path;
     }
 

@@ -3,18 +3,10 @@
  * Web环境的编解码
  */
 
-let encoder: TextEncoder;
-let decoder: TextDecoder;
+import { Lazy } from 'happy-rusty';
 
-function getEncoder(): TextEncoder {
-    encoder ??= new TextEncoder();
-    return encoder;
-}
-
-function getDecoder(): TextDecoder {
-    decoder ??= new TextDecoder();
-    return decoder;
-}
+const encoder = Lazy(() => new TextEncoder());
+const decoder = Lazy(() => new TextDecoder());
 
 /**
  * 将字符串数据编码为 `Uint8Array`
@@ -22,7 +14,7 @@ function getDecoder(): TextDecoder {
  * @returns 编码后的 `Uint8Array`
  */
 export function textEncode(data: string): Uint8Array<ArrayBuffer> {
-    return getEncoder().encode(data);
+    return encoder.force().encode(data);
 }
 
 /**
@@ -31,5 +23,5 @@ export function textEncode(data: string): Uint8Array<ArrayBuffer> {
  * @returns 解码后的字符串。
  */
 export function textDecode(data: BufferSource): string {
-    return getDecoder().decode(data);
+    return decoder.force().decode(data);
 }

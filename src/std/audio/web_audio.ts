@@ -2,7 +2,7 @@
  * Web platform implementation for audio playback.
  */
 
-import { Err, Ok, RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
+import { Err, Ok, Once, RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import { readFile } from '../fs/mod.ts';
 import { bufferSource2Ab } from '../utils/mod.ts';
@@ -11,7 +11,7 @@ import type { PlayOptions } from './audio_defines.ts';
 /**
  * Cache AudioContext.
  */
-let audioContext: AudioContext | null;
+const audioContext = Once<AudioContext>();
 
 /**
  * 获取缓存的 AudioContext。
@@ -22,8 +22,7 @@ let audioContext: AudioContext | null;
  * ```
  */
 export function getGlobalAudioContext(): AudioContext {
-    audioContext ??= createWebAudioContext();
-    return audioContext;
+    return audioContext.getOrInit(createWebAudioContext);
 }
 
 /**
@@ -35,10 +34,13 @@ export function getGlobalAudioContext(): AudioContext {
  * ```
  */
 export async function closeGlobalAudioContext(): AsyncVoidIOResult {
-    try {
-        await audioContext?.close();
-        audioContext = null;
+    if (!audioContext.isInitialized()) {
+        return RESULT_VOID;
+    }
 
+    try {
+        // 重置 Once 以便下次重新创建
+        await audioContext.take().unwrap().close();
         return RESULT_VOID;
     } catch (e) {
         return Err(e as DOMException);
