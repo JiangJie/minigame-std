@@ -1,4 +1,3 @@
-export * from './std/assert/assertions.ts';
 export * as audio from './std/audio/mod.ts';
 export * from './std/base64/mod.ts';
 export * as clipboard from './std/clipboard/mod.ts';
