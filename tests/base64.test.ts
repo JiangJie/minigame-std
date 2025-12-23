@@ -1,5 +1,7 @@
-import { expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { base64FromBuffer, base64ToBuffer, decodeBase64, encodeBase64, textEncode } from '../src/mod.ts';
+// Direct import for testing mina implementation (doesn't use wx API)
+import { decodeBase64 as minaDecodeBase64, encodeBase64 as minaEncodeBase64 } from '../src/std/base64/mina_base64.ts';
 
 test('encode/decode string to/from base64 string', () => {
     const data = 'minigame-std';
@@ -87,4 +89,25 @@ test('base64 handles binary data correctly', () => {
     const decoded = base64ToBuffer(encoded);
 
     expect(decoded).toEqual(allBytes);
+});
+
+describe('mina base64 implementation', () => {
+    test('minaEncodeBase64 encodes string to base64', () => {
+        expect(minaEncodeBase64('minigame-std')).toBe('bWluaWdhbWUtc3Rk');
+        expect(minaEncodeBase64('中文')).toBe('5Lit5paH');
+        expect(minaEncodeBase64('')).toBe('');
+    });
+
+    test('minaDecodeBase64 decodes base64 to string', () => {
+        expect(minaDecodeBase64('bWluaWdhbWUtc3Rk')).toBe('minigame-std');
+        expect(minaDecodeBase64('5Lit5paH')).toBe('中文');
+        expect(minaDecodeBase64('')).toBe('');
+    });
+
+    test('mina base64 round-trip conversion', () => {
+        const testStrings = ['Hello, World!', '中文测试', 'emoji 🎮🎯', ''];
+        for (const str of testStrings) {
+            expect(minaDecodeBase64(minaEncodeBase64(str))).toBe(str);
+        }
+    });
 });

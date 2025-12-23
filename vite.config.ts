@@ -50,10 +50,25 @@ export default defineConfig(({ command }) => ({
             reporter: ['text', 'json', 'html', 'lcov'],
             include: ['src/**/*.ts'],
             exclude: [
-                'src/std/platform/device.ts',
+                // Mina files that use wx API (cannot be tested in browser)
+                'src/std/clipboard/mina_clipboard.ts',
+                'src/std/codec/mina_codec.ts',
+                'src/std/crypto/random/mina_random.ts',
+                'src/std/event/mina_event.ts',
+                'src/std/fetch/mina_fetch.ts',
                 'src/std/fs/fs_async.ts',
                 'src/std/fs/fs_sync.ts',
-                'src/**/*mina*.ts',
+                'src/std/fs/mina_fs_async.ts',
+                'src/std/fs/mina_fs_shared.ts',
+                'src/std/fs/mina_fs_sync.ts',
+                'src/std/image/mina_image.ts',
+                'src/std/lbs/mina_lbs.ts',
+                'src/std/network/mina_network.ts',
+                'src/std/platform/device.ts',
+                'src/std/socket/mina_socket.ts',
+                'src/std/storage/mina_storage.ts',
+                // Note: mina_base64.ts, mina_hmac.ts, mina_sha.ts, mina_rsa.ts
+                // use rsa-oaep-encryption library and CAN be tested in browser
             ],
         },
         // Test configuration

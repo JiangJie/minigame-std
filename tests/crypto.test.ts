@@ -484,6 +484,20 @@ describe('mina HMAC implementation (rsa-oaep-encryption library)', () => {
         expect(result.length).toBe(64);
     });
 
+    test('minaCreateHMAC with key exactly equal to block size', () => {
+        // SHA-256 blockLength is 64 bytes
+        // Key with exactly 64 bytes should skip the padding branch (line 71)
+        const exactKey = 'a'.repeat(64);
+        const data = 'test data';
+
+        const hmac = minaCreateHMAC('SHA-256', exactKey);
+        hmac.update(data);
+        const result = hmac.digest().toHex();
+
+        expect(typeof result).toBe('string');
+        expect(result.length).toBe(64); // SHA-256 produces 64 hex chars
+    });
+
     test('minaCreateHMAC throws for unsupported hash algorithm', () => {
         expect(() => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
