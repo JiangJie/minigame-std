@@ -47,7 +47,7 @@ export function textDecode(data: BufferSource): string {
  * ```
  */
 export function hexFromBuffer(buffer: BufferSource): string {
-    return Array.from(bufferSource2U8a(buffer)).map(byte => byte.toString(16).padStart(2, '0')).join('');
+    return Array.from(bufferSource2U8a(buffer), byte => byte.toString(16).padStart(2, '0')).join('');
 }
 
 /**
