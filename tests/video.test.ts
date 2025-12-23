@@ -711,6 +711,42 @@ test('video progress event listener receives buffered percentage', () => {
     v.destroy();
 });
 
+test('video progress event calculates buffered percentage when buffered data exists', () => {
+    const v = video.createVideo({
+        src: 'https://example.com/video.mp4',
+    });
+
+    const progressListener = vi.fn();
+    v.onProgress(progressListener);
+
+    const videoEl = document.querySelector('video') as HTMLVideoElement;
+
+    // Mock the buffered property to simulate actual buffered data
+    Object.defineProperty(videoEl, 'buffered', {
+        value: {
+            length: 1,
+            start: () => 0,
+            end: () => 50, // 50 seconds buffered
+        },
+        configurable: true,
+    });
+
+    // Mock duration
+    Object.defineProperty(videoEl, 'duration', {
+        value: 100, // 100 seconds total
+        configurable: true,
+    });
+
+    videoEl.dispatchEvent(new Event('progress'));
+
+    // Should calculate 50% buffered
+    expect(progressListener).toHaveBeenCalledWith({
+        buffered: 50,
+    });
+
+    v.destroy();
+});
+
 test('video initialTime sets currentTime on loadedmetadata', () => {
     const v = video.createVideo({
         src: 'https://example.com/video.mp4',

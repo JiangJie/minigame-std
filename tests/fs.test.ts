@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { fs } from '../src/mod.ts';
-import { createAbortError } from '../src/std/fs/fs_helpers.ts';
+import { convertFileSystemHandleLikeToStats, createAbortError } from '../src/std/fs/fs_helpers.ts';
 
 // Test directory for all fs operations
 const TEST_DIR = '/fs-test';
@@ -25,6 +25,44 @@ describe('createAbortError', () => {
 
         expect(error1).not.toBe(error2);
         expect(error1.name).toBe(error2.name);
+    });
+});
+
+describe('convertFileSystemHandleLikeToStats', () => {
+    test('converts file handle like to Stats', () => {
+        // Mock a file handle like object
+        const fileHandleLike = {
+            kind: 'file' as const,
+            name: 'test.txt',
+            size: 100,
+            lastModified: 1234567890,
+        };
+
+        const stats = convertFileSystemHandleLikeToStats(fileHandleLike);
+
+        expect(stats.isFile()).toBe(true);
+        expect(stats.isDirectory()).toBe(false);
+        expect(stats.size).toBe(100);
+        expect(stats.lastModifiedTime).toBe(1234567890);
+        expect(stats.lastAccessedTime).toBe(0);
+        expect(stats.mode).toBe(0);
+    });
+
+    test('converts directory handle like to Stats', () => {
+        // Mock a directory handle like object
+        const dirHandleLike = {
+            kind: 'directory' as const,
+            name: 'test-dir',
+        };
+
+        const stats = convertFileSystemHandleLikeToStats(dirHandleLike);
+
+        expect(stats.isFile()).toBe(false);
+        expect(stats.isDirectory()).toBe(true);
+        expect(stats.size).toBe(0);
+        expect(stats.lastModifiedTime).toBe(0);
+        expect(stats.lastAccessedTime).toBe(0);
+        expect(stats.mode).toBe(0);
     });
 });
 
