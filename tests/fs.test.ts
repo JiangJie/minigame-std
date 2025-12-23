@@ -158,6 +158,69 @@ describe('fs stat', () => {
         const result = await fs.stat(`${TEST_DIR}/non-existent`);
         expect(result.isErr()).toBe(true);
     });
+
+    test('statSync converts FileSystemHandleLike to Stats for file', async () => {
+        const filePath = `${TEST_DIR}/stat-sync-file.txt`;
+        await fs.writeFile(filePath, 'sync stat content');
+
+        const result = fs.statSync(filePath);
+        // Sync operations may not be supported in all environments
+        if (result.isErr()) {
+            console.warn('statSync not supported in this environment, skipping test');
+            return;
+        }
+
+        const stats = result.unwrap() as WechatMinigame.Stats;
+        expect(stats.isFile()).toBe(true);
+        expect(stats.isDirectory()).toBe(false);
+        expect(stats.size).toBeGreaterThan(0);
+    });
+
+    test('statSync converts FileSystemHandleLike to Stats for directory', async () => {
+        const dirPath = `${TEST_DIR}/stat-sync-dir`;
+        await fs.mkdir(dirPath);
+
+        const result = fs.statSync(dirPath);
+        // Sync operations may not be supported in all environments
+        if (result.isErr()) {
+            console.warn('statSync not supported in this environment, skipping test');
+            return;
+        }
+
+        const stats = result.unwrap() as WechatMinigame.Stats;
+        expect(stats.isFile()).toBe(false);
+        expect(stats.isDirectory()).toBe(true);
+        expect(stats.size).toBe(0);
+        expect(stats.lastModifiedTime).toBe(0);
+    });
+
+    test('statSync with recursive returns FileStats array with directory entries', async () => {
+        const dirPath = `${TEST_DIR}/stat-sync-recursive`;
+        await fs.mkdir(dirPath);
+        await fs.writeFile(`${dirPath}/file1.txt`, 'content1');
+        await fs.mkdir(`${dirPath}/subdir`);
+
+        const result = fs.statSync(dirPath, { recursive: true });
+        // Sync operations may not be supported in all environments
+        if (result.isErr()) {
+            console.warn('statSync not supported in this environment, skipping test');
+            return;
+        }
+
+        const statsArr = result.unwrap() as WechatMinigame.FileStats[];
+        expect(Array.isArray(statsArr)).toBe(true);
+        expect(statsArr.length).toBeGreaterThanOrEqual(3);
+
+        // First entry is the directory itself
+        expect(statsArr[0].path).toBe(dirPath);
+        expect(statsArr[0].stats.isDirectory()).toBe(true);
+
+        // Find the subdir entry
+        const subdirEntry = statsArr.find(e => e.path.endsWith('/subdir'));
+        expect(subdirEntry).toBeDefined();
+        expect(subdirEntry!.stats.isDirectory()).toBe(true);
+        expect(subdirEntry!.stats.isFile()).toBe(false);
+    });
 });
 
 describe('fs writeJsonFile', () => {

@@ -5,6 +5,8 @@
 
 import { importPublicKey as importKey, sha1, sha256, sha384, sha512 } from 'rsa-oaep-encryption';
 import { base64FromBuffer } from '../../base64/mod.ts';
+import { textDecode } from '../../codec/mod.ts';
+import type { DataSource } from '../../defines.ts';
 import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
 
 const SHAs = {
@@ -23,19 +25,21 @@ const SHAs = {
 export function importPublicKey(pem: string, hash: SHA): RSAPublicKey {
     const publicKey = importKey(pem);
 
-    const encrypt = (data: string): ArrayBuffer => {
+    const encrypt = (data: DataSource): ArrayBuffer => {
         // eg: SHA-1 => sha1
         const sha = hash.replace('-', '').toLowerCase();
-        // bypassing type check
-        return publicKey.encrypt(data, SHAs[sha as 'sha1'].create());
+        const decodedData = typeof data === 'string'
+            ? data
+            : textDecode(data);
+        return publicKey.encrypt(decodedData, SHAs[sha as 'sha1'].create());
     };
 
     return {
-        encrypt(data: string): Promise<ArrayBuffer> {
+        encrypt(data: DataSource): Promise<ArrayBuffer> {
             return Promise.resolve(encrypt(data));
         },
 
-        encryptToString(data: string): Promise<string> {
+        encryptToString(data: DataSource): Promise<string> {
             return Promise.resolve(base64FromBuffer(encrypt(data)));
         },
     };

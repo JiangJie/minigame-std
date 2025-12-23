@@ -1,3 +1,5 @@
+import type { DataSource } from '../defines';
+
 /**
  * The RSA public key.
  */
@@ -7,12 +9,12 @@ export interface RSAPublicKey {
      * @param data - The data to encrypt.
      * @returns Encrypted data.
      */
-    encrypt(data: string): Promise<ArrayBuffer>;
+    encrypt(data: DataSource): Promise<ArrayBuffer>;
 
     /**
      * `encrypt` then convert to base64 string.
      */
-    encryptToString(data: string): Promise<string>;
+    encryptToString(data: DataSource): Promise<string>;
 }
 
 /**
