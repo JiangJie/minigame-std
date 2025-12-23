@@ -1,5 +1,9 @@
-import { expect, test } from 'vitest';
-import { base64ToBuffer, byteStringToBuffer, cryptos, textDecode, textEncode, type DataSource } from '../src/mod.ts';
+import { describe, expect, test } from 'vitest';
+import { base64ToBuffer, byteStringToBuffer, cryptos, textDecode, textEncode, toByteString, type DataSource } from '../src/mod.ts';
+// Direct imports for testing mina implementations (they don't use wx API)
+import { createHMAC as minaCreateHMAC } from '../src/std/crypto/hmac/mina_hmac.ts';
+import { importPublicKey as minaImportPublicKey } from '../src/std/crypto/rsa/mina_rsa.ts';
+import { sha1 as minaSha1, sha256 as minaSha256, sha384 as minaSha384, sha512 as minaSha512 } from '../src/std/crypto/sha/mina_sha.ts';
 
 test('calculate md5', () => {
     const data = 'minigame-std-中文';
@@ -389,4 +393,259 @@ test('SHA with binary data', async () => {
 
     const sha512 = await cryptos.sha512(data);
     expect(sha512.length).toBe(128);
+});
+
+// ============================================================================
+// Tests for mina implementations (they don't use wx API, so can run in web env)
+// ============================================================================
+
+describe('mina SHA implementation (rsa-oaep-encryption library)', () => {
+    test('minaSha1 produces correct hash', () => {
+        const data = 'minigame-std-中文';
+        const sha1Str = '431de9a89a769f4fb56a1c128fb7208bebb37960';
+
+        expect(minaSha1(data)).toBe(sha1Str);
+    });
+
+    test('minaSha256 produces correct hash', () => {
+        const data = 'minigame-std-中文';
+        expect(minaSha256(data)).toBe('9cff73e4d0e15d78089294a8519788df44f306411e8d20f5f3770e564a73467f');
+    });
+
+    test('minaSha384 produces correct hash', () => {
+        const data = 'minigame-std-中文';
+        expect(minaSha384(data)).toBe('23ba7aac72c86e88befc6094e8f903645e2531cf14ac57edf1796e74e40a6e567b0255502a342d3085493d34e87b0541');
+    });
+
+    test('minaSha512 produces correct hash', () => {
+        const data = 'minigame-std-中文';
+        expect(minaSha512(data)).toBe('b4ebfef03638039622452ce378974fba515a8cb46c07e667bf80cdae06e69127123d5c32d85deb0ccc9ce563e5939b3340a604b45bd6493e663ae266c203d694');
+    });
+
+    test('mina SHA with binary data', () => {
+        const data = new Uint8Array([0x00, 0x01, 0x02, 0x03, 0xff]);
+
+        const sha1 = minaSha1(data);
+        expect(typeof sha1).toBe('string');
+        expect(sha1.length).toBe(40);
+
+        const sha256 = minaSha256(data);
+        expect(sha256.length).toBe(64);
+    });
+});
+
+describe('mina HMAC implementation (rsa-oaep-encryption library)', () => {
+    test('minaCreateHMAC SHA-1 produces correct result', () => {
+        const key = '密码';
+        const data = 'minigame-std-中文';
+
+        const hmac = minaCreateHMAC('SHA-1', toByteString(key));
+        hmac.update(toByteString(data));
+        expect(hmac.digest().toHex()).toBe('c039c11a31199388dfb540f989d27f1ec099a43e');
+    });
+
+    test('minaCreateHMAC SHA-256 produces correct result', () => {
+        const key = '密码';
+        const data = 'minigame-std-中文';
+
+        const hmac = minaCreateHMAC('SHA-256', toByteString(key));
+        hmac.update(toByteString(data));
+        expect(hmac.digest().toHex()).toBe('5e6bcf9fd1f62617773c18d420ef200dfd46dc15373d1192ff02cf648d703748');
+    });
+
+    test('minaCreateHMAC SHA-384 produces correct result', () => {
+        const key = '密码';
+        const data = 'minigame-std-中文';
+
+        const hmac = minaCreateHMAC('SHA-384', toByteString(key));
+        hmac.update(toByteString(data));
+        expect(hmac.digest().toHex()).toBe('7e011216b97450f06de084cdc6bd5f6e206dba1aa87519129dfc289ae9aa6231800188a0defe9543321365db2acc91f6');
+    });
+
+    test('minaCreateHMAC SHA-512 produces correct result', () => {
+        const key = '密码';
+        const data = 'minigame-std-中文';
+
+        const hmac = minaCreateHMAC('SHA-512', toByteString(key));
+        hmac.update(toByteString(data));
+        expect(hmac.digest().toHex()).toBe('e781e747d4358000756e7752086dbf37822bd5f4733df2953a6eb96945b670cad1df950d4ba2f09cdf0e90beba1cdab9f0798ce6814b5aad7521d41bf3b4d0f3');
+    });
+
+    test('minaCreateHMAC with long key (longer than block size)', () => {
+        // Key longer than block size should be hashed first
+        const longKey = 'a'.repeat(200);
+        const data = 'test data';
+
+        const hmac = minaCreateHMAC('SHA-256', longKey);
+        hmac.update(data);
+        const result = hmac.digest().toHex();
+
+        expect(typeof result).toBe('string');
+        expect(result.length).toBe(64);
+    });
+
+    test('minaCreateHMAC throws for unsupported hash algorithm', () => {
+        expect(() => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            minaCreateHMAC('SHA-999' as any, 'key');
+        }).toThrow('Unsupported hash algorithm');
+    });
+});
+
+describe('mina RSA implementation (rsa-oaep-encryption library)', () => {
+    const publicKeyStr = `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAix682LW8jwpZEGjFfoom
+GvLHCDh8ttPgSB5CBvXZLglimVfVkA7FiGdJqlKkf2kKXqrwSICbgcYUjFHMFdy9
+fvUwrKXzFXP46AzzV3ivkam2LB97eDSMI8gaIjumDaIFZAD3E9osYz4LMSI2A0nC
+qs+5xZ66JeC/Dtr5W9nobushAhFzZQWS/4I7iSUkV4WFmSG1ACB267z8YZ7YFmlT
+1hMFvp+biIsZIx7mebQNqjFjFPP0ZTskXg4UfQt6yyuaPqL55pQ7Wc8iI3umlsSV
+hDL1q3+ry7L8VDg7EtDBbodyYT5R62zBuhe7sJrvhtt/R6fZIfISPvRbumwusbf5
+XQIDAQAB
+-----END PUBLIC KEY-----`;
+
+    const privateKeyStr = `-----BEGIN PRIVATE KEY-----
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCLHrzYtbyPClkQ
+aMV+iiYa8scIOHy20+BIHkIG9dkuCWKZV9WQDsWIZ0mqUqR/aQpeqvBIgJuBxhSM
+UcwV3L1+9TCspfMVc/joDPNXeK+RqbYsH3t4NIwjyBoiO6YNogVkAPcT2ixjPgsx
+IjYDScKqz7nFnrol4L8O2vlb2ehu6yECEXNlBZL/gjuJJSRXhYWZIbUAIHbrvPxh
+ntgWaVPWEwW+n5uIixkjHuZ5tA2qMWMU8/RlOyReDhR9C3rLK5o+ovnmlDtZzyIj
+e6aWxJWEMvWrf6vLsvxUODsS0MFuh3JhPlHrbMG6F7uwmu+G239Hp9kh8hI+9Fu6
+bC6xt/ldAgMBAAECggEABMjYQf68FFJM3lowF/Tshbw9mUbcuSqfxHMv86PUZeIs
+6desu1vasiEqlijp9IzPrmekGbuR6Dxq+/7F1/xOaGr1KIGQ6DcObif13YIDzcIV
+BxRHxN+lGzJC/dQ91tWwkvAlOeGkvv6vrVn/GrgDHH3w5mmZ/s/+2iYF8ev/CQN6
+/2t68F7OGx93IwQZnet1L/fDEJbvpKNlc9FOHz9fDeh769RzMxD/QJsiV6zcJuFX
+p0EFrQflFQ51sP9jKLpXgK6kKH3ugveQL0fhKHDmNFKUpz9BX2WRZh+3ix1XNk5M
+Ppyhg/oeKXvphtubUEZfZRXYBLmACMqVw9ta94n5YQKBgQC/jhESKALWLl7Oc08m
+GyQA03z3j3/JNaqXALSRcND38j/mpR+abI9ANDV7njwO8jtrqfXIBTGna9sqOoey
+XAnLsvFkB1ndGcz7rcKi6A1CAFcEN7J6E0iePhC1HKqoY7qPMi1HLsyIKctEo20A
+J7UNNSylVbUi084Dt6jTo2LPIQKBgQC57KUbHDI557km5RoisVwjyucANDs5oicr
+vaSXjDhgvf0b07D5ElhSeJyzLp/LydwasUnYNM/S6az1BFSI5sAtcGiecQ36FXus
+UnyWWB1B3bTa/hYPqFAT+QIIRqIqdcg8ARcaoDJgjESDYdG8Yz8N48+Dp98R22Qk
+1KU4XolOvQKBgQCP7tPs7JuVDCq4vfQPEf2vkTopWm4OZoDUDfegAUFDzYcua4yf
+oErTV2eIh5FhOapkb8T6ksyInIaF6Izl/DpwEPlIzC098ZEQ27OQbQTpPxAjXyaA
+i9TY8pHjRLMG7EjWKEHVZtjQx3axEItqvmtQjVAKu6frj3MRYAM/Y1lvgQKBgFk9
+1m4x1YXnzP53X1khqqlffguiBn9+brDXIUbAvlrpNrGBpeOXw58qV4TGL1tg8+44
+BMrrZonFMgiVYIIpyDrHRuAuQdg1MZygJz7+4mQ4J9Qpu6seTfmYPzp7tOEOkeMD
+XvSfyi5/hW9Op552QNDI9VUrYa4vkV0AWKG69ss9AoGAZYuK/nbQv81+AExY2vr7
+KaO+FLoszYHNiFbwvjt0e10a2X4wdVrUqiiT4gujrpQEWJigrNjbAmstmjDE1zgW
+VxnzlrCOTTZT7/jD4wf53nCQiqRCg2NsIq6/JYOi+tjr6dC8HA8pd58xYAkB+hbZ
+wIy0/kd6szCcWK5Ld1kH9R0=
+-----END PRIVATE KEY-----`;
+
+    function importDecryptKey(pem: string, sha: string): Promise<CryptoKey> {
+        pem = pem.replace(/(-----(BEGIN|END) PRIVATE KEY-----|\s)/g, '');
+        const privateKey = byteStringToBuffer(atob(pem));
+        return crypto.subtle.importKey(
+            'pkcs8',
+            privateKey,
+            { name: 'RSA-OAEP', hash: sha },
+            false,
+            ['decrypt'],
+        );
+    }
+
+    test('minaImportPublicKey encrypts data with SHA-256', async () => {
+        const data = 'minigame-std';
+
+        const rsaKey = minaImportPublicKey(publicKeyStr, 'SHA-256');
+        const encryptedData = await rsaKey.encrypt(data);
+
+        // Decrypt with Web Crypto API
+        const privateKey = await importDecryptKey(privateKeyStr, 'SHA-256');
+        const decryptedData = textDecode(await crypto.subtle.decrypt(
+            { name: 'RSA-OAEP' },
+            privateKey,
+            encryptedData,
+        ));
+
+        expect(decryptedData).toBe(data);
+    });
+
+    test('minaImportPublicKey encrypts data with SHA-1', async () => {
+        const data = 'test message';
+
+        const rsaKey = minaImportPublicKey(publicKeyStr, 'SHA-1');
+        const encryptedData = await rsaKey.encrypt(data);
+
+        const privateKey = await importDecryptKey(privateKeyStr, 'SHA-1');
+        const decryptedData = textDecode(await crypto.subtle.decrypt(
+            { name: 'RSA-OAEP' },
+            privateKey,
+            encryptedData,
+        ));
+
+        expect(decryptedData).toBe(data);
+    });
+
+    test('minaImportPublicKey encrypts data with SHA-384', async () => {
+        const data = 'test message';
+
+        const rsaKey = minaImportPublicKey(publicKeyStr, 'SHA-384');
+        const encryptedData = await rsaKey.encrypt(data);
+
+        const privateKey = await importDecryptKey(privateKeyStr, 'SHA-384');
+        const decryptedData = textDecode(await crypto.subtle.decrypt(
+            { name: 'RSA-OAEP' },
+            privateKey,
+            encryptedData,
+        ));
+
+        expect(decryptedData).toBe(data);
+    });
+
+    test('minaImportPublicKey encrypts data with SHA-512', async () => {
+        const data = 'test message';
+
+        const rsaKey = minaImportPublicKey(publicKeyStr, 'SHA-512');
+        const encryptedData = await rsaKey.encrypt(data);
+
+        const privateKey = await importDecryptKey(privateKeyStr, 'SHA-512');
+        const decryptedData = textDecode(await crypto.subtle.decrypt(
+            { name: 'RSA-OAEP' },
+            privateKey,
+            encryptedData,
+        ));
+
+        expect(decryptedData).toBe(data);
+    });
+
+    test('minaImportPublicKey encryptToString returns base64 string', async () => {
+        const data = 'minigame-std';
+
+        const rsaKey = minaImportPublicKey(publicKeyStr, 'SHA-256');
+        const encryptedBase64 = await rsaKey.encryptToString(data);
+
+        expect(typeof encryptedBase64).toBe('string');
+        // Base64 should only contain valid characters
+        expect(encryptedBase64).toMatch(/^[A-Za-z0-9+/]+=*$/);
+
+        // Decode and decrypt to verify
+        const encryptedBuffer = base64ToBuffer(encryptedBase64);
+        const privateKey = await importDecryptKey(privateKeyStr, 'SHA-256');
+        const decryptedData = textDecode(await crypto.subtle.decrypt(
+            { name: 'RSA-OAEP' },
+            privateKey,
+            encryptedBuffer,
+        ));
+
+        expect(decryptedData).toBe(data);
+    });
+
+    test('minaImportPublicKey encrypts binary data (valid UTF-8)', async () => {
+        // Use valid UTF-8 bytes (ASCII characters)
+        const binaryData = textEncode('Hello');
+
+        const rsaKey = minaImportPublicKey(publicKeyStr, 'SHA-256');
+        const encryptedData = await rsaKey.encrypt(binaryData);
+
+        const privateKey = await importDecryptKey(privateKeyStr, 'SHA-256');
+        // The mina implementation converts binary to text using textDecode
+        const decryptedText = textDecode(await crypto.subtle.decrypt(
+            { name: 'RSA-OAEP' },
+            privateKey,
+            encryptedData,
+        ));
+
+        expect(decryptedText).toBe('Hello');
+    });
 });
