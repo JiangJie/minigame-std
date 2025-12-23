@@ -11,7 +11,6 @@ import { bufferSource2Ab, miniGameFailureToError } from '../utils/mod.ts';
 import type { FileEncoding, ReadOptions, WriteFileContent } from './fs_define.ts';
 
 /**
- * @internal
  * 小游戏文件系统管理器实例。
  *
  * for tree shake
@@ -28,7 +27,6 @@ export function getFs(): WechatMinigame.FileSystemManager {
 }
 
 /**
- * @internal
  * 用户可写的根路径， `wxfile://usr` 或 `http://usr`。
  *
  * for tree shake
@@ -36,7 +34,6 @@ export function getFs(): WechatMinigame.FileSystemManager {
 const rootUsrPath = Lazy(() => wx.env.USER_DATA_PATH);
 
 /**
- * @internal
  * 根路径，`wxfile://` 或 `http://`。
  *
  * for tree shake
