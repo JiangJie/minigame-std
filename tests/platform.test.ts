@@ -137,3 +137,70 @@ test('getDeviceBenchmarkLevel is cached after first call', async () => {
     expect(result2.isOk()).toBe(true);
     expect(result1.unwrap()).toBe(result2.unwrap());
 });
+
+test('getDeviceInfo returns valid device information in web environment', () => {
+    const deviceInfo = platform.getDeviceInfo();
+
+    // Check required properties exist
+    expect(deviceInfo).toHaveProperty('benchmarkLevel');
+    expect(deviceInfo).toHaveProperty('brand');
+    expect(deviceInfo).toHaveProperty('memorySize');
+    expect(deviceInfo).toHaveProperty('model');
+    expect(deviceInfo).toHaveProperty('platform');
+    expect(deviceInfo).toHaveProperty('system');
+
+    // Check types
+    expect(typeof deviceInfo.benchmarkLevel).toBe('number');
+    expect(typeof deviceInfo.brand).toBe('string');
+    expect(typeof deviceInfo.memorySize).toBe('number');
+    expect(typeof deviceInfo.model).toBe('string');
+    expect(typeof deviceInfo.platform).toBe('string');
+    expect(typeof deviceInfo.system).toBe('string');
+
+    // Optional properties (abi, cpuType, deviceAbi) may not exist in web environment
+});
+
+test('getDeviceInfo benchmarkLevel is -2 in web environment', () => {
+    const deviceInfo = platform.getDeviceInfo();
+    expect(deviceInfo.benchmarkLevel).toBe(-2);
+});
+
+test('getDeviceInfo platform is valid value', () => {
+    const deviceInfo = platform.getDeviceInfo();
+    const validPlatforms = ['ios', 'android', 'mac', 'windows', 'linux', 'unknown'];
+    expect(validPlatforms).toContain(deviceInfo.platform);
+});
+
+test('getDeviceInfo is cached after first call', () => {
+    const deviceInfo1 = platform.getDeviceInfo();
+    const deviceInfo2 = platform.getDeviceInfo();
+
+    // Should return the same object (cached)
+    expect(deviceInfo1).toBe(deviceInfo2);
+});
+
+test('getDeviceInfo model is non-empty for known platforms', () => {
+    const deviceInfo = platform.getDeviceInfo();
+
+    // For Chromium browser in test environment, should detect as some platform
+    if (deviceInfo.platform !== 'unknown') {
+        expect(deviceInfo.model.length).toBeGreaterThan(0);
+    }
+});
+
+test('getDeviceInfo system contains platform info', () => {
+    const deviceInfo = platform.getDeviceInfo();
+
+    // system should contain version info for known platforms
+    if (deviceInfo.platform === 'ios') {
+        expect(deviceInfo.system).toMatch(/^iOS \d/);
+    } else if (deviceInfo.platform === 'android') {
+        expect(deviceInfo.system).toMatch(/^Android \d/);
+    } else if (deviceInfo.platform === 'mac') {
+        expect(deviceInfo.system).toMatch(/^macOS \d/);
+    } else if (deviceInfo.platform === 'windows') {
+        expect(deviceInfo.system).toMatch(/^Windows /);
+    } else if (deviceInfo.platform === 'linux') {
+        expect(deviceInfo.system).toBe('Linux');
+    }
+});

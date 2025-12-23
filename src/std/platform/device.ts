@@ -1,12 +1,68 @@
 import { Lazy, Ok, Once, type AsyncIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import { miniGameFailureToError, promisifyWithResult } from '../utils/mod.ts';
+import { parseUserAgent } from './user_agent.ts';
+
+/**
+ * 设备信息类型。
+ * 修正了 `memorySize` 的类型为 `number`（小游戏 API 实际返回数字，但官方类型定义错误地声明为 string）。
+ * @see https://github.com/wechat-miniprogram/minigame-api-typings/issues/27
+ */
+export type DeviceInfo = Omit<WechatMinigame.DeviceInfo, 'abi' | 'cpuType' | 'deviceAbi' | 'memorySize'> & {
+    abi?: string;
+    cpuType?: string;
+    deviceAbi?: string;
+    /** 设备内存大小，单位为 MB */
+    memorySize: number;
+};
 
 // 以下变量一旦获取则不会变化
 // 兼容基础库低版本
-// TODO 暂时只用了platform属性，可安全强转类型
-const deviceInfo = Lazy(() => wx.getDeviceInfo ? wx.getDeviceInfo() : (wx.getSystemInfoSync() as unknown as WechatMinigame.DeviceInfo));
+const deviceInfo = Lazy<DeviceInfo>(() => isMinaEnv()
+    ? (wx.getDeviceInfo ? wx.getDeviceInfo() : wx.getSystemInfoSync()) as unknown as DeviceInfo
+    : getWebDeviceInfo(),
+);
 const benchmarkLevel = Once<number>();
+
+/**
+ * 获取 Web 环境下的设备信息。
+ */
+function getWebDeviceInfo(): DeviceInfo {
+    const { model, platform, system } = parseUserAgent();
+    const memorySize = ((navigator as Navigator & { deviceMemory?: number; }).deviceMemory ?? 0) * 1024;
+
+    return {
+        benchmarkLevel: -2, // Web 环境固定返回 -2
+        brand: '', // Web 环境无法可靠获取品牌信息
+        memorySize,
+        model,
+        platform,
+        system,
+    };
+}
+
+/**
+ * 获取 Web 环境下的窗口信息。
+ */
+function getWebWindowInfo(): WechatMinigame.WindowInfo {
+    return {
+        pixelRatio: devicePixelRatio,
+        screenHeight: screen.height,
+        screenTop,
+        screenWidth: screen.width,
+        windowHeight: innerHeight,
+        windowWidth: innerWidth,
+        statusBarHeight: 0,
+        safeArea: {
+            left: 0,
+            right: innerWidth,
+            top: 0,
+            bottom: innerHeight,
+            width: innerWidth,
+            height: innerHeight,
+        },
+    };
+}
 
 /**
  * 获取设备信息。
@@ -19,7 +75,7 @@ const benchmarkLevel = Once<number>();
  * console.log('设备型号:', info.model);
  * ```
  */
-export function getDeviceInfo(): WechatMinigame.DeviceInfo {
+export function getDeviceInfo(): DeviceInfo {
     return deviceInfo.force();
 }
 
@@ -65,4 +121,19 @@ export async function getDeviceBenchmarkLevel(): AsyncIOResult<number> {
     benchmarkLevel.set(level);
 
     return Ok(level);
+}
+
+/**
+ * 获取窗口信息。
+ * @returns 包含窗口和屏幕相关信息的对象。
+ * @example
+ * ```ts
+ * const info = getWindowInfo();
+ * console.log('窗口尺寸:', info.windowWidth, 'x', info.windowHeight);
+ * console.log('屏幕尺寸:', info.screenWidth, 'x', info.screenHeight);
+ * console.log('设备像素比:', info.pixelRatio);
+ * ```
+ */
+export function getWindowInfo(): WechatMinigame.WindowInfo {
+    return isMinaEnv() ? wx.getWindowInfo() : getWebWindowInfo();
 }
