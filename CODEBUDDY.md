@@ -52,6 +52,7 @@ pnpm run docs
 ### Testing Notes
 
 - Tests run in **Vitest** with **Playwright** browser provider (Chromium)
+- First-time setup requires: `pnpm run playwright:install`
 - Web platform configuration (`__MINIGAME_STD_MINA__: false`)
 - Test files are located in `tests/` directory
 - Coverage reports are generated in `coverage/` directory
@@ -156,10 +157,31 @@ export async function setItem(key: string, data: string): AsyncVoidIOResult {
 
 **APIs that return Task objects** (like `wx.request`, `wx.downloadFile`, `wx.uploadFile`) must use manual callback handling with `Future` because they need to support abort functionality and progress callbacks.
 
+**FetchTask Pattern for Task-returning APIs:**
+```typescript
+// For APIs like wx.request that return Task objects with abort capability
+export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> {
+    let aborted = false;
+    const future = new Future<IOResult<T>>();
+
+    const task = wx.request({
+        url,
+        success(res) { future.resolve(Ok(res.data as T)); },
+        fail(err) { future.resolve(Err(miniGameFailureToError(err))); },
+    });
+
+    return {
+        abort(): void { aborted = true; task.abort(); },
+        get aborted(): boolean { return aborted; },
+        get response(): AsyncIOResult<T> { return future.promise; },
+    };
+}
+```
+
 ### Build System
 
 - **Bundler**: Rollup with esbuild plugin
-- **Configuration**: `rollup.config.mjs`
+- **Configuration**: `rollup.config.ts`
 - **Output**: 
   - `dist/main.cjs` - CommonJS bundle
   - `dist/main.mjs` - ES module bundle
@@ -282,7 +304,7 @@ Scopes frequently used: `deps`, `ci`, `types`, `config`, `tests`
 - `src/macros/env.ts` - Platform detection mechanism
 - `package.json` - Scripts and dependencies
 - `vitest.config.ts` - Test configuration and import mappings
-- `rollup.config.mjs` - Build configuration
+- `rollup.config.ts` - Build configuration
 - `tsconfig.json` - TypeScript compiler options
 - `eslint.config.mjs` - ESLint rules
 
