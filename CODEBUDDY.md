@@ -6,7 +6,10 @@ This file provides guidance to CodeBuddy Code when working with code in this rep
 
 **License**: MIT
 
-**minigame-std** is a cross-platform standard development library that provides unified APIs for both mini-game environments (WeChat, QQ, etc.) and web browsers. The library abstracts platform-specific differences, allowing developers to write code once and run it on both platforms.
+This is a **monorepo** containing:
+
+- **minigame-std** (`packages/minigame-std/`) - A cross-platform standard development library that provides unified APIs for both mini-game environments (WeChat, QQ, etc.) and web browsers
+- **minigame-test** (`packages/minigame-test/`) - Mini-game platform tests for minigame-std
 
 ### Key Concept: Platform Abstraction
 
@@ -14,20 +17,20 @@ The core architecture uses a compile-time macro `__MINIGAME_STD_MINA__` to deter
 - When `true`: bundles mini-game (Mina) platform code, excludes web code
 - When `false`: bundles web platform code, excludes mini-game code
 
-This is defined in `src/macros/env.ts` and used throughout the codebase via `isMinaEnv()`.
+This is defined in `packages/minigame-std/src/macros/env.ts` and used throughout the codebase via `isMinaEnv()`.
 
 ## Development Commands
 
 ### Package Manager
 This project uses **pnpm** as the package manager.
 
-### Essential Commands
+### Root-Level Commands (run from project root)
 
 ```bash
 # Install dependencies
 pnpm install
 
-# Type checking (must pass before commits)
+# Type checking for all packages (must pass before commits)
 pnpm run check
 
 # Linting (must pass before commits)
@@ -42,11 +45,32 @@ pnpm run test:watch
 # Run tests with UI
 pnpm run test:ui
 
-# Build the library (runs check + lint first)
+# Build all packages
 pnpm run build
+
+# Build only minigame-std
+pnpm run build:std
+
+# Build only minigame-test
+pnpm run build:test
 
 # Generate API documentation
 pnpm run docs
+
+# Install Playwright browser for first-time setup
+pnpm run playwright:install
+```
+
+### Package-Specific Commands
+
+```bash
+# Run commands in a specific package
+pnpm --filter minigame-std <command>
+pnpm --filter minigame-test <command>
+
+# Examples:
+pnpm --filter minigame-std test
+pnpm --filter minigame-std build
 ```
 
 ### Testing Notes
@@ -54,22 +78,22 @@ pnpm run docs
 - Tests run in **Vitest** with **Playwright** browser provider (Chromium)
 - First-time setup requires: `pnpm run playwright:install`
 - Web platform configuration (`__MINIGAME_STD_MINA__: false`)
-- Test files are located in `tests/` directory
-- Coverage reports are generated in `coverage/` directory
-- Mini-game platform tests are located in a separate demo repository ([minigame-std-demo](https://github.com/JiangJie/minigame-std-demo))
+- Test files are located in `packages/minigame-std/tests/` directory
+- Coverage reports are generated in `packages/minigame-std/coverage/` directory
+- Mini-game platform tests are located in `packages/minigame-test/` (requires WeChat DevTools to run)
 - **Coverage Note**: Coverage is not 100% because some code only runs in the mini-game environment, which cannot be simulated by existing testing tools
 
 ### Running Individual Tests
 
 ```bash
 # Run a specific test file
-pnpm exec vitest run tests/base64.test.ts
+pnpm exec vitest run packages/minigame-std/tests/base64.test.ts
 
 # Run tests matching a pattern
 pnpm exec vitest run --testNamePattern "base64"
 
 # Run tests in watch mode for a specific file
-pnpm exec vitest watch tests/crypto.test.ts
+pnpm exec vitest watch packages/minigame-std/tests/crypto.test.ts
 ```
 
 ## Code Architecture
@@ -77,34 +101,40 @@ pnpm exec vitest watch tests/crypto.test.ts
 ### Directory Structure
 
 ```
-src/
-├── macros/
-│   └── env.ts              # Platform detection macro (__MINIGAME_STD_MINA__)
-├── mod.ts                  # Main entry point (exports all modules)
-└── std/                    # Standard library modules
-    ├── assert/             # Internal assertion utilities (not public API)
-    ├── audio/              # WebAudio API abstraction
-    ├── base64/             # Base64 encoding/decoding
-    ├── clipboard/          # Clipboard operations
-    ├── codec/              # Text encoding (UTF-8 ↔ ArrayBuffer)
-    ├── crypto/             # Cryptographic functions
-    │   ├── hmac/           # HMAC algorithms
-    │   ├── md/             # MD5 hashing
-    │   ├── random/         # Random number generation
-    │   ├── rsa/            # RSA encryption
-    │   └── sha/            # SHA algorithms
-    ├── event/              # Global error/unhandledrejection handlers
-    ├── fetch/              # HTTP requests (fetch API)
-    ├── fs/                 # File system operations (with zip support)
-    ├── image/              # Image processing
-    ├── lbs/                # Location-based services
-    ├── network/            # Network status/type detection
-    ├── performance/        # Performance timing utilities
-    ├── platform/           # Platform detection (device, target)
-    ├── socket/             # WebSocket abstraction
-    ├── storage/            # Storage (localStorage equivalent)
-    ├── utils/              # Common utilities
-    └── video/              # Video playback
+packages/
+├── minigame-std/               # Main library
+│   ├── src/
+│   │   ├── macros/
+│   │   │   └── env.ts          # Platform detection macro (__MINIGAME_STD_MINA__)
+│   │   ├── mod.ts              # Main entry point (exports all modules)
+│   │   └── std/                # Standard library modules
+│   │       ├── assert/         # Internal assertion utilities (not public API)
+│   │       ├── audio/          # WebAudio API abstraction
+│   │       ├── base64/         # Base64 encoding/decoding
+│   │       ├── clipboard/      # Clipboard operations
+│   │       ├── codec/          # Text encoding (UTF-8 ↔ ArrayBuffer)
+│   │       ├── crypto/         # Cryptographic functions
+│   │       │   ├── hmac/       # HMAC algorithms
+│   │       │   ├── md/         # MD5 hashing
+│   │       │   ├── random/     # Random number generation
+│   │       │   ├── rsa/        # RSA encryption
+│   │       │   └── sha/        # SHA algorithms
+│   │       ├── event/          # Global error/unhandledrejection handlers
+│   │       ├── fetch/          # HTTP requests (fetch API)
+│   │       ├── fs/             # File system operations (with zip support)
+│   │       ├── image/          # Image processing
+│   │       ├── lbs/            # Location-based services
+│   │       ├── network/        # Network status/type detection
+│   │       ├── performance/    # Performance timing utilities
+│   │       ├── platform/       # Platform detection (device, target)
+│   │       ├── socket/         # WebSocket abstraction
+│   │       ├── storage/        # Storage (localStorage equivalent)
+│   │       ├── utils/          # Common utilities
+│   │       └── video/          # Video playback
+│   ├── tests/                  # Web platform tests (Vitest + Playwright)
+│   └── dist/                   # Build output
+└── minigame-test/              # Mini-game platform tests
+    └── src/                    # Test code for WeChat DevTools
 ```
 
 ### Platform-Specific Code Pattern
@@ -120,7 +150,7 @@ Each module follows a consistent pattern with three files:
 
 3. **`web_*.ts`** - Browser platform implementation using standard Web APIs
 
-**Example from `src/std/base64/mod.ts`:**
+**Example from `packages/minigame-std/src/std/base64/mod.ts`:**
 ```typescript
 import { isMinaEnv } from '../../macros/env.ts';
 import { encodeBase64 as minaEncodeBase64 } from './mina_base64.ts';
@@ -181,11 +211,11 @@ export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> {
 ### Build System
 
 - **Bundler**: Rollup with esbuild plugin
-- **Configuration**: `rollup.config.ts`
+- **Configuration**: `packages/minigame-std/rollup.config.ts`
 - **Output**: 
-  - `dist/main.cjs` - CommonJS bundle
-  - `dist/main.mjs` - ES module bundle
-  - `dist/types.d.ts` - TypeScript declarations
+  - `packages/minigame-std/dist/main.cjs` - CommonJS bundle
+  - `packages/minigame-std/dist/main.mjs` - ES module bundle
+  - `packages/minigame-std/dist/types.d.ts` - TypeScript declarations
 - **Tree-shaking**: Enabled with `treeshake: 'smallest'`
 - **Side effects**: `"sideEffects": false` in package.json for optimal tree-shaking
 
@@ -213,14 +243,14 @@ The build uses `__MINIGAME_STD_MINA__` macro for compile-time platform detection
 
 When updating `minigame-api-typings`, be aware that WeChat API types may change:
 - Check for deprecated types (e.g., `WechatMinigame.Error` → `WechatMinigame.ListenerError`)
-- Update affected files (usually in `src/std/event/` and callback handlers)
+- Update affected files (usually in `packages/minigame-std/src/std/event/` and callback handlers)
 - Run `pnpm run check` to catch type errors early
 
 ## Code Conventions
 
 ### Import Paths
 - Always use `.ts` file extensions in imports
-- Use the `minigame-std` alias in tests (configured in `vitest.config.ts`)
+- Use the `minigame-std` alias in tests (configured in `packages/minigame-std/vitest.config.ts`)
 
 ### Type Safety
 - Return types must explicitly specify `Uint8Array<ArrayBuffer>` instead of generic `Uint8Array`
@@ -237,7 +267,7 @@ The project provides several utilities for wrapping platform-specific APIs:
 
 - **`promisifyWithResult(api)`** - Converts callback-based mini-game APIs to Result-based async functions
   - Use for APIs with `success`/`fail` callbacks that return `void` or `Promise`
-  - Located in `src/std/utils/promisify.ts`
+  - Located in `packages/minigame-std/src/std/utils/promisify.ts`
   
 - **`tryGeneralAsyncOp(fn)`** / **`tryGeneralSyncOp(fn)`** - Wraps operations that may throw
   - Use for APIs that already return Promise but may throw errors
@@ -252,7 +282,7 @@ The project provides several utilities for wrapping platform-specific APIs:
 
 ## Dependencies
 
-### Runtime Dependencies
+### Runtime Dependencies (minigame-std)
 - `@happy-ts/fetch-t` - Enhanced fetch implementation
 - `@std/path` - Path utilities (JSR package)
 - `happy-rusty` - Rust-like Result types for error handling
@@ -262,11 +292,12 @@ The project provides several utilities for wrapping platform-specific APIs:
 - `tiny-future`, `tiny-invariant` - Utility libraries
 - `minigame-api-typings` - WeChat mini-game TypeScript definitions
 
-### Build Tools
+### Build Tools (root)
 - `vite` for development and initial bundling
 - `rollup` + `rollup-plugin-dts` for final bundling and TypeScript declarations
 - `typescript` + `typescript-eslint` for type checking and linting
 - `typedoc` for API documentation generation
+- `vitest` + `playwright` for testing
 
 ## Git Commit Conventions
 
@@ -295,18 +326,19 @@ Scopes frequently used: `deps`, `ci`, `types`, `config`, `tests`
 - TypeScript doesn't auto-resolve extensions in this project
 
 ### Platform Detection
-- Use `isMinaEnv()` from `src/macros/env.ts` for runtime platform checks
+- Use `isMinaEnv()` from `packages/minigame-std/src/macros/env.ts` for runtime platform checks
 - Never use direct checks like `typeof wx !== 'undefined'` in library code
 
 ## Important Files
 
-- `src/mod.ts` - Main entry point, exports all public APIs
-- `src/macros/env.ts` - Platform detection mechanism
-- `package.json` - Scripts and dependencies
-- `vitest.config.ts` - Test configuration and import mappings
-- `rollup.config.ts` - Build configuration
-- `tsconfig.json` - TypeScript compiler options
-- `eslint.config.mjs` - ESLint rules
+- `packages/minigame-std/src/mod.ts` - Main entry point, exports all public APIs
+- `packages/minigame-std/src/macros/env.ts` - Platform detection mechanism
+- `package.json` - Root monorepo scripts
+- `packages/minigame-std/package.json` - Library package config
+- `packages/minigame-std/vitest.config.ts` - Test configuration and import mappings
+- `packages/minigame-std/rollup.config.ts` - Build configuration
+- `packages/minigame-std/tsconfig.json` - TypeScript compiler options
+- `eslint.config.mjs` - ESLint rules (root level)
 
 ## Documentation
 
