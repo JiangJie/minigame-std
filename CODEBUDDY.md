@@ -81,7 +81,7 @@ src/
 │   └── env.ts              # Platform detection macro (__MINIGAME_STD_MINA__)
 ├── mod.ts                  # Main entry point (exports all modules)
 └── std/                    # Standard library modules
-    ├── assert/             # Assertion utilities
+    ├── assert/             # Internal assertion utilities (not public API)
     ├── audio/              # WebAudio API abstraction
     ├── base64/             # Base64 encoding/decoding
     ├── clipboard/          # Clipboard operations
@@ -232,16 +232,19 @@ The project provides several utilities for wrapping platform-specific APIs:
 
 ### Runtime Dependencies
 - `@happy-ts/fetch-t` - Enhanced fetch implementation
+- `@std/path` - Path utilities (JSR package)
 - `happy-rusty` - Rust-like Result types for error handling
 - `happy-opfs` - OPFS (Origin Private File System) support
 - `fflate` - Compression/decompression (zip support)
+- `rsa-oaep-encryption` - RSA-OAEP encryption implementation
 - `tiny-future`, `tiny-invariant` - Utility libraries
 - `minigame-api-typings` - WeChat mini-game TypeScript definitions
 
 ### Build Tools
-- `rollup` + `rollup-plugin-esbuild` + `rollup-plugin-dts` for bundling
+- `vite` for development and initial bundling
+- `rollup` + `rollup-plugin-dts` for final bundling and TypeScript declarations
 - `typescript` + `typescript-eslint` for type checking and linting
-- `typedoc` + `typedoc-plugin-markdown` for documentation generation
+- `typedoc` for API documentation generation
 
 ## Git Commit Conventions
 
