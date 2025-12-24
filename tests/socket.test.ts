@@ -203,7 +203,7 @@ test('socket error event fires on connection failure', () => {
     const { promise, resolve } = Promise.withResolvers<void>();
 
     // Use a URL that will likely fail
-    const socket = connectSocket('wss://localhost:59999/');
+    const socket = connectSocket('wss://this-domain-does-not-exist.test/');
 
     socket.addEventListener('error', (err) => {
         expect(err).toBeInstanceOf(Error);

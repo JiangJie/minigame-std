@@ -299,7 +299,8 @@ test('AudioContext can decode various audio formats', async () => {
 
     expect(audioBuffer).toBeInstanceOf(AudioBuffer);
     expect(audioBuffer.numberOfChannels).toBe(1);
-    expect(audioBuffer.sampleRate).toBe(44100);
+    // AudioContext.decodeAudioData resamples to the context's sample rate
+    expect(audioBuffer.sampleRate).toBe(context.sampleRate);
 });
 
 test('PlayOptions interface has correct defaults', async () => {
