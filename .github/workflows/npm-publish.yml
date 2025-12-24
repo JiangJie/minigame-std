@@ -34,4 +34,5 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Publish to npm
+        working-directory: packages/minigame-std
         run: npm publish

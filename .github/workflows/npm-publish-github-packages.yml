@@ -34,6 +34,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Publish to GitHub Packages
+        working-directory: packages/minigame-std
         run: |
           npm pkg set name="@jiangjie/minigame-std"
           npm publish

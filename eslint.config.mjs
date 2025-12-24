@@ -5,8 +5,9 @@ import tseslint from 'typescript-eslint';
 
 export default defineConfig([
     globalIgnores([
-        'dist',
-        'coverage',
+        '**/dist',
+        '**/coverage',
+        '**/node_modules',
     ]),
     {
         files: ['**/*.ts'],
@@ -18,6 +19,12 @@ export default defineConfig([
             tseslint.configs.strict,
             tseslint.configs.stylistic,
         ],
+        languageOptions: {
+            parserOptions: {
+                projectService: true,
+                tsconfigRootDir: import.meta.dirname,
+            },
+        },
         rules: {
             '@stylistic/semi': ['error', 'always'],
             '@stylistic/comma-dangle': ['error', 'always-multiline'],
@@ -41,7 +48,7 @@ export default defineConfig([
     {
         files: [
             '**/*.test.ts',
-            'examples/**/*.ts',
+            '**/examples/**/*.ts',
         ],
         rules: {
             '@typescript-eslint/no-non-null-assertion': 'off',

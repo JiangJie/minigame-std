@@ -1,6 +1,6 @@
 node_modules
-/dist
-/docs
+dist
+docs
 
 # Test coverage
 coverage
