@@ -6,6 +6,9 @@ export default defineConfig({
         'process.env.NODE_ENV': JSON.stringify('development'),
         __MINIGAME_STD_MINA__: 'true',
     },
+    resolve: {
+        conditions: ['source'],
+    },
     build: {
         target: 'esnext',
         lib: {

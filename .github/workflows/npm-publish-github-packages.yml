@@ -37,6 +37,7 @@ jobs:
         working-directory: packages/minigame-std
         run: |
           npm pkg set name="@jiangjie/minigame-std"
+          npm pkg delete exports['.'].source
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
