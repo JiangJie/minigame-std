@@ -129,7 +129,6 @@ export function removeSync(path: string): VoidIOResult {
 /**
  * `stat` 的同步版本，获取文件或目录的状态信息。
  * @param path - 文件或目录的路径。
- * @param options - 可选选项，包含 recursive 可递归获取目录下所有文件状态。
  * @returns 包含状态信息的操作结果。
  * @example
  * ```ts
@@ -140,9 +139,30 @@ export function removeSync(path: string): VoidIOResult {
  * ```
  */
 export function statSync(path: string): IOResult<WechatMinigame.Stats>;
+/**
+ * `stat` 的同步版本，递归获取目录下所有文件和子目录的状态信息。
+ * @param path - 目录的路径。
+ * @param options - 选项，recursive 设置为 true 时递归获取。
+ * @returns 包含目录下所有文件状态信息数组的操作结果。
+ * @example
+ * ```ts
+ * const result = statSync('/path/to/dir', { recursive: true });
+ * if (result.isOk()) {
+ *     result.unwrap().forEach(item => {
+ *         console.log(item.path, item.stats.isDirectory());
+ *     });
+ * }
+ * ```
+ */
 export function statSync(path: string, options: StatOptions & {
     recursive: true;
 }): IOResult<WechatMinigame.FileStats[]>;
+/**
+ * `stat` 的同步版本，获取文件或目录的状态信息。
+ * @param path - 文件或目录的路径。
+ * @param options - 可选选项，包含 recursive 可递归获取目录下所有文件状态。
+ * @returns 包含状态信息的操作结果，根据 options.recursive 返回单个 Stats 或 FileStats 数组。
+ */
 export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
 export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     if (isMinaEnv()) {
