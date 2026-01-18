@@ -8,12 +8,14 @@
 [![JSR Version](https://jsr.io/badges/@happy-js/minigame-std)](https://jsr.io/@happy-js/minigame-std)
 [![JSR Score](https://jsr.io/badges/@happy-js/minigame-std/score)](https://jsr.io/@happy-js/minigame-std/score)
 
-Cross-platform Standard Library for Mini-Games
-
-[简体中文](./README.md) | [API Documentation](https://jiangjie.github.io/minigame-std/)
+Cross-platform Standard Library for Mini-Games.
 
 > [!NOTE]
 > This is not an official project of any mini-game platform.
+
+---
+
+[中文](./README.md) | [API Documentation](https://jiangjie.github.io/minigame-std/)
 
 ---
 

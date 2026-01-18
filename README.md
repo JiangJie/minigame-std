@@ -8,12 +8,14 @@
 [![JSR Version](https://jsr.io/badges/@happy-js/minigame-std)](https://jsr.io/@happy-js/minigame-std)
 [![JSR Score](https://jsr.io/badges/@happy-js/minigame-std/score)](https://jsr.io/@happy-js/minigame-std/score)
 
-小游戏跨平台标准开发库
-
-[English](./README.en.md) | [API 文档](https://jiangjie.github.io/minigame-std/)
+小游戏跨平台标准开发库。
 
 > [!NOTE]
 > 这不是任何一家小游戏平台的官方项目。
+
+---
+
+[English](./README.en.md) | [API 文档](https://jiangjie.github.io/minigame-std/)
 
 ---
 
