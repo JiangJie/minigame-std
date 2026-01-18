@@ -203,7 +203,7 @@ export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> {
     return {
         abort(): void { aborted = true; task.abort(); },
         get aborted(): boolean { return aborted; },
-        get response(): AsyncIOResult<T> { return future.promise; },
+        get result(): AsyncIOResult<T> { return future.promise; },
     };
 }
 ```
@@ -289,7 +289,7 @@ The project provides several utilities for wrapping platform-specific APIs:
 - `happy-opfs` - OPFS (Origin Private File System) support
 - `fflate` - Compression/decompression (zip support)
 - `rsa-oaep-encryption` - RSA-OAEP encryption implementation
-- `tiny-future`, `tiny-invariant` - Utility libraries
+- `tiny-future` - Promise-based Future utility
 - `minigame-api-typings` - WeChat mini-game TypeScript definitions
 
 ### Build Tools (root)
