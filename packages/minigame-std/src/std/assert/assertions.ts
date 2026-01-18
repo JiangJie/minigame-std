@@ -1,4 +1,15 @@
-import invariant from 'tiny-invariant';
+/**
+ * @internal
+ * 断言条件为真，否则抛出错误。
+ * @param condition - 需要断言的条件。
+ * @param message - 错误信息或返回错误信息的函数。
+ */
+export function invariant(condition: unknown, message: string | (() => string)): asserts condition {
+    if (!condition) {
+        const msg = typeof message === 'function' ? message() : message;
+        throw new Error(msg);
+    }
+}
 
 /**
  * @internal

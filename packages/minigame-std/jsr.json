@@ -12,8 +12,7 @@
     "happy-rusty": "jsr:@happy-js/happy-rusty@^1.9.1",
     "minigame-api-typings": "npm:minigame-api-typings@^3.8.15",
     "rsa-oaep-encryption": "jsr:@happy-js/rsa-oaep-encryption@^1.1.0",
-    "tiny-future": "jsr:@happy-js/tiny-future@^1.2.0",
-    "tiny-invariant": "npm:tiny-invariant@^1.3.3"
+    "tiny-future": "jsr:@happy-js/tiny-future@^1.2.0"
   },
   "publish": {
     "include": [

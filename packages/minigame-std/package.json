@@ -90,7 +90,6 @@
     "happy-rusty": "^1.9.1",
     "minigame-api-typings": "^3.8.15",
     "rsa-oaep-encryption": "^1.1.0",
-    "tiny-future": "^1.2.0",
-    "tiny-invariant": "^1.3.3"
+    "tiny-future": "^1.2.0"
   }
 }

@@ -29,7 +29,6 @@ export default defineConfig(({ command }) => ({
                 'happy-rusty',
                 'happy-opfs',
                 '@happy-ts/fetch-t',
-                'tiny-invariant',
                 'tiny-future',
                 /^fflate\//,
                 'rsa-oaep-encryption',

@@ -1,5 +1,5 @@
-import invariant from 'tiny-invariant';
 import { isMinaEnv } from '../../../macros/env.ts';
+import { invariant } from '../../assert/assertions.ts';
 import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
 import { importPublicKey as minaImportPublicKey } from './mina_rsa.ts';
 import { importPublicKey as webImportPublicKey } from './web_rsa.ts';

@@ -5,8 +5,7 @@
 
 import { NOT_FOUND_ERROR, ROOT_DIR, type ExistsOptions } from 'happy-opfs';
 import { Err, Lazy, Ok, RESULT_FALSE, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
-import invariant from 'tiny-invariant';
-import { assertString } from '../assert/assertions.ts';
+import { assertString, invariant } from '../assert/assertions.ts';
 import { bufferSource2Ab, miniGameFailureToError } from '../utils/mod.ts';
 import type { FileEncoding, ReadOptions, WriteFileContent } from './fs_define.ts';
 
