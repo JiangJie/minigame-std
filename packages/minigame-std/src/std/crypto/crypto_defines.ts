@@ -18,6 +18,14 @@ export interface RSAPublicKey {
 }
 
 /**
- * Supported hash algorithms.
+ * Supported SHA hash algorithms for RSA-OAEP encryption.
+ *
+ * @example
+ * ```ts
+ * import { importPublicKey, type SHA } from 'minigame-std';
+ *
+ * const hash: SHA = 'SHA-256';
+ * const publicKey = await importPublicKey(pemString, hash);
+ * ```
  */
 export type SHA = 'SHA-1' | 'SHA-256' | 'SHA-384' | 'SHA-512';
