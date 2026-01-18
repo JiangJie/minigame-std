@@ -33,7 +33,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Copy shared files for JSR publish
-        run: cp README.md README.en.md LICENSE packages/minigame-std/
+        run: cp README.md LICENSE packages/minigame-std/
 
       - name: Publish to JSR
         run: npx jsr publish --allow-dirty --config packages/minigame-std/jsr.json
