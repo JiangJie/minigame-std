@@ -193,7 +193,7 @@ export function getExistsResult(statsResult: IOResult<WechatMinigame.Stats>, opt
         const { isDirectory = false, isFile = false } = options ?? {};
 
         if (isDirectory && isFile) {
-            throw new TypeError('ExistsOptions.isDirectory and ExistsOptions.isFile must not be true together.');
+            throw new TypeError('ExistsOptions.isDirectory and ExistsOptions.isFile must not be true together');
         }
 
         const notExist =
