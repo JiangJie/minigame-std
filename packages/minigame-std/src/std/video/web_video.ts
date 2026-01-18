@@ -374,21 +374,21 @@ export function createVideo(options: WechatMinigame.CreateVideoOption): WechatMi
             };
 
             if (orientationApi?.lock) {
+                let orientation: string;
+                switch (direction) {
+                    case 0:
+                        orientation = 'portrait';
+                        break;
+                    case 90:
+                        orientation = 'landscape-secondary';
+                        break;
+                    case -90:
+                        orientation = 'landscape-primary';
+                        break;
+                    default:
+                        return;
+                }
                 try {
-                    let orientation: string;
-                    switch (direction) {
-                        case 0:
-                            orientation = 'portrait';
-                            break;
-                        case 90:
-                            orientation = 'landscape-secondary';
-                            break;
-                        case -90:
-                            orientation = 'landscape-primary';
-                            break;
-                        default:
-                            return;
-                    }
                     await orientationApi.lock(orientation);
                 } catch {
                     // 屏幕方向锁定可能不被支持或被拒绝，忽略错误
