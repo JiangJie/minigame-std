@@ -8,7 +8,7 @@ import * as fflate from 'fflate/browser';
 import { type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
 import { Err, Ok, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
 import type { ReadFileContent, ReadOptions, StatOptions } from './fs_define.ts';
-import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError, type MinaWriteFileContent } from './mina_fs_shared.ts';
+import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError, validateExistsOptions, type MinaWriteFileContent } from './mina_fs_shared.ts';
 
 /**
  * 安全地调用同步接口。
@@ -181,8 +181,11 @@ export function copySync(srcPath: string, destPath: string): VoidIOResult {
  * `exists` 的同步版本。
  */
 export function existsSync(path: string, options?: ExistsOptions): IOResult<boolean> {
-    const res = statSync(path);
-    return getExistsResult(res, options);
+    const optionsRes = validateExistsOptions(options);
+    if (optionsRes.isErr()) return optionsRes.asErr();
+
+    const statRes = statSync(path);
+    return getExistsResult(statRes, options);
 }
 
 /**

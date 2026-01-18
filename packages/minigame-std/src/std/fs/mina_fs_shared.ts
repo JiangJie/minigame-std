@@ -4,7 +4,7 @@
  */
 
 import { NOT_FOUND_ERROR, ROOT_DIR, type ExistsOptions } from 'happy-opfs';
-import { Err, Lazy, Ok, RESULT_FALSE, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
+import { Err, Lazy, RESULT_FALSE, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { assertString, invariant } from '../assert/assertions.ts';
 import { bufferSource2Ab, miniGameFailureToError } from '../utils/mod.ts';
 import type { FileEncoding, ReadOptions, WriteFileContent } from './fs_define.ts';
@@ -188,20 +188,31 @@ export function getWriteFileContents(contents: MinaWriteFileContent): GetWriteFi
  * @internal
  * 获取 `exists` 的结果。
  */
-export function getExistsResult(statsResult: IOResult<WechatMinigame.Stats>, options?: ExistsOptions): IOResult<boolean> {
-    return statsResult.andThen(stats => {
+export function getExistsResult(statResult: IOResult<WechatMinigame.Stats>, options?: ExistsOptions): IOResult<boolean> {
+    return statResult.map(stats => {
         const { isDirectory = false, isFile = false } = options ?? {};
-
-        if (isDirectory && isFile) {
-            throw new TypeError('ExistsOptions.isDirectory and ExistsOptions.isFile must not be true together');
-        }
 
         const notExist =
             (isDirectory && stats.isFile())
             || (isFile && stats.isDirectory());
 
-        return Ok(!notExist);
-    }).orElse((err): IOResult<boolean> => {
-        return isNotFoundError(err) ? RESULT_FALSE : Err(err);
+        return !notExist;
+    }).orElse(err => {
+        return isNotFoundError(err) ? RESULT_FALSE : statResult.asErr();
     });
+}
+
+/**
+ * 验证提供的 ExistsOptions 是否有效。
+ * `isDirectory` 和 `isFile` 不能同时为 `true`。
+ *
+ * @param options - 要验证的 ExistsOptions。
+ * @returns 表示成功或错误的 VoidIOResult。
+ */
+export function validateExistsOptions(options?: ExistsOptions): VoidIOResult {
+    const { isDirectory = false, isFile = false } = options ?? {};
+
+    return isDirectory && isFile
+        ? Err(new Error('isDirectory and isFile cannot both be true'))
+        : RESULT_VOID;
 }

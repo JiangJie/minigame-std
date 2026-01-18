@@ -14,7 +14,7 @@ import type { FetchTask } from '../fetch/fetch_defines.ts';
 import { miniGameFailureToResult, promisifyWithResult } from '../utils/mod.ts';
 import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions } from './fs_define.ts';
 import { createAbortError } from './fs_helpers.ts';
-import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getRootUsrPath, getWriteFileContents, isNotFoundError, type MinaWriteFileContent } from './mina_fs_shared.ts';
+import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getRootUsrPath, getWriteFileContents, isNotFoundError, validateExistsOptions, type MinaWriteFileContent } from './mina_fs_shared.ts';
 
 /**
  * 递归创建文件夹，相当于`mkdir -p`。
@@ -283,8 +283,11 @@ export async function copy(srcPath: string, destPath: string): AsyncVoidIOResult
  * @returns 检查存在性的异步结果，存在时返回 true。
  */
 export async function exists(path: string, options?: ExistsOptions): AsyncIOResult<boolean> {
-    const res = await stat(path);
-    return getExistsResult(res, options);
+    const optionsRes = validateExistsOptions(options);
+    if (optionsRes.isErr()) return optionsRes.asErr();
+
+    const statRes = await stat(path);
+    return getExistsResult(statRes, options);
 }
 
 /**
