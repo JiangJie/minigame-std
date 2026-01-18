@@ -33,6 +33,7 @@ const lookup = ((): Uint8Array => {
  * 将 BufferSource 转换为 Base64 编码的字符串。
  * @param data - 需要编码的数据，可以是 ArrayBuffer、TypedArray 或 DataView。
  * @returns Base64 编码的字符串。
+ * @since 1.0.0
  * @example
  * ```ts
  * const buffer = new Uint8Array([72, 101, 108, 108, 111]);
@@ -86,6 +87,7 @@ export function base64FromBuffer(data: BufferSource): string {
  * 将 Base64 编码的字符串转换为 Uint8Array。
  * @param data - Base64 编码的字符串。
  * @returns 解码后的 Uint8Array。
+ * @since 1.0.0
  * @example
  * ```ts
  * const buffer = base64ToBuffer('SGVsbG8=');

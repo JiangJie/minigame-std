@@ -14,6 +14,7 @@ import {
  * 添加错误监听器，用于监听标准的错误事件。
  * @param listener - 错误事件的回调函数。
  * @returns 返回一个函数，调用该函数可以移除监听器。
+ * @since 1.0.0
  * @example
  * ```ts
  * const removeListener = addErrorListener((ev) => {
@@ -42,6 +43,7 @@ export function addErrorListener(listener: (ev: WechatMinigame.ListenerError) =>
  * 添加未处理的 Promise 拒绝事件监听器。
  * @param listener - 未处理的 Promise 拒绝事件的回调函数。
  * @returns  返回一个函数，调用该函数可以移除监听器。
+ * @since 1.0.0
  * @example
  * ```ts
  * const removeListener = addUnhandledrejectionListener((ev) => {
@@ -62,6 +64,7 @@ export function addUnhandledrejectionListener(listener: (ev: Pick<PromiseRejecti
  * 添加窗口大小变化监听器。
  * @param listener - 窗口大小变化的回调函数。
  * @returns 返回一个函数，调用该函数可以移除监听器。
+ * @since 1.7.0
  * @example
  * ```ts
  * const removeListener = addResizeListener((size) => {

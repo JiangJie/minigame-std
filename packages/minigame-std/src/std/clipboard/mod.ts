@@ -7,6 +7,7 @@ import { readText as webReadText, writeText as webWriteText } from './web_clipbo
  * 异步写入文本数据到剪贴板。
  * @param data - 需要写入的文本数据。
  * @returns 写入操作的结果。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = await writeText('Hello, World!');
@@ -24,6 +25,7 @@ export function writeText(data: string): AsyncVoidIOResult {
 /**
  * 异步读取剪贴板文本数据。
  * @returns 读取操作的结果。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = await readText();

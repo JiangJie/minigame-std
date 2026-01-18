@@ -13,6 +13,7 @@ import {
  * 从URL创建图片。
  * @param url - 图片URL。
  * @returns Image对象。
+ * @since 1.7.0
  * @example
  * ```ts
  * const img = createImageFromUrl('https://example.com/image.png');
@@ -29,6 +30,7 @@ export function createImageFromUrl(url: string): HTMLImageElement | WechatMiniga
  * 从文件创建图片。
  * @param filePath - 文件路径。
  * @returns 异步的Image对象。
+ * @since 1.7.0
  * @example
  * ```ts
  * const result = await createImageFromFile('/path/to/image.png');

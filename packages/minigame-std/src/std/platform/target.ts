@@ -8,6 +8,7 @@ function getPlatform(): string {
 /**
  * 判断当前是否在小游戏的运行时环境中。
  * @returns 如果在小游戏的运行时环境中返回 true，否则返回 false。
+ * @since 1.9.0
  * @example
  * ```ts
  * if (isMiniGameRuntime()) {
@@ -22,6 +23,7 @@ export function isMiniGameRuntime(): boolean {
 /**
  * 判断当前是否在小游戏的开发者工具中。
  * @returns 如果在小游戏的开发者工具中返回 true，否则返回 false。
+ * @since 1.9.0
  * @example
  * ```ts
  * if (isMiniGameDevtools()) {
@@ -36,6 +38,7 @@ export function isMiniGameDevtools(): boolean {
 /**
  * 判断当前是否在小游戏的 iOS 环境中。
  * @returns 如果在小游戏的 iOS 环境中返回 true，否则返回 false。
+ * @since 1.9.0
  * @example
  * ```ts
  * if (isMiniGameIOS()) {
@@ -50,6 +53,7 @@ export function isMiniGameIOS(): boolean {
 /**
  * 判断当前是否在小游戏的 Android 环境中。
  * @returns 如果在小游戏的 Android 环境中返回 true，否则返回 false。
+ * @since 1.9.0
  * @example
  * ```ts
  * if (isMiniGameAndroid()) {
@@ -64,6 +68,7 @@ export function isMiniGameAndroid(): boolean {
 /**
  * 判断当前是否在小游戏的 Windows 环境中。
  * @returns 如果在小游戏的 Windows 环境中返回 true，否则返回 false。
+ * @since 1.9.0
  * @example
  * ```ts
  * if (isMiniGameWin()) {
@@ -78,6 +83,7 @@ export function isMiniGameWin(): boolean {
 /**
  * 判断当前是否在小游戏的 Mac 环境中。
  * @returns 如果在小游戏的 Mac 环境中返回 true，否则返回 false。
+ * @since 1.9.0
  * @example
  * ```ts
  * if (isMiniGameMac()) {
@@ -92,6 +98,7 @@ export function isMiniGameMac(): boolean {
 /**
  * 判断当前是否在小游戏的 HarmonyOS 环境中。
  * @returns 如果在小游戏的 HarmonyOS 环境中返回 true，否则返回 false。
+ * @since 1.9.0
  * @example
  * ```ts
  * if (isMiniGameHarmonyOS()) {

@@ -10,6 +10,7 @@ export * from './fetch_defines.ts';
  * @param url - 请求的 URL 地址。
  * @param init - 请求的初始化配置，指定响应类型为文本且请求可中断。
  * @returns 返回一个文本类型的 FetchTask。
+ * @since 1.0.0
  * @example
  * ```ts
  * const task = fetchT('https://api.example.com/data', { responseType: 'text' });
@@ -30,6 +31,7 @@ export function fetchT(url: string, init: UnionFetchInit & {
  * @param url - 请求的 URL 地址。
  * @param init - 请求的初始化配置，指定响应类型为 ArrayBuffer 且请求可中断。
  * @returns 返回一个 ArrayBuffer 类型的 FetchTask。
+ * @since 1.0.0
  * @example
  * ```ts
  * const task = fetchT('https://api.example.com/file', { responseType: 'arraybuffer' });
@@ -50,6 +52,7 @@ export function fetchT(url: string, init: UnionFetchInit & {
  * @param url - 请求的 URL 地址。
  * @param init - 请求的初始化配置，指定响应类型为 JSON 且请求可中断。
  * @returns 返回一个 JSON 类型的 FetchTask。
+ * @since 1.0.0
  * @example
  * ```ts
  * interface User {
@@ -74,6 +77,7 @@ export function fetchT<T>(url: string, init: UnionFetchInit & {
  * @param url - 请求的 URL 地址。
  * @param init - 请求的初始化配置，指定请求可中断。
  * @returns FetchTask。
+ * @since 1.0.0
  * @example
  * ```ts
  * const task = fetchT('https://api.example.com/data');
@@ -91,6 +95,7 @@ export function fetchT(url: string, init?: UnionFetchInit): FetchTask<string | R
  * @param url - 请求的 URL 地址。
  * @param init - 请求的初始化配置。
  * @returns FetchTask。
+ * @since 1.0.0
  * @example
  * ```ts
  * // 发起 POST 请求

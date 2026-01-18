@@ -8,6 +8,7 @@ import { textDecode as webTextDecode, textEncode as webTextEncode } from './web_
  * 将字符串数据编码为 `Uint8Array`（UTF-8 编码）。
  * @param data - 需要编码的字符串数据。
  * @returns 编码后的 `Uint8Array`。
+ * @since 1.0.0
  * @example
  * ```ts
  * const encoded = textEncode('你好');
@@ -24,6 +25,7 @@ export function textEncode(data: string): Uint8Array<ArrayBuffer> {
  * 将二进制数据解码为字符串（UTF-8 解码）。
  * @param data - 需要解码的二进制数据。
  * @returns 解码后的字符串。
+ * @since 1.0.0
  * @example
  * ```ts
  * const decoded = textDecode(new Uint8Array([228, 189, 160, 229, 165, 189]));
@@ -40,6 +42,7 @@ export function textDecode(data: BufferSource): string {
  * 将 BufferSource 转换为十六进制字符串。
  * @param buffer - 需要转换的 BufferSource。
  * @returns 十六进制字符串。
+ * @since 1.6.0
  * @example
  * ```ts
  * const hex = hexFromBuffer(new Uint8Array([255, 0, 128]));
@@ -54,6 +57,7 @@ export function hexFromBuffer(buffer: BufferSource): string {
  * 将字节字符串转换为 Uint8Array，每个字符的 charCode 作为一个字节。
  * @param str - 需要转换的字节字符串。
  * @returns Uint8Array。
+ * @since 1.0.0
  * @example
  * ```ts
  * const buffer = byteStringToBuffer('Hello');
@@ -75,6 +79,7 @@ export function byteStringToBuffer(str: string): Uint8Array<ArrayBuffer> {
  * 将 Buffer 转换为字节字符串，每个字节作为一个字符。
  * @param buffer - 需要转换的 Buffer。
  * @returns 字节字符串。
+ * @since 1.0.0
  * @example
  * ```ts
  * const str = byteStringFromBuffer(new Uint8Array([72, 101, 108, 108, 111]));
@@ -89,6 +94,7 @@ export function byteStringFromBuffer(buffer: BufferSource): string {
  * 将 UTF-8 字符串或 BufferSource 转换为字节字符串。
  * @param data - 需要转换的字符串或 BufferSource。
  * @returns 转换后的字节字符串。
+ * @since 1.0.0
  * @example
  * ```ts
  * const byteStr = toByteString('你好');

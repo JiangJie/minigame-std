@@ -3,22 +3,26 @@ import type { FsRequestInit, ReadFileContent as OPFSReadFileContent, WriteFileCo
 
 /**
  * File content type for async write, support `ArrayBuffer` `TypedArray` `string` `ReadableStream`.
+ * @since 1.0.0
  */
 export type WriteFileContent = Exclude<OPFSWriteFileContent, Blob>;
 
 /**
  * File content type for sync write, support `ArrayBuffer` `TypedArray` `string`.
  * Excludes `Blob` and `ReadableStream` as they require async operations.
+ * @since 1.1.0
  */
 export type WriteSyncFileContent = Exclude<OPFSWriteSyncFileContent, Blob>;
 
 /**
  * File content type for read result, support `ArrayBuffer` `string`.
+ * @since 1.0.0
  */
 export type ReadFileContent = Exclude<OPFSReadFileContent, Blob>;
 
 /**
  * Options for reading files with specified encoding.
+ * @since 1.0.0
  */
 export interface ReadOptions {
     /**
@@ -31,11 +35,13 @@ export interface ReadOptions {
 
 /**
  * Supported file encodings for reading and writing files.
+ * @since 1.0.0
  */
 export type FileEncoding = 'binary' | 'utf8';
 
 /**
  * Options for downloading files.
+ * @since 1.0.0
  */
 export interface DownloadFileOptions extends Omit<WechatMinigame.DownloadFileOption, 'url' | 'filePath' | 'success' | 'fail'> {
     onProgress?: FetchInit['onProgress'];
@@ -43,6 +49,7 @@ export interface DownloadFileOptions extends Omit<WechatMinigame.DownloadFileOpt
 
 /**
  * Options for uploading files.
+ * @since 1.0.0
  */
 export interface UploadFileOptions extends Omit<WechatMinigame.UploadFileOption, 'url' | 'filePath' | 'name' | 'success' | 'fail'> {
     /**
@@ -53,16 +60,19 @@ export interface UploadFileOptions extends Omit<WechatMinigame.UploadFileOption,
 
 /**
  * Options for union requests.
+ * @since 1.0.0
  */
 export type UnionDownloadFileOptions = FsRequestInit & DownloadFileOptions;
 
 /**
  * Options for union requests.
+ * @since 1.0.0
  */
 export type UnionUploadFileOptions = UploadRequestInit & UploadFileOptions;
 
 /**
  * Options for stat operations.
+ * @since 1.0.0
  */
 export interface StatOptions {
     /**
@@ -73,5 +83,6 @@ export interface StatOptions {
 
 /**
  * Union options for `unzipFromUrl`.
+ * @since 1.4.0
  */
 export type ZipFromUrlOptions = (DownloadFileOptions & ZipOptions) & FsRequestInit;

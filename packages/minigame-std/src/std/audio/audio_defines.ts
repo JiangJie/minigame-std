@@ -1,5 +1,6 @@
 /**
  * 播放音频的选项。
+ * @since 1.5.0
  */
 export interface PlayOptions {
     /**

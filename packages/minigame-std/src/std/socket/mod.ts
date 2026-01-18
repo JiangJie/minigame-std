@@ -10,6 +10,7 @@ export * from './socket_define.ts';
  * @param url - WebSocket 服务器的 URL。
  * @param options - 可选的参数。
  * @returns 返回一个实现了 ISocket 接口的 WebSocket 对象。
+ * @since 1.0.0
  * @example
  * ```ts
  * const socket = connectSocket('wss://echo.websocket.org');

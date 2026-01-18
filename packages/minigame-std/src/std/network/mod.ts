@@ -8,6 +8,7 @@ export * from './network_define.ts';
 /**
  * 获取网络状态。
  * @returns 根据浏览器支持情况不同，返回值可能为 `wifi` | `none` | `unknown` | `slow-2g` | `2g` | `3g` | `4g`
+ * @since 1.0.9
  * @example
  * ```ts
  * const networkType = await getNetworkType();
@@ -27,6 +28,7 @@ export function getNetworkType(): Promise<NetworkType> {
  * 监听网络状态变化。
  * @param listener - 网络状态变化的回调函数。
  * @returns 返回一个函数，调用该函数可以移除监听器。
+ * @since 1.0.9
  * @example
  * ```ts
  * const removeListener = addNetworkChangeListener((type) => {

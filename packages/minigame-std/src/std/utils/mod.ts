@@ -8,6 +8,7 @@ export * from './promisify.ts';
  * 如果是同步 API throw 的异常通常是一个类似 `Error` 的类型。
  * @param err - 小游戏错误对象。
  * @returns 转换后的 `Error` 对象。
+ * @since 1.0.0
  * @example
  * ```ts
  * const err = { errMsg: 'request:fail timeout' };
@@ -24,6 +25,7 @@ export function miniGameFailureToError(err: WechatMinigame.GeneralCallbackResult
  * @typeParam T - Result 的 Ok 类型。
  * @param err - 错误对象。
  * @returns 转换后的 IOResult 对象。
+ * @since 1.0.0
  * @example
  * ```ts
  * const err = { errMsg: 'operation failed' };
@@ -39,6 +41,7 @@ export function miniGameFailureToResult<T>(err: WechatMinigame.GeneralCallbackRe
  * 执行同步函数，预期异常都是 `WechatMinigame.GeneralCallbackResult`。
  * @param op - 需要执行的同步函数。
  * @returns IOResult。
+ * @since 1.2.0
  * @example
  * ```ts
  * const result = tryGeneralSyncOp(() => {
@@ -61,6 +64,7 @@ export function tryGeneralSyncOp<T>(op: () => T): IOResult<T> {
  * 执行异步函数，预期异常都是 `WechatMinigame.GeneralCallbackResult`。
  * @param op - 需要执行的异步函数。
  * @returns AsyncIOResult。
+ * @since 1.2.0
  * @example
  * ```ts
  * const result = await tryGeneralAsyncOp(async () => {
@@ -83,6 +87,7 @@ export async function tryGeneralAsyncOp<T>(op: () => Promise<T>): AsyncIOResult<
  * 执行同步函数，预期异常都是 `DOMException`。
  * @param op - 需要执行的同步函数。
  * @returns IOResult。
+ * @since 1.2.0
  * @example
  * ```ts
  * const result = tryDOMSyncOp(() => {
@@ -105,6 +110,7 @@ export function tryDOMSyncOp<T>(op: () => T): IOResult<T> {
  * 执行异步函数，预期异常都是 `DOMException`。
  * @param op - 需要执行的异步函数。
  * @returns AsyncIOResult。
+ * @since 1.2.0
  * @example
  * ```ts
  * const result = await tryDOMAsyncOp(async () => {
@@ -127,6 +133,7 @@ export async function tryDOMAsyncOp<T>(op: () => Promise<T>): AsyncIOResult<T> {
  * 将 BufferSource 转换为 Uint8Array。
  * @param data - 需要转换的 BufferSource。
  * @returns Uint8Array。
+ * @since 1.6.0
  * @example
  * ```ts
  * const buffer = new ArrayBuffer(8);
@@ -158,6 +165,7 @@ export function bufferSource2U8a(data: BufferSource): Uint8Array<ArrayBuffer> {
  * 将 BufferSource 转换为 ArrayBuffer。
  * @param data - 需要转换的 BufferSource。
  * @returns ArrayBuffer。
+ * @since 1.6.0
  * @example
  * ```ts
  * const u8a = new Uint8Array([1, 2, 3]);

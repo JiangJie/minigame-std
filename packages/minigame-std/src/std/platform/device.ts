@@ -5,6 +5,7 @@ import { parseUserAgent } from './user_agent.ts';
 
 /**
  * 平台类型。
+ * @since 1.0.0
  */
 export type Platform = 'ios' | 'android' | 'mac' | 'windows' | 'ohos' | 'ohos_pc' | 'devtools' | 'linux' | 'unknown';
 
@@ -12,6 +13,7 @@ export type Platform = 'ios' | 'android' | 'mac' | 'windows' | 'ohos' | 'ohos_pc
  * 设备信息类型。
  * 修正了 `memorySize` 的类型为 `number`（小游戏 API 实际返回数字，但官方类型定义错误地声明为 string）。
  * @see https://github.com/wechat-miniprogram/minigame-api-typings/issues/27
+ * @since 1.0.0
  */
 export type DeviceInfo = Omit<WechatMinigame.DeviceInfo, 'abi' | 'cpuType' | 'deviceAbi' | 'memorySize' | 'platform'> & {
     abi?: string;
@@ -74,6 +76,7 @@ function getWebWindowInfo(): WechatMinigame.WindowInfo {
 /**
  * 获取设备信息。
  * @returns 返回小游戏的设备信息对象。
+ * @since 1.0.0
  * @example
  * ```ts
  * const info = getDeviceInfo();
@@ -89,6 +92,7 @@ export function getDeviceInfo(): DeviceInfo {
 /**
  * 获取设备性能等级， web 环境返回 -2。
  * @returns 返回设备性能等级。
+ * @since 1.10.0
  * @example
  * ```ts
  * const result = await getDeviceBenchmarkLevel();
@@ -133,6 +137,7 @@ export async function getDeviceBenchmarkLevel(): AsyncIOResult<number> {
 /**
  * 获取窗口信息。
  * @returns 包含窗口和屏幕相关信息的对象。
+ * @since 1.7.0
  * @example
  * ```ts
  * const info = getWindowInfo();

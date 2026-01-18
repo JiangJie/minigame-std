@@ -16,6 +16,7 @@ const audioContext = Once<AudioContext>();
 /**
  * 获取缓存的 AudioContext。
  * @returns 返回缓存的 AudioContext。
+ * @since 1.5.0
  * @example
  * ```ts
  * const context = audio.getGlobalAudioContext();
@@ -28,6 +29,7 @@ export function getGlobalAudioContext(): AudioContext {
 /**
  * 关闭缓存的 AudioContext。
  * @returns 返回一个 AsyncVoidIOResult。
+ * @since 1.5.0
  * @example
  * ```ts
  * await audio.closeGlobalAudioContext();
@@ -51,6 +53,7 @@ export async function closeGlobalAudioContext(): AsyncVoidIOResult {
  * 创建一个 AudioContext。
  * 如果要获取缓存的实例，请使用 `getGlobalAudioContext`。
  * @returns 返回一个 AudioContext实例。
+ * @since 1.5.0
  * @example
  * ```ts
  * const context = audio.createWebAudioContext();
@@ -68,6 +71,7 @@ export function createWebAudioContext(): AudioContext {
  * @param buffer - 解码后的 AudioBuffer。
  * @param options - 播放选项。
  * @returns 正在播放的 AudioBufferSourceNode。
+ * @since 1.5.0
  * @example
  * ```ts
  * const source = audio.playWebAudioFromAudioBuffer(audioBuffer, { loop: true });
@@ -102,6 +106,7 @@ export function playWebAudioFromAudioBuffer(buffer: AudioBuffer, options?: PlayO
  * @param buffer - 需要解码的 Buffer。
  * @param options - 播放选项。
  * @returns 正在播放的 AudioBufferSourceNode。
+ * @since 1.5.0
  * @example
  * ```ts
  * const source = await audio.playWebAudioFromArrayBuffer(buffer);
@@ -119,6 +124,7 @@ export async function playWebAudioFromArrayBuffer(buffer: BufferSource, options?
  * @param filePath - 文件路径。
  * @param options - 播放选项。
  * @returns 正在播放的 AudioBufferSourceNode。
+ * @since 1.5.0
  * @example
  * ```ts
  * const result = await audio.playWebAudioFromFile('/path/to/audio.mp3');

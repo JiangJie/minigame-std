@@ -56,6 +56,7 @@ import type { MinaWriteFileContent } from './mina_fs_shared.ts';
  * 递归创建文件夹，相当于 `mkdir -p`。
  * @param dirPath - 将要创建的目录的路径。
  * @returns 创建成功返回的异步操作结果。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = await mkdir('/path/to/dir');
@@ -73,6 +74,7 @@ export function mkdir(dirPath: string): AsyncVoidIOResult {
  * @param srcPath - 原始路径。
  * @param destPath - 新路径。
  * @returns 操作成功返回的异步操作结果。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = await move('/old/path', '/new/path');
@@ -89,6 +91,7 @@ export function move(srcPath: string, destPath: string): AsyncVoidIOResult {
  * 异步读取指定目录下的所有文件和子目录。
  * @param dirPath - 需要读取的目录路径。
  * @returns 包含目录内容的字符串数组的异步操作结果。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = await readDir('/path/to/dir');
@@ -115,6 +118,7 @@ export async function readDir(dirPath: string): AsyncIOResult<string[]> {
  * 读取文件内容。
  * @param filePath - 文件的路径。
  * @returns 包含文件内容的 ArrayBuffer 的异步操作结果。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = await readFile('/path/to/file.txt');
@@ -137,6 +141,7 @@ export async function readFile(filePath: string): AsyncIOResult<ArrayBuffer> {
  * 删除文件或目录。
  * @param path - 要删除的文件或目录的路径。
  * @returns 删除成功返回的异步操作结果。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = await remove('/path/to/file.txt');
@@ -159,6 +164,7 @@ export async function stat(path: string, options?: StatOptions): AsyncIOResult<W
  * @param path - 文件或目录的路径。
  * @param options - 可选选项，包含 recursive 可递归获取目录下所有文件状态。
  * @returns 包含状态信息的异步操作结果。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = await stat('/path/to/file.txt');
@@ -205,6 +211,7 @@ export async function stat(path: string, options?: StatOptions): AsyncIOResult<W
  * @param contents - 要写入的内容，支持 ArrayBuffer 和 string（需确保是 UTF-8 编码）。
  * @param options - 可选写入选项。
  * @returns 写入成功返回的异步操作结果。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = await writeFile('/path/to/file.txt', 'Hello, World!');
@@ -222,6 +229,7 @@ export function writeFile(filePath: string, contents: WriteFileContent, options?
  * @param filePath - 文件路径。
  * @param contents - 要追加的内容。
  * @returns 追加成功返回的异步操作结果。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = await appendFile('/path/to/file.txt', '\nNew content');
@@ -239,6 +247,7 @@ export function appendFile(filePath: string, contents: WriteFileContent): AsyncV
  * @param srcPath - 源文件或文件夹路径。
  * @param destPath - 目标文件或文件夹路径。
  * @returns 操作的异步结果。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = await copy('/src/file.txt', '/dest/file.txt');
@@ -255,6 +264,7 @@ export function copy(srcPath: string, destPath: string): AsyncVoidIOResult {
  * 检查指定路径的文件或目录是否存在。
  * @param path - 文件或目录的路径。
  * @returns 存在返回 true 的异步操作结果。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = await exists('/path/to/file.txt');
@@ -271,6 +281,7 @@ export function exists(path: string): AsyncIOResult<boolean> {
  * 清空指定目录下的所有文件和子目录。
  * @param dirPath - 目录路径。
  * @returns 清空成功返回的异步操作结果。
+ * @since 1.0.1
  * @example
  * ```ts
  * const result = await emptyDir('/path/to/dir');
@@ -288,6 +299,7 @@ export function emptyDir(dirPath: string): AsyncVoidIOResult {
  * @typeParam T - JSON 解析后的类型。
  * @param filePath - 文件路径。
  * @returns 解析后的对象。
+ * @since 1.6.0
  * @example
  * ```ts
  * const result = await readJsonFile<{ name: string }>('/path/to/config.json');
@@ -304,6 +316,7 @@ export function readJsonFile<T>(filePath: string): AsyncIOResult<T> {
  * 读取文本文件的内容。
  * @param filePath - 文件路径。
  * @returns 包含文件文本内容的异步操作结果。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = await readTextFile('/path/to/file.txt');
@@ -339,6 +352,7 @@ export function writeJsonFile<T>(filePath: string, data: T): AsyncVoidIOResult {
  * @param fileUrl - 文件的网络 URL。
  * @param options - 可选的下载参数。
  * @returns 下载操作的 FetchTask，可用于取消或监听进度。
+ * @since 1.0.0
  * @example
  * ```ts
  * const task = downloadFile('https://example.com/file.zip');
@@ -355,6 +369,7 @@ export function downloadFile(fileUrl: string, options?: UnionDownloadFileOptions
  * @param filePath - 下载后文件存储的路径。
  * @param options - 可选的请求初始化参数。
  * @returns 下载操作的 FetchTask。
+ * @since 1.0.0
  * @example
  * ```ts
  * const task = downloadFile('https://example.com/file.zip', '/path/to/save.zip');
@@ -383,6 +398,7 @@ export function downloadFile(fileUrl: string, filePath?: string | UnionDownloadF
  * @param fileUrl - 目标服务器的 URL。
  * @param options - 可选的请求初始化参数。
  * @returns 上传操作的 FetchTask。
+ * @since 1.0.0
  * @example
  * ```ts
  * const task = uploadFile('/path/to/file.txt', 'https://example.com/upload');
@@ -403,6 +419,7 @@ export function uploadFile(filePath: string, fileUrl: string, options?: UnionUpl
  * @param zipFilePath - 要解压的 zip 文件路径。
  * @param targetPath - 要解压到的目标文件夹路径。
  * @returns 解压操作的异步结果。
+ * @since 1.3.0
  * @example
  * ```ts
  * const result = await unzip('/path/to/archive.zip', '/path/to/output');
@@ -421,6 +438,7 @@ export function unzip(zipFilePath: string, targetPath: string): AsyncVoidIOResul
  * @param targetPath - 要解压到的目标文件夹路径。
  * @param options - 可选的下载参数。
  * @returns 下载并解压操作的异步结果。
+ * @since 1.4.0
  * @example
  * ```ts
  * const result = await unzipFromUrl('https://example.com/archive.zip', '/path/to/output');
@@ -438,6 +456,7 @@ export async function unzipFromUrl(zipFileUrl: string, targetPath: string, optio
  * @param sourcePath - 需要压缩的文件（夹）路径。
  * @param options - 可选的压缩参数。
  * @returns 压缩后的 Uint8Array。
+ * @since 1.3.0
  * @example
  * ```ts
  * const result = await zip('/path/to/source');
@@ -453,6 +472,7 @@ export function zip(sourcePath: string, options?: ZipOptions): AsyncIOResult<Uin
  * @param zipFilePath - 压缩后的 zip 文件路径。
  * @param options - 可选的压缩参数。
  * @returns 压缩操作的异步结果。
+ * @since 1.3.0
  * @example
  * ```ts
  * const result = await zip('/path/to/source', '/path/to/archive.zip');
@@ -479,6 +499,7 @@ export function zip(sourcePath: string, zipFilePath?: string | ZipOptions, optio
  * @param sourceUrl - 要下载的文件 URL。
  * @param options - 合并的下载和压缩选项。
  * @returns 压缩后的 Uint8Array。
+ * @since 1.4.0
  * @example
  * ```ts
  * const result = await zipFromUrl('https://example.com/file.txt');
@@ -494,6 +515,7 @@ export function zipFromUrl(sourceUrl: string, options?: ZipFromUrlOptions): Asyn
  * @param zipFilePath - 要输出的 zip 文件路径。
  * @param options - 合并的下载和压缩选项。
  * @returns 操作的异步结果。
+ * @since 1.4.0
  * @example
  * ```ts
  * const result = await zipFromUrl('https://example.com/file.txt', '/path/to/archive.zip');

@@ -44,6 +44,7 @@ import {
  * `mkdir` 的同步版本，递归创建文件夹。
  * @param dirPath - 将要创建的目录的路径。
  * @returns 创建成功返回的操作结果。
+ * @since 1.1.0
  * @example
  * ```ts
  * const result = mkdirSync('/path/to/dir');
@@ -61,6 +62,7 @@ export function mkdirSync(dirPath: string): VoidIOResult {
  * @param srcPath - 原始路径。
  * @param destPath - 新路径。
  * @returns 操作成功返回的操作结果。
+ * @since 1.1.0
  * @example
  * ```ts
  * const result = moveSync('/old/path', '/new/path');
@@ -77,6 +79,7 @@ export function moveSync(srcPath: string, destPath: string): VoidIOResult {
  * `readDir` 的同步版本，读取指定目录下的所有文件和子目录。
  * @param dirPath - 需要读取的目录路径。
  * @returns 包含目录内容的字符串数组的操作结果。
+ * @since 1.1.0
  * @example
  * ```ts
  * const result = readDirSync('/path/to/dir');
@@ -97,6 +100,7 @@ export function readDirSync(dirPath: string): IOResult<string[]> {
  * `readFile` 的同步版本，读取文件内容。
  * @param filePath - 文件的路径。
  * @returns 包含文件内容的 ArrayBuffer 的操作结果。
+ * @since 1.1.0
  * @example
  * ```ts
  * const result = readFileSync('/path/to/file.txt');
@@ -118,6 +122,7 @@ export function readFileSync(filePath: string): IOResult<ArrayBuffer> {
  * `remove` 的同步版本，删除文件或目录。
  * @param path - 要删除的文件或目录的路径。
  * @returns 删除成功返回的操作结果。
+ * @since 1.1.0
  * @example
  * ```ts
  * const result = removeSync('/path/to/file.txt');
@@ -134,6 +139,7 @@ export function removeSync(path: string): VoidIOResult {
  * `stat` 的同步版本，获取文件或目录的状态信息。
  * @param path - 文件或目录的路径。
  * @returns 包含状态信息的操作结果。
+ * @since 1.1.0
  * @example
  * ```ts
  * const result = statSync('/path/to/file.txt');
@@ -148,6 +154,7 @@ export function statSync(path: string): IOResult<WechatMinigame.Stats>;
  * @param path - 目录的路径。
  * @param options - 选项，recursive 设置为 true 时递归获取。
  * @returns 包含目录下所有文件状态信息数组的操作结果。
+ * @since 1.1.0
  * @example
  * ```ts
  * const result = statSync('/path/to/dir', { recursive: true });
@@ -166,6 +173,7 @@ export function statSync(path: string, options: StatOptions & {
  * @param path - 文件或目录的路径。
  * @param options - 可选选项，包含 recursive 可递归获取目录下所有文件状态。
  * @returns 包含状态信息的操作结果，根据 options.recursive 返回单个 Stats 或 FileStats 数组。
+ * @since 1.1.0
  */
 export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
 export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
@@ -204,6 +212,7 @@ export function statSync(path: string, options?: StatOptions): IOResult<WechatMi
  * @param filePath - 文件路径。
  * @param contents - 要写入的内容。
  * @returns 写入成功返回的操作结果。
+ * @since 1.1.0
  * @example
  * ```ts
  * const result = writeFileSync('/path/to/file.txt', 'Hello, World!');
@@ -221,6 +230,7 @@ export function writeFileSync(filePath: string, contents: WriteSyncFileContent):
  * @param srcPath - 源文件或文件夹路径。
  * @param destPath - 目标文件或文件夹路径。
  * @returns 操作的结果。
+ * @since 1.1.0
  * @example
  * ```ts
  * const result = copySync('/src/file.txt', '/dest/file.txt');
@@ -238,6 +248,7 @@ export function copySync(srcPath: string, destPath: string): VoidIOResult {
  * @param filePath - 文件路径。
  * @param contents - 要追加的内容。
  * @returns 追加成功返回的操作结果。
+ * @since 1.1.0
  * @example
  * ```ts
  * const result = appendFileSync('/path/to/file.txt', '\nNew content');
@@ -254,6 +265,7 @@ export function appendFileSync(filePath: string, contents: WriteSyncFileContent)
  * `exists` 的同步版本，检查指定路径的文件或目录是否存在。
  * @param path - 文件或目录的路径。
  * @returns 存在返回 true 的操作结果。
+ * @since 1.1.0
  * @example
  * ```ts
  * const result = existsSync('/path/to/file.txt');
@@ -270,6 +282,7 @@ export function existsSync(path: string): IOResult<boolean> {
  * `emptyDir` 的同步版本，清空指定目录下的所有文件和子目录。
  * @param dirPath - 目录路径。
  * @returns 清空成功返回的操作结果。
+ * @since 1.1.0
  * @example
  * ```ts
  * const result = emptyDirSync('/path/to/dir');
@@ -287,6 +300,7 @@ export function emptyDirSync(dirPath: string): VoidIOResult {
  * @typeParam T - JSON 解析后的类型。
  * @param filePath - 文件路径。
  * @returns 解析后的对象。
+ * @since 1.6.0
  * @example
  * ```ts
  * const result = readJsonFileSync<{ name: string }>('/path/to/config.json');
@@ -303,6 +317,7 @@ export function readJsonFileSync<T>(filePath: string): IOResult<T> {
  * `readTextFile` 的同步版本，读取文本文件的内容。
  * @param filePath - 文件路径。
  * @returns 包含文件文本内容的操作结果。
+ * @since 1.1.0
  * @example
  * ```ts
  * const result = readTextFileSync('/path/to/file.txt');
@@ -338,6 +353,7 @@ export function writeJsonFileSync<T>(filePath: string, data: T): VoidIOResult {
  * @param zipFilePath - 要解压的 zip 文件路径。
  * @param targetPath - 要解压到的目标文件夹路径。
  * @returns 解压操作的结果。
+ * @since 1.3.0
  * @example
  * ```ts
  * const result = unzipSync('/path/to/archive.zip', '/path/to/output');
@@ -356,6 +372,7 @@ export function unzipSync(zipFilePath: string, targetPath: string): VoidIOResult
  * @param zipFilePath - 压缩后的 zip 文件路径。
  * @param options - 可选的压缩参数。
  * @returns 压缩操作的结果。
+ * @since 1.3.0
  * @example
  * ```ts
  * const result = zipSync('/path/to/source', '/path/to/archive.zip');

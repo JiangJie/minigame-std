@@ -9,6 +9,7 @@ import { importPublicKey as webImportPublicKey } from './web_rsa.ts';
  * @param pem - PEM 格式的公钥字符串。
  * @param hash - 用于 OAEP 填充的哈希算法（SHA-1、SHA-256、SHA-384 或 SHA-512）。
  * @returns RSA 公钥对象，包含 encrypt 方法用于加密数据。
+ * @since 1.6.0
  * @example
  * ```ts
  * const publicKey = await importPublicKey(pemString, 'SHA-256');

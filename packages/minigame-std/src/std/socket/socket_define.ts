@@ -3,6 +3,7 @@ import type { DataSource } from '../defines.ts';
 
 /**
  * WebSocket 连接状态，小游戏环境可用。
+ * @since 1.6.0
  */
 export const SocketReadyState = {
     /**
@@ -25,6 +26,7 @@ export const SocketReadyState = {
 
 /**
  * WebSocket 事件监听器映射接口，定义了与 WebSocket 事件对应的回调函数类型。
+ * @since 1.0.0
  */
 export interface SocketListenerMap {
     /**
@@ -54,6 +56,7 @@ export interface SocketListenerMap {
 
 /**
  * WebSocket 接口定义，描述了 WebSocket 的基本操作方法。
+ * @since 1.0.0
  */
 export interface ISocket {
     /**
@@ -87,5 +90,6 @@ export interface ISocket {
 
 /**
  * 创建Socket的可选参数。
+ * @since 1.0.0
  */
 export type SocketOptions = Omit<WechatMinigame.ConnectSocketOption, 'url' | 'complete' | 'success' | 'fail'>;

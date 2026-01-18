@@ -13,6 +13,7 @@ const BLOCK_SIZE = 64 as const;
 
 /**
  * MD5 哈希计算类，支持流式更新。
+ * @since 1.0.0
  * @example
  * ```ts
  * // 基本用法

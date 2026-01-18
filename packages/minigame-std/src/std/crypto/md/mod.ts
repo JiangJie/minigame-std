@@ -7,6 +7,7 @@ export { Md5 } from './md5.ts';
  * 计算字符串或 Buffer 的 MD5 值。
  * @param data - 需要计算 MD5 值的数据，可以是字符串或 BufferSource。
  * @returns 计算得到的 MD5 十六进制字符串（32 位）。
+ * @since 1.0.0
  * @example
  * ```ts
  * const hash = md5('Hello, World!');

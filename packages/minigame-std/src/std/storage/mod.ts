@@ -28,6 +28,7 @@ import {
  * @param key - 数据的键名。
  * @param data - 要存储的数据。
  * @returns 存储操作的异步结果。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = await setItem('username', 'john');
@@ -46,6 +47,7 @@ export function setItem(key: string, data: string): AsyncVoidIOResult {
  * 从本地缓存中读取数据。
  * @param key - 数据的键名。
  * @returns 包含数据的异步结果，如果不存在则返回空字符串。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = await getItem('username');
@@ -64,6 +66,7 @@ export function getItem(key: string): AsyncIOResult<string> {
  * 从本地缓存中移除指定的数据。
  * @param key - 数据的键名。
  * @returns 移除操作的异步结果。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = await removeItem('username');
@@ -81,6 +84,7 @@ export function removeItem(key: string): AsyncVoidIOResult {
 /**
  * 清除所有的本地存储数据。
  * @returns 清除操作的异步结果。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = await clear();
@@ -98,6 +102,7 @@ export function clear(): AsyncVoidIOResult {
 /**
  * 获取本地存储数据的项数。
  * @returns 包含存储项数的异步结果。
+ * @since 1.2.0
  * @example
  * ```ts
  * const result = await getLength();
@@ -116,6 +121,7 @@ export function getLength(): AsyncIOResult<number> {
  * 检查本地存储中是否存在指定的数据。
  * @param key - 数据的键名。
  * @returns 包含是否存在的布尔值的异步结果。
+ * @since 1.9.3
  * @example
  * ```ts
  * const result = await hasItem('username');
@@ -135,6 +141,7 @@ export function hasItem(key: string): AsyncIOResult<boolean> {
  * @param key - 数据的键名。
  * @param data - 要存储的数据。
  * @returns 存储操作的结果。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = setItemSync('username', 'john');
@@ -151,6 +158,7 @@ export function setItemSync(key: string, data: string): VoidIOResult {
  * `getItem` 的同步版本，从本地缓存中读取数据。
  * @param key - 数据的键名。
  * @returns 包含数据的操作结果。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = getItemSync('username');
@@ -167,6 +175,7 @@ export function getItemSync(key: string): IOResult<string> {
  * `removeItem` 的同步版本，从本地缓存中移除指定的数据。
  * @param key - 数据的键名。
  * @returns 移除操作的结果。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = removeItemSync('username');
@@ -182,6 +191,7 @@ export function removeItemSync(key: string): VoidIOResult {
 /**
  * `clear` 的同步版本，清除所有的本地存储数据。
  * @returns 清除操作的结果。
+ * @since 1.0.0
  * @example
  * ```ts
  * const result = clearSync();
@@ -197,6 +207,7 @@ export function clearSync(): VoidIOResult {
 /**
  * `getLength` 的同步版本，获取本地存储数据的项数。
  * @returns 包含存储项数的操作结果。
+ * @since 1.2.0
  * @example
  * ```ts
  * const result = getLengthSync();
@@ -213,6 +224,7 @@ export function getLengthSync(): IOResult<number> {
  * `hasItem` 的同步版本，检查本地存储中是否存在指定的数据。
  * @param key - 数据的键名。
  * @returns 包含是否存在的布尔值的操作结果。
+ * @since 1.9.3
  * @example
  * ```ts
  * const result = hasItemSync('username');

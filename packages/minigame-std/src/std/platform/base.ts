@@ -1,11 +1,13 @@
 /**
  * 平台类型，Web 或者小游戏。
+ * @since 1.0.0
  */
 export type TargetType = 'minigame' | 'web';
 
 /**
  * 获取当前的平台类型。
  * @returns 返回当前的运行环境类型，可能是 'minigame' 或 'web'。
+ * @since 1.0.0
  * @example
  * ```ts
  * const type = getTargetType();
@@ -19,6 +21,7 @@ export function getTargetType(): TargetType {
 /**
  * 判断当前是否在 Web 环境中。
  * @returns 如果在 Web 现境中返回 true，否则返回 false。
+ * @since 1.0.0
  * @example
  * ```ts
  * if (isWeb()) {
@@ -33,6 +36,7 @@ export function isWeb(): boolean {
 /**
  * 判断当前是否在小游戏环境中。
  * @returns 如果在小游戏环境中返回 true，否则返回 false。
+ * @since 1.0.0
  * @example
  * ```ts
  * if (isMiniGame()) {

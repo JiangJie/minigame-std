@@ -20,6 +20,7 @@ function shaHMAC(sha: SHA, key: DataSource, data: DataSource): Promise<string> {
  * @param key - 密钥，可以是字符串或 BufferSource。
  * @param data - 需要计算 HMAC 的数据，可以是字符串或 BufferSource。
  * @returns 返回十六进制格式的 HMAC 字符串。
+ * @since 1.8.0
  * @example
  * ```ts
  * const hmac = await sha1HMAC('secret-key', 'Hello, World!');
@@ -35,6 +36,7 @@ export function sha1HMAC(key: DataSource, data: DataSource): Promise<string> {
  * @param key - 密钥，可以是字符串或 BufferSource。
  * @param data - 需要计算 HMAC 的数据，可以是字符串或 BufferSource。
  * @returns 返回十六进制格式的 HMAC 字符串。
+ * @since 1.8.0
  * @example
  * ```ts
  * const hmac = await sha256HMAC('secret-key', 'Hello, World!');
@@ -50,6 +52,7 @@ export function sha256HMAC(key: DataSource, data: DataSource): Promise<string> {
  * @param key - 密钥，可以是字符串或 BufferSource。
  * @param data - 需要计算 HMAC 的数据，可以是字符串或 BufferSource。
  * @returns 返回十六进制格式的 HMAC 字符串。
+ * @since 1.8.0
  * @example
  * ```ts
  * const hmac = await sha384HMAC('secret-key', 'Hello, World!');
@@ -65,6 +68,7 @@ export function sha384HMAC(key: DataSource, data: DataSource): Promise<string> {
  * @param key - 密钥，可以是字符串或 BufferSource。
  * @param data - 需要计算 HMAC 的数据，可以是字符串或 BufferSource。
  * @returns 返回十六进制格式的 HMAC 字符串。
+ * @since 1.8.0
  * @example
  * ```ts
  * const hmac = await sha512HMAC('secret-key', 'Hello, World!');

@@ -1,5 +1,6 @@
 /**
  * geo 坐标。
+ * @since 1.7.0
  */
 export interface GeoPosition {
     /**

@@ -40,6 +40,7 @@ export type FailType<T> = T extends (params: infer P) => any
  *
  * @param api - 小游戏异步 API。
  * @returns 返回一个新的函数，该函数返回 `AsyncResult<T, E>`。
+ * @since 1.10.0
  * @example
  * ```ts
  * // 将 wx.setStorage 转换为 Promise 风格

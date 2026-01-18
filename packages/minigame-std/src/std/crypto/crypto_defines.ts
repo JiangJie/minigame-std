@@ -2,6 +2,7 @@ import type { DataSource } from '../defines.ts';
 
 /**
  * The RSA public key.
+ * @since 1.6.0
  */
 export interface RSAPublicKey {
     /**
@@ -20,6 +21,7 @@ export interface RSAPublicKey {
 /**
  * Supported SHA hash algorithms for RSA-OAEP encryption.
  *
+ * @since 1.6.0
  * @example
  * ```ts
  * import { importPublicKey, type SHA } from 'minigame-std';
