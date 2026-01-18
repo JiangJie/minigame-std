@@ -20,25 +20,25 @@ import type { SHA } from '../crypto_defines.ts';
 export function createHMAC(sha: SHA, key: string) {
     let shaAlgorithmCreator: HashAlgorithmCreator;
 
-    switch (sha.replace('-', '').toLowerCase()) {
-        case 'sha1': {
+    switch (sha) {
+        case 'SHA-1': {
             shaAlgorithmCreator = sha1;
             break;
         }
-        case 'sha256': {
+        case 'SHA-256': {
             shaAlgorithmCreator = sha256;
             break;
         }
-        case 'sha384': {
+        case 'SHA-384': {
             shaAlgorithmCreator = sha384;
             break;
         }
-        case 'sha512': {
+        case 'SHA-512': {
             shaAlgorithmCreator = sha512;
             break;
         }
         default: {
-            throw new Error(`Unsupported hash algorithm ${ sha }`);
+            throw new TypeError(`Unsupported hash algorithm ${ sha }`);
         }
     }
 
