@@ -1,7 +1,11 @@
+/**
+ * @internal
+ * 文件系统辅助函数。
+ */
+
 import { ABORT_ERROR, isFileHandle, isFileHandleLike, type FileSystemHandleLike } from 'happy-opfs';
 
 /**
- * @internal
  * 将 `FileSystemHandleLike` 转换为小游戏 `Stats`。
  * @param handleLike - FileSystemHandleLike
  * @returns
@@ -20,7 +24,6 @@ export function convertFileSystemHandleLikeToStats(handleLike: FileSystemHandleL
 }
 
 /**
- * @internal
  * 将`FileSystemHandle`转换为小游戏 `Stats`。
  * @param handle - FileSystemHandle
  * @returns
@@ -46,7 +49,6 @@ export async function convertFileSystemHandleToStats(handle: FileSystemHandle): 
 }
 
 /**
- * @internal
  * Creates an `AbortError` Error.
  * @returns An `AbortError` Error.
  */

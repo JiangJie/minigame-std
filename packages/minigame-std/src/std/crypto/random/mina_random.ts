@@ -8,6 +8,11 @@ import { hexFromBuffer } from '../../codec/mod.ts';
 import { miniGameFailureToError, promisifyWithResult } from '../../utils/mod.ts';
 import type { UUID } from './random_defines.ts';
 
+/**
+ * 生成指定长度的加密随机字节数组。
+ * @param length - 要生成的随机字节数。
+ * @returns 返回包含随机字节的 Uint8Array。
+ */
 export async function getRandomValues(length: number): AsyncIOResult<Uint8Array<ArrayBuffer>> {
     return (await promisifyWithResult(wx.getUserCryptoManager().getRandomValues)({
         length,
@@ -16,6 +21,10 @@ export async function getRandomValues(length: number): AsyncIOResult<Uint8Array<
         .mapErr(miniGameFailureToError);
 }
 
+/**
+ * 生成符合 RFC 4122 规范的 UUID v4。
+ * @returns 返回生成的 UUID 字符串。
+ */
 export async function randomUUID(): AsyncIOResult<UUID> {
     return (await getRandomValues(16)).map(bytes => {
         // 设置版本号（4）和变体（8, 9, A, B）

@@ -10,7 +10,6 @@ import { bufferSource2Ab, miniGameFailureToError } from '../utils/mod.ts';
 import type { FileEncoding, ReadOptions, WriteFileContent } from './fs_define.ts';
 
 /**
- * @internal
  * Mini-game write content type, excludes ReadableStream as mini-game doesn't support it.
  */
 export type MinaWriteFileContent = Exclude<WriteFileContent, ReadableStream<Uint8Array<ArrayBuffer>>>;
@@ -23,7 +22,6 @@ export type MinaWriteFileContent = Exclude<WriteFileContent, ReadableStream<Uint
 const fs = Lazy(() => wx.getFileSystemManager());
 
 /**
- * @internal
  * 获取小游戏文件系统管理器实例。
  * @returns 文件系统管理器实例。
  */
@@ -50,7 +48,6 @@ const rootPath = Lazy(() => {
 });
 
 /**
- * @internal
  * 获取文件系统的根路径。
  * @returns 文件系统的根路径。
  */
@@ -59,7 +56,6 @@ export function getRootUsrPath(): string {
 }
 
 /**
- * @internal
  * 获取给定路径的绝对路径。
  * @param path - 相对USER_DATA_PATH的相对路径，也必须以`/`开头。
  * @returns 转换后的绝对路径。
@@ -79,7 +75,6 @@ export function getAbsolutePath(path: string): string {
 }
 
 /**
- * @internal
  * 判断是否文件或者文件夹不存在。
  * @param err - 错误对象。
  */
@@ -91,7 +86,6 @@ export function isNotFoundIOError(err: WechatMinigame.FileError): boolean {
 }
 
 /**
- * @internal
  * 判断是否文件或者文件夹已存在。
  * @param err - 错误对象。
  */
@@ -103,7 +97,6 @@ export function isAlreadyExistsIOError(err: WechatMinigame.FileError): boolean {
 }
 
 /**
- * @internal
  * 将错误对象转换为 IOResult 类型。
  * @typeParam T - Result 的 Ok 类型。
  * @param err - 错误对象。
@@ -120,7 +113,6 @@ export function fileErrorToResult<T>(err: WechatMinigame.FileError): IOResult<T>
 }
 
 /**
- * @internal
  * Whether the error is a `NotFoundError`.
  * @param err - The error to check.
  * @returns `true` if the error is a `NotFoundError`, otherwise `false`.
@@ -130,7 +122,6 @@ export function isNotFoundError(err: Error): boolean {
 }
 
 /**
- * @internal
  * 处理 `mkdir` 的错误。
  */
 export function errToMkdirResult(err: WechatMinigame.FileError): VoidIOResult {
@@ -139,7 +130,6 @@ export function errToMkdirResult(err: WechatMinigame.FileError): VoidIOResult {
 }
 
 /**
- * @internal
  * 获取读取文件的编码。
  */
 export function getReadFileEncoding(options?: ReadOptions): FileEncoding | undefined {
@@ -154,7 +144,6 @@ export function getReadFileEncoding(options?: ReadOptions): FileEncoding | undef
 }
 
 /**
- * @internal
  * 处理 `remove` 的错误。
  */
 export function errToRemoveResult(err: WechatMinigame.FileError): VoidIOResult {
@@ -167,7 +156,6 @@ interface GetWriteFileContents {
     encoding: FileEncoding | undefined;
 }
 /**
- * @internal
  * 获取写入文件的参数。
  */
 export function getWriteFileContents(contents: MinaWriteFileContent): GetWriteFileContents {
@@ -185,7 +173,6 @@ export function getWriteFileContents(contents: MinaWriteFileContent): GetWriteFi
 }
 
 /**
- * @internal
  * 获取 `exists` 的结果。
  */
 export function getExistsResult(statResult: IOResult<WechatMinigame.Stats>, options?: ExistsOptions): IOResult<boolean> {

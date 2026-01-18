@@ -1,5 +1,9 @@
 /**
  * @internal
+ * 断言相关辅助函数。
+ */
+
+/**
  * 断言条件为真，否则抛出错误。
  * @param condition - 需要断言的条件。
  * @param message - 错误信息或返回错误信息的函数。
@@ -12,7 +16,6 @@ export function invariant(condition: unknown, message: string | (() => string)):
 }
 
 /**
- * @internal
  * 断言传入的是一个字符串。
  * @param str - 需要断言的字符串。
  */
@@ -21,7 +24,6 @@ export function assertString(str: string): void {
 }
 
 /**
- * @internal
  * 断言传入的 URL 是否为 `https` 协议。
  * @param url - 需要断言的 URL 字符串。
  */
@@ -31,7 +33,6 @@ export function assertSafeUrl(url: string): void {
 }
 
 /**
- * @internal
  * 断言传入的 WebSocket URL 是否为 `wss` 协议。
  * @param url - 需要断言的 WebSocket URL 字符串。
  */
