@@ -82,7 +82,7 @@ export function promisifyWithResult<F extends (...args: any[]) => any, T = Succe
             // Convert Promise to AsyncResult
             return tryAsyncResult(res);
         } else if (res !== undefined) {
-            throw new Error('API must return void or Promise. Otherwise the return value will be discarded.');
+            throw new TypeError('API must return void or Promise. Otherwise the return value will be discarded');
         }
 
         return future.promise;
