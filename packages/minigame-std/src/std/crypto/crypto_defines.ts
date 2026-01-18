@@ -1,4 +1,4 @@
-import type { DataSource } from '../defines';
+import type { DataSource } from '../defines.ts';
 
 /**
  * The RSA public key.
