@@ -13,13 +13,13 @@ test('fetch json', async () => {
         fetchTask.abort();
     }, 100);
 
-    const res = await fetchTask.response;
+    const res = await fetchTask.result;
 
-    res.inspect(data => {
+    res.inspect((data: { name: string; }) => {
         clearTimeout(timer);
         expect(data.name).toBe('minigame-std');
-    }).inspectErr(err => {
-        expect((err as Error).name).toBe('AbortError');
+    }).inspectErr((err: Error) => {
+        expect(err.name).toBe('AbortError');
     });
 });
 
@@ -33,14 +33,14 @@ test('fetch with default responseType (text)', async () => {
         fetchTask.abort();
     }, 100);
 
-    const res = await fetchTask.response;
+    const res = await fetchTask.result;
 
-    res.inspect(data => {
+    res.inspect((data: string | Response) => {
         clearTimeout(timer);
         expect(typeof data).toBe('string');
         expect(data).toContain('minigame-std');
-    }).inspectErr(err => {
-        expect((err as Error).name).toBe('AbortError');
+    }).inspectErr((err: Error) => {
+        expect(err.name).toBe('AbortError');
     });
 });
 
@@ -52,13 +52,13 @@ test('fetch without init parameter', async () => {
         fetchTask.abort();
     }, 100);
 
-    const res = await fetchTask.response;
+    const res = await fetchTask.result;
 
-    res.inspect(data => {
+    res.inspect((data: string | Response) => {
         clearTimeout(timer);
         expect(typeof data).toBe('string');
         expect(data).toContain('minigame-std');
-    }).inspectErr(err => {
-        expect((err as Error).name).toBe('AbortError');
+    }).inspectErr((err: Error) => {
+        expect(err.name).toBe('AbortError');
     });
 });

@@ -1,19 +1,26 @@
-import { Lazy, Ok, Once, type AsyncIOResult } from 'happy-rusty';
+import { Lazy, Ok, OnceAsync, type AsyncIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import { miniGameFailureToError, promisifyWithResult } from '../utils/mod.ts';
 import { parseUserAgent } from './user_agent.ts';
+
+/**
+ * 平台类型。
+ */
+export type Platform = 'ios' | 'android' | 'mac' | 'windows' | 'ohos' | 'ohos_pc' | 'devtools' | 'linux' | 'unknown';
 
 /**
  * 设备信息类型。
  * 修正了 `memorySize` 的类型为 `number`（小游戏 API 实际返回数字，但官方类型定义错误地声明为 string）。
  * @see https://github.com/wechat-miniprogram/minigame-api-typings/issues/27
  */
-export type DeviceInfo = Omit<WechatMinigame.DeviceInfo, 'abi' | 'cpuType' | 'deviceAbi' | 'memorySize'> & {
+export type DeviceInfo = Omit<WechatMinigame.DeviceInfo, 'abi' | 'cpuType' | 'deviceAbi' | 'memorySize' | 'platform'> & {
     abi?: string;
     cpuType?: string;
     deviceAbi?: string;
     /** 设备内存大小，单位为 MB */
     memorySize: number;
+    /** 设备平台 */
+    platform: Platform;
 };
 
 // 以下变量一旦获取则不会变化
@@ -22,7 +29,7 @@ const deviceInfo = Lazy<DeviceInfo>(() => isMinaEnv()
     ? (wx.getDeviceInfo ? wx.getDeviceInfo() : wx.getSystemInfoSync()) as unknown as DeviceInfo
     : getWebDeviceInfo(),
 );
-const benchmarkLevel = Once<number>();
+const benchmarkLevel = OnceAsync<number>();
 
 /**
  * 获取 Web 环境下的设备信息。
@@ -36,7 +43,7 @@ function getWebDeviceInfo(): DeviceInfo {
         brand: '', // Web 环境无法可靠获取品牌信息
         memorySize,
         model,
-        platform,
+        platform: platform as Platform,
         system,
     };
 }
@@ -109,7 +116,7 @@ export async function getDeviceBenchmarkLevel(): AsyncIOResult<number> {
 
     // 优先使用新 API
     if (wx.getDeviceBenchmarkInfo) {
-        return await benchmarkLevel.getOrTryInitAsync(async () => {
+        return await benchmarkLevel.getOrTryInit(async () => {
             return (await promisifyWithResult(wx.getDeviceBenchmarkInfo)())
                 .map(x => x.benchmarkLevel)
                 .mapErr(miniGameFailureToError);

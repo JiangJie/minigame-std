@@ -13,7 +13,7 @@ export * from './fetch_defines.ts';
  * @example
  * ```ts
  * const task = fetchT('https://api.example.com/data', { responseType: 'text' });
- * const result = await task.response;
+ * const result = await task.result;
  * if (result.isOk()) {
  *     console.log(result.unwrap()); // 文本内容
  * }
@@ -33,7 +33,7 @@ export function fetchT(url: string, init: UnionFetchInit & {
  * @example
  * ```ts
  * const task = fetchT('https://api.example.com/file', { responseType: 'arraybuffer' });
- * const result = await task.response;
+ * const result = await task.result;
  * if (result.isOk()) {
  *     const buffer = result.unwrap();
  *     console.log('文件大小:', buffer.byteLength);
@@ -57,7 +57,7 @@ export function fetchT(url: string, init: UnionFetchInit & {
  *     name: string;
  * }
  * const task = fetchT<User>('https://api.example.com/user/1', { responseType: 'json' });
- * const result = await task.response;
+ * const result = await task.result;
  * if (result.isOk()) {
  *     const user = result.unwrap();
  *     console.log(user.name);
@@ -77,7 +77,7 @@ export function fetchT<T>(url: string, init: UnionFetchInit & {
  * @example
  * ```ts
  * const task = fetchT('https://api.example.com/data');
- * const result = await task.response;
+ * const result = await task.result;
  * if (result.isOk()) {
  *     console.log(result.unwrap());
  * }
@@ -100,7 +100,7 @@ export function fetchT(url: string, init?: UnionFetchInit): FetchTask<string | R
  *     body: JSON.stringify({ key: 'value' }),
  *     responseType: 'json',
  * });
- * const result = await task.response;
+ * const result = await task.result;
  * ```
  */
 export function fetchT<T>(url: string, init?: UnionFetchInit): FetchTask<T> {

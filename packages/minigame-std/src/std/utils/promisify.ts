@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Err, Ok, promiseToAsyncResult, type AsyncResult, type Result } from 'happy-rusty';
+import { Err, Ok, tryAsyncResult, type AsyncResult, type Result } from 'happy-rusty';
 import { Future } from 'tiny-future';
 
 /**
@@ -78,7 +78,8 @@ export function promisifyWithResult<F extends (...args: any[]) => any, T = Succe
 
         // 也支持其他返回Promise的API
         if (res instanceof Promise) {
-            return promiseToAsyncResult(res);
+            // Convert Promise to AsyncResult
+            return tryAsyncResult(res);
         } else if (res !== undefined) {
             throw new Error('API must return void or Promise. Otherwise the return value will be discarded.');
         }

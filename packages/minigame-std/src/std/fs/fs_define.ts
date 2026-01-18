@@ -1,10 +1,16 @@
 import type { FetchInit } from '@happy-ts/fetch-t';
-import type { FsRequestInit, ReadFileContent as OPFSReadFileContent, WriteFileContent as OPFSWriteFileContent, UploadRequestInit, ZipOptions } from 'happy-opfs';
+import type { FsRequestInit, ReadFileContent as OPFSReadFileContent, WriteFileContent as OPFSWriteFileContent, WriteSyncFileContent as OPFSWriteSyncFileContent, UploadRequestInit, ZipOptions } from 'happy-opfs';
 
 /**
- * File content type for write, support `ArrayBuffer` `TypedArray` `string`.
+ * File content type for async write, support `ArrayBuffer` `TypedArray` `string` `ReadableStream`.
  */
 export type WriteFileContent = Exclude<OPFSWriteFileContent, Blob>;
+
+/**
+ * File content type for sync write, support `ArrayBuffer` `TypedArray` `string`.
+ * Excludes `Blob` and `ReadableStream` as they require async operations.
+ */
+export type WriteSyncFileContent = Exclude<OPFSWriteSyncFileContent, Blob>;
 
 /**
  * File content type for read result, support `ArrayBuffer` `string`.

@@ -11,6 +11,12 @@ import { bufferSource2Ab, miniGameFailureToError } from '../utils/mod.ts';
 import type { FileEncoding, ReadOptions, WriteFileContent } from './fs_define.ts';
 
 /**
+ * @internal
+ * Mini-game write content type, excludes ReadableStream as mini-game doesn't support it.
+ */
+export type MinaWriteFileContent = Exclude<WriteFileContent, ReadableStream<Uint8Array<ArrayBuffer>>>;
+
+/**
  * 小游戏文件系统管理器实例。
  *
  * for tree shake
@@ -165,7 +171,7 @@ interface GetWriteFileContents {
  * @internal
  * 获取写入文件的参数。
  */
-export function getWriteFileContents(contents: WriteFileContent): GetWriteFileContents {
+export function getWriteFileContents(contents: MinaWriteFileContent): GetWriteFileContents {
     const isBin = typeof contents !== 'string';
 
     const encoding = isBin ? undefined : 'utf8';

@@ -3,17 +3,18 @@
  * Mini-game platform implementation for async file system operations.
  */
 
-import type { FetchResponse, FetchTask } from '@happy-ts/fetch-t';
+import type { FetchResult } from '@happy-ts/fetch-t';
 import { basename, dirname, join } from '@std/path/posix';
 import * as fflate from 'fflate/browser';
 import type { ExistsOptions, WriteOptions, ZipOptions } from 'happy-opfs';
 import { Err, Ok, RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult, type IOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import { assertSafeUrl } from '../assert/assertions.ts';
+import type { FetchTask } from '../fetch/fetch_defines.ts';
 import { miniGameFailureToResult, promisifyWithResult } from '../utils/mod.ts';
-import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
+import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions } from './fs_define.ts';
 import { createAbortError } from './fs_helpers.ts';
-import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getRootUsrPath, getWriteFileContents, isNotFoundError } from './mina_fs_shared.ts';
+import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getRootUsrPath, getWriteFileContents, isNotFoundError, type MinaWriteFileContent } from './mina_fs_shared.ts';
 
 /**
  * 递归创建文件夹，相当于`mkdir -p`。
@@ -174,7 +175,7 @@ export async function stat(path: string, options?: StatOptions): AsyncIOResult<W
  * @param options - 可选的写入选项。
  * @returns 写入操作的异步结果，成功时返回 true。
  */
-export async function writeFile(filePath: string, contents: WriteFileContent, options?: WriteOptions): AsyncVoidIOResult {
+export async function writeFile(filePath: string, contents: MinaWriteFileContent, options?: WriteOptions): AsyncVoidIOResult {
     const absPath = getAbsolutePath(filePath);
 
     // 默认创建
@@ -220,7 +221,7 @@ export async function writeFile(filePath: string, contents: WriteFileContent, op
  * @param contents - 要追加的内容。
  * @returns 追加操作的异步结果，成功时返回 true。
  */
-export function appendFile(filePath: string, contents: WriteFileContent): AsyncVoidIOResult {
+export function appendFile(filePath: string, contents: MinaWriteFileContent): AsyncVoidIOResult {
     return writeFile(filePath, contents, {
         append: true,
     });
@@ -456,7 +457,7 @@ export function downloadFile(fileUrl: string, filePath?: string | DownloadFileOp
             return aborted;
         },
 
-        get response(): FetchResponse<T> {
+        get result(): FetchResult<T> {
             return future.promise;
         },
     };
@@ -502,7 +503,7 @@ export function uploadFile(filePath: string, fileUrl: string, options?: UploadFi
             return aborted;
         },
 
-        get response(): FetchResponse<T> {
+        get result(): FetchResult<T> {
             return future.promise;
         },
     };
@@ -534,7 +535,7 @@ export async function unzip(zipFilePath: string, targetPath: string): AsyncVoidI
  * @returns 下载并解压操作的异步结果。
  */
 export async function unzipFromUrl(zipFileUrl: string, targetPath: string, options?: DownloadFileOptions): AsyncVoidIOResult {
-    return (await downloadFile(zipFileUrl, options).response).andThenAsync(({ tempFilePath }) => {
+    return (await downloadFile(zipFileUrl, options).result).andThenAsync(({ tempFilePath }: WechatMinigame.DownloadFileSuccessCallbackResult) => {
         return unzip(tempFilePath, targetPath);
     });
 }
@@ -645,7 +646,7 @@ export async function zipFromUrl<T>(sourceUrl: string, zipFilePath?: string | Zi
         zipFilePath = undefined;
     }
 
-    return (await downloadFile(sourceUrl, options).response).andThenAsync(async ({ tempFilePath }) => {
+    return (await downloadFile(sourceUrl, options).result).andThenAsync(async ({ tempFilePath }: WechatMinigame.DownloadFileSuccessCallbackResult) => {
         return await (zipFilePath
             ? zip(tempFilePath, zipFilePath, options)
             : zip(tempFilePath, options)) as IOResult<T>;

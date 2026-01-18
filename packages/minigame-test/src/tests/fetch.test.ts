@@ -16,7 +16,7 @@ import { fetchT } from 'minigame-std';
         fetchTask.abort();
     }, 1000);
 
-    const res = await fetchTask.response;
+    const res = await fetchTask.result;
 
     if (res.isErr()) {
         assert((res.unwrapErr() as Error).name === 'AbortError');
@@ -33,7 +33,7 @@ import { fetchT } from 'minigame-std';
         timeout: 10,
     });
 
-    const res = await task.response;
+    const res = await task.result;
 
     if (res.isErr()) {
         assert((res.unwrapErr() as Error).name === 'TimeoutError');

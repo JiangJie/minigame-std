@@ -9,17 +9,17 @@ import {
     readFileSync as webReadFileSync,
     readJsonFileSync as webReadJsonFileSync,
     readTextFileSync as webReadTextFileSync,
-    writeJsonFileSync as webWriteJsonFileSync,
     removeSync as webRemoveSync,
     statSync as webStatSync,
     unzipSync as webUnzipSync,
     writeFileSync as webWriteFileSync,
+    writeJsonFileSync as webWriteJsonFileSync,
     zipSync as webZipSync,
     type ZipOptions,
 } from 'happy-opfs';
 import { Ok, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
-import type { StatOptions, WriteFileContent } from './fs_define.ts';
+import type { StatOptions, WriteSyncFileContent } from './fs_define.ts';
 import { convertFileSystemHandleLikeToStats } from './fs_helpers.ts';
 import {
     appendFileSync as minaAppendFileSync,
@@ -32,11 +32,11 @@ import {
     readFileSync as minaReadFileSync,
     readJsonFileSync as minaReadJsonFileSync,
     readTextFileSync as minaReadTextFileSync,
-    writeJsonFileSync as minaWriteJsonFileSync,
     removeSync as minaRemoveSync,
     statSync as minaStatSync,
     unzipSync as minaUnzipSync,
     writeFileSync as minaWriteFileSync,
+    writeJsonFileSync as minaWriteJsonFileSync,
     zipSync as minaZipSync,
 } from './mina_fs_sync.ts';
 
@@ -107,7 +107,11 @@ export function readDirSync(dirPath: string): IOResult<string[]> {
  * ```
  */
 export function readFileSync(filePath: string): IOResult<ArrayBuffer> {
-    return (isMinaEnv() ? minaReadFileSync : webReadFileSync)(filePath);
+    if (isMinaEnv()) {
+        return minaReadFileSync(filePath);
+    }
+
+    return webReadFileSync(filePath).map(data => data.buffer);
 }
 
 /**
@@ -208,7 +212,7 @@ export function statSync(path: string, options?: StatOptions): IOResult<WechatMi
  * }
  * ```
  */
-export function writeFileSync(filePath: string, contents: WriteFileContent): VoidIOResult {
+export function writeFileSync(filePath: string, contents: WriteSyncFileContent): VoidIOResult {
     return (isMinaEnv() ? minaWriteFileSync : webWriteFileSync)(filePath, contents);
 }
 
@@ -242,7 +246,7 @@ export function copySync(srcPath: string, destPath: string): VoidIOResult {
  * }
  * ```
  */
-export function appendFileSync(filePath: string, contents: WriteFileContent): VoidIOResult {
+export function appendFileSync(filePath: string, contents: WriteSyncFileContent): VoidIOResult {
     return (isMinaEnv() ? minaAppendFileSync : webAppendFileSync)(filePath, contents);
 }
 

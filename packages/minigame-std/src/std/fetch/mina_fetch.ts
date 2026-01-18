@@ -3,7 +3,8 @@
  * Mini-game platform implementation for HTTP fetch.
  */
 
-import { Err, Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
+import type { FetchResult } from '@happy-ts/fetch-t';
+import { Err, Ok, type IOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import { assertSafeUrl } from '../assert/assertions.ts';
 import { miniGameFailureToError } from '../utils/mod.ts';
@@ -123,7 +124,7 @@ export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> {
             return aborted;
         },
 
-        get response(): AsyncIOResult<T> {
+        get result(): FetchResult<T> {
             return future.promise;
         },
     };

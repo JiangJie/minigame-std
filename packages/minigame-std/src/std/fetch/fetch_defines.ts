@@ -1,4 +1,5 @@
 import type { FetchInit } from '@happy-ts/fetch-t';
+
 export { ABORT_ERROR, FetchError, TIMEOUT_ERROR, type FetchTask } from '@happy-ts/fetch-t';
 
 /**

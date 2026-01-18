@@ -11,13 +11,13 @@ import {
     readFile as webReadFile,
     readJsonFile as webReadJsonFile,
     readTextFile as webReadTextFile,
-    writeJsonFile as webWriteJsonFile,
     remove as webRemove,
     stat as webStat,
     unzip as webUnzip,
     unzipFromUrl as webUnzipFromUrl,
     uploadFile as webUploadFile,
     writeFile as webWriteFile,
+    writeJsonFile as webWriteJsonFile,
     zip as webZip,
     zipFromUrl as webZipFromUrl,
     type DownloadFileTempResponse,
@@ -40,16 +40,17 @@ import {
     readFile as minaReadFile,
     readJsonFile as minaReadJsonFile,
     readTextFile as minaReadTextFile,
-    writeJsonFile as minaWriteJsonFile,
     remove as minaRemove,
     stat as minaStat,
     unzip as minaUnzip,
     unzipFromUrl as minaUnzipFromUrl,
     uploadFile as minaUploadFile,
     writeFile as minaWriteFile,
+    writeJsonFile as minaWriteJsonFile,
     zip as minaZip,
     zipFromUrl as minaZipFromUrl,
 } from './mina_fs_async.ts';
+import type { MinaWriteFileContent } from './mina_fs_shared.ts';
 
 /**
  * 递归创建文件夹，相当于 `mkdir -p`。
@@ -123,8 +124,13 @@ export async function readDir(dirPath: string): AsyncIOResult<string[]> {
  * }
  * ```
  */
-export function readFile(filePath: string): AsyncIOResult<ArrayBuffer> {
-    return (isMinaEnv() ? minaReadFile : webReadFile)(filePath);
+export async function readFile(filePath: string): AsyncIOResult<ArrayBuffer> {
+    if (isMinaEnv()) {
+        return minaReadFile(filePath);
+    }
+
+    return (await webReadFile(filePath))
+        .map(data => data.buffer);
 }
 
 /**
@@ -208,7 +214,7 @@ export async function stat(path: string, options?: StatOptions): AsyncIOResult<W
  * ```
  */
 export function writeFile(filePath: string, contents: WriteFileContent, options?: WriteOptions): AsyncVoidIOResult {
-    return (isMinaEnv() ? minaWriteFile : webWriteFile)(filePath, contents, options);
+    return (isMinaEnv() ? minaWriteFile : webWriteFile)(filePath, contents as MinaWriteFileContent, options);
 }
 
 /**
@@ -225,7 +231,7 @@ export function writeFile(filePath: string, contents: WriteFileContent, options?
  * ```
  */
 export function appendFile(filePath: string, contents: WriteFileContent): AsyncVoidIOResult {
-    return (isMinaEnv() ? minaAppendFile : webAppendFile)(filePath, contents);
+    return (isMinaEnv() ? minaAppendFile : webAppendFile)(filePath, contents as MinaWriteFileContent);
 }
 
 /**
@@ -336,7 +342,7 @@ export function writeJsonFile<T>(filePath: string, data: T): AsyncVoidIOResult {
  * @example
  * ```ts
  * const task = downloadFile('https://example.com/file.zip');
- * const result = await task.response;
+ * const result = await task.result;
  * if (result.isOk()) {
  *     console.log('下载完成:', result.unwrap().tempFilePath);
  * }
@@ -352,7 +358,7 @@ export function downloadFile(fileUrl: string, options?: UnionDownloadFileOptions
  * @example
  * ```ts
  * const task = downloadFile('https://example.com/file.zip', '/path/to/save.zip');
- * const result = await task.response;
+ * const result = await task.result;
  * if (result.isOk()) {
  *     console.log('下载完成');
  * }
@@ -361,13 +367,13 @@ export function downloadFile(fileUrl: string, options?: UnionDownloadFileOptions
 export function downloadFile(fileUrl: string, filePath: string, options?: UnionDownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | Response>;
 export function downloadFile(fileUrl: string, filePath?: string | UnionDownloadFileOptions, options?: UnionDownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | DownloadFileTempResponse | Response> {
     if (typeof filePath === 'string') {
-        return isMinaEnv()
+        return (isMinaEnv()
             ? minaDownloadFile(fileUrl, filePath, options)
-            : webDownloadFile(fileUrl, filePath, options);
+            : webDownloadFile(fileUrl, filePath, options)) as FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | Response>;
     } else {
-        return isMinaEnv()
+        return (isMinaEnv()
             ? minaDownloadFile(fileUrl, filePath)
-            : webDownloadFile(fileUrl, filePath);
+            : webDownloadFile(fileUrl, filePath)) as FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | DownloadFileTempResponse>;
     }
 }
 
@@ -380,14 +386,16 @@ export function downloadFile(fileUrl: string, filePath?: string | UnionDownloadF
  * @example
  * ```ts
  * const task = uploadFile('/path/to/file.txt', 'https://example.com/upload');
- * const result = await task.response;
+ * const result = await task.result;
  * if (result.isOk()) {
  *     console.log('上传成功');
  * }
  * ```
  */
 export function uploadFile(filePath: string, fileUrl: string, options?: UnionUploadFileOptions): FetchTask<WechatMinigame.UploadFileSuccessCallbackResult | Response> {
-    return (isMinaEnv() ? minaUploadFile : webUploadFile)(filePath, fileUrl, options);
+    return (isMinaEnv()
+        ? minaUploadFile(filePath, fileUrl, options)
+        : webUploadFile(filePath, fileUrl, options)) as FetchTask<WechatMinigame.UploadFileSuccessCallbackResult | Response>;
 }
 
 /**

@@ -7,8 +7,8 @@ import { basename, dirname, join, SEPARATOR } from '@std/path/posix';
 import * as fflate from 'fflate/browser';
 import { type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
 import { Err, Ok, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
-import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
-import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError } from './mina_fs_shared.ts';
+import type { ReadFileContent, ReadOptions, StatOptions } from './fs_define.ts';
+import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError, type MinaWriteFileContent } from './mina_fs_shared.ts';
 
 /**
  * 安全地调用同步接口。
@@ -109,7 +109,7 @@ export function statSync(path: string, options?: StatOptions): IOResult<WechatMi
 /**
  * `writeFile` 的同步版本。
  */
-export function writeFileSync(filePath: string, contents: WriteFileContent, options?: WriteOptions): VoidIOResult {
+export function writeFileSync(filePath: string, contents: MinaWriteFileContent, options?: WriteOptions): VoidIOResult {
     const absPath = getAbsolutePath(filePath);
 
     // 默认创建
@@ -130,7 +130,7 @@ export function writeFileSync(filePath: string, contents: WriteFileContent, opti
 /**
  * `appendFile` 的同步版本。
  */
-export function appendFileSync(filePath: string, contents: WriteFileContent): VoidIOResult {
+export function appendFileSync(filePath: string, contents: MinaWriteFileContent): VoidIOResult {
     return writeFileSync(filePath, contents, {
         append: true,
     });

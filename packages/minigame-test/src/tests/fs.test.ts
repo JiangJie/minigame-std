@@ -54,7 +54,7 @@ async function testAsync() {
             });
         },
     });
-    const downloadRes = await downloadTask.response;
+    const downloadRes = await downloadTask.result;
     if (downloadRes.isOk()) {
         assert((downloadRes.unwrap() as WechatMinigame.DownloadFileSuccessCallbackResult).filePath.endsWith('/todo.json'));
 
@@ -70,7 +70,7 @@ async function testAsync() {
         await fs.writeFile('/todo.json', JSON.stringify(postJson));
 
         // Upload a file
-        assert(((await fs.uploadFile('/todo.json', mockAll).response).unwrap() as WechatMinigame.UploadFileSuccessCallbackResult).statusCode === 200);
+        assert(((await fs.uploadFile('/todo.json', mockAll).result).unwrap() as WechatMinigame.UploadFileSuccessCallbackResult).statusCode === 200);
     } else {
         assert(downloadRes.unwrapErr() instanceof Error);
     }
@@ -78,8 +78,8 @@ async function testAsync() {
     {
         // Download a file to a temporary file
         const downloadTask = fs.downloadFile(mockSingle);
-        const downloadRes = await downloadTask.response;
-        downloadRes.inspect(x => {
+        const downloadRes = await downloadTask.result;
+        downloadRes.inspect((x: WechatMinigame.DownloadFileSuccessCallbackResult | { tempFilePath: string; }) => {
             assert(x.tempFilePath.includes('/tmp/'));
         });
         if (downloadRes.isOk()) {
