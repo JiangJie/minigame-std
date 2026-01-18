@@ -23,7 +23,7 @@ export function importPublicKey(pem: string, hash: SHA): Promise<RSAPublicKey> {
         || hash === 'SHA-256'
         || hash === 'SHA-384'
         || hash === 'SHA-512',
-        'Unsupported hash algorithm.',
+        'Unsupported hash algorithm',
     );
     return isMinaEnv()
         ? Promise.resolve(minaImportPublicKey(pem, hash))

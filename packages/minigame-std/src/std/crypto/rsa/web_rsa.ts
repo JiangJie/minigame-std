@@ -40,7 +40,7 @@ export async function importPublicKey(pem: string, hash: SHA): Promise<RSAPublic
     const match = rMessage.exec(pem);
 
     if (!match) {
-        throw new Error('Invalid PEM formatted message.');
+        throw new TypeError('Invalid PEM formatted message');
     }
 
     pem = match[3];
