@@ -6,7 +6,7 @@ const mockServer = 'https://fakestoreapi.com';
 const mockAll = `${ mockServer }/products`;
 const mockSingle = `${ mockAll }/1`;
 
-export const mockZipUrl = 'https://raw.githubusercontent.com/JiangJie/happy-opfs/main/tests/test.zip';
+export const mockZipUrl = 'https://raw.githubusercontent.com/JiangJie/happy-opfs/v1.12.0/tests/test.zip';
 
 async function testAsync() {
     // Clear all files and folders
@@ -70,7 +70,7 @@ async function testAsync() {
         await fs.writeFile('/todo.json', JSON.stringify(postJson));
 
         // Upload a file
-        assert(((await fs.uploadFile('/todo.json', mockAll).result).unwrap() as WechatMinigame.UploadFileSuccessCallbackResult).statusCode === 200);
+        assert(((await fs.uploadFile('/todo.json', mockAll).result).unwrap() as WechatMinigame.UploadFileSuccessCallbackResult).statusCode === 201);
     } else {
         assert(downloadRes.unwrapErr() instanceof Error);
     }
