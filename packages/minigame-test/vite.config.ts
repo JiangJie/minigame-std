@@ -2,15 +2,13 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
     define: {
-        // 'process.env.NODE_ENV': JSON.stringify('production'),
-        'process.env.NODE_ENV': JSON.stringify('development'),
         __MINIGAME_STD_MINA__: 'true',
     },
     resolve: {
         conditions: ['source'],
     },
     build: {
-        target: 'esnext',
+        target: 'es2019',
         lib: {
             entry: 'src/index.ts',
             formats: ['es'],
