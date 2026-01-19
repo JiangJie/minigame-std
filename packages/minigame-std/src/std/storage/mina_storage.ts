@@ -5,7 +5,7 @@
 
 import { RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { assertString } from '../assert/assertions.ts';
-import { miniGameFailureToError, promisifyWithResult, tryGeneralSyncOp } from '../utils/mod.ts';
+import { miniGameFailureToError, asyncResultify, tryGeneralSyncOp } from '../utils/mod.ts';
 
 /**
  * 异步设置存储项。
@@ -17,7 +17,7 @@ export async function setItem(key: string, data: string): AsyncVoidIOResult {
     assertString(key);
     assertString(data);
 
-    return (await promisifyWithResult(wx.setStorage)({
+    return (await asyncResultify(wx.setStorage)({
         key,
         data,
     }))
@@ -33,7 +33,7 @@ export async function setItem(key: string, data: string): AsyncVoidIOResult {
 export async function getItem(key: string): AsyncIOResult<string> {
     assertString(key);
 
-    return (await promisifyWithResult(wx.getStorage<string>)({
+    return (await asyncResultify(wx.getStorage<string>)({
         key,
     }))
         .map(x => x.data)
@@ -48,7 +48,7 @@ export async function getItem(key: string): AsyncIOResult<string> {
 export async function removeItem(key: string): AsyncVoidIOResult {
     assertString(key);
 
-    return (await promisifyWithResult(wx.removeStorage)({
+    return (await asyncResultify(wx.removeStorage)({
         key,
     }))
         .and(RESULT_VOID)
@@ -60,7 +60,7 @@ export async function removeItem(key: string): AsyncVoidIOResult {
  * @returns 返回操作结果。
  */
 export async function clear(): AsyncVoidIOResult {
-    return (await promisifyWithResult(wx.clearStorage)({}))
+    return (await asyncResultify(wx.clearStorage)({}))
         .and(RESULT_VOID)
         .mapErr(miniGameFailureToError);
 }
@@ -70,7 +70,7 @@ export async function clear(): AsyncVoidIOResult {
  * @returns 返回存储项的数量。
  */
 export async function getLength(): AsyncIOResult<number> {
-    return (await promisifyWithResult(wx.getStorageInfo)({}))
+    return (await asyncResultify(wx.getStorageInfo)({}))
         .map(x => x.keys.length)
         .mapErr(miniGameFailureToError);
 }
@@ -83,7 +83,7 @@ export async function getLength(): AsyncIOResult<number> {
 export async function hasItem(key: string): AsyncIOResult<boolean> {
     assertString(key);
 
-    return (await promisifyWithResult(wx.getStorageInfo)({}))
+    return (await asyncResultify(wx.getStorageInfo)({}))
         .map(x => x.keys.includes(key))
         .mapErr(miniGameFailureToError);
 }

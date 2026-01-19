@@ -5,7 +5,7 @@
 
 import { RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { assertString } from '../assert/assertions.ts';
-import { miniGameFailureToError, promisifyWithResult } from '../utils/mod.ts';
+import { miniGameFailureToError, asyncResultify } from '../utils/mod.ts';
 
 /**
  * 异步写入文本数据到剪贴板。
@@ -15,7 +15,7 @@ import { miniGameFailureToError, promisifyWithResult } from '../utils/mod.ts';
 export async function writeText(data: string): AsyncVoidIOResult {
     assertString(data);
 
-    return (await promisifyWithResult(wx.setClipboardData)({
+    return (await asyncResultify(wx.setClipboardData)({
         data,
     }))
         .and(RESULT_VOID)
@@ -27,7 +27,7 @@ export async function writeText(data: string): AsyncVoidIOResult {
  * @returns 读取操作的结果。
  */
 export async function readText(): AsyncIOResult<string> {
-    return (await promisifyWithResult(wx.getClipboardData)())
+    return (await asyncResultify(wx.getClipboardData)())
         .map(x => x.data)
         .mapErr(miniGameFailureToError);
 }

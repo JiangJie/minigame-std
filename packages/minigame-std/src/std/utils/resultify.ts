@@ -55,8 +55,8 @@ export type FailType<T> = T extends (params: infer P) => any
  * @since 1.10.0
  * @example
  * ```ts
- * // 将 wx.setStorage 转换为 PromiseLike 风格
- * const setStorageAsync = promisifyWithResult(wx.setStorage);
+ * // 将 wx.setStorage 转换为 AsyncResult 风格
+ * const setStorageAsync = asyncResultify(wx.setStorage);
  * const result = await setStorageAsync({ key: 'test', data: 'value' });
  * if (result.isOk()) {
  *     console.log('存储成功');
@@ -65,7 +65,7 @@ export type FailType<T> = T extends (params: infer P) => any
  * }
  * ```
  */
-export function promisifyWithResult<F extends (...args: any[]) => any, T = SuccessType<F>, E = FailType<F>>(api: F): ValidAPI<F> extends true
+export function asyncResultify<F extends (...args: any[]) => any, T = SuccessType<F>, E = FailType<F>>(api: F): ValidAPI<F> extends true
     ? (...args: Parameters<F>) => AsyncResult<T, E>
     : never {
     // @ts-expect-error 跳过运行时是否满足转换条件的检查

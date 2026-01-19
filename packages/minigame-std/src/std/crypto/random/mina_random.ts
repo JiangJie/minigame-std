@@ -5,7 +5,7 @@
 
 import { type AsyncIOResult } from 'happy-rusty';
 import { hexFromBuffer } from '../../codec/mod.ts';
-import { miniGameFailureToError, promisifyWithResult } from '../../utils/mod.ts';
+import { miniGameFailureToError, asyncResultify } from '../../utils/mod.ts';
 import type { UUID } from './random_defines.ts';
 
 /**
@@ -14,7 +14,7 @@ import type { UUID } from './random_defines.ts';
  * @returns 返回包含随机字节的 Uint8Array。
  */
 export async function getRandomValues(length: number): AsyncIOResult<Uint8Array<ArrayBuffer>> {
-    return (await promisifyWithResult(wx.getUserCryptoManager().getRandomValues)({
+    return (await asyncResultify(wx.getUserCryptoManager().getRandomValues)({
         length,
     }))
         .map(x => new Uint8Array(x.randomValues))

@@ -1,5 +1,5 @@
 import { Err, Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
-export * from './promisify.ts';
+export * from './resultify.ts';
 
 /**
  * 将小游戏失败回调的结果转换为 `Error` 类型。

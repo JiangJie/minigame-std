@@ -1,6 +1,6 @@
 import { Lazy, Ok, OnceAsync, type AsyncIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
-import { miniGameFailureToError, promisifyWithResult } from '../utils/mod.ts';
+import { miniGameFailureToError, asyncResultify } from '../utils/mod.ts';
 import { parseUserAgent } from './user_agent.ts';
 
 // #region Internal Variables
@@ -63,7 +63,7 @@ export async function getDeviceBenchmarkLevel(): AsyncIOResult<number> {
     // 优先使用新 API
     if (wx.getDeviceBenchmarkInfo) {
         return await benchmarkLevel.getOrTryInit(async () => {
-            return (await promisifyWithResult(wx.getDeviceBenchmarkInfo)())
+            return (await asyncResultify(wx.getDeviceBenchmarkInfo)())
                 .map(x => x.benchmarkLevel)
                 .mapErr(miniGameFailureToError);
         });

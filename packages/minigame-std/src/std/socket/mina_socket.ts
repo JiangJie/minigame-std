@@ -6,7 +6,7 @@
 import { RESULT_VOID, type AsyncVoidIOResult } from 'happy-rusty';
 import { assertSafeSocketUrl } from '../assert/assertions.ts';
 import type { DataSource } from '../defines.ts';
-import { bufferSource2Ab, miniGameFailureToError, promisifyWithResult } from '../utils/mod.ts';
+import { bufferSource2Ab, miniGameFailureToError, asyncResultify } from '../utils/mod.ts';
 import { SocketReadyState, type ISocket, type SocketListenerMap, type SocketOptions } from './socket_define.ts';
 
 /**
@@ -83,7 +83,7 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
                 ? data
                 : bufferSource2Ab(data);
 
-            return (await promisifyWithResult(socket.send)({
+            return (await asyncResultify(socket.send)({
                 data: sendData,
             }))
                 .and(RESULT_VOID)

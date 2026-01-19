@@ -11,7 +11,7 @@ import { Err, Ok, RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult, type 
 import { Future } from 'tiny-future';
 import { assertSafeUrl } from '../assert/assertions.ts';
 import type { FetchTask } from '../fetch/fetch_defines.ts';
-import { miniGameFailureToResult, promisifyWithResult } from '../utils/mod.ts';
+import { miniGameFailureToResult, asyncResultify } from '../utils/mod.ts';
 import type { DownloadFileOptions, MinaWriteFileContent, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions } from './fs_define.ts';
 import { createAbortError } from './fs_helpers.ts';
 import { createFailedFetchTask, errToMkdirResult, errToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getRootUsrPath, getWriteFileContents, isNotFoundError, validateAbsolutePath, validateExistsOptions } from './mina_fs_shared.ts';
@@ -38,7 +38,7 @@ export async function mkdir(dirPath: string): AsyncVoidIOResult {
         return RESULT_VOID;
     }
 
-    return (await promisifyWithResult(getFs().mkdir)({
+    return (await asyncResultify(getFs().mkdir)({
         dirPath,
         recursive: true,
     }))
@@ -61,7 +61,7 @@ export async function move(srcPath: string, destPath: string): AsyncVoidIOResult
     if (destPathRes.isErr()) return destPathRes.asErr();
     destPath = destPathRes.unwrap();
 
-    return (await promisifyWithResult(getFs().rename)({
+    return (await asyncResultify(getFs().rename)({
         oldPath: srcPath,
         newPath: destPath,
     }))
@@ -79,7 +79,7 @@ export async function readDir(dirPath: string): AsyncIOResult<string[]> {
     if (dirPathRes.isErr()) return dirPathRes.asErr();
     dirPath = dirPathRes.unwrap();
 
-    return (await promisifyWithResult(getFs().readdir)({
+    return (await asyncResultify(getFs().readdir)({
         dirPath,
     }))
         .map(x => x.files)
@@ -120,7 +120,7 @@ export async function readFile<T extends ReadFileContent>(filePath: string, opti
 
     const encoding = getReadFileEncoding(options);
 
-    return (await promisifyWithResult(getFs().readFile)({
+    return (await asyncResultify(getFs().readFile)({
         filePath,
         encoding,
     }))
@@ -147,11 +147,11 @@ export async function remove(path: string): AsyncVoidIOResult {
 
     // 文件夹还是文件
     const res = statRes.unwrap().isDirectory()
-        ? promisifyWithResult(getFs().rmdir)({
+        ? asyncResultify(getFs().rmdir)({
             dirPath: path,
             recursive: true,
         })
-        : promisifyWithResult(getFs().unlink)({
+        : asyncResultify(getFs().unlink)({
             filePath: path,
         });
 
@@ -176,7 +176,7 @@ export async function stat(path: string, options?: StatOptions): AsyncIOResult<W
     if (pathRes.isErr()) return pathRes.asErr();
     path = pathRes.unwrap();
 
-    return (await promisifyWithResult(getFs().stat)({
+    return (await asyncResultify(getFs().stat)({
         path,
         recursive: options?.recursive ?? false,
     }))
@@ -224,7 +224,7 @@ export async function writeFile(filePath: string, contents: MinaWriteFileContent
 
     const { data, encoding } = getWriteFileContents(contents);
 
-    return (await promisifyWithResult(method)({
+    return (await asyncResultify(method)({
         filePath,
         data,
         encoding,
@@ -246,7 +246,7 @@ export function appendFile(filePath: string, contents: MinaWriteFileContent): As
 }
 
 async function copyFile(srcPath: string, destPath: string): AsyncVoidIOResult {
-    return (await promisifyWithResult(getFs().copyFile)({
+    return (await asyncResultify(getFs().copyFile)({
         srcPath,
         destPath,
     }))
@@ -554,7 +554,7 @@ export async function unzip(zipFilePath: string, destDir: string): AsyncVoidIORe
     if (destDirRes.isErr()) return destDirRes.asErr();
     destDir = destDirRes.unwrap();
 
-    return (await promisifyWithResult(getFs().unzip)({
+    return (await asyncResultify(getFs().unzip)({
         zipFilePath,
         targetPath: destDir,
     }))

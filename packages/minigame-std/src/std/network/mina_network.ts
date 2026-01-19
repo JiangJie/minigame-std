@@ -3,7 +3,7 @@
  * 小游戏平台的网络状态实现。
  */
 
-import { promisifyWithResult } from '../utils/promisify.ts';
+import { asyncResultify } from '../utils/resultify.ts';
 import type { NetworkType } from './network_define.ts';
 
 /**
@@ -11,7 +11,7 @@ import type { NetworkType } from './network_define.ts';
  * @returns 返回值可能为 `wifi` | `none` | `unknown` | `2g` | `3g` | `4g`
  */
 export async function getNetworkType(): Promise<NetworkType> {
-    return (await promisifyWithResult(wx.getNetworkType)())
+    return (await asyncResultify(wx.getNetworkType)())
         .mapOr('unknown', x => x.networkType);
 }
 

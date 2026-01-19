@@ -163,9 +163,9 @@ export function encodeBase64(data: string): string {
 
 ### API Wrapping Pattern for Mini-Game APIs
 
-When wrapping WeChat mini-game APIs that use callback-based patterns, use `promisifyWithResult`:
+When wrapping WeChat mini-game APIs that use callback-based patterns, use `asyncResultify`:
 
-**Requirements for `promisifyWithResult`:**
+**Requirements for `asyncResultify`:**
 - API must accept optional `success` and `fail` callbacks
 - API must return `void` or `Promise` (NOT Task objects like `RequestTask`, `DownloadTask`, `UploadTask`)
 
@@ -173,7 +173,7 @@ When wrapping WeChat mini-game APIs that use callback-based patterns, use `promi
 ```typescript
 // ✅ Good - wx.setStorage returns void
 export async function setItem(key: string, data: string): AsyncVoidIOResult {
-    return (await promisifyWithResult(wx.setStorage)({
+    return (await asyncResultify(wx.setStorage)({
         key,
         data,
     }))
@@ -181,7 +181,7 @@ export async function setItem(key: string, data: string): AsyncVoidIOResult {
         .mapErr(miniGameFailureToError);
 }
 
-// ❌ Bad - wx.downloadFile returns DownloadTask, cannot use promisifyWithResult
+// ❌ Bad - wx.downloadFile returns DownloadTask, cannot use asyncResultify
 // Must manually handle callbacks with Future pattern instead
 ```
 
@@ -265,9 +265,9 @@ When updating `minigame-api-typings`, be aware that WeChat API types may change:
 
 The project provides several utilities for wrapping platform-specific APIs:
 
-- **`promisifyWithResult(api)`** - Converts callback-based mini-game APIs to Result-based async functions
+- **`asyncResultify(api)`** - Converts callback-based mini-game APIs to Result-based async functions
   - Use for APIs with `success`/`fail` callbacks that return `void` or `Promise`
-  - Located in `packages/minigame-std/src/std/utils/promisify.ts`
+  - Located in `packages/minigame-std/src/std/utils/resultify.ts`
   
 - **`tryGeneralAsyncOp(fn)`** / **`tryGeneralSyncOp(fn)`** - Wraps operations that may throw
   - Use for APIs that already return Promise but may throw errors
