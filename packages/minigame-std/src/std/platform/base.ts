@@ -1,6 +1,13 @@
 /**
  * 平台类型，Web 或者小游戏。
  * @since 1.0.0
+ * @example
+ * ```ts
+ * import { platform, type TargetType } from 'minigame-std';
+ *
+ * const type: TargetType = platform.getTargetType();
+ * console.log(type); // 'minigame' 或 'web'
+ * ```
  */
 export type TargetType = 'minigame' | 'web';
 

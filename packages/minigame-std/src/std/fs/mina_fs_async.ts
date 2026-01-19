@@ -19,7 +19,7 @@ import { createFailedFetchTask, errToMkdirResult, errToRemoveResult, fileErrorTo
 /**
  * 递归创建文件夹，相当于`mkdir -p`。
  * @param dirPath - 需要创建的目录路径。
- * @returns 创建结果的异步操作，成功时返回 true。
+ * @returns 创建操作的异步结果。
  */
 export async function mkdir(dirPath: string): AsyncVoidIOResult {
     const dirPathRes = validateAbsolutePath(dirPath);
@@ -47,10 +47,10 @@ export async function mkdir(dirPath: string): AsyncVoidIOResult {
 }
 
 /**
- * 重命名文件或目录。
+ * 移动或重命名文件或目录。
  * @param srcPath - 原路径。
  * @param destPath - 新路径。
- * @returns 重命名操作的异步结果，成功时返回 true。
+ * @returns 移动操作的异步结果。
  */
 export async function move(srcPath: string, destPath: string): AsyncVoidIOResult {
     const srcPathRes = validateAbsolutePath(srcPath);
@@ -72,7 +72,7 @@ export async function move(srcPath: string, destPath: string): AsyncVoidIOResult
 /**
  * 读取目录下的所有文件和子目录。
  * @param dirPath - 目录路径。
- * @returns 包含目录内容的字符串数组的异步操作。
+ * @returns 包含目录内容的字符串数组的异步结果。
  */
 export async function readDir(dirPath: string): AsyncIOResult<string[]> {
     const dirPathRes = validateAbsolutePath(dirPath);
@@ -90,7 +90,7 @@ export async function readDir(dirPath: string): AsyncIOResult<string[]> {
  * 以 UTF-8 格式读取文件。
  * @param filePath - 文件路径。
  * @param options - 读取选项，指定编码为 'utf8'。
- * @returns 包含文件内容的字符串的异步操作。
+ * @returns 包含文件内容的字符串的异步结果。
  */
 export function readFile(filePath: string, options: ReadOptions & {
     encoding: 'utf8';
@@ -100,7 +100,7 @@ export function readFile(filePath: string, options: ReadOptions & {
  * 以二进制格式读取文件。
  * @param filePath - 文件路径。
  * @param options - 读取选项，指定编码为 'binary'。
- * @returns 包含文件内容的 ArrayBuffer 的异步操作。
+ * @returns 包含文件内容的 ArrayBuffer 的异步结果。
  */
 export function readFile(filePath: string, options?: ReadOptions & {
     encoding: 'binary';
@@ -111,7 +111,7 @@ export function readFile(filePath: string, options?: ReadOptions & {
  * @template T - 返回内容的类型。
  * @param filePath - 文件路径。
  * @param options - 可选的读取选项。
- * @returns 包含文件内容的异步操作。
+ * @returns 包含文件内容的异步结果。
  */
 export async function readFile<T extends ReadFileContent>(filePath: string, options?: ReadOptions): AsyncIOResult<T> {
     const filePathRes = validateAbsolutePath(filePath);
@@ -131,7 +131,7 @@ export async function readFile<T extends ReadFileContent>(filePath: string, opti
 /**
  * 删除指定路径的文件或目录。
  * @param path - 需要删除的文件或目录的路径。
- * @returns 删除操作的异步结果，成功时返回 true。
+ * @returns 删除操作的异步结果。
  */
 export async function remove(path: string): AsyncVoidIOResult {
     const pathRes = validateAbsolutePath(path);
@@ -164,7 +164,7 @@ export async function remove(path: string): AsyncVoidIOResult {
  * 获取文件或目录的状态信息。
  * @param path - 文件或目录的路径。
  * @param options - 可选选项。
- * @returns 包含状态信息的异步操作。
+ * @returns 包含状态信息的异步结果。
  */
 export function stat(path: string): AsyncIOResult<WechatMinigame.Stats>;
 export function stat(path: string, options: StatOptions & {
@@ -189,7 +189,7 @@ export async function stat(path: string, options?: StatOptions): AsyncIOResult<W
  * @param filePath - 文件路径。
  * @param contents - 要写入的内容。
  * @param options - 可选的写入选项。
- * @returns 写入操作的异步结果，成功时返回 true。
+ * @returns 写入操作的异步结果。
  */
 export async function writeFile(filePath: string, contents: MinaWriteFileContent, options?: WriteOptions): AsyncVoidIOResult {
     const filePathRes = validateAbsolutePath(filePath);
@@ -237,7 +237,7 @@ export async function writeFile(filePath: string, contents: MinaWriteFileContent
  * 向文件追加内容。
  * @param filePath - 文件路径。
  * @param contents - 要追加的内容。
- * @returns 追加操作的异步结果，成功时返回 true。
+ * @returns 追加操作的异步结果。
  */
 export function appendFile(filePath: string, contents: MinaWriteFileContent): AsyncVoidIOResult {
     return writeFile(filePath, contents, {
@@ -316,7 +316,7 @@ export async function exists(path: string, options?: ExistsOptions): AsyncIOResu
 /**
  * 清空目录中的所有文件和子目录。
  * @param dirPath - 目录路径。
- * @returns 清空操作的异步结果，成功时返回 true。
+ * @returns 清空操作的异步结果。
  */
 export async function emptyDir(dirPath: string): AsyncVoidIOResult {
     const res = await readDir(dirPath);
@@ -366,7 +366,7 @@ export async function writeJsonFile<T>(filePath: string, data: T): AsyncVoidIORe
 /**
  * 读取文本文件的内容。
  * @param filePath - 文件路径。
- * @returns 包含文件文本内容的异步操作。
+ * @returns 包含文件文本内容的异步结果。
  */
 export function readTextFile(filePath: string): AsyncIOResult<string> {
     return readFile(filePath, {
@@ -378,7 +378,7 @@ export function readTextFile(filePath: string): AsyncIOResult<string> {
  * 下载文件并保存到临时文件。
  * @param fileUrl - 文件的网络 URL。
  * @param options - 可选参数。
- * @returns 下载操作的异步结果，成功时返回 true。
+ * @returns 下载操作的异步结果。
  */
 export function downloadFile(fileUrl: string, options?: DownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult>;
 /**
@@ -386,7 +386,7 @@ export function downloadFile(fileUrl: string, options?: DownloadFileOptions): Fe
  * @param fileUrl - 文件的网络 URL。
  * @param filePath - 可选的下载后文件存储的路径，没传则存到临时文件。
  * @param options - 可选参数。
- * @returns 下载操作的异步结果，成功时返回 true。
+ * @returns 下载操作的异步结果。
  */
 export function downloadFile(fileUrl: string, filePath: string, options?: DownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult>;
 export function downloadFile(fileUrl: string, filePath?: string | DownloadFileOptions, options?: DownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult> {
@@ -495,7 +495,7 @@ export function downloadFile(fileUrl: string, filePath?: string | DownloadFileOp
  * @param filePath - 需要上传的文件路径。
  * @param fileUrl - 目标网络 URL。
  * @param options - 可选参数。
- * @returns 上传操作的异步结果，成功时返回 true。
+ * @returns 上传操作的异步结果。
  */
 export function uploadFile(filePath: string, fileUrl: string, options?: UploadFileOptions): FetchTask<WechatMinigame.UploadFileSuccessCallbackResult> {
     type T = WechatMinigame.UploadFileSuccessCallbackResult;

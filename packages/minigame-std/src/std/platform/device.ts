@@ -95,6 +95,14 @@ export function getWindowInfo(): WechatMinigame.WindowInfo {
 /**
  * 平台类型。
  * @since 1.0.0
+ * @example
+ * ```ts
+ * import { platform, type Platform } from 'minigame-std';
+ *
+ * const info = platform.getDeviceInfo();
+ * const devicePlatform: Platform = info.platform;
+ * console.log(devicePlatform); // 'ios' | 'android' | 'mac' | ...
+ * ```
  */
 export type Platform = 'ios' | 'android' | 'mac' | 'windows' | 'ohos' | 'ohos_pc' | 'devtools' | 'linux' | 'unknown';
 
@@ -103,6 +111,14 @@ export type Platform = 'ios' | 'android' | 'mac' | 'windows' | 'ohos' | 'ohos_pc
  * 修正了 `memorySize` 的类型为 `number`（小游戏 API 实际返回数字，但官方类型定义错误地声明为 string）。
  * @see https://github.com/wechat-miniprogram/minigame-api-typings/issues/27
  * @since 1.0.0
+ * @example
+ * ```ts
+ * import { platform, type DeviceInfo } from 'minigame-std';
+ *
+ * const info: DeviceInfo = platform.getDeviceInfo();
+ * console.log('平台:', info.platform);
+ * console.log('内存:', info.memorySize, 'MB');
+ * ```
  */
 export type DeviceInfo = Omit<WechatMinigame.DeviceInfo, 'abi' | 'cpuType' | 'deviceAbi' | 'memorySize' | 'platform'> & {
     abi?: string;

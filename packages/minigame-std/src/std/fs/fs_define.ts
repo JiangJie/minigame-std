@@ -4,6 +4,13 @@ import type { FsRequestInit, ReadFileContent as OPFSReadFileContent, WriteFileCo
 /**
  * 异步写入文件的内容类型，支持 `ArrayBuffer` `TypedArray` `string` `ReadableStream`。
  * @since 1.0.0
+ * @example
+ * ```ts
+ * import { fs, type WriteFileContent } from 'minigame-std';
+ *
+ * const content: WriteFileContent = '文本内容';
+ * await fs.writeFile('/path/to/file.txt', content);
+ * ```
  */
 export type WriteFileContent = Exclude<OPFSWriteFileContent, Blob>;
 
@@ -16,18 +23,38 @@ export type MinaWriteFileContent = Exclude<WriteFileContent, ReadableStream<Uint
  * 同步写入文件的内容类型，支持 `ArrayBuffer` `TypedArray` `string`。
  * 排除了 `Blob` 和 `ReadableStream`，因为它们需要异步操作。
  * @since 1.1.0
+ * @example
+ * ```ts
+ * import { fs, type WriteSyncFileContent } from 'minigame-std';
+ *
+ * const content: WriteSyncFileContent = new Uint8Array([1, 2, 3]);
+ * fs.writeFileSync('/path/to/file.bin', content);
+ * ```
  */
 export type WriteSyncFileContent = Exclude<OPFSWriteSyncFileContent, Blob>;
 
 /**
  * 读取文件的内容类型，支持 `ArrayBuffer` `string`。
  * @since 1.0.0
+ * @example
+ * ```ts
+ * import type { ReadFileContent } from 'minigame-std';
+ *
+ * // ReadFileContent 可以是 ArrayBuffer 或 string
+ * const content: ReadFileContent = new ArrayBuffer(8);
+ * ```
  */
 export type ReadFileContent = Exclude<OPFSReadFileContent, Blob>;
 
 /**
  * 指定编码读取文件的选项。
  * @since 1.0.0
+ * @example
+ * ```ts
+ * import type { ReadOptions } from 'minigame-std';
+ *
+ * const options: ReadOptions = { encoding: 'utf8' };
+ * ```
  */
 export interface ReadOptions {
     /**
@@ -41,12 +68,27 @@ export interface ReadOptions {
 /**
  * 支持的文件编码格式。
  * @since 1.0.0
+ * @example
+ * ```ts
+ * import type { FileEncoding } from 'minigame-std';
+ *
+ * const encoding: FileEncoding = 'utf8';
+ * ```
  */
 export type FileEncoding = 'binary' | 'utf8';
 
 /**
  * 下载文件的选项。
  * @since 1.0.0
+ * @example
+ * ```ts
+ * import { fs, type DownloadFileOptions } from 'minigame-std';
+ *
+ * const options: DownloadFileOptions = {
+ *     onProgress: (progress) => console.log(`下载进度: ${progress.progress}%`),
+ * };
+ * const task = fs.downloadFile('https://example.com/file.zip', '/path/to/save.zip', options);
+ * ```
  */
 export interface DownloadFileOptions extends Omit<WechatMinigame.DownloadFileOption, 'url' | 'filePath' | 'success' | 'fail'> {
     onProgress?: FetchInit['onProgress'];
@@ -55,6 +97,16 @@ export interface DownloadFileOptions extends Omit<WechatMinigame.DownloadFileOpt
 /**
  * 上传文件的选项。
  * @since 1.0.0
+ * @example
+ * ```ts
+ * import { fs, type UploadFileOptions } from 'minigame-std';
+ *
+ * const options: UploadFileOptions = {
+ *     name: 'file',
+ *     formData: { key: 'value' },
+ * };
+ * const task = fs.uploadFile('/path/to/file.txt', 'https://example.com/upload', options);
+ * ```
  */
 export interface UploadFileOptions extends Omit<WechatMinigame.UploadFileOption, 'url' | 'filePath' | 'name' | 'success' | 'fail'> {
     /**
@@ -66,18 +118,43 @@ export interface UploadFileOptions extends Omit<WechatMinigame.UploadFileOption,
 /**
  * 统一下载请求的选项。
  * @since 1.0.0
+ * @example
+ * ```ts
+ * import type { UnionDownloadFileOptions } from 'minigame-std';
+ *
+ * const options: UnionDownloadFileOptions = {
+ *     timeout: 30000,
+ *     onProgress: (p) => console.log(p.progress),
+ * };
+ * ```
  */
 export type UnionDownloadFileOptions = FsRequestInit & DownloadFileOptions;
 
 /**
  * 统一上传请求的选项。
  * @since 1.0.0
+ * @example
+ * ```ts
+ * import type { UnionUploadFileOptions } from 'minigame-std';
+ *
+ * const options: UnionUploadFileOptions = {
+ *     name: 'file',
+ *     formData: { key: 'value' },
+ * };
+ * ```
  */
 export type UnionUploadFileOptions = UploadRequestInit & UploadFileOptions;
 
 /**
  * stat 操作的选项。
  * @since 1.0.0
+ * @example
+ * ```ts
+ * import { fs, type StatOptions } from 'minigame-std';
+ *
+ * const options: StatOptions = { recursive: true };
+ * const result = await fs.stat('/path/to/dir', options);
+ * ```
  */
 export interface StatOptions {
     /**
@@ -89,5 +166,14 @@ export interface StatOptions {
 /**
  * `unzipFromUrl` 的统一选项。
  * @since 1.4.0
+ * @example
+ * ```ts
+ * import { fs, type ZipFromUrlOptions } from 'minigame-std';
+ *
+ * const options: ZipFromUrlOptions = {
+ *     onProgress: (p) => console.log(p.progress),
+ * };
+ * await fs.unzipFromUrl('https://example.com/archive.zip', '/path/to/output', options);
+ * ```
  */
 export type ZipFromUrlOptions = DownloadFileOptions & ZipFromUrlRequestInit;

@@ -1,19 +1,33 @@
 import type { DataSource } from '../defines.ts';
 
 /**
- * RSA 公钥接口。
+ * RSA 公钥接口，用于加密数据。
  * @since 1.6.0
+ * @example
+ * ```ts
+ * import { cryptos } from 'minigame-std';
+ *
+ * const publicKey = await cryptos.rsa.importPublicKey(pemString, 'SHA-256');
+ *
+ * // 加密并返回 ArrayBuffer
+ * const encrypted = await publicKey.encrypt('Hello, World!');
+ *
+ * // 加密并返回 Base64 字符串
+ * const encryptedStr = await publicKey.encryptToString('Hello, World!');
+ * ```
  */
 export interface RSAPublicKey {
     /**
      * 使用 RSA-OAEP 算法加密数据。
      * @param data - 要加密的数据。
-     * @returns 加密后的数据。
+     * @returns 加密后的 ArrayBuffer。
      */
     encrypt(data: DataSource): Promise<ArrayBuffer>;
 
     /**
-     * 加密后转换为 base64 字符串。
+     * 加密后转换为 Base64 字符串。
+     * @param data - 要加密的数据。
+     * @returns 加密后的 Base64 字符串。
      */
     encryptToString(data: DataSource): Promise<string>;
 }

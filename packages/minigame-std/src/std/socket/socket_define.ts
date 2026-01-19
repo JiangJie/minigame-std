@@ -4,6 +4,15 @@ import type { DataSource } from '../defines.ts';
 /**
  * WebSocket 连接状态，小游戏环境可用。
  * @since 1.6.0
+ * @example
+ * ```ts
+ * import { SocketReadyState, connectSocket } from 'minigame-std';
+ *
+ * const socket = connectSocket('wss://example.com');
+ * if (socket.readyState === SocketReadyState.OPEN) {
+ *     console.log('连接已打开');
+ * }
+ * ```
  */
 export const SocketReadyState = {
     /**
@@ -27,6 +36,14 @@ export const SocketReadyState = {
 /**
  * WebSocket 事件监听器映射接口，定义了与 WebSocket 事件对应的回调函数类型。
  * @since 1.0.0
+ * @example
+ * ```ts
+ * import type { SocketListenerMap } from 'minigame-std';
+ *
+ * const onMessage: SocketListenerMap['message'] = (data) => {
+ *     console.log('收到消息:', data);
+ * };
+ * ```
  */
 export interface SocketListenerMap {
     /**
@@ -57,6 +74,17 @@ export interface SocketListenerMap {
 /**
  * WebSocket 接口定义，描述了 WebSocket 的基本操作方法。
  * @since 1.0.0
+ * @example
+ * ```ts
+ * import type { ISocket } from 'minigame-std';
+ *
+ * function handleSocket(socket: ISocket) {
+ *     socket.addEventListener('message', (data) => {
+ *         console.log('收到:', data);
+ *     });
+ *     socket.send('Hello');
+ * }
+ * ```
  */
 export interface ISocket {
     /**
@@ -91,5 +119,15 @@ export interface ISocket {
 /**
  * 创建Socket的可选参数。
  * @since 1.0.0
+ * @example
+ * ```ts
+ * import { connectSocket, type SocketOptions } from 'minigame-std';
+ *
+ * const options: SocketOptions = {
+ *     protocols: ['protocol1', 'protocol2'],
+ *     header: { 'Authorization': 'Bearer token' },
+ * };
+ * const socket = connectSocket('wss://example.com', options);
+ * ```
  */
 export type SocketOptions = Omit<WechatMinigame.ConnectSocketOption, 'url' | 'complete' | 'success' | 'fail'>;

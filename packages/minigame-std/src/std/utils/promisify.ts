@@ -4,6 +4,10 @@ import { Future } from 'tiny-future';
 
 /**
  * 类型工具：判断 API 是否符合 promisify 条件。
+ *
+ * 要求 API 返回 `void` 或 `Promise`，且参数包含 `success` 或 `fail` 回调。
+ * @typeParam T - 待检查的 API 函数类型。
+ * @since 1.10.0
  */
 export type ValidAPI<T> = T extends (params: infer P) => infer R
     ? R extends void | Promise<any>
@@ -17,6 +21,10 @@ export type ValidAPI<T> = T extends (params: infer P) => infer R
 
 /**
  * 类型工具：提取成功回调参数类型。
+ *
+ * 从 API 函数的 `success` 回调中提取返回类型。
+ * @typeParam T - API 函数类型。
+ * @since 1.10.0
  */
 export type SuccessType<T> = T extends (params: infer P) => any
     ? P extends { success?: (res: infer S) => any; }
@@ -26,6 +34,10 @@ export type SuccessType<T> = T extends (params: infer P) => any
 
 /**
  * 类型工具：提取失败回调参数类型。
+ *
+ * 从 API 函数的 `fail` 回调中提取错误类型。
+ * @typeParam T - API 函数类型。
+ * @since 1.10.0
  */
 export type FailType<T> = T extends (params: infer P) => any
     ? P extends { fail?: (err: infer E) => any; }
