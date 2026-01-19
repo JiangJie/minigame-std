@@ -12,9 +12,9 @@ import { Future } from 'tiny-future';
 import { assertSafeUrl } from '../assert/assertions.ts';
 import type { FetchTask } from '../fetch/fetch_defines.ts';
 import { miniGameFailureToResult, promisifyWithResult } from '../utils/mod.ts';
-import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions } from './fs_define.ts';
+import type { DownloadFileOptions, MinaWriteFileContent, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions } from './fs_define.ts';
 import { createAbortError } from './fs_helpers.ts';
-import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getRootUsrPath, getWriteFileContents, isNotFoundError, validateExistsOptions, type MinaWriteFileContent } from './mina_fs_shared.ts';
+import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getRootUsrPath, getWriteFileContents, isNotFoundError, validateExistsOptions } from './mina_fs_shared.ts';
 
 /**
  * 递归创建文件夹，相当于`mkdir -p`。

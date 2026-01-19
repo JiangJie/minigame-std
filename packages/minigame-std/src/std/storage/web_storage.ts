@@ -8,16 +8,6 @@ import { assertString } from '../assert/assertions.ts';
 import { tryDOMSyncOp } from '../utils/mod.ts';
 
 /**
- * 执行操作并包装为 IOResult。
- * @param op - 要执行的操作函数。
- * @returns 返回操作结果。
- */
-function callOp<T>(op: () => T): IOResult<T> {
-    const res = op();
-    return Ok(res);
-}
-
-/**
  * 设置存储项。
  * @param key - 存储键名。
  * @param data - 要存储的字符串数据。
@@ -89,3 +79,17 @@ export function hasItem(key: string): IOResult<boolean> {
         return localStorage.getItem(key) != null;
     });
 }
+
+// #region Internal Functions
+
+/**
+ * 执行操作并包装为 IOResult。
+ * @param op - 要执行的操作函数。
+ * @returns 返回操作结果。
+ */
+function callOp<T>(op: () => T): IOResult<T> {
+    const res = op();
+    return Ok(res);
+}
+
+// #endregion

@@ -7,23 +7,8 @@ import { basename, dirname, join, SEPARATOR } from '@std/path/posix';
 import * as fflate from 'fflate/browser';
 import { type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
 import { Err, Ok, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
-import type { ReadFileContent, ReadOptions, StatOptions } from './fs_define.ts';
-import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError, validateExistsOptions, type MinaWriteFileContent } from './mina_fs_shared.ts';
-
-/**
- * 安全地调用同步接口。
- * @param op - 同步操作。
- * @param errToResult - 错误处理函数。
- * @returns
- */
-function trySyncOp<T>(op: () => T, errToResult: (err: WechatMinigame.FileError) => IOResult<T> = fileErrorToResult): IOResult<T> {
-    try {
-        const res = op();
-        return Ok(res);
-    } catch (e: unknown) {
-        return errToResult(e as WechatMinigame.FileError);
-    }
-}
+import type { MinaWriteFileContent, ReadFileContent, ReadOptions, StatOptions } from './fs_define.ts';
+import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError, validateExistsOptions } from './mina_fs_shared.ts';
 
 /**
  * `mkdir` 的同步版本。
@@ -134,13 +119,6 @@ export function appendFileSync(filePath: string, contents: MinaWriteFileContent)
     return writeFileSync(filePath, contents, {
         append: true,
     });
-}
-
-function copyFileSync(srcPath: string, destPath: string): VoidIOResult {
-    return trySyncOp(() => (getFs().copyFile({
-        srcPath,
-        destPath,
-    })));
 }
 
 /**
@@ -325,3 +303,29 @@ export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOp
         }
     });
 }
+
+// #region Internal Functions
+
+/**
+ * 安全地调用同步接口。
+ * @param op - 同步操作。
+ * @param errToResult - 错误处理函数。
+ * @returns
+ */
+function trySyncOp<T>(op: () => T, errToResult: (err: WechatMinigame.FileError) => IOResult<T> = fileErrorToResult): IOResult<T> {
+    try {
+        const res = op();
+        return Ok(res);
+    } catch (e: unknown) {
+        return errToResult(e as WechatMinigame.FileError);
+    }
+}
+
+function copyFileSync(srcPath: string, destPath: string): VoidIOResult {
+    return trySyncOp(() => (getFs().copyFile({
+        srcPath,
+        destPath,
+    })));
+}
+
+// #endregion

@@ -7,6 +7,8 @@
 import { Lazy } from 'happy-rusty';
 import { bufferSource2U8a } from '../utils/mod.ts';
 
+// #region Internal Variables
+
 /**
  * 包含标准 base64 字符的字符串。
  */
@@ -29,6 +31,8 @@ const lookup = Lazy(() => {
 
     return lookupTemp;
 });
+
+// #endregion
 
 /**
  * 将 BufferSource 转换为 Base64 编码的字符串。

@@ -8,6 +8,11 @@ import type { FsRequestInit, ReadFileContent as OPFSReadFileContent, WriteFileCo
 export type WriteFileContent = Exclude<OPFSWriteFileContent, Blob>;
 
 /**
+ * 小游戏写入内容类型，排除 ReadableStream 因为小游戏不支持。
+ */
+export type MinaWriteFileContent = Exclude<WriteFileContent, ReadableStream<Uint8Array<ArrayBuffer>>>;
+
+/**
  * 同步写入文件的内容类型，支持 `ArrayBuffer` `TypedArray` `string`。
  * 排除了 `Blob` 和 `ReadableStream`，因为它们需要异步操作。
  * @since 1.1.0

@@ -10,26 +10,6 @@ import type { DataSource } from '../../defines.ts';
 import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
 
 /**
- * 根据算法名称获取 SHA 哈希工厂。
- */
-function getShaFactory(hash: SHA): typeof sha1 {
-    switch (hash) {
-        case 'SHA-1': {
-            return sha1;
-        }
-        case 'SHA-256': {
-            return sha256;
-        }
-        case 'SHA-384': {
-            return sha384;
-        }
-        case 'SHA-512': {
-            return sha512;
-        }
-    }
-}
-
-/**
  * 从 PEM 编码的字符串导入用于加密的公钥。
  * @param pem - PEM 编码的字符串。
  * @param hash - 哈希算法。
@@ -56,3 +36,27 @@ export function importPublicKey(pem: string, hash: SHA): RSAPublicKey {
         },
     };
 }
+
+// #region Internal Functions
+
+/**
+ * 根据算法名称获取 SHA 哈希工厂。
+ */
+function getShaFactory(hash: SHA): typeof sha1 {
+    switch (hash) {
+        case 'SHA-1': {
+            return sha1;
+        }
+        case 'SHA-256': {
+            return sha256;
+        }
+        case 'SHA-384': {
+            return sha384;
+        }
+        case 'SHA-512': {
+            return sha512;
+        }
+    }
+}
+
+// #endregion

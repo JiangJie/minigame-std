@@ -10,26 +10,6 @@ import { bufferSource2U8a } from '../../utils/mod.ts';
 import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
 
 /**
- * 使用公钥加密数据。
- * @param publicKey - 公钥。
- * @param data - 要加密的数据。
- * @returns 加密后的数据。
- */
-function encrypt(publicKey: CryptoKey, data: DataSource): Promise<ArrayBuffer> {
-    const encodedData = typeof data === 'string'
-        ? textEncode(data)
-        : bufferSource2U8a(data);
-
-    return crypto.subtle.encrypt(
-        {
-            name: 'RSA-OAEP',
-        },
-        publicKey,
-        encodedData,
-    );
-}
-
-/**
  * 从 PEM 编码的字符串导入用于加密的公钥。
  * @param pem - PEM 编码的字符串。
  * @param hash - 哈希算法。
@@ -70,3 +50,27 @@ export async function importPublicKey(pem: string, hash: SHA): Promise<RSAPublic
         },
     };
 }
+
+// #region Internal Functions
+
+/**
+ * 使用公钥加密数据。
+ * @param publicKey - 公钥。
+ * @param data - 要加密的数据。
+ * @returns 加密后的数据。
+ */
+function encrypt(publicKey: CryptoKey, data: DataSource): Promise<ArrayBuffer> {
+    const encodedData = typeof data === 'string'
+        ? textEncode(data)
+        : bufferSource2U8a(data);
+
+    return crypto.subtle.encrypt(
+        {
+            name: 'RSA-OAEP',
+        },
+        publicKey,
+        encodedData,
+    );
+}
+
+// #endregion

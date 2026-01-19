@@ -5,16 +5,6 @@ import type { SHA } from '../crypto_defines.ts';
 import { createHMAC as minaCreateHMAC } from './mina_hmac.ts';
 import { createHMAC as webCreateHMAC } from './web_hmac.ts';
 
-function shaHMAC(sha: SHA, key: DataSource, data: DataSource): Promise<string> {
-    if (isMinaEnv()) {
-        const hmac = minaCreateHMAC(sha, toByteString(key));
-        hmac.update(toByteString(data));
-        return Promise.resolve(hmac.digest().toHex());
-    }
-
-    return webCreateHMAC(sha, key, data);
-}
-
 /**
  * 使用 SHA-1 算法计算 HMAC。
  * @param key - 密钥，可以是字符串或 BufferSource。
@@ -78,3 +68,20 @@ export function sha384HMAC(key: DataSource, data: DataSource): Promise<string> {
 export function sha512HMAC(key: DataSource, data: DataSource): Promise<string> {
     return shaHMAC('SHA-512', key, data);
 }
+
+// #region Internal Functions
+
+/**
+ * 使用指定 SHA 算法计算 HMAC。
+ */
+function shaHMAC(sha: SHA, key: DataSource, data: DataSource): Promise<string> {
+    if (isMinaEnv()) {
+        const hmac = minaCreateHMAC(sha, toByteString(key));
+        hmac.update(toByteString(data));
+        return Promise.resolve(hmac.digest().toHex());
+    }
+
+    return webCreateHMAC(sha, key, data);
+}
+
+// #endregion

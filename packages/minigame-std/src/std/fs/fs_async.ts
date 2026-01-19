@@ -26,7 +26,7 @@ import {
 } from 'happy-opfs';
 import { Ok, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
-import type { StatOptions, UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent, ZipFromUrlOptions } from './fs_define.ts';
+import type { MinaWriteFileContent, StatOptions, UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent, ZipFromUrlOptions } from './fs_define.ts';
 import { convertFileSystemHandleToStats } from './fs_helpers.ts';
 import {
     appendFile as minaAppendFile,
@@ -50,7 +50,6 @@ import {
     zip as minaZip,
     zipFromUrl as minaZipFromUrl,
 } from './mina_fs_async.ts';
-import type { MinaWriteFileContent } from './mina_fs_shared.ts';
 
 /**
  * 递归创建文件夹，相当于 `mkdir -p`。

@@ -3,27 +3,7 @@ import { isMinaEnv } from '../../macros/env.ts';
 import { miniGameFailureToError, promisifyWithResult } from '../utils/mod.ts';
 import { parseUserAgent } from './user_agent.ts';
 
-/**
- * 平台类型。
- * @since 1.0.0
- */
-export type Platform = 'ios' | 'android' | 'mac' | 'windows' | 'ohos' | 'ohos_pc' | 'devtools' | 'linux' | 'unknown';
-
-/**
- * 设备信息类型。
- * 修正了 `memorySize` 的类型为 `number`（小游戏 API 实际返回数字，但官方类型定义错误地声明为 string）。
- * @see https://github.com/wechat-miniprogram/minigame-api-typings/issues/27
- * @since 1.0.0
- */
-export type DeviceInfo = Omit<WechatMinigame.DeviceInfo, 'abi' | 'cpuType' | 'deviceAbi' | 'memorySize' | 'platform'> & {
-    abi?: string;
-    cpuType?: string;
-    deviceAbi?: string;
-    /** 设备内存大小，单位为 MB */
-    memorySize: number;
-    /** 设备平台 */
-    platform: Platform;
-};
+// #region Internal Variables
 
 // 以下变量一旦获取则不会变化
 // 兼容基础库低版本
@@ -33,45 +13,7 @@ const deviceInfo = Lazy<DeviceInfo>(() => isMinaEnv()
 );
 const benchmarkLevel = OnceAsync<number>();
 
-/**
- * 获取 Web 环境下的设备信息。
- */
-function getWebDeviceInfo(): DeviceInfo {
-    const { model, platform, system } = parseUserAgent();
-    const memorySize = ((navigator as Navigator & { deviceMemory?: number; }).deviceMemory ?? 0) * 1024;
-
-    return {
-        benchmarkLevel: -2, // Web 环境固定返回 -2
-        brand: '', // Web 环境无法可靠获取品牌信息
-        memorySize,
-        model,
-        platform: platform as Platform,
-        system,
-    };
-}
-
-/**
- * 获取 Web 环境下的窗口信息。
- */
-function getWebWindowInfo(): WechatMinigame.WindowInfo {
-    return {
-        pixelRatio: devicePixelRatio,
-        screenHeight: screen.height,
-        screenTop,
-        screenWidth: screen.width,
-        windowHeight: innerHeight,
-        windowWidth: innerWidth,
-        statusBarHeight: 0,
-        safeArea: {
-            left: 0,
-            right: innerWidth,
-            top: 0,
-            bottom: innerHeight,
-            width: innerWidth,
-            height: innerHeight,
-        },
-    };
-}
+// #endregion
 
 /**
  * 获取设备信息。
@@ -149,3 +91,69 @@ export async function getDeviceBenchmarkLevel(): AsyncIOResult<number> {
 export function getWindowInfo(): WechatMinigame.WindowInfo {
     return isMinaEnv() ? wx.getWindowInfo() : getWebWindowInfo();
 }
+
+/**
+ * 平台类型。
+ * @since 1.0.0
+ */
+export type Platform = 'ios' | 'android' | 'mac' | 'windows' | 'ohos' | 'ohos_pc' | 'devtools' | 'linux' | 'unknown';
+
+/**
+ * 设备信息类型。
+ * 修正了 `memorySize` 的类型为 `number`（小游戏 API 实际返回数字，但官方类型定义错误地声明为 string）。
+ * @see https://github.com/wechat-miniprogram/minigame-api-typings/issues/27
+ * @since 1.0.0
+ */
+export type DeviceInfo = Omit<WechatMinigame.DeviceInfo, 'abi' | 'cpuType' | 'deviceAbi' | 'memorySize' | 'platform'> & {
+    abi?: string;
+    cpuType?: string;
+    deviceAbi?: string;
+    /** 设备内存大小，单位为 MB */
+    memorySize: number;
+    /** 设备平台 */
+    platform: Platform;
+};
+
+// #region Internal Functions
+
+/**
+ * 获取 Web 环境下的设备信息。
+ */
+function getWebDeviceInfo(): DeviceInfo {
+    const { model, platform, system } = parseUserAgent();
+    const memorySize = ((navigator as Navigator & { deviceMemory?: number; }).deviceMemory ?? 0) * 1024;
+
+    return {
+        benchmarkLevel: -2, // Web 环境固定返回 -2
+        brand: '', // Web 环境无法可靠获取品牌信息
+        memorySize,
+        model,
+        platform: platform as Platform,
+        system,
+    };
+}
+
+/**
+ * 获取 Web 环境下的窗口信息。
+ */
+function getWebWindowInfo(): WechatMinigame.WindowInfo {
+    return {
+        pixelRatio: devicePixelRatio,
+        screenHeight: screen.height,
+        screenTop,
+        screenWidth: screen.width,
+        windowHeight: innerHeight,
+        windowWidth: innerWidth,
+        statusBarHeight: 0,
+        safeArea: {
+            left: 0,
+            right: innerWidth,
+            top: 0,
+            bottom: innerHeight,
+            width: innerWidth,
+            height: innerHeight,
+        },
+    };
+}
+
+// #endregion

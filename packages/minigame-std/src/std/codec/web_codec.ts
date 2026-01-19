@@ -5,8 +5,12 @@
 
 import { Lazy } from 'happy-rusty';
 
+// #region Internal Variables
+
 const encoder = Lazy(() => new TextEncoder());
 const decoder = Lazy(() => new TextDecoder());
+
+// #endregion
 
 /**
  * 将字符串数据编码为 `Uint8Array`

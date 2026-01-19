@@ -7,12 +7,9 @@ import { NOT_FOUND_ERROR, ROOT_DIR, type ExistsOptions } from 'happy-opfs';
 import { Err, Lazy, RESULT_FALSE, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { assertString, invariant } from '../assert/assertions.ts';
 import { bufferSource2Ab, miniGameFailureToError } from '../utils/mod.ts';
-import type { FileEncoding, ReadOptions, WriteFileContent } from './fs_define.ts';
+import type { FileEncoding, MinaWriteFileContent, ReadOptions } from './fs_define.ts';
 
-/**
- * 小游戏写入内容类型，排除 ReadableStream 因为小游戏不支持。
- */
-export type MinaWriteFileContent = Exclude<WriteFileContent, ReadableStream<Uint8Array<ArrayBuffer>>>;
+// #region Internal Variables
 
 /**
  * 小游戏文件系统管理器实例。
@@ -22,18 +19,11 @@ export type MinaWriteFileContent = Exclude<WriteFileContent, ReadableStream<Uint
 const fs = Lazy(() => wx.getFileSystemManager());
 
 /**
- * 获取小游戏文件系统管理器实例。
- * @returns 文件系统管理器实例。
- */
-export function getFs(): WechatMinigame.FileSystemManager {
-    return fs.force();
-}
-
-/**
  * 用户数据根目录，`wxfile://usr` 或 `http://usr`。
  *
  * 为了 tree shake
- */const rootUsrPath = Lazy(() => wx.env.USER_DATA_PATH);
+ */
+const rootUsrPath = Lazy(() => wx.env.USER_DATA_PATH);
 
 /**
  * 根路径，`wxfile://` 或 `http://`。
@@ -45,6 +35,16 @@ const rootPath = Lazy(() => {
     // 剥离 `usr`
     return usrPath.slice(0, usrPath.indexOf('usr'));
 });
+
+// #endregion
+
+/**
+ * 获取小游戏文件系统管理器实例。
+ * @returns 文件系统管理器实例。
+ */
+export function getFs(): WechatMinigame.FileSystemManager {
+    return fs.force();
+}
 
 /**
  * 获取文件系统的根路径。
@@ -150,7 +150,7 @@ export function errToRemoveResult(err: WechatMinigame.FileError): VoidIOResult {
     return isNotFoundIOError(err) ? RESULT_VOID : fileErrorToResult(err);
 }
 
-interface GetWriteFileContents {
+export interface GetWriteFileContents {
     data: string | ArrayBuffer;
     encoding: FileEncoding | undefined;
 }

@@ -1,10 +1,6 @@
 import { isMiniGame } from './base.ts';
 import { getDeviceInfo } from './device.ts';
 
-function getPlatform(): string {
-    return getDeviceInfo().platform.toLowerCase();
-}
-
 /**
  * 判断当前是否在小游戏的运行时环境中。
  * @returns 如果在小游戏的运行时环境中返回 true，否则返回 false。
@@ -109,3 +105,11 @@ export function isMiniGameMac(): boolean {
 export function isMiniGameHarmonyOS(): boolean {
     return isMiniGame() && getPlatform() === 'ohos';
 }
+
+// #region Internal Functions
+
+function getPlatform(): string {
+    return getDeviceInfo().platform.toLowerCase();
+}
+
+// #endregion

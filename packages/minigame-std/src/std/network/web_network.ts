@@ -6,25 +6,6 @@
 import type { NetworkType } from './network_define.ts';
 
 /**
- * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation)
- */
-interface NetworkInformation extends EventTarget {
-    type: 'bluetooth' | 'cellular' | 'ethernet' | 'none' | 'wifi' | 'wimax' | 'other' | 'unknown';
-    effectiveType: 'slow-2g' | '2g' | '3g' | '4g';
-}
-
-/**
- * [Global augmentation](https://jsr.io/docs/about-slow-types#global-augmentation)
- *
- * 等待 TypeScript 支持。
- *
- * 扩展 Navigator。
- */
-interface Navigator {
-    connection?: NetworkInformation;
-}
-
-/**
  * 获取网络状态。
  * @returns 根据浏览器支持情况不同，返回值可能为 `wifi` | `none` | `unknown` | `slow-2g` | `2g` | `3g` | `4g`
  */
@@ -63,3 +44,26 @@ export function addNetworkChangeListener(listener: (type: NetworkType) => void):
         nav.connection?.removeEventListener('change', networkListener);
     };
 }
+
+// #region Internal Types
+
+/**
+ * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation)
+ */
+interface NetworkInformation extends EventTarget {
+    type: 'bluetooth' | 'cellular' | 'ethernet' | 'none' | 'wifi' | 'wimax' | 'other' | 'unknown';
+    effectiveType: 'slow-2g' | '2g' | '3g' | '4g';
+}
+
+/**
+ * [Global augmentation](https://jsr.io/docs/about-slow-types#global-augmentation)
+ *
+ * 等待 TypeScript 支持。
+ *
+ * 扩展 Navigator。
+ */
+interface Navigator {
+    connection?: NetworkInformation;
+}
+
+// #endregion

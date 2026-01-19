@@ -8,10 +8,14 @@ import { readFile } from '../fs/mod.ts';
 import { bufferSource2Ab } from '../utils/mod.ts';
 import type { PlayOptions } from './audio_defines.ts';
 
+// #region Internal Variables
+
 /**
  * 缓存的 AudioContext。
  */
 const audioContext = Once<AudioContext>();
+
+// #endregion
 
 /**
  * 获取缓存的 AudioContext。

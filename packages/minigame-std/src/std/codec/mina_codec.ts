@@ -3,7 +3,11 @@
  * 小游戏环境的编解码
  */
 
+// #region Internal Variables
+
 const FORMAT = 'utf8' as const;
+
+// #endregion
 
 /**
  * 将字符串数据编码为 ArrayBuffer。
@@ -34,6 +38,8 @@ export function textDecode(data: ArrayBuffer): string {
         })
         : ab2Utf8String(data);
 }
+
+// #region Internal Functions
 
 /**
  * 将 utf8 字符串转换为 ArrayBuffer。
@@ -120,3 +126,5 @@ function ab2Utf8String(data: ArrayBuffer): string {
 
     return str;
 }
+
+// #endregion

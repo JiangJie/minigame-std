@@ -9,7 +9,11 @@ import { hexFromBuffer, textEncode } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
 import { bufferSource2U8a } from '../../utils/mod.ts';
 
+// #region Internal Variables
+
 const BLOCK_SIZE = 64 as const;
+
+// #endregion
 
 /**
  * MD5 哈希计算类，支持流式更新。
