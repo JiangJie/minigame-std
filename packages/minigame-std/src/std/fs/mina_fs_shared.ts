@@ -3,37 +3,40 @@
  * 同步/异步的公共代码。
  */
 
+import type { FetchTask } from '@happy-ts/fetch-t';
+import { normalize } from '@std/path/posix';
 import { NOT_FOUND_ERROR, ROOT_DIR, type ExistsOptions } from 'happy-opfs';
-import { Err, Lazy, RESULT_FALSE, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
-import { assertString, invariant } from '../assert/assertions.ts';
+import { Err, Lazy, Ok, RESULT_FALSE, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { bufferSource2Ab, miniGameFailureToError } from '../utils/mod.ts';
 import type { FileEncoding, MinaWriteFileContent, ReadOptions } from './fs_define.ts';
 
 // #region Internal Variables
 
 /**
+ * 通过 `wx.env.USER_DATA_PATH` 获取的用户数据根目录。
+ */
+const USR = 'usr' as const;
+
+/**
  * 小游戏文件系统管理器实例。
  *
- * for tree shake
  */
 const fs = Lazy(() => wx.getFileSystemManager());
 
 /**
  * 用户数据根目录，`wxfile://usr` 或 `http://usr`。
  *
- * 为了 tree shake
  */
-const rootUsrPath = Lazy(() => wx.env.USER_DATA_PATH);
+const usrPath = Lazy(() => wx.env.USER_DATA_PATH);
 
 /**
  * 根路径，`wxfile://` 或 `http://`。
  *
- * 为了 tree shake
  */
 const rootPath = Lazy(() => {
-    const usrPath = rootUsrPath.force();
+    const path = usrPath.force();
     // 剥离 `usr`
-    return usrPath.slice(0, usrPath.indexOf('usr'));
+    return path.slice(0, path.indexOf(USR));
 });
 
 // #endregion
@@ -51,26 +54,63 @@ export function getFs(): WechatMinigame.FileSystemManager {
  * @returns 文件系统的根路径。
  */
 export function getRootUsrPath(): string {
-    return rootUsrPath.force();
+    return usrPath.force();
 }
 
 /**
- * 获取给定路径的绝对路径。
- * @param path - 相对USER_DATA_PATH的相对路径，也必须以`/`开头。
- * @returns 转换后的绝对路径。
+ * 验证并标准化路径，返回绝对路径。
+ *
+ * 支持两种输入格式：
+ * 1. 完整路径：以 `wxfile://` 或 `http://` 开头（如 `wxfile://usr/test`）
+ * 2. 相对路径：以 `/` 开头（如 `/test`），会自动拼接 `wx.env.USER_DATA_PATH`
+ *
+ * @param path - 待验证的路径。
+ * @returns 验证成功返回标准化后的绝对路径，失败返回错误信息。
+ *
+ * @example
+ * ```ts
+ * validateAbsolutePath('/test/../foo'); // Ok('wxfile://usr/foo')
+ * validateAbsolutePath('wxfile://usr/test/'); // Ok('wxfile://usr/test')
+ * validateAbsolutePath('wxfile:///usr/a/b'); // Ok('wxfile://usr/a/b')
+ * validateAbsolutePath('relative'); // Err(...)
+ * ```
  */
-export function getAbsolutePath(path: string): string {
-    assertString(path);
-
-    const usrPath = getRootUsrPath();
-
-    // usr 或 tmp
-    if (path.startsWith(rootPath.force())) {
-        return path;
+export function validateAbsolutePath(path: string): IOResult<string> {
+    if (typeof path !== 'string') {
+        return Err(new TypeError(`Path must be a string but received ${ typeof path }`));
     }
 
-    invariant(path[0] === ROOT_DIR, () => `Path must start with / but received ${ path }`);
-    return usrPath + path;
+    // 是否已经是完整路径
+    let isFullPath = false;
+    // 检查是否为完整路径（以 `wxfile://` 或 `http://` 开头）
+    if (path.startsWith(rootPath.force())) {
+        isFullPath = true;
+        // 先剥离协议前缀，避免 normalize 将 `://` 转换为 `:/`
+        path = path.slice(rootPath.force().length);
+    }
+
+    // 标准化路径（处理 `.`、`..` 等）并去除末尾的 `/`
+    const normalized = normalize(path);
+    path = normalized.length > 1 && normalized[normalized.length - 1] === ROOT_DIR
+        ? normalized.slice(0, -1)
+        : normalized;
+
+    // 完整路径：重新拼接协议前缀
+    if (isFullPath) {
+        // 确保路径不是以 `/` 开头，避免 `wxfile:///usr` 这样的多斜杠情况
+        if (path[0] === ROOT_DIR) {
+            path = path.slice(1);
+        }
+        return Ok(rootPath.force() + path);
+    }
+
+    // 相对路径：必须以 `/` 开头
+    if (path[0] !== ROOT_DIR) {
+        return Err(new Error(`Path must be absolute (start with '/'): '${ path }'`));
+    }
+
+    // 拼接用户数据根目录
+    return Ok(usrPath.force() + path);
 }
 
 /**
@@ -201,4 +241,12 @@ export function validateExistsOptions(options?: ExistsOptions): VoidIOResult {
     return isDirectory && isFile
         ? Err(new Error('isDirectory and isFile cannot both be true'))
         : RESULT_VOID;
+}
+
+export function createFailedFetchTask<T>(errResult: IOResult<unknown>): FetchTask<T> {
+    return {
+        abort(): void { /* noop */ },
+        get aborted(): boolean { return false; },
+        get result() { return Promise.resolve(errResult.asErr<T>()); },
+    };
 }

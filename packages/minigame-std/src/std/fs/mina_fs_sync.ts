@@ -8,34 +8,43 @@ import * as fflate from 'fflate/browser';
 import { type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
 import { Err, Ok, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
 import type { MinaWriteFileContent, ReadFileContent, ReadOptions, StatOptions } from './fs_define.ts';
-import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getAbsolutePath, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError, validateExistsOptions } from './mina_fs_shared.ts';
+import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError, validateAbsolutePath, validateExistsOptions } from './mina_fs_shared.ts';
 
 /**
  * `mkdir` 的同步版本。
  */
 export function mkdirSync(dirPath: string): VoidIOResult {
-    const absPath = getAbsolutePath(dirPath);
+    const dirPathRes = validateAbsolutePath(dirPath);
+    if (dirPathRes.isErr()) return dirPathRes.asErr();
+    dirPath = dirPathRes.unwrap();
 
-    return trySyncOp(() => getFs().mkdirSync(absPath, true), errToMkdirResult);
+    return trySyncOp(() => getFs().mkdirSync(dirPath, true), errToMkdirResult);
 }
 
 /**
  * `move` 的同步版本。
  */
 export function moveSync(srcPath: string, destPath: string): VoidIOResult {
-    const absSrcPath = getAbsolutePath(srcPath);
-    const absDestPath = getAbsolutePath(destPath);
+    const srcPathRes = validateAbsolutePath(srcPath);
+    if (srcPathRes.isErr()) return srcPathRes.asErr();
+    srcPath = srcPathRes.unwrap();
 
-    return trySyncOp(() => getFs().renameSync(absSrcPath, absDestPath));
+    const destPathRes = validateAbsolutePath(destPath);
+    if (destPathRes.isErr()) return destPathRes.asErr();
+    destPath = destPathRes.unwrap();
+
+    return trySyncOp(() => getFs().renameSync(srcPath, destPath));
 }
 
 /**
  * `readDir` 的同步版本。
  */
 export function readDirSync(dirPath: string): IOResult<string[]> {
-    const absPath = getAbsolutePath(dirPath);
+    const dirPathRes = validateAbsolutePath(dirPath);
+    if (dirPathRes.isErr()) return dirPathRes.asErr();
+    dirPath = dirPathRes.unwrap();
 
-    return trySyncOp(() => getFs().readdirSync(absPath));
+    return trySyncOp(() => getFs().readdirSync(dirPath));
 }
 
 /**
@@ -48,16 +57,23 @@ export function readFileSync(filePath: string, options?: ReadOptions & {
     encoding: 'binary';
 }): IOResult<ArrayBuffer>;
 export function readFileSync<T extends ReadFileContent>(filePath: string, options?: ReadOptions): IOResult<T> {
-    const absPath = getAbsolutePath(filePath);
+    const filePathRes = validateAbsolutePath(filePath);
+    if (filePathRes.isErr()) return filePathRes.asErr();
+    filePath = filePathRes.unwrap();
+
     const encoding = getReadFileEncoding(options);
 
-    return trySyncOp(() => getFs().readFileSync(absPath, encoding) as T);
+    return trySyncOp(() => getFs().readFileSync(filePath, encoding) as T);
 }
 
 /**
  * `remove` 的同步版本。
  */
 export function removeSync(path: string): VoidIOResult {
+    const pathRes = validateAbsolutePath(path);
+    if (pathRes.isErr()) return pathRes.asErr();
+    path = pathRes.unwrap();
+
     const statRes = statSync(path);
 
     if (statRes.isErr()) {
@@ -65,14 +81,12 @@ export function removeSync(path: string): VoidIOResult {
         return isNotFoundError(statRes.unwrapErr()) ? RESULT_VOID : statRes.asErr();
     }
 
-    const absPath = getAbsolutePath(path);
-
     return trySyncOp(() => {
         // 文件夹还是文件
         if (statRes.unwrap().isDirectory()) {
-            getFs().rmdirSync(absPath, true);
+            getFs().rmdirSync(path, true);
         } else {
-            getFs().unlinkSync(absPath);
+            getFs().unlinkSync(path);
         }
     }, errToRemoveResult);
 }
@@ -86,22 +100,26 @@ export function statSync(path: string, options: StatOptions & {
 }): IOResult<WechatMinigame.FileStats[]>;
 export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
 export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
-    const absPath = getAbsolutePath(path);
+    const pathRes = validateAbsolutePath(path);
+    if (pathRes.isErr()) return pathRes.asErr();
+    path = pathRes.unwrap();
 
-    return trySyncOp(() => getFs().statSync(absPath, options?.recursive ?? false));
+    return trySyncOp(() => getFs().statSync(path, options?.recursive ?? false));
 }
 
 /**
  * `writeFile` 的同步版本。
  */
 export function writeFileSync(filePath: string, contents: MinaWriteFileContent, options?: WriteOptions): VoidIOResult {
-    const absPath = getAbsolutePath(filePath);
+    const filePathRes = validateAbsolutePath(filePath);
+    if (filePathRes.isErr()) return filePathRes.asErr();
+    filePath = filePathRes.unwrap();
 
     // 默认创建
     const { append = false, create = true } = options ?? {};
 
     if (create) {
-        const res = mkdirSync(dirname(absPath));
+        const res = mkdirSync(dirname(filePath));
         if (res.isErr()) {
             return res;
         }
@@ -109,7 +127,7 @@ export function writeFileSync(filePath: string, contents: MinaWriteFileContent, 
 
     const { data, encoding } = getWriteFileContents(contents);
 
-    return trySyncOp(() => (append ? getFs().appendFileSync : getFs().writeFileSync)(absPath, data, encoding));
+    return trySyncOp(() => (append ? getFs().appendFileSync : getFs().writeFileSync)(filePath, data, encoding));
 }
 
 /**
@@ -125,18 +143,23 @@ export function appendFileSync(filePath: string, contents: MinaWriteFileContent)
  * `copy` 的同步版本。
  */
 export function copySync(srcPath: string, destPath: string): VoidIOResult {
-    const absSrcPath = getAbsolutePath(srcPath);
-    const absDestPath = getAbsolutePath(destPath);
+    const srcPathRes = validateAbsolutePath(srcPath);
+    if (srcPathRes.isErr()) return srcPathRes.asErr();
+    srcPath = srcPathRes.unwrap();
 
-    return statSync(absSrcPath, {
+    const destPathRes = validateAbsolutePath(destPath);
+    if (destPathRes.isErr()) return destPathRes.asErr();
+    destPath = destPathRes.unwrap();
+
+    return statSync(srcPath, {
         recursive: true,
     }).andThen(statsArray => {
         // 目录
         if (Array.isArray(statsArray)) {
             for (const { path, stats } of statsArray) {
                 // 不能用join
-                const srcEntryPath = absSrcPath + path;
-                const destEntryPath = absDestPath + path;
+                const srcEntryPath = srcPath + path;
+                const destEntryPath = destPath + path;
 
                 const res = (stats.isDirectory()
                     ? mkdirSync(destEntryPath)
@@ -150,7 +173,7 @@ export function copySync(srcPath: string, destPath: string): VoidIOResult {
             return RESULT_VOID;
         } else {
             // 文件
-            return copyFileSync(absSrcPath, absDestPath);
+            return copyFileSync(srcPath, destPath);
         }
     });
 }
@@ -221,11 +244,16 @@ export function readTextFileSync(filePath: string): IOResult<string> {
 /**
  * `unzip` 的同步版本。
  */
-export function unzipSync(zipFilePath: string, targetPath: string): VoidIOResult {
-    const absZipPath = getAbsolutePath(zipFilePath);
-    const absTargetPath = getAbsolutePath(targetPath);
+export function unzipSync(zipFilePath: string, destDir: string): VoidIOResult {
+    const zipFilePathRes = validateAbsolutePath(zipFilePath);
+    if (zipFilePathRes.isErr()) return zipFilePathRes.asErr();
+    zipFilePath = zipFilePathRes.unwrap();
 
-    return readFileSync(absZipPath).andThen(buffer => {
+    const destDirRes = validateAbsolutePath(destDir);
+    if (destDirRes.isErr()) return destDirRes.asErr();
+    destDir = destDirRes.unwrap();
+
+    return readFileSync(zipFilePath).andThen(buffer => {
         const data = new Uint8Array(buffer);
 
         try {
@@ -235,7 +263,7 @@ export function unzipSync(zipFilePath: string, targetPath: string): VoidIOResult
                 // 忽略目录
                 if (path.at(-1) !== SEPARATOR) {
                     // 不能用 json，否则 http://usr 会变成 http:/usr
-                    const res = writeFileSync(`${ absTargetPath }/${ path }`, unzipped[path] as Uint8Array<ArrayBuffer>);
+                    const res = writeFileSync(`${ destDir }/${ path }`, unzipped[path] as Uint8Array<ArrayBuffer>);
                     if (res.isErr()) {
                         return res.asErr();
                     }
@@ -253,17 +281,22 @@ export function unzipSync(zipFilePath: string, targetPath: string): VoidIOResult
  * `zip` 的同步版本。
  */
 export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOptions): VoidIOResult {
-    const absSourcePath = getAbsolutePath(sourcePath);
-    const absZipPath = getAbsolutePath(zipFilePath);
+    const sourcePathRes = validateAbsolutePath(sourcePath);
+    if (sourcePathRes.isErr()) return sourcePathRes.asErr();
+    sourcePath = sourcePathRes.unwrap();
 
-    return statSync(absSourcePath).andThen(stats => {
+    const zipFilePathRes = validateAbsolutePath(zipFilePath);
+    if (zipFilePathRes.isErr()) return zipFilePathRes.asErr();
+    zipFilePath = zipFilePathRes.unwrap();
+
+    return statSync(sourcePath).andThen(stats => {
         const zipped: fflate.AsyncZippable = {};
 
-        const sourceName = basename(absSourcePath);
+        const sourceName = basename(sourcePath);
 
         if (stats.isFile()) {
             // 文件
-            const res = readFileSync(absSourcePath);
+            const res = readFileSync(sourcePath);
             if (res.isErr()) {
                 return res.asErr();
             }
@@ -271,7 +304,7 @@ export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOp
             zipped[sourceName] = new Uint8Array(res.unwrap());
         } else {
             // 目录
-            const res = statSync(absSourcePath, {
+            const res = statSync(sourcePath, {
                 recursive: true,
             });
             if (res.isErr()) {
@@ -285,7 +318,7 @@ export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOp
                 if (stats.isFile()) {
                     const entryName = preserveRoot ? join(sourceName, path) : path;
                     // 不能用 join，否则 http://usr 会变成 http:/usr
-                    const res = readFileSync(absSourcePath + path);
+                    const res = readFileSync(sourcePath + path);
                     if (res.isErr()) {
                         return res.asErr();
                     }
@@ -296,8 +329,8 @@ export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOp
         }
 
         try {
-            const u8a = fflate.zipSync(zipped);
-            return writeFileSync(absZipPath, u8a as Uint8Array<ArrayBuffer>);
+            const u8a = fflate.zipSync(zipped) as Uint8Array<ArrayBuffer>;
+            return writeFileSync(zipFilePath, u8a);
         } catch (e) {
             return Err(e as fflate.FlateError);
         }
