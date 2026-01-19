@@ -1,6 +1,6 @@
 import { cryptos } from 'minigame-std';
 
-(async () => {
+export async function testRsa(): Promise<void> {
     const data = 'minigame-std-中文';
 
     const PUBLIC_KEY = `-----BEGIN PUBLIC KEY-----
@@ -16,4 +16,4 @@ import { cryptos } from 'minigame-std';
     const publicKey = await cryptos.rsa.importPublicKey(PUBLIC_KEY, 'SHA-1');
     const encryptedData = await publicKey.encrypt(data);
     console.log(new Uint8Array(encryptedData).join());
-})();
+}

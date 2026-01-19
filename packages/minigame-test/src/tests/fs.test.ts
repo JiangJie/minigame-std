@@ -171,7 +171,7 @@ function testSync() {
     fs.removeSync(fs.opfs.ROOT_DIR);
 }
 
-(async () => {
+export async function testFs(): Promise<void> {
     await testAsync();
     testSync();
-})();
+}

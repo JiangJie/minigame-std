@@ -1,7 +1,7 @@
 import { assert } from '@std/assert';
 import { storage } from 'minigame-std';
 
-(async () => {
+export async function testStorage(): Promise<void> {
     const key = 'name';
     const data = 'minigame-std';
 
@@ -27,4 +27,4 @@ import { storage } from 'minigame-std';
     console.time('storage-clear');
     await storage.clear();
     console.timeEnd('storage-clear');
-})();
+}

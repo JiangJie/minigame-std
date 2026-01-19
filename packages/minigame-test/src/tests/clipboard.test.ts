@@ -1,7 +1,7 @@
 import { assert } from '@std/assert';
 import { clipboard } from 'minigame-std';
 
-(async () => {
+export async function testClipboard(): Promise<void> {
     const data = 'minigame-std';
 
     console.time('write-clipboard');
@@ -13,4 +13,4 @@ import { clipboard } from 'minigame-std';
     const text = await clipboard.readText();
     assert(text.unwrap() === data);
     console.timeEnd('read-clipboard');
-})();
+}

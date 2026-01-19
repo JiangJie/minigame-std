@@ -1,7 +1,8 @@
 import { assert } from '@std/assert';
 import { fetchT } from 'minigame-std';
 
-(async () => {
+export async function testFetch(): Promise<void> {
+    // 测试1：可中止的请求
     const fetchTask = fetchT<{
         name: string;
     }>('https://jsr.io/@happy-js/minigame-std/meta.json', {
@@ -23,9 +24,8 @@ import { fetchT } from 'minigame-std';
     } else {
         assert(res.unwrap().name === 'minigame-std');
     }
-})();
 
-(async () => {
+    // 测试2：超时请求
     const task = fetchT<{
         name: string;
     }>('https://jsr.io/@happy-js/minigame-std/meta.json', {
@@ -33,11 +33,11 @@ import { fetchT } from 'minigame-std';
         timeout: 10,
     });
 
-    const res = await task.result;
+    const res2 = await task.result;
 
-    if (res.isErr()) {
-        assert((res.unwrapErr() as Error).name === 'TimeoutError');
+    if (res2.isErr()) {
+        assert((res2.unwrapErr() as Error).name === 'TimeoutError');
     } else {
-        assert(res.unwrap().name === 'minigame-std');
+        assert(res2.unwrap().name === 'minigame-std');
     }
-})();
+}

@@ -1,17 +1,17 @@
 import { addErrorListener, addResizeListener, addUnhandledrejectionListener } from 'minigame-std';
 
-// const mock: any = null;
+export function testEvent(): void {
+    addErrorListener((err) => {
+        console.error('addErrorListener message', err.message);
+    });
 
-addErrorListener((err) => {
-    console.error('addErrorListener message', err.message);
-    // console.error('addErrorListener stack', err.stack); // stack is empty
-});
+    addUnhandledrejectionListener((err) => {
+        console.error('addUnhandledrejectionListener reason', err.reason);
+    });
 
-addUnhandledrejectionListener((err) => {
-    console.error('addUnhandledrejectionListener reason', err.reason);
-    // console.log('addUnhandledrejectionListener promise', err.promise);
-});
+    addResizeListener(size => {
+        console.log('addResizeListener', size.windowWidth, size.windowHeight);
+    });
 
-addResizeListener(size => {
-    console.log('addResizeListener', size.windowWidth, size.windowHeight);
-});
+    console.log('事件监听器已注册');
+}

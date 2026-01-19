@@ -1,7 +1,7 @@
 import { assert } from '@std/assert';
 import { cryptos } from 'minigame-std';
 
-(async () => {
+export async function testRandom(): Promise<void> {
     (await cryptos.getRandomValues(10)).inspect(bytes => {
         for (const n of bytes) {
             assert(n >= 0 && n < 256);
@@ -12,4 +12,4 @@ import { cryptos } from 'minigame-std';
     (await cryptos.randomUUID()).inspect(uuid => {
         assert(uuidRegex.test(uuid));
     });
-})();
+}
