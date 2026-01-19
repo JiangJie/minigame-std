@@ -4,6 +4,7 @@
  * 源自 @std/encoding/base64 和 https://github.com/cross-org/base64
  */
 
+import { Lazy } from 'happy-rusty';
 import { bufferSource2U8a } from '../utils/mod.ts';
 
 /**
@@ -17,9 +18,9 @@ const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 const base64abc = chars.split('');
 
 /**
- * 标准 base64 字符查找表。
+ * 标准 base64 字符查找表（延迟初始化）。
  */
-const lookup = ((): Uint8Array => {
+const lookup = Lazy(() => {
     const lookupTemp = new Uint8Array(256); // base64abc.length * 4
 
     for (let i = 0; i < base64abc.length; i++) {
@@ -27,7 +28,7 @@ const lookup = ((): Uint8Array => {
     }
 
     return lookupTemp;
-})();
+});
 
 /**
  * 将 BufferSource 转换为 Base64 编码的字符串。
@@ -110,11 +111,13 @@ export function base64ToBuffer(data: string): Uint8Array<ArrayBuffer> {
 
     let pos = 0;
 
+    const table = lookup.force();
+
     for (let i = 0; i < len; i += 4) {
-        const encoded1 = lookup[data.charCodeAt(i)];
-        const encoded2 = lookup[data.charCodeAt(i + 1)];
-        const encoded3 = lookup[data.charCodeAt(i + 2)];
-        const encoded4 = lookup[data.charCodeAt(i + 3)];
+        const encoded1 = table[data.charCodeAt(i)];
+        const encoded2 = table[data.charCodeAt(i + 1)];
+        const encoded3 = table[data.charCodeAt(i + 2)];
+        const encoded4 = table[data.charCodeAt(i + 3)];
 
         u8a[pos++] = (encoded1 << 2) | (encoded2 >> 4);
         u8a[pos++] = ((encoded2 & 15) << 4) | (encoded3 >> 2);
