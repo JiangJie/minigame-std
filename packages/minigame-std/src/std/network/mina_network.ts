@@ -1,6 +1,6 @@
 /**
  * @internal
- * Mini-game platform implementation for network status.
+ * 小游戏平台的网络状态实现。
  */
 
 import { promisifyWithResult } from '../utils/promisify.ts';

@@ -1,6 +1,6 @@
 /**
  * @internal
- * Web platform implementation for random number generation.
+ * Web 平台的随机数生成实现。
  */
 
 import type { UUID } from './random_defines.ts';

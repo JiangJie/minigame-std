@@ -1,6 +1,6 @@
 /**
  * @internal
- * Web platform implementation for Base64 encoding/decoding.
+ * Web 平台的 Base64 编解码实现。
  */
 
 import { byteStringFromBuffer, byteStringToBuffer, textDecode, textEncode } from '../codec/mod.ts';

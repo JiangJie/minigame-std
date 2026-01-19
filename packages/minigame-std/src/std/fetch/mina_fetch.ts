@@ -1,6 +1,6 @@
 /**
  * @internal
- * Mini-game platform implementation for HTTP fetch.
+ * 小游戏平台的 HTTP 请求实现。
  */
 
 import type { FetchResult } from '@happy-ts/fetch-t';
@@ -100,7 +100,7 @@ export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> {
     } else if (responseType === 'json') {
         options.dataType = responseType;
     } else {
-        // default responseType is text
+        // 默认 responseType 是 text
         options.responseType = responseType;
         // responseType设置为text还不够，否则返回类型还是json
         options.dataType = '其他';

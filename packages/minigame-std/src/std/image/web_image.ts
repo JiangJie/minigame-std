@@ -1,6 +1,6 @@
 /**
  * @internal
- * Web platform implementation for image creation.
+ * Web 平台的图片创建实现。
  */
 
 import { readBlobFile } from 'happy-opfs';

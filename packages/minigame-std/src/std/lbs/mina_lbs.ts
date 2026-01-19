@@ -1,6 +1,6 @@
 /**
  * @internal
- * Mini-game platform implementation for location-based services.
+ * 小游戏平台的地理位置服务实现。
  */
 
 import { type AsyncResult } from 'happy-rusty';

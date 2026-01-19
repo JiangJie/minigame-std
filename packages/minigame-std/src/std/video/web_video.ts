@@ -1,6 +1,6 @@
 /**
  * @internal
- * Web platform implementation for video playback.
+ * Web 平台的视频播放实现。
  */
 
 /**

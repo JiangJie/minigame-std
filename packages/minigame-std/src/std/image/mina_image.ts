@@ -1,6 +1,6 @@
 /**
  * @internal
- * Mini-game platform implementation for image creation.
+ * 小游戏平台的图片创建实现。
  */
 
 /**

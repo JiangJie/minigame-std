@@ -1,6 +1,6 @@
 /**
  * @internal
- * Mini-game platform implementation for Base64 encoding/decoding.
+ * 小游戏平台的 Base64 编解码实现。
  */
 
 import { textDecode, textEncode } from '../codec/mod.ts';

@@ -1,6 +1,6 @@
 /**
  * @internal
- * Web platform implementation for location-based services.
+ * Web 平台的地理位置服务实现。
  */
 
 import { Err, Ok, type AsyncResult, type Result } from 'happy-rusty';

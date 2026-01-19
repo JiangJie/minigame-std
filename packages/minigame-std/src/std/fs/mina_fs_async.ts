@@ -1,6 +1,6 @@
 /**
  * @internal
- * Mini-game platform implementation for async file system operations.
+ * 小游戏平台的异步文件系统操作实现。
  */
 
 import type { FetchResult } from '@happy-ts/fetch-t';
@@ -250,7 +250,7 @@ export async function copy(srcPath: string, destPath: string): AsyncVoidIOResult
     return (await stat(absSrcPath, {
         recursive: true,
     })).andThenAsync(async statsArray => {
-        // directory
+        // 目录
         if (Array.isArray(statsArray)) {
             for (const { path, stats } of statsArray) {
                 // 不能用join
@@ -268,7 +268,7 @@ export async function copy(srcPath: string, destPath: string): AsyncVoidIOResult
 
             return RESULT_VOID;
         } else {
-            // file
+            // 文件
             return (await mkdir(dirname(absDestPath))).andThenAsync(() => {
                 return copyFile(absSrcPath, absDestPath);
             });
@@ -305,7 +305,7 @@ export async function emptyDir(dirPath: string): AsyncVoidIOResult {
     const tasks = res.unwrap().map(name => remove(join(dirPath, name)));
 
     const allRes = await Promise.all(tasks);
-    // anyone failed?
+    // 是否有失败？
     const fail = allRes.find(x => x.isErr());
 
     return fail ?? RESULT_VOID;
@@ -407,7 +407,7 @@ export function downloadFile(fileUrl: string, filePath?: string | DownloadFileOp
                     return;
                 }
 
-                // remove the not expected file but no need to actively delete the temporary file
+                // 删除不符合预期的文件，但无需主动删除临时文件
                 if (res.filePath) {
                     await remove(res.filePath);
                 }
@@ -430,9 +430,9 @@ export function downloadFile(fileUrl: string, filePath?: string | DownloadFileOp
         }
     };
 
-    // maybe download to a temp file
+    // 可能下载到临时文件
     if (typeof absFilePath === 'string' && absFilePath) {
-        // create the directory if not exists
+        // 如果目录不存在则创建
         mkdir(dirname(absFilePath)).then(res => {
             if (aborted) {
                 future.resolve(Err(createAbortError()));
@@ -574,7 +574,7 @@ export async function zip<T>(sourcePath: string, zipFilePath?: string | ZipOptio
         const sourceName = basename(absSourcePath);
 
         if (stats.isFile()) {
-            // file
+            // 文件
             const res = await readFile(absSourcePath);
             if (res.isErr()) {
                 return res.asErr();
@@ -582,7 +582,7 @@ export async function zip<T>(sourcePath: string, zipFilePath?: string | ZipOptio
 
             zipped[sourceName] = new Uint8Array(res.unwrap());
         } else {
-            // directory
+            // 目录
             const res = await stat(absSourcePath, {
                 recursive: true,
             });
@@ -590,7 +590,7 @@ export async function zip<T>(sourcePath: string, zipFilePath?: string | ZipOptio
                 return res.asErr();
             }
 
-            // default to preserve root
+            // 默认保留根目录
             const preserveRoot = options?.preserveRoot ?? true;
 
             for (const { path, stats } of res.unwrap()) {

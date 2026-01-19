@@ -1,6 +1,6 @@
 /**
  * @internal
- * Mini-game platform implementation for event listeners.
+ * 小游戏平台的事件监听实现。
  */
 
 /**

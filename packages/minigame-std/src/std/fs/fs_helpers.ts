@@ -49,8 +49,8 @@ export async function convertFileSystemHandleToStats(handle: FileSystemHandle): 
 }
 
 /**
- * Creates an `AbortError` Error.
- * @returns An `AbortError` Error.
+ * 创建一个 `AbortError` 错误。
+ * @returns 一个 `AbortError` 错误对象。
  */
 export function createAbortError(): Error {
     const error = new Error();

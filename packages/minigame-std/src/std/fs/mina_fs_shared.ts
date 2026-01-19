@@ -10,7 +10,7 @@ import { bufferSource2Ab, miniGameFailureToError } from '../utils/mod.ts';
 import type { FileEncoding, ReadOptions, WriteFileContent } from './fs_define.ts';
 
 /**
- * Mini-game write content type, excludes ReadableStream as mini-game doesn't support it.
+ * 小游戏写入内容类型，排除 ReadableStream 因为小游戏不支持。
  */
 export type MinaWriteFileContent = Exclude<WriteFileContent, ReadableStream<Uint8Array<ArrayBuffer>>>;
 
@@ -30,20 +30,19 @@ export function getFs(): WechatMinigame.FileSystemManager {
 }
 
 /**
- * 用户可写的根路径， `wxfile://usr` 或 `http://usr`。
+ * 用户数据根目录，`wxfile://usr` 或 `http://usr`。
  *
- * for tree shake
- */
-const rootUsrPath = Lazy(() => wx.env.USER_DATA_PATH);
+ * 为了 tree shake
+ */const rootUsrPath = Lazy(() => wx.env.USER_DATA_PATH);
 
 /**
  * 根路径，`wxfile://` 或 `http://`。
  *
- * for tree shake
+ * 为了 tree shake
  */
 const rootPath = Lazy(() => {
     const usrPath = rootUsrPath.force();
-    // trim `usr`
+    // 剥离 `usr`
     return usrPath.slice(0, usrPath.indexOf('usr'));
 });
 
@@ -65,7 +64,7 @@ export function getAbsolutePath(path: string): string {
 
     const usrPath = getRootUsrPath();
 
-    // usr or tmp
+    // usr 或 tmp
     if (path.startsWith(rootPath.force())) {
         return path;
     }
@@ -113,9 +112,9 @@ export function fileErrorToResult<T>(err: WechatMinigame.FileError): IOResult<T>
 }
 
 /**
- * Whether the error is a `NotFoundError`.
- * @param err - The error to check.
- * @returns `true` if the error is a `NotFoundError`, otherwise `false`.
+ * 判断错误是否为 `NotFoundError`。
+ * @param err - 要检查的错误。
+ * @returns 如果是 `NotFoundError` 返回 `true`，否则返回 `false`。
  */
 export function isNotFoundError(err: Error): boolean {
     return err.name === NOT_FOUND_ERROR;

@@ -1,6 +1,6 @@
 /**
  * @internal
- * Web platform implementation for network status.
+ * Web 平台的网络状态实现。
  */
 
 import type { NetworkType } from './network_define.ts';
@@ -16,9 +16,9 @@ interface NetworkInformation extends EventTarget {
 /**
  * [Global augmentation](https://jsr.io/docs/about-slow-types#global-augmentation)
  *
- * Waiting for typescript support.
+ * 等待 TypeScript 支持。
  *
- * extend Navigator.
+ * 扩展 Navigator。
  */
 interface Navigator {
     connection?: NetworkInformation;

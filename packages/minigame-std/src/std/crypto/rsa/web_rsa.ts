@@ -1,6 +1,6 @@
 /**
  * @internal
- * Web platform implementation for RSA encryption.
+ * Web 平台的 RSA 加密实现。
  */
 
 import { base64FromBuffer } from '../../base64/mod.ts';
@@ -10,10 +10,10 @@ import { bufferSource2U8a } from '../../utils/mod.ts';
 import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
 
 /**
- * Encrypt data with a public key.
- * @param publicKey - The public key.
- * @param data - The data to encrypt.
- * @returns
+ * 使用公钥加密数据。
+ * @param publicKey - 公钥。
+ * @param data - 要加密的数据。
+ * @returns 加密后的数据。
  */
 function encrypt(publicKey: CryptoKey, data: DataSource): Promise<ArrayBuffer> {
     const encodedData = typeof data === 'string'
@@ -30,10 +30,10 @@ function encrypt(publicKey: CryptoKey, data: DataSource): Promise<ArrayBuffer> {
 }
 
 /**
- * Import a public key from a PEM encoded string for encryption.
- * @param pem - PEM encoded string.
- * @param hash - Hash algorithm.
- * @returns
+ * 从 PEM 编码的字符串导入用于加密的公钥。
+ * @param pem - PEM 编码的字符串。
+ * @param hash - 哈希算法。
+ * @returns RSA 公钥对象。
  */
 export async function importPublicKey(pem: string, hash: SHA): Promise<RSAPublicKey> {
     const rMessage = /\s*-----BEGIN ([A-Z0-9- ]+)-----\r?\n?([\x21-\x7e\s]+?(?:\r?\n\r?\n))?([:A-Za-z0-9+/=\s]+?)-----END \1-----/g;

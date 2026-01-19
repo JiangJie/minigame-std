@@ -1,23 +1,23 @@
 /**
- * @fileoverview Encode/Decode between Uint8Array and base64 encoded string.
+ * @fileoverview 在 Uint8Array 和 base64 编码字符串之间进行编解码。
  *
- * Forked from @std/encoding/base64 and https://github.com/cross-org/base64
+ * 源自 @std/encoding/base64 和 https://github.com/cross-org/base64
  */
 
 import { bufferSource2U8a } from '../utils/mod.ts';
 
 /**
- * A string containing standard base64 characters
+ * 包含标准 base64 字符的字符串。
  */
 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 /**
- * Standard base64 characters
+ * 标准 base64 字符数组。
  */
 const base64abc = chars.split('');
 
 /**
- * Lookup table for standard base64 characters
+ * 标准 base64 字符查找表。
  */
 const lookup = ((): Uint8Array => {
     const lookupTemp = new Uint8Array(256); // base64abc.length * 4
@@ -63,14 +63,14 @@ export function base64FromBuffer(data: BufferSource): string {
     }
 
     if (i === len + 1) {
-        // 1 octet yet to write
+        // 还有 1 个字节待写入
         result += base64abc[(u8a[i - 2]) >> 2];
         result += base64abc[((u8a[i - 2]) & 0x03) << 4];
         result += '==';
     }
 
     if (i === len) {
-        // 2 octets yet to write
+        // 还有 2 个字节待写入
         result += base64abc[(u8a[i - 2]) >> 2];
         result += base64abc[
             (((u8a[i - 2]) & 0x03) << 4)

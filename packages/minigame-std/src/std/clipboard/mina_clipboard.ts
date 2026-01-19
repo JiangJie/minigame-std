@@ -1,6 +1,6 @@
 /**
  * @internal
- * Mini-game platform implementation for clipboard operations.
+ * 小游戏平台的剪贴板操作实现。
  */
 
 import { RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';

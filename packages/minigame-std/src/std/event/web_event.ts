@@ -1,6 +1,6 @@
 /**
  * @internal
- * Web platform implementation for event listeners.
+ * Web 平台的事件监听实现。
  */
 
 /**

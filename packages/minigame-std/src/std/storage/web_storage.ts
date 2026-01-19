@@ -1,6 +1,6 @@
 /**
  * @internal
- * Web platform implementation for storage operations.
+ * Web 平台的存储操作实现。
  */
 
 import { Err, Ok, type IOResult, type VoidIOResult } from 'happy-rusty';

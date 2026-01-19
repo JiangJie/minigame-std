@@ -1,6 +1,6 @@
 /**
  * @internal
- * Web platform implementation for clipboard operations.
+ * Web 平台的剪贴板操作实现。
  */
 
 import type { AsyncIOResult, AsyncVoidIOResult } from 'happy-rusty';

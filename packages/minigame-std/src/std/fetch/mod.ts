@@ -110,7 +110,7 @@ export function fetchT(url: string, init?: UnionFetchInit): FetchTask<string | R
  */
 export function fetchT<T>(url: string, init?: UnionFetchInit): FetchTask<T> {
     const defaultInit = init ?? {};
-    // default is text type
+    // 默认是 text 类型
     defaultInit.responseType ??= 'text';
 
     return (isMinaEnv() ? minaFetch(url, defaultInit) : webFetch(url, {

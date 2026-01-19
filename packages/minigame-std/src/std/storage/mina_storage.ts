@@ -1,6 +1,6 @@
 /**
  * @internal
- * Mini-game platform implementation for storage operations.
+ * 小游戏平台的存储操作实现。
  */
 
 import { RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';

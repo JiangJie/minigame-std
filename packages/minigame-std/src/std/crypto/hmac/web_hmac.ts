@@ -1,6 +1,6 @@
 /**
  * @internal
- * Web platform implementation for HMAC.
+ * Web 平台的 HMAC 实现。
  */
 
 import { hexFromBuffer, textEncode } from '../../codec/mod.ts';

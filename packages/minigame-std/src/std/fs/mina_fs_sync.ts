@@ -1,6 +1,6 @@
 /**
  * @internal
- * Mini-game platform implementation for sync file system operations.
+ * 小游戏平台的同步文件系统操作实现。
  */
 
 import { basename, dirname, join, SEPARATOR } from '@std/path/posix';
@@ -153,7 +153,7 @@ export function copySync(srcPath: string, destPath: string): VoidIOResult {
     return statSync(absSrcPath, {
         recursive: true,
     }).andThen(statsArray => {
-        // directory
+        // 目录
         if (Array.isArray(statsArray)) {
             for (const { path, stats } of statsArray) {
                 // 不能用join
@@ -171,7 +171,7 @@ export function copySync(srcPath: string, destPath: string): VoidIOResult {
 
             return RESULT_VOID;
         } else {
-            // file
+            // 文件
             return copyFileSync(absSrcPath, absDestPath);
         }
     });
@@ -254,7 +254,7 @@ export function unzipSync(zipFilePath: string, targetPath: string): VoidIOResult
             const unzipped = fflate.unzipSync(data);
 
             for (const path in unzipped) {
-                // ignore directory
+                // 忽略目录
                 if (path.at(-1) !== SEPARATOR) {
                     // 不能用 json，否则 http://usr 会变成 http:/usr
                     const res = writeFileSync(`${ absTargetPath }/${ path }`, unzipped[path] as Uint8Array<ArrayBuffer>);
@@ -284,7 +284,7 @@ export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOp
         const sourceName = basename(absSourcePath);
 
         if (stats.isFile()) {
-            // file
+            // 文件
             const res = readFileSync(absSourcePath);
             if (res.isErr()) {
                 return res.asErr();
@@ -292,7 +292,7 @@ export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOp
 
             zipped[sourceName] = new Uint8Array(res.unwrap());
         } else {
-            // directory
+            // 目录
             const res = statSync(absSourcePath, {
                 recursive: true,
             });
@@ -300,7 +300,7 @@ export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOp
                 return res.asErr();
             }
 
-            // default to preserve root
+            // 默认保留根目录
             const preserveRoot = options?.preserveRoot ?? true;
 
             for (const { path, stats } of res.unwrap()) {

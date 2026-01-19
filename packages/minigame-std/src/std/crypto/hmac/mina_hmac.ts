@@ -1,8 +1,7 @@
 /**
  * @internal
- * Hash-based Message Authentication Code implementation. Requires a message
- * digest object that can be obtained, for example, from forge.md.sha1 or
- * forge.md.md5.
+ * 基于哈希的消息认证码实现。需要一个消息摘要对象，
+ * 例如可以从 forge.md.sha1 或 forge.md.md5 获取。
  *
  * @author Dave Longley
  *
@@ -13,9 +12,9 @@ import { ByteStringBuffer, sha1, sha256, sha384, sha512, type HashAlgorithmCreat
 import type { SHA } from '../crypto_defines.ts';
 
 /**
- * Creates an HMAC object that uses the given message digest object.
+ * 创建一个使用指定消息摘要对象的 HMAC 对象。
  *
- * @return an HMAC object.
+ * @returns HMAC 对象。
  */
 export function createHMAC(sha: SHA, key: string) {
     let shaAlgorithmCreator: HashAlgorithmCreator;
@@ -46,7 +45,7 @@ export function createHMAC(sha: SHA, key: string) {
 
     let keyBuffer = new ByteStringBuffer(key);
 
-    // if key is longer than blocksize, hash it
+    // 如果密钥长度超过 blocksize，则对其进行哈希
     let keylen = keyBuffer.length();
     if (keylen > shaAlgorithm.blockLength) {
         shaAlgorithm.start();
@@ -54,7 +53,7 @@ export function createHMAC(sha: SHA, key: string) {
         keyBuffer = shaAlgorithm.digest();
     }
 
-    // mix key into inner and outer padding
+    // 将密钥混合到内部和外部填充中
     // ipadding = [0x36 * blocksize] ^ key
     // opadding = [0x5C * blocksize] ^ key
     const ipadding = new ByteStringBuffer();
@@ -67,7 +66,7 @@ export function createHMAC(sha: SHA, key: string) {
         opadding.putByte(0x5c ^ tmp);
     }
 
-    // if key is shorter than blocksize, add additional padding
+    // 如果密钥短于 blocksize，添加额外的填充
     if (keylen < shaAlgorithm.blockLength) {
         const tmp = shaAlgorithm.blockLength - keylen;
         for (let i = 0; i < tmp; ++i) {
@@ -76,32 +75,32 @@ export function createHMAC(sha: SHA, key: string) {
         }
     }
 
-    // digest is done like so: hash(opadding | hash(ipadding | message))
+    // 摘要计算方式如下: hash(opadding | hash(ipadding | message))
 
-    // prepare to do inner hash
+    // 准备进行内部哈希
     // hash(ipadding | message)
     shaAlgorithm.start();
     shaAlgorithm.update(ipadding.bytes());
 
-    // hmac context
+    // HMAC 上下文
     const ctx = {
         /**
-         * Updates the HMAC with the given message bytes.
+         * 使用给定的消息字节更新 HMAC。
          *
-         * @param bytes the bytes to update with.
+         * @param bytes - 要更新的字节。
          */
         update(bytes: string) {
             shaAlgorithm.update(bytes);
         },
 
         /**
-         * Produces the Message Authentication Code (MAC).
+         * 生成消息认证码 (MAC)。
          *
-         * @return a byte buffer containing the digest value.
+         * @returns 包含摘要值的字节缓冲区。
          */
         digest() {
-            // digest is done like so: hash(opadding | hash(ipadding | message))
-            // here we do the outer hashing
+            // 摘要计算方式如下: hash(opadding | hash(ipadding | message))
+            // 这里我们进行外部哈希
             const inner = shaAlgorithm.digest().bytes();
             shaAlgorithm.start();
             shaAlgorithm.update(opadding.bytes());

@@ -1,6 +1,6 @@
 /**
  * @internal
- * Web platform implementation for SHA hashing.
+ * Web 平台的 SHA 哈希实现。
  */
 
 import { hexFromBuffer, textEncode } from '../../codec/mod.ts';

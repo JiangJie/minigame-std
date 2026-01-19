@@ -1,5 +1,5 @@
 /**
- * Web platform implementation for audio playback.
+ * Web/小游戏 平台的音频播放实现。
  */
 
 import { Err, Ok, Once, RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
@@ -9,7 +9,7 @@ import { bufferSource2Ab } from '../utils/mod.ts';
 import type { PlayOptions } from './audio_defines.ts';
 
 /**
- * Cache AudioContext.
+ * 缓存的 AudioContext。
  */
 const audioContext = Once<AudioContext>();
 

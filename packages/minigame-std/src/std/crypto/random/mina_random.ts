@@ -1,6 +1,6 @@
 /**
  * @internal
- * Mini-game platform implementation for random number generation.
+ * 小游戏平台的随机数生成实现。
  */
 
 import { type AsyncIOResult } from 'happy-rusty';

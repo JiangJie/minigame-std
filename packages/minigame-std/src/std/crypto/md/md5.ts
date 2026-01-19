@@ -78,7 +78,7 @@ export class Md5 {
         const xe = blk(56);
         const xf = blk(60);
 
-        // round 1
+        // 第 1 轮
         a = b + rol32((((c ^ d) & b) ^ d) + a + x0 + 0xd76aa478, 7);
         d = a + rol32((((b ^ c) & a) ^ c) + d + x1 + 0xe8c7b756, 12);
         c = d + rol32((((a ^ b) & d) ^ b) + c + x2 + 0x242070db, 17);
@@ -96,7 +96,7 @@ export class Md5 {
         c = d + rol32((((a ^ b) & d) ^ b) + c + xe + 0xa679438e, 17);
         b = c + rol32((((d ^ a) & c) ^ a) + b + xf + 0x49b40821, 22);
 
-        // round 2
+        // 第 2 轮
         a = b + rol32((((b ^ c) & d) ^ c) + a + x1 + 0xf61e2562, 5);
         d = a + rol32((((a ^ b) & c) ^ b) + d + x6 + 0xc040b340, 9);
         c = d + rol32((((d ^ a) & b) ^ a) + c + xb + 0x265e5a51, 14);
@@ -114,7 +114,7 @@ export class Md5 {
         c = d + rol32((((d ^ a) & b) ^ a) + c + x7 + 0x676f02d9, 14);
         b = c + rol32((((c ^ d) & a) ^ d) + b + xc + 0x8d2a4c8a, 20);
 
-        // round 3
+        // 第 3 轮
         a = b + rol32((b ^ c ^ d) + a + x5 + 0xfffa3942, 4);
         d = a + rol32((a ^ b ^ c) + d + x8 + 0x8771f681, 11);
         c = d + rol32((d ^ a ^ b) + c + xb + 0x6d9d6122, 16);
@@ -132,7 +132,7 @@ export class Md5 {
         c = d + rol32((d ^ a ^ b) + c + xf + 0x1fa27cf8, 16);
         b = c + rol32((c ^ d ^ a) + b + x2 + 0xc4ac5665, 23);
 
-        // round 4
+        // 第 4 轮
         a = b + rol32((c ^ (b | ~d)) + a + x0 + 0xf4292244, 6);
         d = a + rol32((b ^ (a | ~c)) + d + x7 + 0x432aff97, 10);
         c = d + rol32((a ^ (d | ~b)) + c + xe + 0xab9423a7, 15);
@@ -157,8 +157,8 @@ export class Md5 {
     }
 
     /**
-     * Update internal state.
-     * @param data data to update, data cannot exceed 2^32 bytes.
+     * 更新内部状态。
+     * @param data - 要更新的数据，数据大小不能超过 2^32 字节。
      */
     update(data: DataSource): this {
         const msg = typeof data === 'string'
@@ -172,18 +172,18 @@ export class Md5 {
             this.block.set(msg, pos);
             pos += msg.length;
         } else {
-            // hash first block
+            // 哈希第一个块
             this.block.set(msg.slice(0, free), pos);
             this.hash(this.block);
 
-            // hash as many blocks as possible
+            // 哈希尽可能多的块
             let i = free;
             while (i + BLOCK_SIZE <= msg.length) {
                 this.hash(msg.slice(i, i + BLOCK_SIZE));
                 i += BLOCK_SIZE;
             }
 
-            // store leftover
+            // 存储剩余数据
             this.block.fill(0).set(msg.slice(i), 0);
             pos = msg.length - i;
         }
@@ -195,7 +195,7 @@ export class Md5 {
     }
 
     /**
-     * Returns final hash.
+     * 返回最终的哈希值。
      */
     digest(): ArrayBuffer {
         let padLen = BLOCK_SIZE - this.pos;
@@ -229,7 +229,7 @@ export class Md5 {
     }
 
     /**
-     * Returns hash as a hex string.
+     * 以十六进制字符串形式返回哈希值。
      */
     toString(): string {
         return hexFromBuffer(this.digest());

@@ -1,25 +1,25 @@
 import type { DataSource } from '../defines.ts';
 
 /**
- * The RSA public key.
+ * RSA 公钥接口。
  * @since 1.6.0
  */
 export interface RSAPublicKey {
     /**
-     * Use the RSA-OAEP algorithm to encrypt the data.
-     * @param data - The data to encrypt.
-     * @returns Encrypted data.
+     * 使用 RSA-OAEP 算法加密数据。
+     * @param data - 要加密的数据。
+     * @returns 加密后的数据。
      */
     encrypt(data: DataSource): Promise<ArrayBuffer>;
 
     /**
-     * `encrypt` then convert to base64 string.
+     * 加密后转换为 base64 字符串。
      */
     encryptToString(data: DataSource): Promise<string>;
 }
 
 /**
- * Supported SHA hash algorithms for RSA-OAEP encryption.
+ * RSA-OAEP 加密支持的 SHA 哈希算法。
  *
  * @since 1.6.0
  * @example

@@ -1,6 +1,6 @@
 /**
  * @internal
- * Web platform implementation for WebSocket.
+ * Web 平台的 WebSocket 实现。
  */
 
 import { RESULT_VOID, type AsyncVoidIOResult } from 'happy-rusty';

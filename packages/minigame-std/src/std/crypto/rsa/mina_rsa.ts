@@ -1,6 +1,6 @@
 /**
  * @internal
- * Mini-game platform implementation for RSA encryption.
+ * 小游戏平台的 RSA 加密实现。
  */
 
 import { importPublicKey as importKey, sha1, sha256, sha384, sha512 } from 'rsa-oaep-encryption';
@@ -10,7 +10,7 @@ import type { DataSource } from '../../defines.ts';
 import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
 
 /**
- * Get SHA hash factory by algorithm name.
+ * 根据算法名称获取 SHA 哈希工厂。
  */
 function getShaFactory(hash: SHA): typeof sha1 {
     switch (hash) {
@@ -30,10 +30,10 @@ function getShaFactory(hash: SHA): typeof sha1 {
 }
 
 /**
- * Import a public key from a PEM encoded string for encryption.
- * @param pem - PEM encoded string.
- * @param hash - Hash algorithm.
- * @returns
+ * 从 PEM 编码的字符串导入用于加密的公钥。
+ * @param pem - PEM 编码的字符串。
+ * @param hash - 哈希算法。
+ * @returns RSA 公钥对象。
  */
 export function importPublicKey(pem: string, hash: SHA): RSAPublicKey {
     const publicKey = importKey(pem);

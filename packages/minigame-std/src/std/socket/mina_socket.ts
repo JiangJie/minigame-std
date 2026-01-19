@@ -1,6 +1,6 @@
 /**
  * @internal
- * Mini-game platform implementation for WebSocket.
+ * 小游戏平台的 WebSocket 实现。
  */
 
 import { RESULT_VOID, type AsyncVoidIOResult } from 'happy-rusty';
