@@ -4,7 +4,6 @@
  */
 
 import { RESULT_VOID, type AsyncVoidIOResult } from 'happy-rusty';
-import { assertSafeSocketUrl } from '../assert/assertions.ts';
 import type { DataSource } from '../defines.ts';
 import type { ISocket, SocketListenerMap } from './socket_define.ts';
 
@@ -15,8 +14,6 @@ import type { ISocket, SocketListenerMap } from './socket_define.ts';
  * @returns 返回一个实现了 ISocket 接口的 WebSocket 对象。
  */
 export function connectSocket(url: string, protocols?: string | string[]): ISocket {
-    assertSafeSocketUrl(url);
-
     const socket = new WebSocket(url, protocols);
     // 考虑到小游戏只支持string和arraybuffer，二进制强制使用arraybuffer通信
     socket.binaryType = 'arraybuffer';

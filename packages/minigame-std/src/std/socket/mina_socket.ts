@@ -4,9 +4,8 @@
  */
 
 import { RESULT_VOID, type AsyncVoidIOResult } from 'happy-rusty';
-import { assertSafeSocketUrl } from '../assert/assertions.ts';
 import type { DataSource } from '../defines.ts';
-import { bufferSource2Ab, miniGameFailureToError, asyncResultify } from '../utils/mod.ts';
+import { asyncResultify, bufferSource2Ab, miniGameFailureToError } from '../utils/mod.ts';
 import { SocketReadyState, type ISocket, type SocketListenerMap, type SocketOptions } from './socket_define.ts';
 
 /**
@@ -16,8 +15,6 @@ import { SocketReadyState, type ISocket, type SocketListenerMap, type SocketOpti
  * @returns 返回一个实现了 ISocket 接口的 WebSocket 对象。
  */
 export function connectSocket(url: string, options?: SocketOptions): ISocket {
-    assertSafeSocketUrl(url);
-
     const socket = wx.connectSocket({
         ...options,
         url,

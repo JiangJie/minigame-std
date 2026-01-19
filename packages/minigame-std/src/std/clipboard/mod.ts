@@ -1,5 +1,6 @@
 import type { AsyncIOResult, AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
+import { validateString } from '../internal/mod.ts';
 import { readText as minaReadText, writeText as minaWriteText } from './mina_clipboard.ts';
 import { readText as webReadText, writeText as webWriteText } from './web_clipboard.ts';
 
@@ -19,6 +20,9 @@ import { readText as webReadText, writeText as webWriteText } from './web_clipbo
  * ```
  */
 export function writeText(data: string): AsyncVoidIOResult {
+    const dataRes = validateString(data, 'data');
+    if (dataRes.isErr()) return Promise.resolve(dataRes);
+
     return (isMinaEnv() ? minaWriteText : webWriteText)(data);
 }
 

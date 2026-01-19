@@ -1,4 +1,6 @@
+import { Ok, type IOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
+import { validateSafeSocketUrl } from '../internal/validations.ts';
 import { connectSocket as minaConnectSocket } from './mina_socket.ts';
 import type { ISocket, SocketOptions } from './socket_define.ts';
 import { connectSocket as webConnectSocket } from './web_socket.ts';
@@ -36,8 +38,11 @@ export * from './socket_define.ts';
  * socket.close();
  * ```
  */
-export function connectSocket(url: string, options?: SocketOptions): ISocket {
-    return isMinaEnv()
+export function connectSocket(url: string, options?: SocketOptions): IOResult<ISocket> {
+    const urlRes = validateSafeSocketUrl(url);
+    if (urlRes.isErr()) return urlRes.asErr();
+
+    return Ok(isMinaEnv()
         ? minaConnectSocket(url, options)
-        : webConnectSocket(url, options?.protocols);
+        : webConnectSocket(url, options?.protocols));
 }
