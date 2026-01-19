@@ -400,6 +400,7 @@ export function downloadFile(fileUrl: string, filePath?: string | DownloadFileOp
         filePath = filePathRes.unwrap();
     } else {
         options = filePath;
+        filePath = undefined;
     }
 
     const {
@@ -596,6 +597,7 @@ export async function zip<T>(sourcePath: string, zipFilePath?: string | ZipOptio
         zipFilePath = zipFilePathRes.unwrap();
     } else {
         options = zipFilePath;
+        zipFilePath = undefined;
     }
 
     return (await stat(sourcePath)).andThenAsync(async stats => {
