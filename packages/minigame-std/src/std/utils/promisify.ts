@@ -5,12 +5,12 @@ import { Future } from 'tiny-future';
 /**
  * 类型工具：判断 API 是否符合 promisify 条件。
  *
- * 要求 API 返回 `void` 或 `Promise`，且参数包含 `success` 或 `fail` 回调。
+ * 要求 API 返回 `void` 或 `PromiseLike`，且参数包含 `success` 或 `fail` 回调。
  * @typeParam T - 待检查的 API 函数类型。
  * @since 1.10.0
  */
 export type ValidAPI<T> = T extends (params: infer P) => infer R
-    ? R extends void | Promise<any>
+    ? R extends void | PromiseLike<any>
     ? P extends { success?: any; } | undefined
     ? true
     : P extends { fail?: any; } | undefined
@@ -46,7 +46,7 @@ export type FailType<T> = T extends (params: infer P) => any
     : never;
 
 /**
- * 将小游戏异步 API 转换为返回 `AsyncResult<T, E>` 的新函数，需要转换的 API 必须是接受可选 `success` 和 `fail` 回调的函数，并且其返回值必须是 `void` 或 `Promise`。
+ * 将小游戏异步 API 转换为返回 `AsyncResult<T, E>` 的新函数，需要转换的 API 必须是接受可选 `success` 和 `fail` 回调的函数，并且其返回值必须是 `void` 或 `PromiseLike`。
  *
  * 其中 `T` 为 `success` 回调的参数类型，`E` 为 `fail` 回调的参数类型。
  *
@@ -55,7 +55,7 @@ export type FailType<T> = T extends (params: infer P) => any
  * @since 1.10.0
  * @example
  * ```ts
- * // 将 wx.setStorage 转换为 Promise 风格
+ * // 将 wx.setStorage 转换为 PromiseLike 风格
  * const setStorageAsync = promisifyWithResult(wx.setStorage);
  * const result = await setStorageAsync({ key: 'test', data: 'value' });
  * if (result.isOk()) {
@@ -65,7 +65,7 @@ export type FailType<T> = T extends (params: infer P) => any
  * }
  * ```
  */
-export function promisifyWithResult<F extends (...args: any[]) => any, T = SuccessType<F>, E = FailType<F>>(api: F) : ValidAPI<F> extends true
+export function promisifyWithResult<F extends (...args: any[]) => any, T = SuccessType<F>, E = FailType<F>>(api: F): ValidAPI<F> extends true
     ? (...args: Parameters<F>) => AsyncResult<T, E>
     : never {
     // @ts-expect-error 跳过运行时是否满足转换条件的检查
@@ -89,12 +89,12 @@ export function promisifyWithResult<F extends (...args: any[]) => any, T = Succe
 
         const res = api(options);
 
-        // 也支持其他返回Promise的API
-        if (res instanceof Promise) {
-            // Convert Promise to AsyncResult
+        // 也支持其他返回 PromiseLike 的 API（鸭子类型检查）
+        if (res != null && typeof res.then === 'function') {
+        // Convert PromiseLike to AsyncResult
             return tryAsyncResult(res);
         } else if (res !== undefined) {
-            throw new TypeError('API must return void or Promise. Otherwise the return value will be discarded');
+            throw new TypeError('API must return void or PromiseLike. Otherwise the return value will be discarded');
         }
 
         return future.promise;
