@@ -1,5 +1,5 @@
 import type { FetchInit } from '@happy-ts/fetch-t';
-import type { FsRequestInit, ReadFileContent as OPFSReadFileContent, WriteFileContent as OPFSWriteFileContent, WriteSyncFileContent as OPFSWriteSyncFileContent, UploadRequestInit, ZipOptions } from 'happy-opfs';
+import type { FsRequestInit, ReadFileContent as OPFSReadFileContent, WriteFileContent as OPFSWriteFileContent, WriteSyncFileContent as OPFSWriteSyncFileContent, UploadRequestInit, ZipFromUrlRequestInit } from 'happy-opfs';
 
 /**
  * 异步写入文件的内容类型，支持 `ArrayBuffer` `TypedArray` `string` `ReadableStream`。
@@ -90,4 +90,4 @@ export interface StatOptions {
  * `unzipFromUrl` 的统一选项。
  * @since 1.4.0
  */
-export type ZipFromUrlOptions = (DownloadFileOptions & ZipOptions) & FsRequestInit;
+export type ZipFromUrlOptions = DownloadFileOptions & ZipFromUrlRequestInit;

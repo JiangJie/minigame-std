@@ -629,21 +629,20 @@ export async function zip<T>(sourcePath: string, zipFilePath?: string | ZipOptio
     });
 }
 
-type ZipFromUrlOptions = DownloadFileOptions & ZipOptions;
 /**
  * 下载文件并压缩到内存。
  * @param sourceUrl - 要下载的文件 URL。
- * @param options - 合并的下载和压缩选项。
+ * @param options - 下载选项。
  */
-export async function zipFromUrl(sourceUrl: string, options?: ZipFromUrlOptions): AsyncIOResult<Uint8Array>;
+export async function zipFromUrl(sourceUrl: string, options?: DownloadFileOptions): AsyncIOResult<Uint8Array>;
 /**
  * 下载文件并压缩为 zip 文件。
  * @param sourceUrl - 要下载的文件 URL。
  * @param zipFilePath - 要输出的 zip 文件路径。
- * @param options - 合并的下载和压缩选项。
+ * @param options - 下载选项。
  */
-export async function zipFromUrl(sourceUrl: string, zipFilePath: string, options?: ZipFromUrlOptions): AsyncVoidIOResult;
-export async function zipFromUrl<T>(sourceUrl: string, zipFilePath?: string | ZipFromUrlOptions, options?: ZipFromUrlOptions): AsyncIOResult<T> {
+export async function zipFromUrl(sourceUrl: string, zipFilePath: string, options?: DownloadFileOptions): AsyncVoidIOResult;
+export async function zipFromUrl<T>(sourceUrl: string, zipFilePath?: string | DownloadFileOptions, options?: DownloadFileOptions): AsyncIOResult<T> {
     if (typeof zipFilePath !== 'string') {
         options = zipFilePath;
         zipFilePath = undefined;
@@ -651,7 +650,7 @@ export async function zipFromUrl<T>(sourceUrl: string, zipFilePath?: string | Zi
 
     return (await downloadFile(sourceUrl, options).result).andThenAsync(async ({ tempFilePath }: WechatMinigame.DownloadFileSuccessCallbackResult) => {
         return await (zipFilePath
-            ? zip(tempFilePath, zipFilePath, options)
-            : zip(tempFilePath, options)) as IOResult<T>;
+            ? zip(tempFilePath, zipFilePath, { preserveRoot: false })
+            : zip(tempFilePath, { preserveRoot: false })) as IOResult<T>;
     });
 }
