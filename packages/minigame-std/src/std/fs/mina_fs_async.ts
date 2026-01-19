@@ -9,12 +9,12 @@ import * as fflate from 'fflate/browser';
 import type { ExistsOptions, WriteOptions, ZipOptions } from 'happy-opfs';
 import { Err, Ok, RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult, type IOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
-import { assertSafeUrl } from '../assert/assertions.ts';
 import type { FetchTask } from '../fetch/fetch_defines.ts';
-import { miniGameFailureToResult, asyncResultify } from '../utils/mod.ts';
+import { createFailedFetchTask, validateSafeUrl } from '../internal/mod.ts';
+import { asyncResultify, miniGameFailureToResult } from '../utils/mod.ts';
 import type { DownloadFileOptions, MinaWriteFileContent, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions } from './fs_define.ts';
 import { createAbortError } from './fs_helpers.ts';
-import { createFailedFetchTask, errToMkdirResult, errToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getRootUsrPath, getWriteFileContents, isNotFoundError, validateAbsolutePath, validateExistsOptions } from './mina_fs_shared.ts';
+import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getRootUsrPath, getWriteFileContents, isNotFoundError, validateAbsolutePath, validateExistsOptions } from './mina_fs_shared.ts';
 
 /**
  * 递归创建文件夹，相当于`mkdir -p`。
@@ -392,7 +392,8 @@ export function downloadFile(fileUrl: string, filePath: string, options?: Downlo
 export function downloadFile(fileUrl: string, filePath?: string | DownloadFileOptions, options?: DownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult> {
     type T = WechatMinigame.DownloadFileSuccessCallbackResult;
 
-    assertSafeUrl(fileUrl);
+    const fileUrlRes = validateSafeUrl(fileUrl);
+    if (fileUrlRes.isErr()) return createFailedFetchTask(fileUrlRes);
 
     if (typeof filePath === 'string') {
         const filePathRes = validateAbsolutePath(filePath);
@@ -501,7 +502,9 @@ export function downloadFile(fileUrl: string, filePath?: string | DownloadFileOp
 export function uploadFile(filePath: string, fileUrl: string, options?: UploadFileOptions): FetchTask<WechatMinigame.UploadFileSuccessCallbackResult> {
     type T = WechatMinigame.UploadFileSuccessCallbackResult;
 
-    assertSafeUrl(fileUrl);
+    const fileUrlRes = validateSafeUrl(fileUrl);
+    if (fileUrlRes.isErr()) return createFailedFetchTask(fileUrlRes);
+
     const filePathRes = validateAbsolutePath(filePath);
     if (filePathRes.isErr()) return createFailedFetchTask(filePathRes);
     filePath = filePathRes.unwrap();

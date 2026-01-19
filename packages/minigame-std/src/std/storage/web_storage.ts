@@ -4,7 +4,6 @@
  */
 
 import { Err, Ok, type IOResult, type VoidIOResult } from 'happy-rusty';
-import { assertString } from '../assert/assertions.ts';
 import { tryDOMSyncOp } from '../utils/mod.ts';
 
 /**
@@ -14,9 +13,6 @@ import { tryDOMSyncOp } from '../utils/mod.ts';
  * @returns 返回操作结果。
  */
 export function setItem(key: string, data: string): VoidIOResult {
-    assertString(key);
-    assertString(data);
-
     return tryDOMSyncOp(() => {
         localStorage.setItem(key, data);
     });
@@ -28,8 +24,6 @@ export function setItem(key: string, data: string): VoidIOResult {
  * @returns 返回存储的字符串数据，若不存在则返回错误。
  */
 export function getItem(key: string): IOResult<string> {
-    assertString(key);
-
     const data = localStorage.getItem(key);
     return data == null ? Err(new Error(`${ key } not exists`)) : Ok(data);
 }
@@ -40,8 +34,6 @@ export function getItem(key: string): IOResult<string> {
  * @returns 返回操作结果。
  */
 export function removeItem(key: string): VoidIOResult {
-    assertString(key);
-
     return callOp(() => {
         localStorage.removeItem(key);
     });
@@ -73,8 +65,6 @@ export function getLength(): IOResult<number> {
  * @returns 返回是否存在的布尔值。
  */
 export function hasItem(key: string): IOResult<boolean> {
-    assertString(key);
-
     return callOp(() => {
         return localStorage.getItem(key) != null;
     });

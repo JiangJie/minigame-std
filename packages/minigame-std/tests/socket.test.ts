@@ -6,7 +6,7 @@ test('socket echo', () => {
 
     const data = 'minigame-std';
 
-    const socket = connectSocket('wss://echo.websocket.org/');
+    const socket = connectSocket('wss://echo.websocket.org/').unwrap();
 
     let count = 0;
 
@@ -58,7 +58,7 @@ test('SocketReadyState matches WebSocket constants', () => {
 test('socket readyState changes during connection lifecycle', () => {
     const { promise, resolve } = Promise.withResolvers<void>();
 
-    const socket = connectSocket('wss://echo.websocket.org/');
+    const socket = connectSocket('wss://echo.websocket.org/').unwrap();
 
     // Initial state should be CONNECTING
     expect(socket.readyState).toBe(SocketReadyState.CONNECTING);
@@ -82,7 +82,7 @@ test('socket readyState changes during connection lifecycle', () => {
 test('socket send returns Ok result', async () => {
     const { promise, resolve } = Promise.withResolvers<void>();
 
-    const socket = connectSocket('wss://echo.websocket.org/');
+    const socket = connectSocket('wss://echo.websocket.org/').unwrap();
 
     socket.addEventListener('open', async () => {
         const result = await socket.send('test');
@@ -103,7 +103,7 @@ test('socket send ArrayBuffer data', () => {
 
     const binaryData = new Uint8Array([1, 2, 3, 4, 5]).buffer;
 
-    const socket = connectSocket('wss://echo.websocket.org/');
+    const socket = connectSocket('wss://echo.websocket.org/').unwrap();
 
     let receivedWelcome = false;
 
@@ -135,7 +135,7 @@ test('socket send ArrayBuffer data', () => {
 test('socket removeEventListener works correctly', () => {
     const { promise, resolve } = Promise.withResolvers<void>();
 
-    const socket = connectSocket('wss://echo.websocket.org/');
+    const socket = connectSocket('wss://echo.websocket.org/').unwrap();
     let messageCount = 0;
 
     const removeMessageListener = socket.addEventListener('message', () => {
@@ -167,7 +167,7 @@ test('socket removeEventListener works correctly', () => {
 test('socket close with code and reason', () => {
     const { promise, resolve } = Promise.withResolvers<void>();
 
-    const socket = connectSocket('wss://echo.websocket.org/');
+    const socket = connectSocket('wss://echo.websocket.org/').unwrap();
 
     socket.addEventListener('open', () => {
         socket.close(1000, 'Normal closure');
@@ -186,7 +186,7 @@ test('socket close with code and reason', () => {
 
 // invalid event type throws error
 test('socket addEventListener throws on invalid event type', () => {
-    const socket = connectSocket('wss://echo.websocket.org/');
+    const socket = connectSocket('wss://echo.websocket.org/').unwrap();
 
     expect(() => {
         // @ts-expect-error Testing invalid event type
@@ -203,7 +203,7 @@ test('socket error event fires on connection failure', () => {
     const { promise, resolve } = Promise.withResolvers<void>();
 
     // Use a URL that will likely fail
-    const socket = connectSocket('wss://this-domain-does-not-exist.test/');
+    const socket = connectSocket('wss://this-domain-does-not-exist.test/').unwrap();
 
     socket.addEventListener('error', (err) => {
         expect(err).toBeInstanceOf(Error);
@@ -223,7 +223,7 @@ test('socket error event fires on connection failure', () => {
 test('socket can remove open listener', () => {
     const { promise, resolve } = Promise.withResolvers<void>();
 
-    const socket = connectSocket('wss://echo.websocket.org/');
+    const socket = connectSocket('wss://echo.websocket.org/').unwrap();
     let openCallCount = 0;
 
     const removeOpenListener = socket.addEventListener('open', () => {
@@ -250,7 +250,7 @@ test('socket can remove open listener', () => {
 test('socket can remove close listener', () => {
     const { promise, resolve } = Promise.withResolvers<void>();
 
-    const socket = connectSocket('wss://echo.websocket.org/');
+    const socket = connectSocket('wss://echo.websocket.org/').unwrap();
     let closeCallCount = 0;
 
     const removeCloseListener = socket.addEventListener('close', () => {
@@ -275,7 +275,7 @@ test('socket can remove close listener', () => {
 test('socket can remove error listener', () => {
     const { promise, resolve } = Promise.withResolvers<void>();
 
-    const socket = connectSocket('wss://localhost:59999/');
+    const socket = connectSocket('wss://localhost:59999/').unwrap();
     let errorCallCount = 0;
 
     const removeErrorListener = socket.addEventListener('error', () => {
@@ -304,7 +304,6 @@ test('socket can remove error listener', () => {
 
 // unsafe URL assertion test
 test('socket throws on non-wss URL in strict mode', () => {
-    expect(() => {
-        connectSocket('ws://echo.websocket.org/');
-    }).toThrow();
+    const socketRes = connectSocket('ws://echo.websocket.org/');
+    expect(socketRes.isErr()).toBe(true);
 });

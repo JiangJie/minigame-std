@@ -6,7 +6,7 @@
 import type { FetchResult } from '@happy-ts/fetch-t';
 import { Err, Ok, type IOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
-import { assertSafeUrl } from '../assert/assertions.ts';
+import { createFailedFetchTask, validateSafeUrl } from '../internal/mod.ts';
 import { miniGameFailureToError } from '../utils/mod.ts';
 import { ABORT_ERROR, FetchError, TIMEOUT_ERROR, type FetchTask, type MinaFetchInit } from './fetch_defines.ts';
 
@@ -57,7 +57,8 @@ export function minaFetch(url: string, init: MinaFetchInit): FetchTask<string>;
  * @returns 根据配置返回 FetchTask。
  */
 export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> {
-    assertSafeUrl(url);
+    const urlRes = validateSafeUrl(url);
+    if (urlRes.isErr()) return createFailedFetchTask(urlRes);
 
     const {
         responseType,

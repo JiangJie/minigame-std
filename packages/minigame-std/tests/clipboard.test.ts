@@ -99,7 +99,8 @@ test('readText returns Err on failure', async () => {
 });
 
 test('writeText throws on non-string input', async () => {
-    await expect(clipboard.writeText(123 as unknown as string)).rejects.toThrow('Param must be a string');
+    const result = await clipboard.writeText(123 as unknown as string);
+    expect(result.isErr()).toBe(true);
 });
 
 test('clipboard round-trip', async () => {

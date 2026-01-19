@@ -1,5 +1,6 @@
 import type { AsyncIOResult, AsyncVoidIOResult, IOResult, VoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
+import { validateString } from '../internal/mod.ts';
 import {
     clear as minaClear,
     clearSync as minaClearSync,
@@ -37,10 +38,16 @@ import {
  * }
  * ```
  */
-export function setItem(key: string, data: string): AsyncVoidIOResult {
+export async function setItem(key: string, data: string): AsyncVoidIOResult {
+    const keyRes = validateString(key);
+    if (keyRes.isErr()) return keyRes;
+
+    const dataRes = validateString(data);
+    if (dataRes.isErr()) return dataRes;
+
     return isMinaEnv()
         ? minaSetItem(key, data)
-        : Promise.resolve(webSetItem(key, data));
+        : webSetItem(key, data);
 }
 
 /**
@@ -56,10 +63,13 @@ export function setItem(key: string, data: string): AsyncVoidIOResult {
  * }
  * ```
  */
-export function getItem(key: string): AsyncIOResult<string> {
+export async function getItem(key: string): AsyncIOResult<string> {
+    const keyRes = validateString(key);
+    if (keyRes.isErr()) return keyRes.asErr();
+
     return isMinaEnv()
         ? minaGetItem(key)
-        : Promise.resolve(webGetItem(key));
+        : webGetItem(key);
 }
 
 /**
@@ -75,10 +85,13 @@ export function getItem(key: string): AsyncIOResult<string> {
  * }
  * ```
  */
-export function removeItem(key: string): AsyncVoidIOResult {
+export async function removeItem(key: string): AsyncVoidIOResult {
+    const keyRes = validateString(key);
+    if (keyRes.isErr()) return keyRes;
+
     return isMinaEnv()
         ? minaRemoveItem(key)
-        : Promise.resolve(webRemoveItem(key));
+        : webRemoveItem(key);
 }
 
 /**
@@ -130,10 +143,13 @@ export function getLength(): AsyncIOResult<number> {
  * }
  * ```
  */
-export function hasItem(key: string): AsyncIOResult<boolean> {
+export async function hasItem(key: string): AsyncIOResult<boolean> {
+    const keyRes = validateString(key);
+    if (keyRes.isErr()) return keyRes.asErr();
+
     return isMinaEnv()
         ? minaHasItem(key)
-        : Promise.resolve(webHasItem(key));
+        : webHasItem(key);
 }
 
 /**
@@ -151,6 +167,12 @@ export function hasItem(key: string): AsyncIOResult<boolean> {
  * ```
  */
 export function setItemSync(key: string, data: string): VoidIOResult {
+    const keyRes = validateString(key);
+    if (keyRes.isErr()) return keyRes;
+
+    const dataRes = validateString(data);
+    if (dataRes.isErr()) return dataRes;
+
     return (isMinaEnv() ? minaSetItemSync : webSetItem)(key, data);
 }
 
@@ -168,6 +190,9 @@ export function setItemSync(key: string, data: string): VoidIOResult {
  * ```
  */
 export function getItemSync(key: string): IOResult<string> {
+    const keyRes = validateString(key);
+    if (keyRes.isErr()) return keyRes.asErr();
+
     return (isMinaEnv() ? minaGetItemSync : webGetItem)(key);
 }
 
@@ -185,6 +210,9 @@ export function getItemSync(key: string): IOResult<string> {
  * ```
  */
 export function removeItemSync(key: string): VoidIOResult {
+    const keyRes = validateString(key);
+    if (keyRes.isErr()) return keyRes;
+
     return (isMinaEnv() ? minaRemoveItemSync : webRemoveItem)(key);
 }
 
@@ -234,5 +262,8 @@ export function getLengthSync(): IOResult<number> {
  * ```
  */
 export function hasItemSync(key: string): IOResult<boolean> {
+    const keyRes = validateString(key);
+    if (keyRes.isErr()) return keyRes.asErr();
+
     return (isMinaEnv() ? minaHasItemSync : webHasItem)(key);
 }

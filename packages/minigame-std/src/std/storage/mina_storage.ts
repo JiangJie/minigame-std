@@ -4,8 +4,7 @@
  */
 
 import { RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';
-import { assertString } from '../assert/assertions.ts';
-import { miniGameFailureToError, asyncResultify, tryGeneralSyncOp } from '../utils/mod.ts';
+import { asyncResultify, miniGameFailureToError, tryGeneralSyncOp } from '../utils/mod.ts';
 
 /**
  * 异步设置存储项。
@@ -14,9 +13,6 @@ import { miniGameFailureToError, asyncResultify, tryGeneralSyncOp } from '../uti
  * @returns 返回操作结果。
  */
 export async function setItem(key: string, data: string): AsyncVoidIOResult {
-    assertString(key);
-    assertString(data);
-
     return (await asyncResultify(wx.setStorage)({
         key,
         data,
@@ -31,8 +27,6 @@ export async function setItem(key: string, data: string): AsyncVoidIOResult {
  * @returns 返回存储的字符串数据。
  */
 export async function getItem(key: string): AsyncIOResult<string> {
-    assertString(key);
-
     return (await asyncResultify(wx.getStorage<string>)({
         key,
     }))
@@ -46,8 +40,6 @@ export async function getItem(key: string): AsyncIOResult<string> {
  * @returns 返回操作结果。
  */
 export async function removeItem(key: string): AsyncVoidIOResult {
-    assertString(key);
-
     return (await asyncResultify(wx.removeStorage)({
         key,
     }))
@@ -81,8 +73,6 @@ export async function getLength(): AsyncIOResult<number> {
  * @returns 返回是否存在的布尔值。
  */
 export async function hasItem(key: string): AsyncIOResult<boolean> {
-    assertString(key);
-
     return (await asyncResultify(wx.getStorageInfo)({}))
         .map(x => x.keys.includes(key))
         .mapErr(miniGameFailureToError);
@@ -95,9 +85,6 @@ export async function hasItem(key: string): AsyncIOResult<boolean> {
  * @returns 返回操作结果。
  */
 export function setItemSync(key: string, data: string): VoidIOResult {
-    assertString(key);
-    assertString(data);
-
     return tryGeneralSyncOp(() => {
         wx.setStorageSync(key, data);
     });
@@ -109,8 +96,6 @@ export function setItemSync(key: string, data: string): VoidIOResult {
  * @returns 返回存储的字符串数据。
  */
 export function getItemSync(key: string): IOResult<string> {
-    assertString(key);
-
     return tryGeneralSyncOp(() => {
         return wx.getStorageSync<string>(key);
     });
@@ -122,8 +107,6 @@ export function getItemSync(key: string): IOResult<string> {
  * @returns 返回操作结果。
  */
 export function removeItemSync(key: string): VoidIOResult {
-    assertString(key);
-
     return tryGeneralSyncOp(() => {
         wx.removeStorageSync(key);
     });
@@ -156,8 +139,6 @@ export function getLengthSync(): IOResult<number> {
  * @returns 返回是否存在的布尔值。
  */
 export function hasItemSync(key: string): IOResult<boolean> {
-    assertString(key);
-
     return tryGeneralSyncOp(() => {
         const info = wx.getStorageInfoSync();
         return info.keys.includes(key);

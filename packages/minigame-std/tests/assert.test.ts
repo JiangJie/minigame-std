@@ -1,62 +1,81 @@
 import { expect, test } from 'vitest';
 // Internal functions - import directly from source for testing
-import { assertSafeSocketUrl, assertSafeUrl, assertString } from '../src/std/assert/assertions.ts';
+import { validateSafeSocketUrl, validateSafeUrl, validateString } from '../src/std/internal/mod.ts';
 
-test('assertString accepts valid strings', () => {
-    assertString('hello');
-    assertString('');
-    assertString('中文字符串');
-    assertString('123');
+// validateString tests
+test('validateString returns Ok for valid strings', () => {
+    expect(validateString('hello').isOk()).toBe(true);
+    expect(validateString('').isOk()).toBe(true);
+    expect(validateString('中文字符串').isOk()).toBe(true);
+    expect(validateString('123').isOk()).toBe(true);
 });
 
-test('assertString rejects non-strings', () => {
-    expect(() => assertString(123 as unknown as string)).toThrow('Param must be a string');
-    expect(() => assertString(null as unknown as string)).toThrow('Param must be a string');
-    expect(() => assertString(undefined as unknown as string)).toThrow('Param must be a string');
-    expect(() => assertString({} as unknown as string)).toThrow('Param must be a string');
+test('validateString returns Err for non-strings', () => {
+    expect(validateString(123 as unknown as string).isErr()).toBe(true);
+    expect(validateString(null as unknown as string).isErr()).toBe(true);
+    expect(validateString(undefined as unknown as string).isErr()).toBe(true);
+    expect(validateString({} as unknown as string).isErr()).toBe(true);
 });
 
-test('assertSafeUrl accepts valid HTTPS URLs', () => {
-    assertSafeUrl('https://example.com');
-    assertSafeUrl('https://example.com/path');
-    assertSafeUrl('https://example.com:8080/path?query=value');
-    assertSafeUrl('https://sub.domain.example.com');
+test('validateString error message includes param name', () => {
+    const result = validateString(123 as unknown as string, 'data');
+    expect(result.isErr()).toBe(true);
+    expect(result.unwrapErr().message).toContain("'data'");
 });
 
-test('assertSafeUrl rejects HTTP URLs', () => {
-    expect(() => assertSafeUrl('http://example.com')).toThrow('Url must start with https://');
+// validateSafeUrl tests
+test('validateSafeUrl accepts valid HTTPS URLs', () => {
+    expect(validateSafeUrl('https://example.com').isOk()).toBe(true);
+    expect(validateSafeUrl('https://example.com/path').isOk()).toBe(true);
+    expect(validateSafeUrl('https://example.com:8080/path?query=value').isOk()).toBe(true);
+    expect(validateSafeUrl('https://sub.domain.example.com').isOk()).toBe(true);
 });
 
-test('assertSafeUrl rejects non-string values', () => {
-    expect(() => assertSafeUrl(123 as unknown as string)).toThrow('Url must be a string');
+test('validateSafeUrl rejects HTTP URLs', () => {
+    const result = validateSafeUrl('http://example.com');
+    expect(result.isErr()).toBe(true);
+    expect(result.unwrapErr().message).toContain('https://');
 });
 
-test('assertSafeUrl rejects invalid protocols', () => {
-    expect(() => assertSafeUrl('ftp://example.com')).toThrow('Url must start with https://');
-    expect(() => assertSafeUrl('ws://example.com')).toThrow('Url must start with https://');
-    expect(() => assertSafeUrl('//example.com')).toThrow('Url must start with https://');
-    expect(() => assertSafeUrl('example.com')).toThrow('Url must start with https://');
+test('validateSafeUrl rejects non-string values', () => {
+    const result = validateSafeUrl(123 as unknown as string);
+    expect(result.isErr()).toBe(true);
+    expect(result.unwrapErr()).toBeInstanceOf(TypeError);
 });
 
-test('assertSafeSocketUrl accepts valid WSS URLs', () => {
-    assertSafeSocketUrl('wss://example.com');
-    assertSafeSocketUrl('wss://example.com/socket');
-    assertSafeSocketUrl('wss://example.com:8080/socket?query=value');
+test('validateSafeUrl rejects invalid protocols', () => {
+    expect(validateSafeUrl('ftp://example.com').isErr()).toBe(true);
+    expect(validateSafeUrl('ws://example.com').isErr()).toBe(true);
+    expect(validateSafeUrl('//example.com').isErr()).toBe(true);
+    expect(validateSafeUrl('example.com').isErr()).toBe(true);
 });
 
-test('assertSafeSocketUrl rejects WS URLs', () => {
-    expect(() => assertSafeSocketUrl('ws://example.com')).toThrow('SocketUrl must start with wss://');
+// validateSafeSocketUrl tests
+test('validateSafeSocketUrl accepts valid WSS URLs', () => {
+    expect(validateSafeSocketUrl('wss://example.com').isOk()).toBe(true);
+    expect(validateSafeSocketUrl('wss://example.com/socket').isOk()).toBe(true);
+    expect(validateSafeSocketUrl('wss://example.com:8080/socket?query=value').isOk()).toBe(true);
 });
 
-test('assertSafeSocketUrl rejects non-string values', () => {
-    expect(() => assertSafeSocketUrl(123 as unknown as string)).toThrow('SocketUrl must be a string');
+test('validateSafeSocketUrl rejects WS URLs', () => {
+    const result = validateSafeSocketUrl('ws://example.com');
+    expect(result.isErr()).toBe(true);
+    expect(result.unwrapErr().message).toContain('wss://');
 });
 
-test('assertSafeSocketUrl rejects HTTPS URLs', () => {
-    expect(() => assertSafeSocketUrl('https://example.com')).toThrow('SocketUrl must start with wss://');
+test('validateSafeSocketUrl rejects non-string values', () => {
+    const result = validateSafeSocketUrl(123 as unknown as string);
+    expect(result.isErr()).toBe(true);
+    expect(result.unwrapErr()).toBeInstanceOf(TypeError);
 });
 
-test('assertSafeSocketUrl rejects invalid protocols', () => {
-    expect(() => assertSafeSocketUrl('http://example.com')).toThrow('SocketUrl must start with wss://');
-    expect(() => assertSafeSocketUrl('example.com')).toThrow('SocketUrl must start with wss://');
+test('validateSafeSocketUrl rejects HTTPS URLs', () => {
+    const result = validateSafeSocketUrl('https://example.com');
+    expect(result.isErr()).toBe(true);
+    expect(result.unwrapErr().message).toContain('wss://');
+});
+
+test('validateSafeSocketUrl rejects invalid protocols', () => {
+    expect(validateSafeSocketUrl('http://example.com').isErr()).toBe(true);
+    expect(validateSafeSocketUrl('example.com').isErr()).toBe(true);
 });

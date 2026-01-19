@@ -3,7 +3,6 @@
  * 同步/异步的公共代码。
  */
 
-import type { FetchTask } from '@happy-ts/fetch-t';
 import { normalize } from '@std/path/posix';
 import { NOT_FOUND_ERROR, ROOT_DIR, type ExistsOptions } from 'happy-opfs';
 import { Err, Lazy, Ok, RESULT_FALSE, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
@@ -241,12 +240,4 @@ export function validateExistsOptions(options?: ExistsOptions): VoidIOResult {
     return isDirectory && isFile
         ? Err(new Error('isDirectory and isFile cannot both be true'))
         : RESULT_VOID;
-}
-
-export function createFailedFetchTask<T>(errResult: IOResult<unknown>): FetchTask<T> {
-    return {
-        abort(): void { /* noop */ },
-        get aborted(): boolean { return false; },
-        get result() { return Promise.resolve(errResult.asErr<T>()); },
-    };
 }

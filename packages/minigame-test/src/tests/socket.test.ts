@@ -5,7 +5,7 @@ export function testSocket(): Promise<void> {
     return new Promise((resolve, reject) => {
         const data = 'minigame-std';
 
-        const socket = connectSocket('wss://echo.websocket.org/');
+        const socket = connectSocket('wss://echo.websocket.org/').unwrap();
 
         let count = 0;
         socket.addEventListener('message', (msg) => {

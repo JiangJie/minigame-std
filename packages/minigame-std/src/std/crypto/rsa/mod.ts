@@ -1,5 +1,4 @@
 import { isMinaEnv } from '../../../macros/env.ts';
-import { invariant } from '../../assert/assertions.ts';
 import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
 import { importPublicKey as minaImportPublicKey } from './mina_rsa.ts';
 import { importPublicKey as webImportPublicKey } from './web_rsa.ts';
@@ -18,13 +17,14 @@ import { importPublicKey as webImportPublicKey } from './web_rsa.ts';
  * ```
  */
 export function importPublicKey(pem: string, hash: SHA): Promise<RSAPublicKey> {
-    invariant(
-        hash === 'SHA-1'
-        || hash === 'SHA-256'
-        || hash === 'SHA-384'
-        || hash === 'SHA-512',
-        'Unsupported hash algorithm',
-    );
+    if (
+        hash !== 'SHA-1'
+        && hash !== 'SHA-256'
+        && hash !== 'SHA-384'
+        && hash !== 'SHA-512'
+    ) {
+        throw new TypeError(`Unsupported hash algorithm: ${ hash }`);
+    }
     return isMinaEnv()
         ? Promise.resolve(minaImportPublicKey(pem, hash))
         : webImportPublicKey(pem, hash);
