@@ -23,6 +23,12 @@ test('validateString error message includes param name', () => {
     expect(result.unwrapErr().message).toContain("'data'");
 });
 
+test('validateString error message uses default param name when not provided', () => {
+    const result = validateString(123 as unknown as string);
+    expect(result.isErr()).toBe(true);
+    expect(result.unwrapErr().message).toContain("'str'");
+});
+
 // validateSafeUrl tests
 test('validateSafeUrl accepts valid HTTPS URLs', () => {
     expect(validateSafeUrl('https://example.com').isOk()).toBe(true);
