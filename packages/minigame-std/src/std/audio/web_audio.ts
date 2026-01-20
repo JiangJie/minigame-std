@@ -2,7 +2,7 @@
  * Web/小游戏 平台的音频播放实现。
  */
 
-import { Ok, Once, tryAsyncResult, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
+import { Once, tryAsyncResult, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import { readFile } from '../fs/mod.ts';
 import { ASYNC_RESULT_VOID, bufferSourceToAb } from '../internal/mod.ts';
@@ -108,14 +108,14 @@ export function playWebAudioFromAudioBuffer(buffer: AudioBuffer, options?: PlayO
  * @since 1.5.0
  * @example
  * ```ts
- * const source = await audio.playWebAudioFromArrayBuffer(buffer);
+ * const source = await audio.playWebAudioFromBufferSource(buffer);
  * ```
  */
-export async function playWebAudioFromArrayBuffer(buffer: BufferSource, options?: PlayOptions): Promise<AudioBufferSourceNode> {
+export async function playWebAudioFromBufferSource(buffer: BufferSource, options?: PlayOptions): AsyncIOResult<AudioBufferSourceNode> {
     const context = getGlobalAudioContext();
-    const audioBuffer = await context.decodeAudioData(bufferSourceToAb(buffer));
+    const audioBufferRes = await tryAsyncResult(() => context.decodeAudioData(bufferSourceToAb(buffer)));
 
-    return playWebAudioFromAudioBuffer(audioBuffer, options);
+    return audioBufferRes.map(audioBuffer => playWebAudioFromAudioBuffer(audioBuffer, options));
 }
 
 /**
@@ -133,7 +133,6 @@ export async function playWebAudioFromArrayBuffer(buffer: BufferSource, options?
  * ```
  */
 export async function playWebAudioFromFile(filePath: string, options?: PlayOptions): AsyncIOResult<AudioBufferSourceNode> {
-    return (await readFile(filePath)).andThenAsync(async buffer => {
-        return Ok(await playWebAudioFromArrayBuffer(buffer, options));
-    });
+    const bufferRes = await readFile(filePath);
+    return bufferRes.andThenAsync(buffer => playWebAudioFromBufferSource(buffer, options));
 }

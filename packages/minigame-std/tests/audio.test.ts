@@ -226,8 +226,11 @@ test('playWebAudioFromAudioBuffer onended handler calls disconnect', async () =>
 test('playWebAudioFromArrayBuffer decodes and plays', async () => {
     const wavBuffer = generateSilentWavBuffer();
 
-    const source = await audio.playWebAudioFromArrayBuffer(wavBuffer);
+    const result = await audio.playWebAudioFromBufferSource(wavBuffer);
 
+    expect(result.isOk()).toBe(true);
+
+    const source = result.unwrap();
     expect(source).toBeInstanceOf(AudioBufferSourceNode);
     expect(source.buffer).not.toBeNull();
 
@@ -238,8 +241,11 @@ test('playWebAudioFromArrayBuffer with Uint8Array', async () => {
     const wavBuffer = generateSilentWavBuffer();
     const uint8Array = new Uint8Array(wavBuffer);
 
-    const source = await audio.playWebAudioFromArrayBuffer(uint8Array);
+    const result = await audio.playWebAudioFromBufferSource(uint8Array);
 
+    expect(result.isOk()).toBe(true);
+
+    const source = result.unwrap();
     expect(source).toBeInstanceOf(AudioBufferSourceNode);
 
     source.stop();
