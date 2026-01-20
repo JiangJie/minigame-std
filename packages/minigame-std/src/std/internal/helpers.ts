@@ -71,7 +71,7 @@ export function bufferSourceToBytes(data: BufferSource): Uint8Array<ArrayBuffer>
     }
 
     if (ArrayBuffer.isView(data)) {
-        return new Uint8Array(data.byteOffset === 0 ? data.buffer : data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength));
+        return new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
     }
 
     throw new TypeError(`BufferSource is not ArrayBuffer or ArrayBufferView`);
@@ -88,7 +88,10 @@ export function bufferSourceToAb(data: BufferSource): ArrayBuffer {
     }
 
     if (ArrayBuffer.isView(data)) {
-        return (data.byteOffset === 0 ? data.buffer : data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)) as ArrayBuffer;
+        // 可能存在偏移
+        return data.byteOffset === 0
+            ? data.buffer
+            : data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
     }
 
     throw new TypeError(`BufferSource is not ArrayBuffer or ArrayBufferView`);
