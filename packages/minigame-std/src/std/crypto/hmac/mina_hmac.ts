@@ -36,9 +36,6 @@ export function createHMAC(sha: SHA, key: string) {
             shaAlgorithmCreator = sha512;
             break;
         }
-        default: {
-            throw new TypeError(`Unsupported hash algorithm ${ sha }`);
-        }
     }
 
     const shaAlgorithm = shaAlgorithmCreator.create();

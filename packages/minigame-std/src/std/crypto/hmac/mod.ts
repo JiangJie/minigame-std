@@ -1,3 +1,4 @@
+import { tryAsyncResult, type AsyncIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../../macros/env.ts';
 import { toByteString } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
@@ -17,7 +18,7 @@ import { createHMAC as webCreateHMAC } from './web_hmac.ts';
  * console.log(hmac); // 十六进制 HMAC 字符串
  * ```
  */
-export function sha1HMAC(key: DataSource, data: DataSource): Promise<string> {
+export function sha1HMAC(key: DataSource, data: DataSource): AsyncIOResult<string> {
     return shaHMAC('SHA-1', key, data);
 }
 
@@ -33,7 +34,7 @@ export function sha1HMAC(key: DataSource, data: DataSource): Promise<string> {
  * console.log(hmac); // 十六进制 HMAC 字符串
  * ```
  */
-export function sha256HMAC(key: DataSource, data: DataSource): Promise<string> {
+export function sha256HMAC(key: DataSource, data: DataSource): AsyncIOResult<string> {
     return shaHMAC('SHA-256', key, data);
 }
 
@@ -49,7 +50,7 @@ export function sha256HMAC(key: DataSource, data: DataSource): Promise<string> {
  * console.log(hmac); // 十六进制 HMAC 字符串
  * ```
  */
-export function sha384HMAC(key: DataSource, data: DataSource): Promise<string> {
+export function sha384HMAC(key: DataSource, data: DataSource): AsyncIOResult<string> {
     return shaHMAC('SHA-384', key, data);
 }
 
@@ -65,7 +66,7 @@ export function sha384HMAC(key: DataSource, data: DataSource): Promise<string> {
  * console.log(hmac); // 十六进制 HMAC 字符串
  * ```
  */
-export function sha512HMAC(key: DataSource, data: DataSource): Promise<string> {
+export function sha512HMAC(key: DataSource, data: DataSource): AsyncIOResult<string> {
     return shaHMAC('SHA-512', key, data);
 }
 
@@ -74,11 +75,13 @@ export function sha512HMAC(key: DataSource, data: DataSource): Promise<string> {
 /**
  * 使用指定 SHA 算法计算 HMAC。
  */
-function shaHMAC(sha: SHA, key: DataSource, data: DataSource): Promise<string> {
+function shaHMAC(sha: SHA, key: DataSource, data: DataSource): AsyncIOResult<string> {
     if (isMinaEnv()) {
-        const hmac = minaCreateHMAC(sha, toByteString(key));
-        hmac.update(toByteString(data));
-        return Promise.resolve(hmac.digest().toHex());
+        return tryAsyncResult(() => {
+            const hmac = minaCreateHMAC(sha, toByteString(key));
+            hmac.update(toByteString(data));
+            return hmac.digest().toHex();
+        });
     }
 
     return webCreateHMAC(sha, key, data);
