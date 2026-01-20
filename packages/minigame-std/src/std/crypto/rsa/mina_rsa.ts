@@ -3,6 +3,7 @@
  * 小游戏平台的 RSA 加密实现。
  */
 
+import { Ok, tryResult, type AsyncIOResult } from 'happy-rusty';
 import { importPublicKey as importKey, sha1, sha256, sha384, sha512 } from 'rsa-oaep-encryption';
 import { base64FromBuffer } from '../../base64/mod.ts';
 import { textDecode } from '../../codec/mod.ts';
@@ -15,26 +16,28 @@ import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
  * @param hash - 哈希算法。
  * @returns RSA 公钥对象。
  */
-export function importPublicKey(pem: string, hash: SHA): RSAPublicKey {
-    const publicKey = importKey(pem);
+export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublicKey> {
+    const publicKeyRes = tryResult(() => importKey(pem));
+    if (publicKeyRes.isErr()) return Promise.resolve(publicKeyRes.asErr());
+
     const shaFactory = getShaFactory(hash);
 
     const encrypt = (data: DataSource): ArrayBuffer => {
         const decodedData = typeof data === 'string'
             ? data
             : textDecode(data);
-        return publicKey.encrypt(decodedData, shaFactory.create());
+        return publicKeyRes.unwrap().encrypt(decodedData, shaFactory.create());
     };
 
-    return {
-        encrypt(data: DataSource): Promise<ArrayBuffer> {
-            return Promise.resolve(encrypt(data));
+    return Promise.resolve(Ok({
+        encrypt(data: DataSource): AsyncIOResult<ArrayBuffer> {
+            return Promise.resolve(Ok(encrypt(data)));
         },
 
-        encryptToString(data: DataSource): Promise<string> {
-            return Promise.resolve(base64FromBuffer(encrypt(data)));
+        encryptToString(data: DataSource): AsyncIOResult<string> {
+            return Promise.resolve(Ok(base64FromBuffer(encrypt(data))));
         },
-    };
+    }));
 }
 
 // #region Internal Functions

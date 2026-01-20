@@ -320,50 +320,50 @@ wIy0/kd6szCcWK5Ld1kH9R0=
 
     // Test invalid hash algorithm
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect(() => cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-2' as any)).toThrow();
+    expect((await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-2' as any)).isErr()).toBe(true);
 
     // Test invalid PEM format
-    await expect(cryptos.rsa.importPublicKey(publicKeyStr.slice(1), 'SHA-256')).rejects.toThrow();
-    await expect(cryptos.rsa.importPublicKey(publicKeyStr.replace('PUBLIC', 'AES PUBLIC'), 'SHA-256')).rejects.toThrow();
+    expect((await cryptos.rsa.importPublicKey(publicKeyStr.slice(1), 'SHA-256')).isErr()).toBe(true);
+    expect((await cryptos.rsa.importPublicKey(publicKeyStr.replace('PUBLIC', 'AES PUBLIC'), 'SHA-256')).isErr()).toBe(true);
 
     // Test encryption with different hash algorithms
     {
-        const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-256')).encryptToString(data);
-        const decryptedData = await decrypt(encryptedData, 'SHA-256');
+        const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-256')).unwrap().encryptToString(data);
+        const decryptedData = await decrypt(encryptedData.unwrap(), 'SHA-256');
         expect(decryptedData).toBe(data);
     }
     {
-        const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-1')).encrypt(data);
-        const decryptedData = await decrypt(encryptedData, 'SHA-1');
+        const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-1')).unwrap().encrypt(data);
+        const decryptedData = await decrypt(encryptedData.unwrap(), 'SHA-1');
         expect(decryptedData).toBe(data);
     }
     {
-        const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-256')).encrypt(data);
-        const decryptedData = await decrypt(encryptedData, 'SHA-256');
+        const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-256')).unwrap().encrypt(data);
+        const decryptedData = await decrypt(encryptedData.unwrap(), 'SHA-256');
         expect(decryptedData).toBe(data);
     }
     {
-        const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-384')).encrypt(data);
-        const decryptedData = await decrypt(encryptedData, 'SHA-384');
+        const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-384')).unwrap().encrypt(data);
+        const decryptedData = await decrypt(encryptedData.unwrap(), 'SHA-384');
         expect(decryptedData).toBe(data);
     }
     {
-        const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-512')).encrypt(data);
-        const decryptedData = await decrypt(encryptedData, 'SHA-512');
+        const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-512')).unwrap().encrypt(data);
+        const decryptedData = await decrypt(encryptedData.unwrap(), 'SHA-512');
         expect(decryptedData).toBe(data);
     }
 
     // Test encryption with binary data (Uint8Array)
     {
         const binaryData = textEncode(data);
-        const rsaKey = await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-256');
+        const rsaKey = (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-256')).unwrap();
         const encryptedData = await rsaKey.encrypt(binaryData);
 
         const privateKey = await importDecryptKey(privateKeyStr, 'SHA-256');
         const decryptedData = new Uint8Array(await crypto.subtle.decrypt(
             { name: 'RSA-OAEP' },
             privateKey,
-            encryptedData,
+            encryptedData.unwrap(),
         ));
 
         expect(decryptedData).toEqual(binaryData);
@@ -506,7 +506,7 @@ describe('mina HMAC implementation (rsa-oaep-encryption library)', () => {
     });
 });
 
-describe('mina RSA implementation (rsa-oaep-encryption library)', () => {
+describe('mina RSA implementation (rsa-oaep-encryption library) - direct test', () => {
     const publicKeyStr = `-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAix682LW8jwpZEGjFfoom
 GvLHCDh8ttPgSB5CBvXZLglimVfVkA7FiGdJqlKkf2kKXqrwSICbgcYUjFHMFdy9
@@ -558,10 +558,22 @@ wIy0/kd6szCcWK5Ld1kH9R0=
         );
     }
 
+    test('minaImportPublicKey returns Err for invalid PEM', async () => {
+        // Test invalid PEM format - directly test mina implementation
+        const result = await minaImportPublicKey(publicKeyStr.slice(1), 'SHA-256');
+        expect(result.isErr()).toBe(true);
+    });
+
+    test('minaImportPublicKey returns Err for corrupted PEM', async () => {
+        const corruptedPem = publicKeyStr.replace('PUBLIC', 'INVALID');
+        const result = await minaImportPublicKey(corruptedPem, 'SHA-256');
+        expect(result.isErr()).toBe(true);
+    });
+
     test('minaImportPublicKey encrypts data with SHA-256', async () => {
         const data = 'minigame-std';
 
-        const rsaKey = minaImportPublicKey(publicKeyStr, 'SHA-256');
+        const rsaKey = (await minaImportPublicKey(publicKeyStr, 'SHA-256')).unwrap();
         const encryptedData = await rsaKey.encrypt(data);
 
         // Decrypt with Web Crypto API
@@ -569,7 +581,7 @@ wIy0/kd6szCcWK5Ld1kH9R0=
         const decryptedData = textDecode(await crypto.subtle.decrypt(
             { name: 'RSA-OAEP' },
             privateKey,
-            encryptedData,
+            encryptedData.unwrap(),
         ));
 
         expect(decryptedData).toBe(data);
@@ -578,14 +590,14 @@ wIy0/kd6szCcWK5Ld1kH9R0=
     test('minaImportPublicKey encrypts data with SHA-1', async () => {
         const data = 'test message';
 
-        const rsaKey = minaImportPublicKey(publicKeyStr, 'SHA-1');
+        const rsaKey = (await minaImportPublicKey(publicKeyStr, 'SHA-1')).unwrap();
         const encryptedData = await rsaKey.encrypt(data);
 
         const privateKey = await importDecryptKey(privateKeyStr, 'SHA-1');
         const decryptedData = textDecode(await crypto.subtle.decrypt(
             { name: 'RSA-OAEP' },
             privateKey,
-            encryptedData,
+            encryptedData.unwrap(),
         ));
 
         expect(decryptedData).toBe(data);
@@ -594,14 +606,14 @@ wIy0/kd6szCcWK5Ld1kH9R0=
     test('minaImportPublicKey encrypts data with SHA-384', async () => {
         const data = 'test message';
 
-        const rsaKey = minaImportPublicKey(publicKeyStr, 'SHA-384');
+        const rsaKey = (await minaImportPublicKey(publicKeyStr, 'SHA-384')).unwrap();
         const encryptedData = await rsaKey.encrypt(data);
 
         const privateKey = await importDecryptKey(privateKeyStr, 'SHA-384');
         const decryptedData = textDecode(await crypto.subtle.decrypt(
             { name: 'RSA-OAEP' },
             privateKey,
-            encryptedData,
+            encryptedData.unwrap(),
         ));
 
         expect(decryptedData).toBe(data);
@@ -610,14 +622,14 @@ wIy0/kd6szCcWK5Ld1kH9R0=
     test('minaImportPublicKey encrypts data with SHA-512', async () => {
         const data = 'test message';
 
-        const rsaKey = minaImportPublicKey(publicKeyStr, 'SHA-512');
+        const rsaKey = (await minaImportPublicKey(publicKeyStr, 'SHA-512')).unwrap();
         const encryptedData = await rsaKey.encrypt(data);
 
         const privateKey = await importDecryptKey(privateKeyStr, 'SHA-512');
         const decryptedData = textDecode(await crypto.subtle.decrypt(
             { name: 'RSA-OAEP' },
             privateKey,
-            encryptedData,
+            encryptedData.unwrap(),
         ));
 
         expect(decryptedData).toBe(data);
@@ -626,8 +638,8 @@ wIy0/kd6szCcWK5Ld1kH9R0=
     test('minaImportPublicKey encryptToString returns base64 string', async () => {
         const data = 'minigame-std';
 
-        const rsaKey = minaImportPublicKey(publicKeyStr, 'SHA-256');
-        const encryptedBase64 = await rsaKey.encryptToString(data);
+        const rsaKey = (await minaImportPublicKey(publicKeyStr, 'SHA-256')).unwrap();
+        const encryptedBase64 = (await rsaKey.encryptToString(data)).unwrap();
 
         expect(typeof encryptedBase64).toBe('string');
         // Base64 should only contain valid characters
@@ -649,7 +661,7 @@ wIy0/kd6szCcWK5Ld1kH9R0=
         // Use valid UTF-8 bytes (ASCII characters)
         const binaryData = textEncode('Hello');
 
-        const rsaKey = minaImportPublicKey(publicKeyStr, 'SHA-256');
+        const rsaKey = (await minaImportPublicKey(publicKeyStr, 'SHA-256')).unwrap();
         const encryptedData = await rsaKey.encrypt(binaryData);
 
         const privateKey = await importDecryptKey(privateKeyStr, 'SHA-256');
@@ -657,7 +669,7 @@ wIy0/kd6szCcWK5Ld1kH9R0=
         const decryptedText = textDecode(await crypto.subtle.decrypt(
             { name: 'RSA-OAEP' },
             privateKey,
-            encryptedData,
+            encryptedData.unwrap(),
         ));
 
         expect(decryptedText).toBe('Hello');
