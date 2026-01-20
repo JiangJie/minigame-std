@@ -2,10 +2,10 @@
  * Web/小游戏 平台的音频播放实现。
  */
 
-import { Err, Ok, Once, RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
+import { Ok, Once, tryAsyncResult, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import { readFile } from '../fs/mod.ts';
-import { bufferSourceToAb } from '../internal/mod.ts';
+import { ASYNC_RESULT_VOID, bufferSourceToAb } from '../internal/mod.ts';
 import type { PlayOptions } from './audio_defines.ts';
 
 // #region Internal Variables
@@ -39,18 +39,13 @@ export function getGlobalAudioContext(): AudioContext {
  * await audio.closeGlobalAudioContext();
  * ```
  */
-export async function closeGlobalAudioContext(): AsyncVoidIOResult {
+export function closeGlobalAudioContext(): AsyncVoidIOResult {
     if (!audioContext.isInitialized()) {
-        return RESULT_VOID;
+        return ASYNC_RESULT_VOID;
     }
 
-    try {
-        // 重置 Once 以便下次重新创建
-        await audioContext.take().unwrap().close();
-        return RESULT_VOID;
-    } catch (e) {
-        return Err(e as DOMException);
-    }
+    // 重置 Once 以便下次重新创建
+    return tryAsyncResult(audioContext.take().unwrap().close());
 }
 
 /**

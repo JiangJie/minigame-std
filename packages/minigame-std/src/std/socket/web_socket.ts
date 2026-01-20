@@ -3,8 +3,9 @@
  * Web 平台的 WebSocket 实现。
  */
 
-import { RESULT_VOID, type AsyncVoidIOResult } from 'happy-rusty';
+import { type AsyncVoidIOResult } from 'happy-rusty';
 import type { DataSource } from '../defines.ts';
+import { ASYNC_RESULT_VOID } from '../internal/mod.ts';
 import type { ISocket, SocketListenerMap } from './socket_define.ts';
 
 /**
@@ -75,7 +76,7 @@ export function connectSocket(url: string, protocols?: string | string[]): ISock
 
         send(data: DataSource): AsyncVoidIOResult {
             socket.send(data);
-            return Promise.resolve(RESULT_VOID);
+            return ASYNC_RESULT_VOID;
         },
 
         close: socket.close.bind(socket),
