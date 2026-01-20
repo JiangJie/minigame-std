@@ -4,7 +4,6 @@ import {
     bufferSource2U8a,
     miniGameFailureToError,
     miniGameFailureToResult,
-    tryDOMAsyncOp,
     tryGeneralAsyncOp,
     tryGeneralSyncOp,
 } from '../src/mod.ts';
@@ -91,37 +90,6 @@ test('bufferSource2Ab handles TypedArray with offset', () => {
 
 test('bufferSource2Ab throws on invalid input', () => {
     expect(() => bufferSource2Ab({} as BufferSource)).toThrow('BufferSource is not ArrayBuffer or ArrayBufferView');
-});
-
-// tryDOMAsyncOp tests
-test('tryDOMAsyncOp returns Ok on async success', async () => {
-    const result = await tryDOMAsyncOp(async () => 'async success');
-    expect(result.isOk()).toBe(true);
-    expect(result.unwrap()).toBe('async success');
-});
-
-test('tryDOMAsyncOp returns Err on async exception', async () => {
-    const error = new DOMException('Async test error');
-    const result = await tryDOMAsyncOp(async () => {
-        throw error;
-    });
-    expect(result.isErr()).toBe(true);
-    expect(result.unwrapErr()).toBe(error);
-});
-
-test('tryDOMAsyncOp handles Promise rejection', async () => {
-    const error = new DOMException('Rejected');
-    const result = await tryDOMAsyncOp(() => Promise.reject(error));
-    expect(result.isErr()).toBe(true);
-    expect(result.unwrapErr()).toBe(error);
-});
-
-test('tryDOMAsyncOp handles delayed async operations', async () => {
-    const result = await tryDOMAsyncOp(
-        () => new Promise<number>((resolve) => setTimeout(() => resolve(123), 10)),
-    );
-    expect(result.isOk()).toBe(true);
-    expect(result.unwrap()).toBe(123);
 });
 
 // miniGameFailureToError tests

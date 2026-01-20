@@ -84,29 +84,6 @@ export async function tryGeneralAsyncOp<T>(op: () => Promise<T>): AsyncIOResult<
 }
 
 /**
- * 执行异步函数，预期异常都是 `DOMException`。
- * @param op - 需要执行的异步函数。
- * @returns AsyncIOResult。
- * @since 1.2.0
- * @example
- * ```ts
- * const result = await tryDOMAsyncOp(async () => {
- *     return await navigator.clipboard.readText();
- * });
- * if (result.isOk()) {
- *     console.log('剪贴板内容:', result.unwrap());
- * }
- * ```
- */
-export async function tryDOMAsyncOp<T>(op: () => Promise<T>): AsyncIOResult<T> {
-    try {
-        return Ok(await op());
-    } catch (e) {
-        return Err(e as DOMException);
-    }
-}
-
-/**
  * 将 BufferSource 转换为 Uint8Array。
  * @param data - 需要转换的 BufferSource。
  * @returns Uint8Array。
