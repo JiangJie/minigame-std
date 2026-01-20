@@ -1,6 +1,5 @@
 import { type AsyncIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
-import { miniGameFailureToError } from '../internal/mod.ts';
 import type { GeoPosition } from './lbs_defines.ts';
 import { getCurrentPosition as minaGetCurrentPosition } from './mina_lbs.ts';
 import { getCurrentPosition as webGetCurrentPosition } from './web_lbs.ts';
@@ -23,12 +22,8 @@ export * from './lbs_defines.ts';
  * }
  * ```
  */
-export async function getCurrentPosition(): AsyncIOResult<GeoPosition> {
+export function getCurrentPosition(): AsyncIOResult<GeoPosition> {
     return isMinaEnv()
-        ? (await minaGetCurrentPosition())
-            .map(pos => ({ latitude: pos.latitude, longitude: pos.longitude }))
-            .mapErr(miniGameFailureToError)
-        : (await webGetCurrentPosition())
-            .map(pos => ({ latitude: pos.coords.latitude, longitude: pos.coords.longitude }))
-            .mapErr(err => new Error(err.message));
+        ? minaGetCurrentPosition()
+        : webGetCurrentPosition();
 }

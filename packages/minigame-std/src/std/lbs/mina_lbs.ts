@@ -3,24 +3,30 @@
  * 小游戏平台的地理位置服务实现。
  */
 
-import { type AsyncResult } from 'happy-rusty';
-import { asyncResultify } from '../utils/mod.ts';
+import { type AsyncIOResult } from 'happy-rusty';
+import { asyncIOResultify } from '../utils/mod.ts';
+import type { GeoPosition } from './lbs_defines.ts';
 
-export async function getCurrentPosition(): AsyncResult<WechatMinigame.GetFuzzyLocationSuccessCallbackResult, WechatMinigame.GeneralCallbackResult> {
+export async function getCurrentPosition(): AsyncIOResult<GeoPosition> {
     const hasFuzzy = typeof wx.getFuzzyLocation === 'function';
 
     const getLocation = hasFuzzy ? wx.getFuzzyLocation : wx.getLocation;
     const scope = hasFuzzy ? 'scope.userFuzzyLocation' : 'scope.userLocation';
 
-    const res = await asyncResultify(wx.authorize)({
+    const authRes = await asyncIOResultify(wx.authorize)({
         scope,
     });
 
-    if (res.isErr()) {
-        return res.asErr();
+    if (authRes.isErr()) {
+        return authRes.asErr();
     }
 
-    return asyncResultify(getLocation)({
+    const locationRes = await asyncIOResultify(getLocation)({
         type: 'wgs84',
     });
+
+    return locationRes.map(pos => ({
+        latitude: pos.latitude,
+        longitude: pos.longitude,
+    }));
 }
