@@ -8,7 +8,8 @@ import { Lazy } from 'happy-rusty';
 // #region Internal Variables
 
 const encoder = Lazy(() => new TextEncoder());
-const decoder = Lazy(() => new TextDecoder());
+// 非法数据直接抛出错误
+const decoder = Lazy(() => new TextDecoder('utf-8', { fatal: true }));
 
 // #endregion
 
