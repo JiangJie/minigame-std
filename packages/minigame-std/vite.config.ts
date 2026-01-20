@@ -50,8 +50,7 @@ export default defineConfig(({ command }) => ({
             include: ['src/**/*.ts'],
             exclude: [
                 // Mina files that use wx API (cannot be tested in browser)
-                'src/std/clipboard/mina_clipboard.ts',
-                'src/std/codec/mina_codec.ts',
+            'src/std/clipboard/mina_clipboard.ts',
                 'src/std/crypto/random/mina_random.ts',
                 'src/std/event/mina_event.ts',
                 'src/std/fetch/mina_fetch.ts',

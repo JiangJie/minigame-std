@@ -21,7 +21,7 @@ export function textEncode(data: string): ArrayBuffer {
             data,
             format: FORMAT,
         })
-        : utf8String2AB(data);
+        : utf8StringToAb(data);
 }
 
 /**
@@ -36,17 +36,18 @@ export function textDecode(data: ArrayBuffer): string {
             data,
             format: FORMAT,
         })
-        : ab2Utf8String(data);
+        : abToUtf8String(data);
 }
 
 // #region Internal Functions
 
 /**
  * 将 utf8 字符串转换为 ArrayBuffer。
+ * 当 `wx.encode` 不可用时作为备用实现。
  * @param str - 需要转换的字符串。
  * @returns ArrayBuffer。
  */
-function utf8String2AB(str: string): ArrayBuffer {
+function utf8StringToAb(str: string): ArrayBuffer {
     const utf8: number[] = [];
 
     for (let i = 0; i < str.length; i++) {
@@ -80,10 +81,11 @@ function utf8String2AB(str: string): ArrayBuffer {
 
 /**
  * 将 ArrayBuffer 数据解码为 utf8 字符串。
+ * 当 `wx.decode` 不可用时作为备用实现。
  * @param data - 需要解码的 ArrayBuffer。
  * @returns 解码后的字符串。
  */
-function ab2Utf8String(data: ArrayBuffer): string {
+function abToUtf8String(data: ArrayBuffer): string {
     const u8a = new Uint8Array(data);
     let str = '';
     let i = 0;
