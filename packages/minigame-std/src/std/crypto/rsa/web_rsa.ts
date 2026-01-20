@@ -64,17 +64,20 @@ export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublic
  * @returns 加密后的数据。
  */
 function encrypt(publicKey: CryptoKey, data: DataSource): AsyncIOResult<ArrayBuffer> {
-    const encodedData = typeof data === 'string'
-        ? textEncode(data)
-        : bufferSourceToBytes(data);
+    return tryAsyncResult(() => {
+        const encodedData = typeof data === 'string'
+            ? textEncode(data)
+            // 类型错误可能抛异常
+            : bufferSourceToBytes(data);
 
-    return tryAsyncResult(crypto.subtle.encrypt(
-        {
-            name: 'RSA-OAEP',
-        },
-        publicKey,
-        encodedData,
-    ));
+        return crypto.subtle.encrypt(
+            {
+                name: 'RSA-OAEP',
+            },
+            publicKey,
+            encodedData,
+        );
+    });
 }
 
 // #endregion
