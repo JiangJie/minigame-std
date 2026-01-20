@@ -4,7 +4,7 @@
  */
 
 import type { FetchTask } from '@happy-ts/fetch-t';
-import { Err, Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
+import { Err, type IOResult } from 'happy-rusty';
 
 /**
  * 将小游戏失败回调的结果转换为 `Error` 类型。
@@ -28,32 +28,6 @@ export function miniGameFailureToError(err: WechatMinigame.GeneralCallbackResult
  */
 export function miniGameFailureToResult<T>(err: WechatMinigame.GeneralCallbackResult): IOResult<T> {
     return Err(miniGameFailureToError(err));
-}
-
-/**
- * 执行同步函数，预期异常都是 `WechatMinigame.GeneralCallbackResult`。
- * @param op - 需要执行的同步函数。
- * @returns IOResult。
- */
-export function tryGeneralSyncOp<T>(op: () => T): IOResult<T> {
-    try {
-        return Ok(op());
-    } catch (e) {
-        return miniGameFailureToResult(e as WechatMinigame.GeneralCallbackResult);
-    }
-}
-
-/**
- * 执行异步函数，预期异常都是 `WechatMinigame.GeneralCallbackResult`。
- * @param op - 需要执行的异步函数。
- * @returns AsyncIOResult。
- */
-export async function tryGeneralAsyncOp<T>(op: () => Promise<T>): AsyncIOResult<T> {
-    try {
-        return Ok(await op());
-    } catch (e) {
-        return miniGameFailureToResult(e as WechatMinigame.GeneralCallbackResult);
-    }
 }
 
 /**

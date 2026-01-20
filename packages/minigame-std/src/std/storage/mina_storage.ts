@@ -4,8 +4,7 @@
  */
 
 import { RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';
-import { miniGameFailureToError, tryGeneralSyncOp } from '../internal/mod.ts';
-import { asyncResultify } from '../utils/mod.ts';
+import { asyncIOResultify, syncIOResultify } from '../utils/mod.ts';
 
 /**
  * 异步设置存储项。
@@ -14,12 +13,12 @@ import { asyncResultify } from '../utils/mod.ts';
  * @returns 返回操作结果。
  */
 export async function setItem(key: string, data: string): AsyncVoidIOResult {
-    return (await asyncResultify(wx.setStorage)({
+    const setRes = await asyncIOResultify(wx.setStorage)({
         key,
         data,
-    }))
-        .and(RESULT_VOID)
-        .mapErr(miniGameFailureToError);
+    });
+
+    return setRes.and(RESULT_VOID);
 }
 
 /**
@@ -28,11 +27,11 @@ export async function setItem(key: string, data: string): AsyncVoidIOResult {
  * @returns 返回存储的字符串数据。
  */
 export async function getItem(key: string): AsyncIOResult<string> {
-    return (await asyncResultify(wx.getStorage<string>)({
+    const getRes = await asyncIOResultify(wx.getStorage<string>)({
         key,
-    }))
-        .map(x => x.data)
-        .mapErr(miniGameFailureToError);
+    });
+
+    return getRes.map(x => x.data);
 }
 
 /**
@@ -41,11 +40,11 @@ export async function getItem(key: string): AsyncIOResult<string> {
  * @returns 返回操作结果。
  */
 export async function removeItem(key: string): AsyncVoidIOResult {
-    return (await asyncResultify(wx.removeStorage)({
+    const removeRes = await asyncIOResultify(wx.removeStorage)({
         key,
-    }))
-        .and(RESULT_VOID)
-        .mapErr(miniGameFailureToError);
+    });
+
+    return removeRes.and(RESULT_VOID);
 }
 
 /**
@@ -53,9 +52,9 @@ export async function removeItem(key: string): AsyncVoidIOResult {
  * @returns 返回操作结果。
  */
 export async function clear(): AsyncVoidIOResult {
-    return (await asyncResultify(wx.clearStorage)({}))
-        .and(RESULT_VOID)
-        .mapErr(miniGameFailureToError);
+    const clearRes = await asyncIOResultify(wx.clearStorage)();
+
+    return clearRes.and(RESULT_VOID);
 }
 
 /**
@@ -63,9 +62,9 @@ export async function clear(): AsyncVoidIOResult {
  * @returns 返回存储项的数量。
  */
 export async function getLength(): AsyncIOResult<number> {
-    return (await asyncResultify(wx.getStorageInfo)({}))
-        .map(x => x.keys.length)
-        .mapErr(miniGameFailureToError);
+    const getRes = await getStorageKeys();
+
+    return getRes.map(x => x.length);
 }
 
 /**
@@ -74,9 +73,9 @@ export async function getLength(): AsyncIOResult<number> {
  * @returns 返回是否存在的布尔值。
  */
 export async function hasItem(key: string): AsyncIOResult<boolean> {
-    return (await asyncResultify(wx.getStorageInfo)({}))
-        .map(x => x.keys.includes(key))
-        .mapErr(miniGameFailureToError);
+    const getRes = await getStorageKeys();
+
+    return getRes.map(x => x.includes(key));
 }
 
 /**
@@ -86,9 +85,7 @@ export async function hasItem(key: string): AsyncIOResult<boolean> {
  * @returns 返回操作结果。
  */
 export function setItemSync(key: string, data: string): VoidIOResult {
-    return tryGeneralSyncOp(() => {
-        wx.setStorageSync(key, data);
-    });
+    return syncIOResultify(wx.setStorageSync)(key, data);
 }
 
 /**
@@ -97,9 +94,7 @@ export function setItemSync(key: string, data: string): VoidIOResult {
  * @returns 返回存储的字符串数据。
  */
 export function getItemSync(key: string): IOResult<string> {
-    return tryGeneralSyncOp(() => {
-        return wx.getStorageSync<string>(key);
-    });
+    return syncIOResultify(wx.getStorageSync<string>)(key);
 }
 
 /**
@@ -108,9 +103,7 @@ export function getItemSync(key: string): IOResult<string> {
  * @returns 返回操作结果。
  */
 export function removeItemSync(key: string): VoidIOResult {
-    return tryGeneralSyncOp(() => {
-        wx.removeStorageSync(key);
-    });
+    return syncIOResultify(wx.removeStorageSync)(key);
 }
 
 /**
@@ -118,9 +111,7 @@ export function removeItemSync(key: string): VoidIOResult {
  * @returns 返回操作结果。
  */
 export function clearSync(): VoidIOResult {
-    return tryGeneralSyncOp(() => {
-        wx.clearStorageSync();
-    });
+    return syncIOResultify(wx.clearStorageSync)();
 }
 
 /**
@@ -128,10 +119,8 @@ export function clearSync(): VoidIOResult {
  * @returns 返回存储项的数量。
  */
 export function getLengthSync(): IOResult<number> {
-    return tryGeneralSyncOp(() => {
-        const info = wx.getStorageInfoSync();
-        return info.keys.length;
-    });
+    return getStorageKeysSync()
+        .map(x => x.length);
 }
 
 /**
@@ -140,8 +129,29 @@ export function getLengthSync(): IOResult<number> {
  * @returns 返回是否存在的布尔值。
  */
 export function hasItemSync(key: string): IOResult<boolean> {
-    return tryGeneralSyncOp(() => {
-        const info = wx.getStorageInfoSync();
-        return info.keys.includes(key);
-    });
+    return getStorageKeysSync()
+        .map(x => x.includes(key));
 }
+
+// #region Internal Functions
+
+/**
+ * 获取所有存储键名。
+ * @returns 返回所有存储键名的数组。
+ */
+async function getStorageKeys(): AsyncIOResult<string[]> {
+    const getRes = await asyncIOResultify(wx.getStorageInfo)();
+
+    return getRes.map(x => x.keys);
+}
+
+/**
+ * 同步获取所有存储键名。
+ * @returns 返回所有存储键名的数组。
+ */
+function getStorageKeysSync(): IOResult<string[]> {
+    return syncIOResultify(wx.getStorageInfoSync)()
+        .map(x => x.keys);
+}
+
+// #endregion
