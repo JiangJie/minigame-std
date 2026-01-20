@@ -3,10 +3,10 @@
  * 小游戏平台的 WebSocket 实现。
  */
 
-import { RESULT_VOID, type AsyncVoidIOResult } from 'happy-rusty';
+import { RESULT_VOID, tryResult, type AsyncVoidIOResult } from 'happy-rusty';
 import type { DataSource } from '../defines.ts';
 import { bufferSourceToAb, miniGameFailureToError } from '../internal/mod.ts';
-import { asyncResultify } from '../utils/mod.ts';
+import { asyncIOResultify } from '../utils/mod.ts';
 import { SocketReadyState, type ISocket, type SocketListenerMap, type SocketOptions } from './socket_define.ts';
 
 /**
@@ -77,15 +77,16 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
         },
 
         async send(data: DataSource): AsyncVoidIOResult {
-            const sendData = typeof data === 'string'
+            const sendDataRes = tryResult(() => typeof data === 'string'
                 ? data
-                : bufferSourceToAb(data);
+                : bufferSourceToAb(data));
+            if (sendDataRes.isErr()) return sendDataRes.asErr();
 
-            return (await asyncResultify(socket.send)({
-                data: sendData,
-            }))
-                .and(RESULT_VOID)
-                .mapErr(miniGameFailureToError);
+            const result = await asyncIOResultify(socket.send)({
+                data: sendDataRes.unwrap(),
+            });
+
+            return result.and(RESULT_VOID);
         },
 
         close(code?: number, reason?: string): void {
