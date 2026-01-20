@@ -3,7 +3,7 @@
  * Web 平台的存储操作实现。
  */
 
-import { Err, Ok, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
+import { Err, Ok, RESULT_VOID, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 
 /**
  * 设置存储项。
@@ -13,6 +13,7 @@ import { Err, Ok, tryResult, type IOResult, type VoidIOResult } from 'happy-rust
  */
 export function setItem(key: string, data: string): VoidIOResult {
     return tryResult(() => {
+        // 可能会抛出异常，例如存储空间不足等情况
         localStorage.setItem(key, data);
     });
 }
@@ -33,9 +34,8 @@ export function getItem(key: string): IOResult<string> {
  * @returns 返回操作结果。
  */
 export function removeItem(key: string): VoidIOResult {
-    return callOp(() => {
-        localStorage.removeItem(key);
-    });
+    localStorage.removeItem(key);
+    return RESULT_VOID;
 }
 
 /**
@@ -43,9 +43,8 @@ export function removeItem(key: string): VoidIOResult {
  * @returns 返回操作结果。
  */
 export function clear(): VoidIOResult {
-    return callOp(() => {
-        localStorage.clear();
-    });
+    localStorage.clear();
+    return RESULT_VOID;
 }
 
 /**
@@ -53,9 +52,7 @@ export function clear(): VoidIOResult {
  * @returns 返回存储项的数量。
  */
 export function getLength(): IOResult<number> {
-    return callOp(() => {
-        return localStorage.length;
-    });
+    return Ok(localStorage.length);
 }
 
 /**
@@ -64,21 +61,5 @@ export function getLength(): IOResult<number> {
  * @returns 返回是否存在的布尔值。
  */
 export function hasItem(key: string): IOResult<boolean> {
-    return callOp(() => {
-        return localStorage.getItem(key) != null;
-    });
+    return Ok(localStorage.getItem(key) != null);
 }
-
-// #region Internal Functions
-
-/**
- * 执行操作并包装为 IOResult。
- * @param op - 要执行的操作函数。
- * @returns 返回操作结果。
- */
-function callOp<T>(op: () => T): IOResult<T> {
-    const res = op();
-    return Ok(res);
-}
-
-// #endregion
