@@ -10,11 +10,11 @@ import type { UUID } from './random_defines.ts';
  * @param length - 要生成的随机字节数。
  * @returns 返回包含随机字节的 Uint8Array。
  */
-export function getRandomValues(length: number): Uint8Array {
-    const u8a = new Uint8Array(length);
-    crypto.getRandomValues(u8a);
+export function getRandomValues(length: number): Uint8Array<ArrayBuffer> {
+    const bytes = new Uint8Array(length);
+    crypto.getRandomValues(bytes);
 
-    return u8a;
+    return bytes;
 }
 
 /**

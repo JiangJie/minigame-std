@@ -1,4 +1,4 @@
-import { Err, Ok, tryAsyncResult, type AsyncIOResult, type AsyncResult, type Result } from 'happy-rusty';
+import { Err, Ok, tryAsyncResult, type AsyncIOResult, type AsyncResult, type IOResult, type Result } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import { miniGameFailureToError } from '../internal/helpers.js';
 
@@ -87,6 +87,36 @@ export function asyncIOResultify<F extends (...args: any[]) => unknown, T = Resu
         const result = await wrapped(...args);
         return result.mapErr(miniGameFailureToError);
     }) as IOResultifyValidAPI<F> extends true ? (...args: Parameters<F>) => AsyncIOResult<T> : never;
+}
+
+/**
+ * 将小游戏同步 API 转换为返回 `IOResult<T>` 的新函数。
+ *
+ * 功能类似于 `tryGeneralSyncOp`，但以函数包装的方式使用，将可能抛出的异常捕获并转换为 `IOResult`。
+ *
+ * @param api - 小游戏同步 API。
+ * @returns 返回一个新的函数，该函数返回 `IOResult<T>`。
+ * @example
+ * ```ts
+ * // 将 wx.getStorageSync 转换为 IOResult 风格
+ * const getStorageSync = syncIOResultify(wx.getStorageSync);
+ * const result = getStorageSync('test');
+ * if (result.isOk()) {
+ *     console.log('获取成功:', result.unwrap());
+ * } else {
+ *     console.error('获取失败:', result.unwrapErr().message);
+ * }
+ * ```
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 函数泛型约束需要 any 以兼容所有函数签名
+export function syncIOResultify<F extends (...args: any[]) => unknown>(api: F): (...args: Parameters<F>) => IOResult<ReturnType<F>> {
+    return (...args: Parameters<F>): IOResult<ReturnType<F>> => {
+        try {
+            return Ok(api(...args) as ReturnType<F>);
+        } catch (e) {
+            return Err(miniGameFailureToError(e as WechatMinigame.GeneralCallbackResult));
+        }
+    };
 }
 
 // #region Internal Types
