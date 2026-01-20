@@ -1,49 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Err, Ok, tryAsyncResult, type AsyncResult, type Result } from 'happy-rusty';
 import { Future } from 'tiny-future';
-
-/**
- * 类型工具：判断 API 是否符合 promisify 条件。
- *
- * 要求 API 返回 `void` 或 `PromiseLike`，且参数包含 `success` 或 `fail` 回调。
- * @typeParam T - 待检查的 API 函数类型。
- * @since 1.10.0
- */
-export type ValidAPI<T> = T extends (params: infer P) => infer R
-    ? R extends void | PromiseLike<any>
-    ? P extends { success?: any; } | undefined
-    ? true
-    : P extends { fail?: any; } | undefined
-    ? true
-    : false
-    : false
-    : false;
-
-/**
- * 类型工具：提取成功回调参数类型。
- *
- * 从 API 函数的 `success` 回调中提取返回类型。
- * @typeParam T - API 函数类型。
- * @since 1.10.0
- */
-export type SuccessType<T> = T extends (params: infer P) => any
-    ? P extends { success?: (res: infer S) => any; }
-    ? S
-    : never
-    : never;
-
-/**
- * 类型工具：提取失败回调参数类型。
- *
- * 从 API 函数的 `fail` 回调中提取错误类型。
- * @typeParam T - API 函数类型。
- * @since 1.10.0
- */
-export type FailType<T> = T extends (params: infer P) => any
-    ? P extends { fail?: (err: infer E) => any; }
-    ? E
-    : never
-    : never;
 
 /**
  * 将小游戏异步 API 转换为返回 `AsyncResult<T, E>` 的新函数，需要转换的 API 必须是接受可选 `success` 和 `fail` 回调的函数，并且其返回值必须是 `void` 或 `PromiseLike`。
@@ -65,11 +21,11 @@ export type FailType<T> = T extends (params: infer P) => any
  * }
  * ```
  */
-export function asyncResultify<F extends (...args: any[]) => any, T = SuccessType<F>, E = FailType<F>>(api: F): ValidAPI<F> extends true
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 函数泛型约束需要 any 以兼容所有函数签名
+export function asyncResultify<F extends (...args: any[]) => unknown, T = ResultifySuccessType<F>, E = ResultifyFailType<F>>(api: F): ResultifyValidAPI<F> extends true
     ? (...args: Parameters<F>) => AsyncResult<T, E>
     : never {
-    // @ts-expect-error 跳过运行时是否满足转换条件的检查
-    return (...args: Parameters<F>): AsyncResult<T, E> => {
+    return ((...args: Parameters<F>): AsyncResult<T, E> => {
         const future = new Future<Result<T, E>>();
 
         const options = args[0] ?? {};
@@ -87,16 +43,65 @@ export function asyncResultify<F extends (...args: any[]) => any, T = SuccessTyp
             future.resolve(Err(err));
         };
 
-        const res = api(options);
+        const ret = api(options);
 
         // 也支持其他返回 PromiseLike 的 API（鸭子类型检查）
-        if (res != null && typeof res.then === 'function') {
-        // Convert PromiseLike to AsyncResult
-            return tryAsyncResult(res);
-        } else if (res !== undefined) {
+        if (ret != null && typeof (ret as PromiseLike<T>).then === 'function') {
+            // Convert PromiseLike to AsyncResult
+            return tryAsyncResult(ret as PromiseLike<T>);
+        } else if (ret !== undefined) {
             throw new TypeError('API must return void or PromiseLike. Otherwise the return value will be discarded');
         }
 
         return future.promise;
-    };
+    }) as ResultifyValidAPI<F> extends true ? (...args: Parameters<F>) => AsyncResult<T, E> : never;
 }
+
+// #region Internal Types
+
+/**
+ * 通用回调函数类型。
+ */
+type AnyCallback = (...args: never[]) => unknown;
+
+/**
+ * 类型工具：判断 API 是否符合 resultify 条件。
+ *
+ * 要求 API 返回 `void` 或 `PromiseLike`，且参数包含 `success` 或 `fail` 回调。
+ * @typeParam T - 待检查的 API 函数类型。
+ */
+type ResultifyValidAPI<T> = T extends (params: infer P) => infer R
+    ? R extends void | PromiseLike<unknown>
+    ? P extends { success?: AnyCallback; } | undefined
+    ? true
+    : P extends { fail?: AnyCallback; } | undefined
+    ? true
+    : false
+    : false
+    : false;
+
+/**
+ * 类型工具：提取成功回调参数类型。
+ *
+ * 从 API 函数的 `success` 回调中提取返回类型。
+ * @typeParam T - API 函数类型。
+ */
+type ResultifySuccessType<T> = T extends (params: infer P) => unknown
+    ? P extends { success?: (res: infer S) => unknown; }
+    ? S
+    : never
+    : never;
+
+/**
+ * 类型工具：提取失败回调参数类型。
+ *
+ * 从 API 函数的 `fail` 回调中提取错误类型。
+ * @typeParam T - API 函数类型。
+ */
+type ResultifyFailType<T> = T extends (params: infer P) => unknown
+    ? P extends { fail?: (err: infer E) => unknown; }
+    ? E
+    : never
+    : never;
+
+// #endregion

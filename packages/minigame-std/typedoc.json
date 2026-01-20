@@ -3,6 +3,11 @@
   "entryPoints": ["src/mod.ts"],
   "out": "docs",
   "readme": "none",
+  "intentionallyNotExported": [
+    "ResultifyValidAPI",
+    "ResultifySuccessType",
+    "ResultifyFailType"
+  ],
   "navigation": {
     "includeCategories": true,
     "includeGroups": true
