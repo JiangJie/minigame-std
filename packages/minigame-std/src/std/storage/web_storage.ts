@@ -3,8 +3,7 @@
  * Web 平台的存储操作实现。
  */
 
-import { Err, Ok, type IOResult, type VoidIOResult } from 'happy-rusty';
-import { tryDOMSyncOp } from '../utils/mod.ts';
+import { Err, Ok, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 
 /**
  * 设置存储项。
@@ -13,7 +12,7 @@ import { tryDOMSyncOp } from '../utils/mod.ts';
  * @returns 返回操作结果。
  */
 export function setItem(key: string, data: string): VoidIOResult {
-    return tryDOMSyncOp(() => {
+    return tryResult(() => {
         localStorage.setItem(key, data);
     });
 }

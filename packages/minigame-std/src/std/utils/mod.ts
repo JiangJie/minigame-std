@@ -84,29 +84,6 @@ export async function tryGeneralAsyncOp<T>(op: () => Promise<T>): AsyncIOResult<
 }
 
 /**
- * 执行同步函数，预期异常都是 `DOMException`。
- * @param op - 需要执行的同步函数。
- * @returns IOResult。
- * @since 1.2.0
- * @example
- * ```ts
- * const result = tryDOMSyncOp(() => {
- *     return document.querySelector('#app');
- * });
- * if (result.isOk()) {
- *     console.log('元素:', result.unwrap());
- * }
- * ```
- */
-export function tryDOMSyncOp<T>(op: () => T): IOResult<T> {
-    try {
-        return Ok(op());
-    } catch (e) {
-        return Err(e as DOMException);
-    }
-}
-
-/**
  * 执行异步函数，预期异常都是 `DOMException`。
  * @param op - 需要执行的异步函数。
  * @returns AsyncIOResult。

@@ -5,7 +5,6 @@ import {
     miniGameFailureToError,
     miniGameFailureToResult,
     tryDOMAsyncOp,
-    tryDOMSyncOp,
     tryGeneralAsyncOp,
     tryGeneralSyncOp,
 } from '../src/mod.ts';
@@ -92,28 +91,6 @@ test('bufferSource2Ab handles TypedArray with offset', () => {
 
 test('bufferSource2Ab throws on invalid input', () => {
     expect(() => bufferSource2Ab({} as BufferSource)).toThrow('BufferSource is not ArrayBuffer or ArrayBufferView');
-});
-
-// tryDOMSyncOp tests
-test('tryDOMSyncOp returns Ok on success', () => {
-    const result = tryDOMSyncOp(() => 'success');
-    expect(result.isOk()).toBe(true);
-    expect(result.unwrap()).toBe('success');
-});
-
-test('tryDOMSyncOp returns Err on exception', () => {
-    const error = new DOMException('Test error');
-    const result = tryDOMSyncOp(() => {
-        throw error;
-    });
-    expect(result.isErr()).toBe(true);
-    expect(result.unwrapErr()).toBe(error);
-});
-
-test('tryDOMSyncOp handles complex return types', () => {
-    const result = tryDOMSyncOp(() => ({ key: 'value', num: 42 }));
-    expect(result.isOk()).toBe(true);
-    expect(result.unwrap()).toEqual({ key: 'value', num: 42 });
 });
 
 // tryDOMAsyncOp tests
