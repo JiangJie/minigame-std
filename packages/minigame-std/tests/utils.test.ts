@@ -4,8 +4,6 @@ import {
     bufferSourceToBytes,
     miniGameFailureToError,
     miniGameFailureToResult,
-    tryGeneralAsyncOp,
-    tryGeneralSyncOp,
 } from '../src/std/internal/mod.ts';
 
 // bufferSource2U8a tests
@@ -141,94 +139,6 @@ test('miniGameFailureToResult preserves error message', () => {
 
     expect(result.isErr()).toBe(true);
     expect(result.unwrapErr().message).toBe('setStorage:fail permission denied');
-});
-
-// tryGeneralSyncOp tests
-test('tryGeneralSyncOp returns Ok on success', () => {
-    const result = tryGeneralSyncOp(() => 42);
-    expect(result.isOk()).toBe(true);
-    expect(result.unwrap()).toBe(42);
-});
-
-test('tryGeneralSyncOp returns Ok with complex return type', () => {
-    const result = tryGeneralSyncOp(() => ({ data: [1, 2, 3], status: 'ok' }));
-    expect(result.isOk()).toBe(true);
-    expect(result.unwrap()).toEqual({ data: [1, 2, 3], status: 'ok' });
-});
-
-test('tryGeneralSyncOp returns Err on exception with errMsg', () => {
-    const result = tryGeneralSyncOp(() => {
-        throw { errMsg: 'sync operation failed' };
-    });
-    expect(result.isErr()).toBe(true);
-    expect(result.unwrapErr().message).toBe('sync operation failed');
-});
-
-test('tryGeneralSyncOp returns Err on Error exception', () => {
-    const result = tryGeneralSyncOp(() => {
-        throw new Error('standard error');
-    });
-    expect(result.isErr()).toBe(true);
-    expect(result.unwrapErr().message).toBe('standard error');
-});
-
-test('tryGeneralSyncOp handles void return', () => {
-    let sideEffect = false;
-    const result = tryGeneralSyncOp(() => {
-        sideEffect = true;
-    });
-    expect(result.isOk()).toBe(true);
-    expect(result.unwrap()).toBeUndefined();
-    expect(sideEffect).toBe(true);
-});
-
-// tryGeneralAsyncOp tests
-test('tryGeneralAsyncOp returns Ok on async success', async () => {
-    const result = await tryGeneralAsyncOp(async () => 'async result');
-    expect(result.isOk()).toBe(true);
-    expect(result.unwrap()).toBe('async result');
-});
-
-test('tryGeneralAsyncOp returns Ok with complex async return type', async () => {
-    const result = await tryGeneralAsyncOp(async () => {
-        return { items: ['a', 'b'], count: 2 };
-    });
-    expect(result.isOk()).toBe(true);
-    expect(result.unwrap()).toEqual({ items: ['a', 'b'], count: 2 });
-});
-
-test('tryGeneralAsyncOp returns Err on async exception with errMsg', async () => {
-    const result = await tryGeneralAsyncOp(async () => {
-        throw { errMsg: 'async operation failed' };
-    });
-    expect(result.isErr()).toBe(true);
-    expect(result.unwrapErr().message).toBe('async operation failed');
-});
-
-test('tryGeneralAsyncOp returns Err on Promise rejection', async () => {
-    const result = await tryGeneralAsyncOp(() =>
-        Promise.reject({ errMsg: 'promise rejected' }),
-    );
-    expect(result.isErr()).toBe(true);
-    expect(result.unwrapErr().message).toBe('promise rejected');
-});
-
-test('tryGeneralAsyncOp handles delayed async operations', async () => {
-    const result = await tryGeneralAsyncOp(
-        () => new Promise<string>((resolve) => setTimeout(() => resolve('delayed'), 10)),
-    );
-    expect(result.isOk()).toBe(true);
-    expect(result.unwrap()).toBe('delayed');
-});
-
-test('tryGeneralAsyncOp handles delayed rejection', async () => {
-    const result = await tryGeneralAsyncOp(
-        () => new Promise<string>((_, reject) =>
-            setTimeout(() => reject({ errMsg: 'delayed failure' }), 10),
-        ),
-    );
-    expect(result.isErr()).toBe(true);
-    expect(result.unwrapErr().message).toBe('delayed failure');
 });
 
 // Additional bufferSource2U8a edge cases

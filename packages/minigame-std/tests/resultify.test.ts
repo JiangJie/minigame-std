@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { asyncIOResultify, asyncResultify } from '../src/mod.ts';
+import { asyncIOResultify, asyncResultify, syncIOResultify } from '../src/mod.ts';
 
 interface CallbackParams<S, E> {
     success?: (res: S) => void;
@@ -183,4 +183,58 @@ test('asyncIOResultify preserves original callbacks', async () => {
 
     expect(originalSuccessCalled).toBe(true);
     expect(originalFailCalled).toBe(true);
+});
+
+// syncIOResultify 测试
+
+test('syncIOResultify converts sync API to IOResult - success', () => {
+    const mockSyncApi = (key: string) => {
+        return `value for ${ key }`;
+    };
+
+    const wrapped = syncIOResultify(mockSyncApi);
+    const result = wrapped('testKey');
+
+    expect(result.isOk()).toBe(true);
+    expect(result.unwrap()).toBe('value for testKey');
+});
+
+test('syncIOResultify converts sync API to IOResult - failure', () => {
+    const mockSyncApi = (_key: string): string => {
+        throw { errMsg: 'getStorageSync:fail data not found' } as WechatMinigame.GeneralCallbackResult;
+    };
+
+    const wrapped = syncIOResultify(mockSyncApi);
+    const result = wrapped('testKey');
+
+    expect(result.isErr()).toBe(true);
+    const error = result.unwrapErr();
+    expect(error).toBeInstanceOf(Error);
+    expect(error.message).toBe('getStorageSync:fail data not found');
+});
+
+test('syncIOResultify handles Error exception', () => {
+    const mockSyncApi = (_key: string): string => {
+        throw new Error('native error');
+    };
+
+    const wrapped = syncIOResultify(mockSyncApi);
+    const result = wrapped('testKey');
+
+    expect(result.isErr()).toBe(true);
+    const error = result.unwrapErr();
+    expect(error).toBeInstanceOf(Error);
+    expect(error.message).toBe('native error');
+});
+
+test('syncIOResultify preserves multiple parameters', () => {
+    const mockSyncApi = (key: string, data: unknown) => {
+        return { key, data };
+    };
+
+    const wrapped = syncIOResultify(mockSyncApi);
+    const result = wrapped('myKey', { value: 123 });
+
+    expect(result.isOk()).toBe(true);
+    expect(result.unwrap()).toEqual({ key: 'myKey', data: { value: 123 } });
 });
