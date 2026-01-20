@@ -17,7 +17,9 @@ export * from './resultify.ts';
  * ```
  */
 export function miniGameFailureToError(err: WechatMinigame.GeneralCallbackResult | Error): Error {
-    return new Error((err as WechatMinigame.GeneralCallbackResult).errMsg ?? (err as Error).message);
+    return err instanceof Error
+        ? err
+        : new Error(err.errMsg);
 }
 
 /**
