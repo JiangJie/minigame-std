@@ -1,3 +1,4 @@
+import type { AsyncIOResult } from 'happy-rusty';
 import type { DataSource } from '../defines.ts';
 
 /**
@@ -10,11 +11,10 @@ import type { DataSource } from '../defines.ts';
  * const publicKey = await cryptos.rsa.importPublicKey(pemString, 'SHA-256');
  *
  * // 加密并返回 ArrayBuffer
- * const encrypted = await publicKey.encrypt('Hello, World!');
+ * const encrypted = (await publicKey.encrypt('Hello, World!')).unwrap();
  *
  * // 加密并返回 Base64 字符串
- * const encryptedStr = await publicKey.encryptToString('Hello, World!');
- * ```
+ * const encryptedStr = (await publicKey.encryptToString('Hello, World!')).unwrap();
  */
 export interface RSAPublicKey {
     /**
@@ -22,14 +22,14 @@ export interface RSAPublicKey {
      * @param data - 要加密的数据。
      * @returns 加密后的 ArrayBuffer。
      */
-    encrypt(data: DataSource): Promise<ArrayBuffer>;
+    encrypt(data: DataSource): AsyncIOResult<ArrayBuffer>;
 
     /**
      * 加密后转换为 Base64 字符串。
      * @param data - 要加密的数据。
      * @returns 加密后的 Base64 字符串。
      */
-    encryptToString(data: DataSource): Promise<string>;
+    encryptToString(data: DataSource): AsyncIOResult<string>;
 }
 
 /**

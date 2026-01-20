@@ -3,6 +3,7 @@
  * Web 平台的 RSA 加密实现。
  */
 
+import { Err, tryAsyncResult, type AsyncIOResult } from 'happy-rusty';
 import { base64FromBuffer } from '../../base64/mod.ts';
 import { byteStringToBuffer, textEncode } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
@@ -15,40 +16,43 @@ import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
  * @param hash - 哈希算法。
  * @returns RSA 公钥对象。
  */
-export async function importPublicKey(pem: string, hash: SHA): Promise<RSAPublicKey> {
+export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublicKey> {
     const rMessage = /\s*-----BEGIN ([A-Z0-9- ]+)-----\r?\n?([\x21-\x7e\s]+?(?:\r?\n\r?\n))?([:A-Za-z0-9+/=\s]+?)-----END \1-----/g;
     const match = rMessage.exec(pem);
 
     if (!match) {
-        throw new TypeError('Invalid PEM formatted message');
+        return Promise.resolve(Err(new TypeError('Invalid PEM formatted message')));
     }
 
     pem = match[3];
 
-    const keyData = byteStringToBuffer(atob(pem));
+    return tryAsyncResult(async () => {
+        const keyData = byteStringToBuffer(atob(pem));
 
-    const publicKey = await crypto.subtle.importKey(
-        'spki',
-        keyData,
-        {
-            name: 'RSA-OAEP',
-            hash,
-        },
-        false,
-        [
-            'encrypt',
-        ],
-    );
+        const publicKey = await crypto.subtle.importKey(
+            'spki',
+            keyData,
+            {
+                name: 'RSA-OAEP',
+                hash,
+            },
+            false,
+            [
+                'encrypt',
+            ],
+        );
 
-    return {
-        encrypt(data: DataSource): Promise<ArrayBuffer> {
-            return encrypt(publicKey, data);
-        },
+        return {
+            encrypt(data: DataSource): AsyncIOResult<ArrayBuffer> {
+                return encrypt(publicKey, data);
+            },
 
-        async encryptToString(data: DataSource): Promise<string> {
-            return base64FromBuffer(await encrypt(publicKey, data));
-        },
-    };
+            async encryptToString(data: DataSource): AsyncIOResult<string> {
+                const result = await encrypt(publicKey, data);
+                return result.map(base64FromBuffer);
+            },
+        };
+    });
 }
 
 // #region Internal Functions
@@ -59,18 +63,18 @@ export async function importPublicKey(pem: string, hash: SHA): Promise<RSAPublic
  * @param data - 要加密的数据。
  * @returns 加密后的数据。
  */
-function encrypt(publicKey: CryptoKey, data: DataSource): Promise<ArrayBuffer> {
+function encrypt(publicKey: CryptoKey, data: DataSource): AsyncIOResult<ArrayBuffer> {
     const encodedData = typeof data === 'string'
         ? textEncode(data)
         : bufferSourceToBytes(data);
 
-    return crypto.subtle.encrypt(
+    return tryAsyncResult(crypto.subtle.encrypt(
         {
             name: 'RSA-OAEP',
         },
         publicKey,
         encodedData,
-    );
+    ));
 }
 
 // #endregion
