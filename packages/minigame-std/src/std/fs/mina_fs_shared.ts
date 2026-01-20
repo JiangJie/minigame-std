@@ -6,7 +6,7 @@
 import { normalize } from '@std/path/posix';
 import { NOT_FOUND_ERROR, ROOT_DIR, type ExistsOptions } from 'happy-opfs';
 import { Err, Lazy, Ok, RESULT_FALSE, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
-import { bufferSource2Ab, miniGameFailureToError } from '../utils/mod.ts';
+import { bufferSourceToAb, miniGameFailureToError } from '../internal/mod.ts';
 import type { FileEncoding, MinaWriteFileContent, ReadOptions } from './fs_define.ts';
 
 // #region Internal Variables
@@ -200,7 +200,7 @@ export function getWriteFileContents(contents: MinaWriteFileContent): GetWriteFi
     const isBin = typeof contents !== 'string';
 
     const encoding = isBin ? undefined : 'utf8';
-    const data = isBin ? bufferSource2Ab(contents) : contents;
+    const data = isBin ? bufferSourceToAb(contents) : contents;
 
     const res: GetWriteFileContents = {
         data,

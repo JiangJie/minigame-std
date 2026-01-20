@@ -5,7 +5,8 @@
 
 import { RESULT_VOID, type AsyncVoidIOResult } from 'happy-rusty';
 import type { DataSource } from '../defines.ts';
-import { asyncResultify, bufferSource2Ab, miniGameFailureToError } from '../utils/mod.ts';
+import { bufferSourceToAb, miniGameFailureToError } from '../internal/mod.ts';
+import { asyncResultify } from '../utils/mod.ts';
 import { SocketReadyState, type ISocket, type SocketListenerMap, type SocketOptions } from './socket_define.ts';
 
 /**
@@ -78,7 +79,7 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
         async send(data: DataSource): AsyncVoidIOResult {
             const sendData = typeof data === 'string'
                 ? data
-                : bufferSource2Ab(data);
+                : bufferSourceToAb(data);
 
             return (await asyncResultify(socket.send)({
                 data: sendData,

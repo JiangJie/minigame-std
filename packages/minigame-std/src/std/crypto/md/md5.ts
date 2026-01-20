@@ -7,7 +7,7 @@
 
 import { hexFromBuffer, textEncode } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
-import { bufferSource2U8a } from '../../utils/mod.ts';
+import { bufferSourceToBytes } from '../../internal/mod.ts';
 
 // #region Internal Variables
 
@@ -167,7 +167,7 @@ export class Md5 {
     update(data: DataSource): this {
         const msg = typeof data === 'string'
             ? textEncode(data)
-            : bufferSource2U8a(data);
+            : bufferSourceToBytes(data);
 
         let pos = this.pos;
         const free = BLOCK_SIZE - pos;

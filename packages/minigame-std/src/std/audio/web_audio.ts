@@ -5,7 +5,7 @@
 import { Err, Ok, Once, RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import { readFile } from '../fs/mod.ts';
-import { bufferSource2Ab } from '../utils/mod.ts';
+import { bufferSourceToAb } from '../internal/mod.ts';
 import type { PlayOptions } from './audio_defines.ts';
 
 // #region Internal Variables
@@ -118,7 +118,7 @@ export function playWebAudioFromAudioBuffer(buffer: AudioBuffer, options?: PlayO
  */
 export async function playWebAudioFromArrayBuffer(buffer: BufferSource, options?: PlayOptions): Promise<AudioBufferSourceNode> {
     const context = getGlobalAudioContext();
-    const audioBuffer = await context.decodeAudioData(bufferSource2Ab(buffer));
+    const audioBuffer = await context.decodeAudioData(bufferSourceToAb(buffer));
 
     return playWebAudioFromAudioBuffer(audioBuffer, options);
 }

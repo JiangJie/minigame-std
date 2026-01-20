@@ -1,6 +1,6 @@
 import { type AsyncIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
-import { miniGameFailureToError } from '../utils/mod.ts';
+import { miniGameFailureToError } from '../internal/mod.ts';
 import type { GeoPosition } from './lbs_defines.ts';
 import { getCurrentPosition as minaGetCurrentPosition } from './mina_lbs.ts';
 import { getCurrentPosition as webGetCurrentPosition } from './web_lbs.ts';

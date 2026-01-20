@@ -5,7 +5,7 @@
  */
 
 import { Lazy } from 'happy-rusty';
-import { bufferSource2U8a } from '../utils/mod.ts';
+import { bufferSourceToBytes } from '../internal/mod.ts';
 
 // #region Internal Variables
 
@@ -49,7 +49,7 @@ const lookup = Lazy(() => {
 export function base64FromBuffer(data: BufferSource): string {
     let result = '';
 
-    const u8a = bufferSource2U8a(data);
+    const u8a = bufferSourceToBytes(data);
 
     const len = u8a.length;
     let i: number;

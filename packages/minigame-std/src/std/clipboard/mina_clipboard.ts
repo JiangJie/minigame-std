@@ -4,7 +4,8 @@
  */
 
 import { RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
-import { asyncResultify, miniGameFailureToError } from '../utils/mod.ts';
+import { miniGameFailureToError } from '../internal/mod.ts';
+import { asyncResultify } from '../utils/mod.ts';
 
 /**
  * 异步写入文本数据到剪贴板。

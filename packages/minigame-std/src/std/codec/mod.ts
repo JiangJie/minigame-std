@@ -1,6 +1,6 @@
 import { isMinaEnv } from '../../macros/env.ts';
 import type { DataSource } from '../defines.ts';
-import { bufferSource2Ab, bufferSource2U8a } from '../utils/mod.ts';
+import { bufferSourceToAb, bufferSourceToBytes } from '../internal/mod.ts';
 import { textDecode as minaTextDecode, textEncode as minaTextEncode } from './mina_codec.ts';
 import { textDecode as webTextDecode, textEncode as webTextEncode } from './web_codec.ts';
 
@@ -17,7 +17,7 @@ import { textDecode as webTextDecode, textEncode as webTextEncode } from './web_
  */
 export function textEncode(data: string): Uint8Array<ArrayBuffer> {
     return isMinaEnv()
-        ? bufferSource2U8a(minaTextEncode(data))
+        ? bufferSourceToBytes(minaTextEncode(data))
         : webTextEncode(data);
 }
 
@@ -34,7 +34,7 @@ export function textEncode(data: string): Uint8Array<ArrayBuffer> {
  */
 export function textDecode(data: BufferSource): string {
     return isMinaEnv()
-        ? minaTextDecode(bufferSource2Ab(data))
+        ? minaTextDecode(bufferSourceToAb(data))
         : webTextDecode(data);
 }
 
@@ -50,7 +50,7 @@ export function textDecode(data: BufferSource): string {
  * ```
  */
 export function hexFromBuffer(buffer: BufferSource): string {
-    return Array.from(bufferSource2U8a(buffer), byte => byte.toString(16).padStart(2, '0')).join('');
+    return Array.from(bufferSourceToBytes(buffer), byte => byte.toString(16).padStart(2, '0')).join('');
 }
 
 /**
@@ -87,7 +87,7 @@ export function byteStringToBuffer(str: string): Uint8Array<ArrayBuffer> {
  * ```
  */
 export function byteStringFromBuffer(buffer: BufferSource): string {
-    return String.fromCharCode(...bufferSource2U8a(buffer));
+    return String.fromCharCode(...bufferSourceToBytes(buffer));
 }
 
 /**

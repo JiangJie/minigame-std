@@ -5,7 +5,8 @@
 
 import { type AsyncIOResult } from 'happy-rusty';
 import { hexFromBuffer } from '../../codec/mod.ts';
-import { miniGameFailureToError, asyncResultify } from '../../utils/mod.ts';
+import { miniGameFailureToError } from '../../internal/mod.ts';
+import { asyncResultify } from '../../utils/mod.ts';
 import type { UUID } from './random_defines.ts';
 
 /**

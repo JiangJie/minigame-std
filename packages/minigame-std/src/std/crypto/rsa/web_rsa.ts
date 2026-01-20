@@ -6,7 +6,7 @@
 import { base64FromBuffer } from '../../base64/mod.ts';
 import { byteStringToBuffer, textEncode } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
-import { bufferSource2U8a } from '../../utils/mod.ts';
+import { bufferSourceToBytes } from '../../internal/mod.ts';
 import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
 
 /**
@@ -62,7 +62,7 @@ export async function importPublicKey(pem: string, hash: SHA): Promise<RSAPublic
 function encrypt(publicKey: CryptoKey, data: DataSource): Promise<ArrayBuffer> {
     const encodedData = typeof data === 'string'
         ? textEncode(data)
-        : bufferSource2U8a(data);
+        : bufferSourceToBytes(data);
 
     return crypto.subtle.encrypt(
         {

@@ -1,6 +1,7 @@
 import { Lazy, Ok, OnceAsync, type AsyncIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
-import { miniGameFailureToError, asyncResultify } from '../utils/mod.ts';
+import { miniGameFailureToError } from '../internal/mod.ts';
+import { asyncResultify } from '../utils/mod.ts';
 import { parseUserAgent } from './user_agent.ts';
 
 // #region Internal Variables

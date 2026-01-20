@@ -3,7 +3,7 @@
  * 小游戏平台的网络状态实现。
  */
 
-import { asyncResultify } from '../utils/resultify.ts';
+import { asyncResultify } from '../utils/mod.ts';
 import type { NetworkType } from './network_define.ts';
 
 /**

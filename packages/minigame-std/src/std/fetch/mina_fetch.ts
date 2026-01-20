@@ -6,8 +6,7 @@
 import type { FetchResult } from '@happy-ts/fetch-t';
 import { Err, Ok, type IOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
-import { createFailedFetchTask, validateSafeUrl } from '../internal/mod.ts';
-import { miniGameFailureToError } from '../utils/mod.ts';
+import { createFailedFetchTask, miniGameFailureToError, validateSafeUrl } from '../internal/mod.ts';
 import { ABORT_ERROR, FetchError, TIMEOUT_ERROR, type FetchTask, type MinaFetchInit } from './fetch_defines.ts';
 
 /**

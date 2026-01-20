@@ -4,7 +4,8 @@
  */
 
 import { RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';
-import { asyncResultify, miniGameFailureToError, tryGeneralSyncOp } from '../utils/mod.ts';
+import { miniGameFailureToError, tryGeneralSyncOp } from '../internal/mod.ts';
+import { asyncResultify } from '../utils/mod.ts';
 
 /**
  * 异步设置存储项。
