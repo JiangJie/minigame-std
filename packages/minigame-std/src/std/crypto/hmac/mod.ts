@@ -1,6 +1,6 @@
 import { tryAsyncResult, type AsyncIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../../macros/env.ts';
-import { toByteString } from '../../codec/mod.ts';
+import { encodeByteString } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
 import type { SHA } from '../crypto_defines.ts';
 import { createHMAC as minaCreateHMAC } from './mina_hmac.ts';
@@ -78,8 +78,8 @@ export function sha512HMAC(key: DataSource, data: DataSource): AsyncIOResult<str
 function shaHMAC(sha: SHA, key: DataSource, data: DataSource): AsyncIOResult<string> {
     if (isMinaEnv()) {
         return tryAsyncResult(() => {
-            const hmac = minaCreateHMAC(sha, toByteString(key));
-            hmac.update(toByteString(data));
+            const hmac = minaCreateHMAC(sha, encodeByteString(key));
+            hmac.update(encodeByteString(data));
             return hmac.digest().toHex();
         });
     }

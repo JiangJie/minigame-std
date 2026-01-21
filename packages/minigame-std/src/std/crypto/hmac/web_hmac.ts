@@ -4,7 +4,7 @@
  */
 
 import { tryAsyncResult, type AsyncIOResult } from 'happy-rusty';
-import { encodeUtf8, hexFromBuffer } from '../../codec/mod.ts';
+import { encodeHex, encodeUtf8 } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
 import type { SHA } from '../crypto_defines.ts';
 
@@ -34,6 +34,6 @@ export function createHMAC(hash: SHA, key: DataSource, data: DataSource): AsyncI
             encodedData, // 消息
         );
 
-        return hexFromBuffer(hashBuffer);
+        return encodeHex(hashBuffer);
     });
 }

@@ -3,7 +3,7 @@
  * Web 平台的 SHA 哈希实现。
  */
 
-import { encodeUtf8, hexFromBuffer } from '../../codec/mod.ts';
+import { encodeHex, encodeUtf8 } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
 import type { SHA } from '../crypto_defines.ts';
 
@@ -19,5 +19,5 @@ export async function sha(data: DataSource, hash: SHA): Promise<string> {
         : data;
     const hashBuffer = await crypto.subtle.digest(hash, encodedData);
 
-    return hexFromBuffer(hashBuffer);
+    return encodeHex(hashBuffer);
 }

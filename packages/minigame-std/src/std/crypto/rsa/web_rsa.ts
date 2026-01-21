@@ -5,7 +5,7 @@
 
 import { Err, tryAsyncResult, type AsyncIOResult } from 'happy-rusty';
 import { encodeBase64Buffer } from '../../base64/mod.ts';
-import { byteStringToBuffer, encodeUtf8 } from '../../codec/mod.ts';
+import { decodeByteString, encodeUtf8 } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
 import { bufferSourceToBytes } from '../../internal/mod.ts';
 import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
@@ -27,7 +27,7 @@ export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublic
     pem = match[3];
 
     return tryAsyncResult(async () => {
-        const keyData = byteStringToBuffer(atob(pem));
+        const keyData = decodeByteString(atob(pem));
 
         const publicKey = await crypto.subtle.importKey(
             'spki',

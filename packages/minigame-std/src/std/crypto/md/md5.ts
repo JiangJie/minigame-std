@@ -5,7 +5,7 @@
  * Forked from https://github.com/denoland/std/blob/0.160.0/hash/md5.ts
  */
 
-import { encodeUtf8, hexFromBuffer } from '../../codec/mod.ts';
+import { encodeHex, encodeUtf8 } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
 import { bufferSourceToBytes } from '../../internal/mod.ts';
 
@@ -236,6 +236,6 @@ export class Md5 {
      * 以十六进制字符串形式返回哈希值。
      */
     toString(): string {
-        return hexFromBuffer(this.digest());
+        return encodeHex(this.digest());
     }
 }

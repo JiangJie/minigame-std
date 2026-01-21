@@ -1,11 +1,11 @@
 import { beforeAll, describe, expect, test, vi } from 'vitest';
 import {
-    byteStringFromBuffer,
-    byteStringToBuffer,
+    decodeByteString,
+    decodeHex,
     decodeUtf8,
+    encodeByteString,
+    encodeHex,
     encodeUtf8,
-    hexFromBuffer,
-    toByteString,
 } from '../src/mod.ts';
 
 test('encode/decode between utf8 string and binary', () => {
@@ -28,91 +28,121 @@ test('encodeUtf8 returns Uint8Array', () => {
     expect(result).toBeInstanceOf(Uint8Array);
 });
 
-test('hexFromBuffer converts buffer to hex string', () => {
+test('encodeHex converts buffer to hex string', () => {
     const buffer = new Uint8Array([0, 15, 16, 255]);
-    expect(hexFromBuffer(buffer)).toBe('000f10ff');
+    expect(encodeHex(buffer)).toBe('000f10ff');
 });
 
-test('hexFromBuffer handles empty buffer', () => {
-    expect(hexFromBuffer(new Uint8Array([]))).toBe('');
+test('encodeHex handles empty buffer', () => {
+    expect(encodeHex(new Uint8Array([]))).toBe('');
 });
 
-test('hexFromBuffer works with ArrayBuffer', () => {
+test('encodeHex works with ArrayBuffer', () => {
     const buffer = new ArrayBuffer(4);
     const view = new Uint8Array(buffer);
     view.set([0xde, 0xad, 0xbe, 0xef]);
-    expect(hexFromBuffer(buffer)).toBe('deadbeef');
+    expect(encodeHex(buffer)).toBe('deadbeef');
 });
 
-test('byteStringToBuffer converts string to Uint8Array', () => {
+test('decodeByteString converts string to Uint8Array', () => {
     const str = 'Hello';
-    const result = byteStringToBuffer(str);
+    const result = decodeByteString(str);
     expect(result).toEqual(new Uint8Array([72, 101, 108, 108, 111]));
 });
 
-test('byteStringToBuffer handles empty string', () => {
-    expect(byteStringToBuffer('')).toEqual(new Uint8Array([]));
+test('decodeByteString handles empty string', () => {
+    expect(decodeByteString('')).toEqual(new Uint8Array([]));
 });
 
-test('byteStringFromBuffer converts buffer to string', () => {
+test('encodeByteString converts buffer to string', () => {
     const buffer = new Uint8Array([72, 101, 108, 108, 111]);
-    expect(byteStringFromBuffer(buffer)).toBe('Hello');
+    expect(encodeByteString(buffer)).toBe('Hello');
 });
 
-test('byteStringFromBuffer handles empty buffer', () => {
-    expect(byteStringFromBuffer(new Uint8Array([]))).toBe('');
+test('encodeByteString handles empty buffer', () => {
+    expect(encodeByteString(new Uint8Array([]))).toBe('');
 });
 
 test('byteString round-trip conversion', () => {
     const original = 'Test string 123';
-    const buffer = byteStringToBuffer(original);
-    const result = byteStringFromBuffer(buffer);
+    const buffer = decodeByteString(original);
+    const result = encodeByteString(buffer);
     expect(result).toBe(original);
 });
 
-test('toByteString converts string to byte string', () => {
+test('encodeByteString converts string to byte string', () => {
     const str = 'Hello';
-    const result = toByteString(str);
+    const result = encodeByteString(str);
     // UTF-8 encoded "Hello" as byte string
     expect(result).toBe('Hello');
 });
 
-test('toByteString handles unicode string', () => {
+test('encodeByteString handles unicode string', () => {
     const str = '中文';
-    const result = toByteString(str);
+    const result = encodeByteString(str);
     // UTF-8 encoded bytes converted to byte string
-    const expected = byteStringFromBuffer(encodeUtf8(str));
+    const expected = encodeByteString(encodeUtf8(str));
     expect(result).toBe(expected);
 });
 
-test('toByteString handles BufferSource input', () => {
+test('encodeByteString handles BufferSource input', () => {
     const buffer = new Uint8Array([72, 101, 108, 108, 111]);
-    const result = toByteString(buffer);
+    const result = encodeByteString(buffer);
     expect(result).toBe('Hello');
 });
 
-test('byteStringFromBuffer works with DataView', () => {
+test('encodeByteString works with DataView', () => {
     const buffer = new ArrayBuffer(8);
     const fullView = new Uint8Array(buffer);
     fullView.set([0, 0, 72, 101, 108, 108, 111, 0]);
 
     const dataView = new DataView(buffer, 2, 5);
-    expect(byteStringFromBuffer(dataView)).toBe('Hello');
+    expect(encodeByteString(dataView)).toBe('Hello');
 });
 
-test('hexFromBuffer with single byte values', () => {
+test('encodeHex with single byte values', () => {
     // Test edge cases
-    expect(hexFromBuffer(new Uint8Array([0]))).toBe('00');
-    expect(hexFromBuffer(new Uint8Array([255]))).toBe('ff');
-    expect(hexFromBuffer(new Uint8Array([1]))).toBe('01');
-    expect(hexFromBuffer(new Uint8Array([16]))).toBe('10');
+    expect(encodeHex(new Uint8Array([0]))).toBe('00');
+    expect(encodeHex(new Uint8Array([255]))).toBe('ff');
+    expect(encodeHex(new Uint8Array([1]))).toBe('01');
+    expect(encodeHex(new Uint8Array([16]))).toBe('10');
+});
+
+test('decodeHex converts hex string to Uint8Array', () => {
+    expect(decodeHex('000f10ff')).toEqual(new Uint8Array([0, 15, 16, 255]));
+});
+
+test('decodeHex handles empty string', () => {
+    expect(decodeHex('')).toEqual(new Uint8Array([]));
+});
+
+test('decodeHex handles uppercase hex', () => {
+    expect(decodeHex('DEADBEEF')).toEqual(new Uint8Array([0xde, 0xad, 0xbe, 0xef]));
+});
+
+test('decodeHex handles mixed case hex', () => {
+    expect(decodeHex('DeAdBeEf')).toEqual(new Uint8Array([0xde, 0xad, 0xbe, 0xef]));
+});
+
+test('decodeHex with single byte values', () => {
+    expect(decodeHex('00')).toEqual(new Uint8Array([0]));
+    expect(decodeHex('ff')).toEqual(new Uint8Array([255]));
+    expect(decodeHex('01')).toEqual(new Uint8Array([1]));
+    expect(decodeHex('10')).toEqual(new Uint8Array([16]));
+});
+
+test('hex round-trip conversion', () => {
+    const original = new Uint8Array([0xde, 0xad, 0xbe, 0xef, 0x00, 0xff]);
+    const hex = encodeHex(original);
+    const result = decodeHex(hex);
+    expect(result).toEqual(original);
 });
 
 // #region mina_codec.ts tests (using mock to trigger fallback implementation)
 
 describe('mina_codec fallback implementation', () => {
-    let encodeUtf8Mina: (data: string) => ArrayBuffer;
-    let decodeUtf8Mina: (data: ArrayBuffer) => string;
+    let encodeUtf8Mina: (data: string) => Uint8Array<ArrayBuffer>;
+    let decodeUtf8Mina: (data: BufferSource) => string;
 
     beforeAll(async () => {
         // Mock wx global without encode/decode methods to trigger fallback implementation

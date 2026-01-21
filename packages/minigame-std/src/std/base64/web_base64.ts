@@ -3,7 +3,7 @@
  * Web 平台的 Base64 编解码实现。
  */
 
-import { byteStringFromBuffer, byteStringToBuffer, decodeUtf8, encodeUtf8 } from '../codec/mod.ts';
+import { decodeByteString, decodeUtf8, encodeByteString, encodeUtf8 } from '../codec/mod.ts';
 
 /**
  * 将字符串数据编码为 Base64 格式。
@@ -11,7 +11,7 @@ import { byteStringFromBuffer, byteStringToBuffer, decodeUtf8, encodeUtf8 } from
  * @returns 编码后的 Base64 字符串。
  */
 export function encodeBase64(data: string): string {
-    return btoa(byteStringFromBuffer(encodeUtf8(data)));
+    return btoa(encodeByteString(encodeUtf8(data)));
 }
 
 /**
@@ -20,5 +20,5 @@ export function encodeBase64(data: string): string {
  * @returns 解码后的字符串。
  */
 export function decodeBase64(data: string): string {
-    return decodeUtf8(byteStringToBuffer(atob(data)));
+    return decodeUtf8(decodeByteString(atob(data)));
 }
