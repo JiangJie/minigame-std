@@ -4,6 +4,7 @@
   "out": "docs",
   "readme": "none",
   "intentionallyNotExported": [
+    "IOResultifyValidAPI",
     "ResultifyValidAPI",
     "ResultifySuccessType",
     "ResultifyFailType"
