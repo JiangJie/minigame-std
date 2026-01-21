@@ -1,8 +1,8 @@
 import { isMinaEnv } from '../../macros/env.ts';
 import type { DataSource } from '../defines.ts';
 import { bufferSourceToAb, bufferSourceToBytes } from '../internal/mod.ts';
-import { textDecode as minaTextDecode, textEncode as minaTextEncode } from './mina_codec.ts';
-import { textDecode as webTextDecode, textEncode as webTextEncode } from './web_codec.ts';
+import { decodeUtf8 as minaDecodeUtf8, encodeUtf8 as minaEncodeUtf8 } from './mina_codec.ts';
+import { decodeUtf8 as webDecodeUtf8, encodeUtf8 as webEncodeUtf8 } from './web_codec.ts';
 
 /**
  * 将字符串数据编码为 `Uint8Array`（UTF-8 编码）。
@@ -11,14 +11,14 @@ import { textDecode as webTextDecode, textEncode as webTextEncode } from './web_
  * @since 1.0.0
  * @example
  * ```ts
- * const encoded = textEncode('你好');
+ * const encoded = encodeUtf8('你好');
  * console.log(encoded); // Uint8Array [228, 189, 160, 229, 165, 189]
  * ```
  */
-export function textEncode(data: string): Uint8Array<ArrayBuffer> {
+export function encodeUtf8(data: string): Uint8Array<ArrayBuffer> {
     return isMinaEnv()
-        ? bufferSourceToBytes(minaTextEncode(data))
-        : webTextEncode(data);
+        ? bufferSourceToBytes(minaEncodeUtf8(data))
+        : webEncodeUtf8(data);
 }
 
 /**
@@ -28,14 +28,14 @@ export function textEncode(data: string): Uint8Array<ArrayBuffer> {
  * @since 1.0.0
  * @example
  * ```ts
- * const decoded = textDecode(new Uint8Array([228, 189, 160, 229, 165, 189]));
+ * const decoded = decodeUtf8(new Uint8Array([228, 189, 160, 229, 165, 189]));
  * console.log(decoded); // '你好'
  * ```
  */
-export function textDecode(data: BufferSource): string {
+export function decodeUtf8(data: BufferSource): string {
     return isMinaEnv()
-        ? minaTextDecode(bufferSourceToAb(data))
-        : webTextDecode(data);
+        ? minaDecodeUtf8(bufferSourceToAb(data))
+        : webDecodeUtf8(data);
 }
 
 /**
@@ -103,7 +103,7 @@ export function byteStringFromBuffer(buffer: BufferSource): string {
  */
 export function toByteString(data: DataSource): string {
     const buffer = typeof data === 'string'
-        ? textEncode(data)
+        ? encodeUtf8(data)
         : data;
 
     return byteStringFromBuffer(buffer);

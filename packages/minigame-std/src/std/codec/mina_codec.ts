@@ -14,7 +14,7 @@ const FORMAT = 'utf8' as const;
  * @param data - 需要编码的字符串数据。
  * @returns 编码后的 ArrayBuffer。
  */
-export function textEncode(data: string): ArrayBuffer {
+export function encodeUtf8(data: string): ArrayBuffer {
     // 兼容某些平台没有 `encode` 方法
     return typeof wx.encode === 'function'
         ? wx.encode({
@@ -29,7 +29,7 @@ export function textEncode(data: string): ArrayBuffer {
  * @param data - 需要解码的 ArrayBuffer。
  * @returns 解码后的字符串。
  */
-export function textDecode(data: ArrayBuffer): string {
+export function decodeUtf8(data: ArrayBuffer): string {
     // 兼容某些平台没有 `decode` 方法
     return typeof wx.decode === 'function'
         ? wx.decode({
