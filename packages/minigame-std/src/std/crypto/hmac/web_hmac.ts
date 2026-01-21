@@ -4,18 +4,18 @@
  */
 
 import { tryAsyncResult, type AsyncIOResult } from 'happy-rusty';
-import { hexFromBuffer, textEncode } from '../../codec/mod.ts';
+import { encodeUtf8, hexFromBuffer } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
 import type { SHA } from '../crypto_defines.ts';
 
 export function createHMAC(hash: SHA, key: DataSource, data: DataSource): AsyncIOResult<string> {
     return tryAsyncResult(async () => {
         const encodedKey = typeof key === 'string'
-            ? textEncode(key)
+            ? encodeUtf8(key)
             : key;
 
         const encodedData = typeof data === 'string'
-            ? textEncode(data)
+            ? encodeUtf8(data)
             : data;
 
         // 导入密钥

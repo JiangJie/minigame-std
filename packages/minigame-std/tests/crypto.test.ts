@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { base64ToBuffer, byteStringToBuffer, cryptos, textDecode, textEncode, toByteString, type DataSource } from '../src/mod.ts';
+import { byteStringToBuffer, cryptos, decodeBase64Buffer, decodeUtf8, encodeUtf8, toByteString, type DataSource } from '../src/mod.ts';
 // Direct imports for testing mina implementations (they don't use wx API)
 import { createHMAC as minaCreateHMAC } from '../src/std/crypto/hmac/mina_hmac.ts';
 import { importPublicKey as minaImportPublicKey } from '../src/std/crypto/rsa/mina_rsa.ts';
@@ -10,7 +10,7 @@ test('calculate md5', () => {
     const md5Str = '3395c7db2e34c56338bec2bad454f224';
 
     expect(cryptos.md5(data)).toBe(md5Str);
-    expect(cryptos.md5(textEncode(data))).toBe(md5Str);
+    expect(cryptos.md5(encodeUtf8(data))).toBe(md5Str);
 });
 
 test('calculate sha', async () => {
@@ -18,7 +18,7 @@ test('calculate sha', async () => {
     const sha1Str = '431de9a89a769f4fb56a1c128fb7208bebb37960';
 
     expect(await cryptos.sha1(data)).toBe(sha1Str);
-    expect(await cryptos.sha1(textEncode(data))).toBe(sha1Str);
+    expect(await cryptos.sha1(encodeUtf8(data))).toBe(sha1Str);
 
     expect(await cryptos.sha256(data)).toBe('9cff73e4d0e15d78089294a8519788df44f306411e8d20f5f3770e564a73467f');
     expect(await cryptos.sha384(data)).toBe('23ba7aac72c86e88befc6094e8f903645e2531cf14ac57edf1796e74e40a6e567b0255502a342d3085493d34e87b0541');
@@ -36,8 +36,8 @@ test('calculate hmac', async () => {
 });
 
 test('calculate hmac with ArrayBuffer', async () => {
-    const key = textEncode('密码');
-    const data = textEncode('minigame-std-中文');
+    const key = encodeUtf8('密码');
+    const data = encodeUtf8('minigame-std-中文');
 
     expect((await cryptos.sha1HMAC(key, data)).unwrap()).toBe('c039c11a31199388dfb540f989d27f1ec099a43e');
     expect((await cryptos.sha256HMAC(key, data)).unwrap()).toBe('5e6bcf9fd1f62617773c18d420ef200dfd46dc15373d1192ff02cf648d703748');
@@ -65,7 +65,7 @@ test('calculate hmac with empty key returns error', async () => {
 
 test('calculate hmac with binary key and data', async () => {
     const key = new Uint8Array([0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b]);
-    const data = textEncode('Hi There');
+    const data = encodeUtf8('Hi There');
 
     // RFC 4231 test vector for HMAC-SHA-256
     const sha256Result = (await cryptos.sha256HMAC(key, data)).unwrap();
@@ -186,7 +186,7 @@ test('calculate md5 with data requiring extra padding block', () => {
 });
 
 test('calculate sha256 with ArrayBuffer', async () => {
-    const data = textEncode('test');
+    const data = encodeUtf8('test');
     const sha256Str = await cryptos.sha256(data);
 
     expect(sha256Str).toBe('9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08');
@@ -304,10 +304,10 @@ wIy0/kd6szCcWK5Ld1kH9R0=
 
     async function decrypt(encryptedData: DataSource, hash: string) {
         const buffer = typeof encryptedData === 'string'
-            ? base64ToBuffer(encryptedData)
+            ? decodeBase64Buffer(encryptedData)
             : encryptedData;
         const privateKey = await importDecryptKey(privateKeyStr, hash);
-        const decryptedData = textDecode(await crypto.subtle.decrypt(
+        const decryptedData = decodeUtf8(await crypto.subtle.decrypt(
             {
                 name: 'RSA-OAEP',
             },
@@ -355,7 +355,7 @@ wIy0/kd6szCcWK5Ld1kH9R0=
 
     // Test encryption with binary data (Uint8Array)
     {
-        const binaryData = textEncode(data);
+        const binaryData = encodeUtf8(data);
         const rsaKey = (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-256')).unwrap();
         const encryptedData = await rsaKey.encrypt(binaryData);
 
@@ -571,7 +571,7 @@ wIy0/kd6szCcWK5Ld1kH9R0=
 
         // Decrypt with Web Crypto API
         const privateKey = await importDecryptKey(privateKeyStr, 'SHA-256');
-        const decryptedData = textDecode(await crypto.subtle.decrypt(
+        const decryptedData = decodeUtf8(await crypto.subtle.decrypt(
             { name: 'RSA-OAEP' },
             privateKey,
             encryptedData.unwrap(),
@@ -587,7 +587,7 @@ wIy0/kd6szCcWK5Ld1kH9R0=
         const encryptedData = await rsaKey.encrypt(data);
 
         const privateKey = await importDecryptKey(privateKeyStr, 'SHA-1');
-        const decryptedData = textDecode(await crypto.subtle.decrypt(
+        const decryptedData = decodeUtf8(await crypto.subtle.decrypt(
             { name: 'RSA-OAEP' },
             privateKey,
             encryptedData.unwrap(),
@@ -603,7 +603,7 @@ wIy0/kd6szCcWK5Ld1kH9R0=
         const encryptedData = await rsaKey.encrypt(data);
 
         const privateKey = await importDecryptKey(privateKeyStr, 'SHA-384');
-        const decryptedData = textDecode(await crypto.subtle.decrypt(
+        const decryptedData = decodeUtf8(await crypto.subtle.decrypt(
             { name: 'RSA-OAEP' },
             privateKey,
             encryptedData.unwrap(),
@@ -619,7 +619,7 @@ wIy0/kd6szCcWK5Ld1kH9R0=
         const encryptedData = await rsaKey.encrypt(data);
 
         const privateKey = await importDecryptKey(privateKeyStr, 'SHA-512');
-        const decryptedData = textDecode(await crypto.subtle.decrypt(
+        const decryptedData = decodeUtf8(await crypto.subtle.decrypt(
             { name: 'RSA-OAEP' },
             privateKey,
             encryptedData.unwrap(),
@@ -639,9 +639,9 @@ wIy0/kd6szCcWK5Ld1kH9R0=
         expect(encryptedBase64).toMatch(/^[A-Za-z0-9+/]+=*$/);
 
         // Decode and decrypt to verify
-        const encryptedBuffer = base64ToBuffer(encryptedBase64);
+        const encryptedBuffer = decodeBase64Buffer(encryptedBase64);
         const privateKey = await importDecryptKey(privateKeyStr, 'SHA-256');
-        const decryptedData = textDecode(await crypto.subtle.decrypt(
+        const decryptedData = decodeUtf8(await crypto.subtle.decrypt(
             { name: 'RSA-OAEP' },
             privateKey,
             encryptedBuffer,
@@ -652,14 +652,14 @@ wIy0/kd6szCcWK5Ld1kH9R0=
 
     test('minaImportPublicKey encrypts binary data (valid UTF-8)', async () => {
         // Use valid UTF-8 bytes (ASCII characters)
-        const binaryData = textEncode('Hello');
+        const binaryData = encodeUtf8('Hello');
 
         const rsaKey = (await minaImportPublicKey(publicKeyStr, 'SHA-256')).unwrap();
         const encryptedData = await rsaKey.encrypt(binaryData);
 
         const privateKey = await importDecryptKey(privateKeyStr, 'SHA-256');
-        // The mina implementation converts binary to text using textDecode
-        const decryptedText = textDecode(await crypto.subtle.decrypt(
+        // The mina implementation converts binary to text using decodeUtf8
+        const decryptedText = decodeUtf8(await crypto.subtle.decrypt(
             { name: 'RSA-OAEP' },
             privateKey,
             encryptedData.unwrap(),
