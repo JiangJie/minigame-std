@@ -1,18 +1,24 @@
-import { bufferSourceToBytes } from '../internal/mod.ts';
+import type { DataSource } from '../defines.ts';
+import { dataSourceToBytes } from './helpers.ts';
 
 /**
- * 将 BufferSource 编码为十六进制字符串。
- * @param data - 需要编码的 BufferSource。
+ * 将 DataSource 编码为十六进制字符串。
+ * - 字符串：先 UTF-8 编码后再转为十六进制
+ * - BufferSource：直接转换为十六进制
+ * @param data - 需要编码的 DataSource。
  * @returns 十六进制字符串。
  * @since 1.6.0
  * @example
  * ```ts
  * const hex = encodeHex(new Uint8Array([255, 0, 128]));
  * console.log(hex); // 'ff0080'
+ *
+ * const hex2 = encodeHex('hello');
+ * console.log(hex2); // '68656c6c6f'
  * ```
  */
-export function encodeHex(data: BufferSource): string {
-    return Array.from(bufferSourceToBytes(data), byte => byte.toString(16).padStart(2, '0')).join('');
+export function encodeHex(data: DataSource): string {
+    return Array.from(dataSourceToBytes(data), byte => byte.toString(16).padStart(2, '0')).join('');
 }
 
 /**
