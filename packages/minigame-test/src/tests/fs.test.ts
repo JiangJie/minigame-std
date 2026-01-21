@@ -1,5 +1,5 @@
 import { assert } from '@std/assert';
-import { fs, textEncode } from 'minigame-std';
+import { encodeUtf8, fs } from 'minigame-std';
 
 const mockServer = 'https://fakestoreapi.com';
 
@@ -22,7 +22,7 @@ async function testAsync() {
         console.log('move', err);
     });
     // Append content to the file
-    (await fs.appendFile('/happy/b.txt', textEncode(' happy opfs'))).inspectErr(err => {
+    (await fs.appendFile('/happy/b.txt', encodeUtf8(' happy opfs'))).inspectErr(err => {
         console.log('appendFile', err);
     });
 
@@ -132,7 +132,7 @@ function testSync() {
         console.log('rename', err);
     });
     // Append content to the file
-    fs.appendFileSync('/happy/b.txt', textEncode(' happy opfs'));
+    fs.appendFileSync('/happy/b.txt', encodeUtf8(' happy opfs'));
 
     // File no longer exists
     const statRes = fs.statSync('/happy/opfs/a.txt');
