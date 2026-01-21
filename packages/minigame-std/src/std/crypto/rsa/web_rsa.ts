@@ -4,8 +4,8 @@
  */
 
 import { Err, tryAsyncResult, type AsyncIOResult } from 'happy-rusty';
-import { base64FromBuffer } from '../../base64/mod.ts';
-import { byteStringToBuffer, textEncode } from '../../codec/mod.ts';
+import { encodeBase64Buffer } from '../../base64/mod.ts';
+import { byteStringToBuffer, encodeUtf8 } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
 import { bufferSourceToBytes } from '../../internal/mod.ts';
 import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
@@ -49,7 +49,7 @@ export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublic
 
             async encryptToString(data: DataSource): AsyncIOResult<string> {
                 const result = await encrypt(publicKey, data);
-                return result.map(base64FromBuffer);
+                return result.map(encodeBase64Buffer);
             },
         };
     });
@@ -66,7 +66,7 @@ export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublic
 function encrypt(publicKey: CryptoKey, data: DataSource): AsyncIOResult<ArrayBuffer> {
     return tryAsyncResult(() => {
         const encodedData = typeof data === 'string'
-            ? textEncode(data)
+            ? encodeUtf8(data)
             // 类型错误可能抛异常
             : bufferSourceToBytes(data);
 

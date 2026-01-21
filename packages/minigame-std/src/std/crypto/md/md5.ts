@@ -5,7 +5,7 @@
  * Forked from https://github.com/denoland/std/blob/0.160.0/hash/md5.ts
  */
 
-import { hexFromBuffer, textEncode } from '../../codec/mod.ts';
+import { encodeUtf8, hexFromBuffer } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
 import { bufferSourceToBytes } from '../../internal/mod.ts';
 
@@ -166,7 +166,7 @@ export class Md5 {
      */
     update(data: DataSource): this {
         const msg = typeof data === 'string'
-            ? textEncode(data)
+            ? encodeUtf8(data)
             : bufferSourceToBytes(data);
 
         let pos = this.pos;

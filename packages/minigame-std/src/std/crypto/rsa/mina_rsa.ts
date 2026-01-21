@@ -5,8 +5,8 @@
 
 import { Ok, tryResult, type AsyncIOResult, type IOResult } from 'happy-rusty';
 import { importPublicKey as importKey, sha1, sha256, sha384, sha512 } from 'rsa-oaep-encryption';
-import { base64FromBuffer } from '../../base64/mod.ts';
-import { textDecode } from '../../codec/mod.ts';
+import { encodeBase64Buffer } from '../../base64/mod.ts';
+import { decodeUtf8 } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
 import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
 
@@ -28,7 +28,7 @@ export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublic
             const decodedData = typeof data === 'string'
                 ? data
                 // 可能抛异常
-                : textDecode(data);
+                : decodeUtf8(data);
             return publicKey.encrypt(decodedData, shaFactory.create());
         });
     };
@@ -39,7 +39,7 @@ export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublic
         },
 
         encryptToString(data: DataSource): AsyncIOResult<string> {
-            return Promise.resolve(encrypt(data).map(base64FromBuffer));
+            return Promise.resolve(encrypt(data).map(encodeBase64Buffer));
         },
     }));
 }
