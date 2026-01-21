@@ -1,6 +1,6 @@
 import { isMinaEnv } from '../../macros/env.ts';
 import type { DataSource } from '../defines.ts';
-import { bufferSourceToAb, bufferSourceToBytes } from '../internal/mod.ts';
+import { bufferSourceToBytes } from '../internal/mod.ts';
 import { decodeUtf8 as minaDecodeUtf8, encodeUtf8 as minaEncodeUtf8 } from './mina_codec.ts';
 import { decodeUtf8 as webDecodeUtf8, encodeUtf8 as webEncodeUtf8 } from './web_codec.ts';
 
@@ -17,7 +17,7 @@ import { decodeUtf8 as webDecodeUtf8, encodeUtf8 as webEncodeUtf8 } from './web_
  */
 export function encodeUtf8(data: string): Uint8Array<ArrayBuffer> {
     return isMinaEnv()
-        ? bufferSourceToBytes(minaEncodeUtf8(data))
+        ? minaEncodeUtf8(data)
         : webEncodeUtf8(data);
 }
 
@@ -34,7 +34,7 @@ export function encodeUtf8(data: string): Uint8Array<ArrayBuffer> {
  */
 export function decodeUtf8(data: BufferSource): string {
     return isMinaEnv()
-        ? minaDecodeUtf8(bufferSourceToAb(data))
+        ? minaDecodeUtf8(data)
         : webDecodeUtf8(data);
 }
 
