@@ -3,7 +3,7 @@
  * 小游戏环境的编解码
  */
 
-import { bufferSourceToAb } from '../internal/mod.ts';
+import { bufferSourceToAb } from '../../internal/mod.ts';
 import { decodeUtf8Buffer, encodeUtf8Buffer } from './utf8.ts';
 
 // #region Internal Variables

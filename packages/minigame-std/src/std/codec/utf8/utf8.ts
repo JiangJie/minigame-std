@@ -5,7 +5,7 @@
  * 当平台不支持 TextEncoder/TextDecoder 或 wx.encode/wx.decode 时使用。
  */
 
-import { bufferSourceToBytes } from '../internal/mod.ts';
+import { bufferSourceToBytes } from '../../internal/mod.ts';
 
 /**
  * 将字符串编码为 UTF-8 格式的 Uint8Array。

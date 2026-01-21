@@ -9,8 +9,8 @@
  */
 
 import { bench, describe } from 'vitest';
-import { decodeUtf8Buffer, encodeUtf8Buffer } from '../src/std/codec/utf8.ts';
-import { decodeUtf8 as webDecodeUtf8, encodeUtf8 as webEncodeUtf8 } from '../src/std/codec/web_codec.ts';
+import { decodeUtf8Buffer, encodeUtf8Buffer } from '../src/std/codec/utf8/utf8.ts';
+import { decodeUtf8 as webDecodeUtf8, encodeUtf8 as webEncodeUtf8 } from '../src/std/codec/utf8/web_utf8.ts';
 
 // 测试数据 - 原始字符串
 const shortString = 'Hello, World!';

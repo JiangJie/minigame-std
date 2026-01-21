@@ -4,19 +4,15 @@
  */
 
 import { tryAsyncResult, type AsyncIOResult } from 'happy-rusty';
-import { encodeHex, encodeUtf8 } from '../../codec/mod.ts';
+import { dataSourceToBytes } from '../../codec/helpers.ts';
+import { encodeHex } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
 import type { SHA } from '../crypto_defines.ts';
 
 export function createHMAC(hash: SHA, key: DataSource, data: DataSource): AsyncIOResult<string> {
     return tryAsyncResult(async () => {
-        const encodedKey = typeof key === 'string'
-            ? encodeUtf8(key)
-            : key;
-
-        const encodedData = typeof data === 'string'
-            ? encodeUtf8(data)
-            : data;
+        const encodedKey = dataSourceToBytes(key);
+        const encodedData = dataSourceToBytes(data);
 
         // 导入密钥
         const cryptoKey = await crypto.subtle.importKey(

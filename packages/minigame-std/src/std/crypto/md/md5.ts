@@ -5,9 +5,9 @@
  * Forked from https://github.com/denoland/std/blob/0.160.0/hash/md5.ts
  */
 
-import { encodeHex, encodeUtf8 } from '../../codec/mod.ts';
+import { dataSourceToBytes } from '../../codec/helpers.ts';
+import { encodeHex } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
-import { bufferSourceToBytes } from '../../internal/mod.ts';
 
 // #region Internal Variables
 
@@ -165,9 +165,7 @@ export class Md5 {
      * @param data - 要更新的数据，数据大小不能超过 2^32 字节。
      */
     update(data: DataSource): this {
-        const msg = typeof data === 'string'
-            ? encodeUtf8(data)
-            : bufferSourceToBytes(data);
+        const msg = dataSourceToBytes(data);
 
         let pos = this.pos;
         const free = BLOCK_SIZE - pos;

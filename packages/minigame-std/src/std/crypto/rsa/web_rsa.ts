@@ -5,9 +5,9 @@
 
 import { Err, tryAsyncResult, type AsyncIOResult } from 'happy-rusty';
 import { encodeBase64Buffer } from '../../base64/mod.ts';
-import { decodeByteString, encodeUtf8 } from '../../codec/mod.ts';
+import { dataSourceToBytes } from '../../codec/helpers.ts';
+import { decodeByteString } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
-import { bufferSourceToBytes } from '../../internal/mod.ts';
 import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
 
 /**
@@ -65,17 +65,12 @@ export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublic
  */
 function encrypt(publicKey: CryptoKey, data: DataSource): AsyncIOResult<ArrayBuffer> {
     return tryAsyncResult(() => {
-        const encodedData = typeof data === 'string'
-            ? encodeUtf8(data)
-            // 类型错误可能抛异常
-            : bufferSourceToBytes(data);
-
         return crypto.subtle.encrypt(
             {
                 name: 'RSA-OAEP',
             },
             publicKey,
-            encodedData,
+            dataSourceToBytes(data),
         );
     });
 }

@@ -152,7 +152,7 @@ describe('mina_codec fallback implementation', () => {
         vi.resetModules();
 
         // Dynamically import the mina_codec module
-        const minaCodec = await import('../src/std/codec/mina_codec.ts');
+        const minaCodec = await import('../src/std/codec/utf8/mina_utf8.ts');
         encodeUtf8Mina = minaCodec.encodeUtf8;
         decodeUtf8Mina = minaCodec.decodeUtf8;
     });
