@@ -77,7 +77,7 @@ jsr add @happy-js/minigame-std
 
 -   **Text Encoding/Decoding**
     ```js
-    import { textDecode, textEncode } from 'minigame-std';
+    import { decodeUtf8, encodeUtf8 } from 'minigame-std';
     // UTF-8 string ↔ ArrayBuffer
     ```
 
