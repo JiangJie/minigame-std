@@ -14,6 +14,6 @@ export async function testRsa(): Promise<void> {
     -----END PUBLIC KEY-----
     `;
     const publicKey = await cryptos.rsa.importPublicKey(PUBLIC_KEY, 'SHA-1');
-    const encryptedData = await publicKey.encrypt(data);
-    console.log(new Uint8Array(encryptedData).join());
+    const encryptedData = await publicKey.unwrap().encrypt(data);
+    console.log(new Uint8Array(encryptedData.unwrap()).join());
 }
