@@ -3,8 +3,8 @@
  * 小游戏平台的 Base64 编解码实现。
  */
 
-import { textDecode, textEncode } from '../codec/mod.ts';
-import { base64FromBuffer, base64ToBuffer } from './base64.ts';
+import { decodeUtf8, encodeUtf8 } from '../codec/mod.ts';
+import { decodeBase64Buffer, encodeBase64Buffer } from './base64.ts';
 
 /**
  * 将字符串数据编码为 Base64 格式。
@@ -12,7 +12,7 @@ import { base64FromBuffer, base64ToBuffer } from './base64.ts';
  * @returns 编码后的 Base64 字符串。
  */
 export function encodeBase64(data: string): string {
-    return base64FromBuffer(textEncode(data));
+    return encodeBase64Buffer(encodeUtf8(data));
 }
 
 /**
@@ -21,5 +21,5 @@ export function encodeBase64(data: string): string {
  * @returns 解码后的字符串。
  */
 export function decodeBase64(data: string): string {
-    return textDecode(base64ToBuffer(data));
+    return decodeUtf8(decodeBase64Buffer(data));
 }

@@ -42,46 +42,46 @@ const lookup = Lazy(() => {
  * @example
  * ```ts
  * const buffer = new Uint8Array([72, 101, 108, 108, 111]);
- * const base64 = base64FromBuffer(buffer);
+ * const base64 = encodeBase64Buffer(buffer);
  * console.log(base64); // 'SGVsbG8='
  * ```
  */
-export function base64FromBuffer(data: BufferSource): string {
+export function encodeBase64Buffer(data: BufferSource): string {
     let result = '';
 
-    const u8a = bufferSourceToBytes(data);
+    const bytes = bufferSourceToBytes(data);
 
-    const len = u8a.length;
+    const len = bytes.length;
     let i: number;
 
     for (i = 2; i < len; i += 3) {
-        result += base64abc[(u8a[i - 2]) >> 2];
+        result += base64abc[(bytes[i - 2]) >> 2];
         result += base64abc[
-            (((u8a[i - 2]) & 0x03) << 4)
-            | ((u8a[i - 1]) >> 4)
+            (((bytes[i - 2]) & 0x03) << 4)
+            | ((bytes[i - 1]) >> 4)
         ];
         result += base64abc[
-            (((u8a[i - 1]) & 0x0f) << 2)
-            | ((u8a[i]) >> 6)
+            (((bytes[i - 1]) & 0x0f) << 2)
+            | ((bytes[i]) >> 6)
         ];
-        result += base64abc[(u8a[i]) & 0x3f];
+        result += base64abc[(bytes[i]) & 0x3f];
     }
 
     if (i === len + 1) {
         // 还有 1 个字节待写入
-        result += base64abc[(u8a[i - 2]) >> 2];
-        result += base64abc[((u8a[i - 2]) & 0x03) << 4];
+        result += base64abc[(bytes[i - 2]) >> 2];
+        result += base64abc[((bytes[i - 2]) & 0x03) << 4];
         result += '==';
     }
 
     if (i === len) {
         // 还有 2 个字节待写入
-        result += base64abc[(u8a[i - 2]) >> 2];
+        result += base64abc[(bytes[i - 2]) >> 2];
         result += base64abc[
-            (((u8a[i - 2]) & 0x03) << 4)
-            | ((u8a[i - 1]) >> 4)
+            (((bytes[i - 2]) & 0x03) << 4)
+            | ((bytes[i - 1]) >> 4)
         ];
-        result += base64abc[((u8a[i - 1]) & 0x0f) << 2];
+        result += base64abc[((bytes[i - 1]) & 0x0f) << 2];
         result += '=';
     }
 
@@ -95,11 +95,11 @@ export function base64FromBuffer(data: BufferSource): string {
  * @since 1.0.0
  * @example
  * ```ts
- * const buffer = base64ToBuffer('SGVsbG8=');
+ * const buffer = decodeBase64Buffer('SGVsbG8=');
  * console.log(buffer); // Uint8Array [72, 101, 108, 108, 111]
  * ```
  */
-export function base64ToBuffer(data: string): Uint8Array<ArrayBuffer> {
+export function decodeBase64Buffer(data: string): Uint8Array<ArrayBuffer> {
     const len = data.length;
 
     let bufferLength = len * 0.75;
@@ -111,7 +111,7 @@ export function base64ToBuffer(data: string): Uint8Array<ArrayBuffer> {
         }
     }
 
-    const u8a = new Uint8Array(bufferLength);
+    const bytes = new Uint8Array(bufferLength);
 
     let pos = 0;
 
@@ -123,10 +123,10 @@ export function base64ToBuffer(data: string): Uint8Array<ArrayBuffer> {
         const encoded3 = table[data.charCodeAt(i + 2)];
         const encoded4 = table[data.charCodeAt(i + 3)];
 
-        u8a[pos++] = (encoded1 << 2) | (encoded2 >> 4);
-        u8a[pos++] = ((encoded2 & 15) << 4) | (encoded3 >> 2);
-        u8a[pos++] = ((encoded3 & 3) << 6) | (encoded4 & 63);
+        bytes[pos++] = (encoded1 << 2) | (encoded2 >> 4);
+        bytes[pos++] = ((encoded2 & 15) << 4) | (encoded3 >> 2);
+        bytes[pos++] = ((encoded3 & 3) << 6) | (encoded4 & 63);
     }
 
-    return u8a;
+    return bytes;
 }

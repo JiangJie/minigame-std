@@ -1,11 +1,15 @@
 import { isMinaEnv } from '../../macros/env.ts';
 import { decodeBase64 as minaDecodeBase64, encodeBase64 as minaEncodeBase64 } from './mina_base64.ts';
 import { decodeBase64 as webDecodeBase64, encodeBase64 as webEncodeBase64 } from './web_base64.ts';
-export { base64FromBuffer, base64ToBuffer } from './base64.ts';
+
+export { decodeBase64Buffer, encodeBase64Buffer } from './base64.ts';
 
 /**
- * 将字符串数据编码为 Base64 格式。
- * @param data - 需要编码的字符串数据。
+ * 将字符串编码为 Base64 格式。
+ *
+ * 在浏览器环境使用 `btoa`，在小程序环境使用纯 JS 实现。
+ *
+ * @param data - 需要编码的字符串。
  * @returns 编码后的 Base64 字符串。
  * @since 1.0.0
  * @example
@@ -19,7 +23,10 @@ export function encodeBase64(data: string): string {
 }
 
 /**
- * 将 Base64 格式的字符串数据解码。
+ * 将 Base64 格式的字符串解码为字符串。
+ *
+ * 在浏览器环境使用 `atob`，在小程序环境使用纯 JS 实现。
+ *
  * @param data - 需要解码的 Base64 字符串。
  * @returns 解码后的字符串。
  * @since 1.0.0
