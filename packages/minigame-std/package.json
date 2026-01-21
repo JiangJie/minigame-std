@@ -34,7 +34,8 @@
     "prepublishOnly": "cp ../../{README.md,LICENSE} . && pnpm run build",
     "test": "pnpm exec vitest run --coverage",
     "test:watch": "pnpm exec vitest watch",
-    "test:ui": "pnpm exec vitest --ui"
+    "test:ui": "pnpm exec vitest --ui",
+    "bench": "pnpm exec vitest bench --run"
   },
   "repository": {
     "type": "git",
