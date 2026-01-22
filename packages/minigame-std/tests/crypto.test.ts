@@ -3,7 +3,7 @@ import { cryptos, decodeBase64, decodeByteString, decodeUtf8, encodeUtf8, type D
 // Direct imports for testing mina implementations (they don't use wx API)
 import { createHMAC as pureCreateHMAC } from '../src/std/crypto/hmac/hmac.ts';
 import { importPublicKey as minaImportPublicKey } from '../src/std/crypto/rsa/mina_rsa.ts';
-import { sha1 as minaSha1, sha256 as minaSha256, sha384 as minaSha384, sha512 as minaSha512 } from '../src/std/crypto/sha/mina_sha.ts';
+import { sha1 as pureSha1, sha256 as pureSha256, sha384 as pureSha384, sha512 as pureSha512 } from '../src/std/crypto/sha/sha.ts';
 
 test('calculate md5', () => {
     const data = 'minigame-std-中文';
@@ -400,36 +400,36 @@ test('SHA with binary data', async () => {
 // ============================================================================
 
 describe('mina SHA implementation (rsa-oaep-encryption library)', () => {
-    test('minaSha1 produces correct hash', () => {
+    test('pureSha1 produces correct hash', () => {
         const data = 'minigame-std-中文';
         const sha1Str = '431de9a89a769f4fb56a1c128fb7208bebb37960';
 
-        expect(minaSha1(data)).toBe(sha1Str);
+        expect(pureSha1(data)).toBe(sha1Str);
     });
 
-    test('minaSha256 produces correct hash', () => {
+    test('pureSha256 produces correct hash', () => {
         const data = 'minigame-std-中文';
-        expect(minaSha256(data)).toBe('9cff73e4d0e15d78089294a8519788df44f306411e8d20f5f3770e564a73467f');
+        expect(pureSha256(data)).toBe('9cff73e4d0e15d78089294a8519788df44f306411e8d20f5f3770e564a73467f');
     });
 
-    test('minaSha384 produces correct hash', () => {
+    test('pureSha384 produces correct hash', () => {
         const data = 'minigame-std-中文';
-        expect(minaSha384(data)).toBe('23ba7aac72c86e88befc6094e8f903645e2531cf14ac57edf1796e74e40a6e567b0255502a342d3085493d34e87b0541');
+        expect(pureSha384(data)).toBe('23ba7aac72c86e88befc6094e8f903645e2531cf14ac57edf1796e74e40a6e567b0255502a342d3085493d34e87b0541');
     });
 
-    test('minaSha512 produces correct hash', () => {
+    test('pureSha512 produces correct hash', () => {
         const data = 'minigame-std-中文';
-        expect(minaSha512(data)).toBe('b4ebfef03638039622452ce378974fba515a8cb46c07e667bf80cdae06e69127123d5c32d85deb0ccc9ce563e5939b3340a604b45bd6493e663ae266c203d694');
+        expect(pureSha512(data)).toBe('b4ebfef03638039622452ce378974fba515a8cb46c07e667bf80cdae06e69127123d5c32d85deb0ccc9ce563e5939b3340a604b45bd6493e663ae266c203d694');
     });
 
     test('mina SHA with binary data', () => {
         const data = new Uint8Array([0x00, 0x01, 0x02, 0x03, 0xff]);
 
-        const sha1 = minaSha1(data);
+        const sha1 = pureSha1(data);
         expect(typeof sha1).toBe('string');
         expect(sha1.length).toBe(40);
 
-        const sha256 = minaSha256(data);
+        const sha256 = pureSha256(data);
         expect(sha256.length).toBe(64);
     });
 });

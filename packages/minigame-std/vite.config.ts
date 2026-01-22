@@ -65,7 +65,7 @@ export default defineConfig(({ command }) => ({
                 'src/std/platform/device.ts',
                 'src/std/socket/mina_socket.ts',
                 'src/std/storage/mina_storage.ts',
-                // Note: mina_base64.ts, mina_hmac.ts, mina_sha.ts, mina_rsa.ts
+                // Note: base64.ts, hmac.ts, sha.ts (pure JS implementations)
                 // use rsa-oaep-encryption library and CAN be tested in browser
             ],
         },

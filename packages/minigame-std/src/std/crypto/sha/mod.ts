@@ -1,11 +1,6 @@
 import { isMinaEnv } from '../../../macros/env.ts';
 import type { DataSource } from '../../defines.ts';
-import {
-    sha1 as minaSHA1,
-    sha256 as minaSHA256,
-    sha384 as minaSHA384,
-    sha512 as minaSHA512,
-} from './mina_sha.ts';
+import { sha1 as pureSha1, sha256 as pureSha256, sha384 as pureSha384, sha512 as pureSha512 } from './sha.ts';
 import { sha as webSHA } from './web_sha.ts';
 
 /**
@@ -21,7 +16,7 @@ import { sha as webSHA } from './web_sha.ts';
  */
 export function sha1(data: DataSource): Promise<string> {
     return isMinaEnv()
-        ? Promise.resolve(minaSHA1(data))
+        ? Promise.resolve(pureSha1(data))
         : webSHA(data, 'SHA-1');
 }
 
@@ -38,7 +33,7 @@ export function sha1(data: DataSource): Promise<string> {
  */
 export function sha256(data: DataSource): Promise<string> {
     return isMinaEnv()
-        ? Promise.resolve(minaSHA256(data))
+        ? Promise.resolve(pureSha256(data))
         : webSHA(data, 'SHA-256');
 }
 
@@ -55,7 +50,7 @@ export function sha256(data: DataSource): Promise<string> {
  */
 export function sha384(data: DataSource): Promise<string> {
     return isMinaEnv()
-        ? Promise.resolve(minaSHA384(data))
+        ? Promise.resolve(pureSha384(data))
         : webSHA(data, 'SHA-384');
 }
 
@@ -72,6 +67,6 @@ export function sha384(data: DataSource): Promise<string> {
  */
 export function sha512(data: DataSource): Promise<string> {
     return isMinaEnv()
-        ? Promise.resolve(minaSHA512(data))
+        ? Promise.resolve(pureSha512(data))
         : webSHA(data, 'SHA-512');
 }
