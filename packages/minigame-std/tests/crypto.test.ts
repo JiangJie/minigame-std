@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { cryptos, decodeBase64Buffer, decodeByteString, decodeUtf8, encodeByteString, encodeUtf8, type DataSource } from '../src/mod.ts';
+import { cryptos, decodeBase64, decodeByteString, decodeUtf8, encodeByteString, encodeUtf8, type DataSource } from '../src/mod.ts';
 // Direct imports for testing mina implementations (they don't use wx API)
 import { createHMAC as minaCreateHMAC } from '../src/std/crypto/hmac/mina_hmac.ts';
 import { importPublicKey as minaImportPublicKey } from '../src/std/crypto/rsa/mina_rsa.ts';
@@ -304,7 +304,7 @@ wIy0/kd6szCcWK5Ld1kH9R0=
 
     async function decrypt(encryptedData: DataSource, hash: string) {
         const buffer = typeof encryptedData === 'string'
-            ? decodeBase64Buffer(encryptedData)
+            ? decodeBase64(encryptedData)
             : encryptedData;
         const privateKey = await importDecryptKey(privateKeyStr, hash);
         const decryptedData = decodeUtf8(await crypto.subtle.decrypt(
@@ -639,7 +639,7 @@ wIy0/kd6szCcWK5Ld1kH9R0=
         expect(encryptedBase64).toMatch(/^[A-Za-z0-9+/]+=*$/);
 
         // Decode and decrypt to verify
-        const encryptedBuffer = decodeBase64Buffer(encryptedBase64);
+        const encryptedBuffer = decodeBase64(encryptedBase64);
         const privateKey = await importDecryptKey(privateKeyStr, 'SHA-256');
         const decryptedData = decodeUtf8(await crypto.subtle.decrypt(
             { name: 'RSA-OAEP' },

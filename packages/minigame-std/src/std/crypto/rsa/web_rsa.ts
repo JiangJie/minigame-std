@@ -4,7 +4,7 @@
  */
 
 import { Err, tryAsyncResult, type AsyncIOResult } from 'happy-rusty';
-import { encodeBase64Buffer } from '../../base64/mod.ts';
+import { encodeBase64 } from '../../base64/mod.ts';
 import { dataSourceToBytes } from '../../codec/helpers.ts';
 import { decodeByteString } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
@@ -49,7 +49,7 @@ export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublic
 
             async encryptToString(data: DataSource): AsyncIOResult<string> {
                 const result = await encrypt(publicKey, data);
-                return result.map(encodeBase64Buffer);
+                return result.map(encodeBase64);
             },
         };
     });

@@ -1,41 +1,8 @@
-import { isMinaEnv } from '../../macros/env.ts';
-import { decodeBase64 as minaDecodeBase64, encodeBase64 as minaEncodeBase64 } from './mina_base64.ts';
-import { decodeBase64 as webDecodeBase64, encodeBase64 as webEncodeBase64 } from './web_base64.ts';
-
-export { decodeBase64Buffer, encodeBase64Buffer } from './base64.ts';
-
 /**
- * 将字符串编码为 Base64 格式。
+ * @fileoverview Base64 编解码模块。
  *
- * 在浏览器环境使用 `btoa`，在小程序环境使用纯 JS 实现。
- *
- * @param data - 需要编码的字符串。
- * @returns 编码后的 Base64 字符串。
- * @since 1.0.0
- * @example
- * ```ts
- * const encoded = encodeBase64('Hello, World!');
- * console.log(encoded); // 'SGVsbG8sIFdvcmxkIQ=='
- * ```
+ * - encodeBase64: 全平台使用纯 JS 实现，支持 DataSource 输入
+ * - decodeBase64: 支持 atob 时使用原生实现，否则使用纯 JS 实现
  */
-export function encodeBase64(data: string): string {
-    return (isMinaEnv() ? minaEncodeBase64 : webEncodeBase64)(data);
-}
 
-/**
- * 将 Base64 格式的字符串解码为字符串。
- *
- * 在浏览器环境使用 `atob`，在小程序环境使用纯 JS 实现。
- *
- * @param data - 需要解码的 Base64 字符串。
- * @returns 解码后的字符串。
- * @since 1.0.0
- * @example
- * ```ts
- * const decoded = decodeBase64('SGVsbG8sIFdvcmxkIQ==');
- * console.log(decoded); // 'Hello, World!'
- * ```
- */
-export function decodeBase64(data: string): string {
-    return (isMinaEnv() ? minaDecodeBase64 : webDecodeBase64)(data);
-}
+export { decodeBase64, encodeBase64 } from './base64.ts';

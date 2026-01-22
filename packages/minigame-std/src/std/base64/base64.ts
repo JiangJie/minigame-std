@@ -1,11 +1,16 @@
 /**
- * @fileoverview 在 Uint8Array 和 base64 编码字符串之间进行编解码。
+ * 在 Uint8Array 和 base64 编码字符串之间进行编解码。
+ *
+ * - encodeBase64: 全平台使用纯 JS 实现，因为原生 btoa 存在 Latin1 限制且需要额外转换，性能较差
+ * - decodeBase64: 支持 atob 时使用 atob，否则使用纯 JS 实现
  *
  * 源自 @std/encoding/base64 和 https://github.com/cross-org/base64
  */
 
 import { Lazy } from 'happy-rusty';
-import { bufferSourceToBytes } from '../internal/mod.ts';
+import { decodeByteString } from '../codec/bytestring.ts';
+import { dataSourceToBytes } from '../codec/helpers.ts';
+import type { DataSource } from '../defines.ts';
 
 // #region Internal Variables
 
@@ -23,65 +28,63 @@ const base64abc = chars.split('');
  * 标准 base64 字符查找表（延迟初始化）。
  */
 const lookup = Lazy(() => {
-    const lookupTemp = new Uint8Array(256); // base64abc.length * 4
+    const bytes = new Uint8Array(256);
 
     for (let i = 0; i < base64abc.length; i++) {
-        lookupTemp[base64abc[i].charCodeAt(0)] = i;
+        bytes[base64abc[i].charCodeAt(0)] = i;
     }
 
-    return lookupTemp;
+    return bytes;
 });
 
 // #endregion
 
 /**
- * 将 BufferSource 转换为 Base64 编码的字符串。
- * @param data - 需要编码的数据，可以是 ArrayBuffer、TypedArray 或 DataView。
+ * 将 DataSource（字符串或 BufferSource）转换为 Base64 编码的字符串。
+ *
+ * 全平台使用纯 JS 实现，避免 Latin1 限制和额外转换开销。
+ *
+ * @param data - 需要编码的数据，可以是字符串、ArrayBuffer、TypedArray 或 DataView。
  * @returns Base64 编码的字符串。
  * @since 1.0.0
  * @example
  * ```ts
+ * // 字符串输入
+ * const encoded = encodeBase64('Hello, World!');
+ * console.log(encoded); // 'SGVsbG8sIFdvcmxkIQ=='
+ *
+ * // BufferSource 输入
  * const buffer = new Uint8Array([72, 101, 108, 108, 111]);
- * const base64 = encodeBase64Buffer(buffer);
+ * const base64 = encodeBase64(buffer);
  * console.log(base64); // 'SGVsbG8='
  * ```
  */
-export function encodeBase64Buffer(data: BufferSource): string {
+export function encodeBase64(data: DataSource): string {
     let result = '';
 
-    const bytes = bufferSourceToBytes(data);
+    const bytes = dataSourceToBytes(data);
+    const { byteLength } = bytes;
 
-    const len = bytes.length;
-    let i: number;
-
-    for (i = 2; i < len; i += 3) {
-        result += base64abc[(bytes[i - 2]) >> 2];
-        result += base64abc[
-            (((bytes[i - 2]) & 0x03) << 4)
-            | ((bytes[i - 1]) >> 4)
-        ];
-        result += base64abc[
-            (((bytes[i - 1]) & 0x0f) << 2)
-            | ((bytes[i]) >> 6)
-        ];
-        result += base64abc[(bytes[i]) & 0x3f];
+    let i = 2;
+    for (; i < byteLength; i += 3) {
+        result += base64abc[bytes[i - 2] >> 2];
+        result += base64abc[((bytes[i - 2] & 0x03) << 4) | (bytes[i - 1] >> 4)];
+        result += base64abc[((bytes[i - 1] & 0x0f) << 2) | (bytes[i] >> 6)];
+        result += base64abc[bytes[i] & 0x3f];
     }
 
-    if (i === len + 1) {
+    if (i === byteLength + 1) {
         // 还有 1 个字节待写入
-        result += base64abc[(bytes[i - 2]) >> 2];
-        result += base64abc[((bytes[i - 2]) & 0x03) << 4];
+        result += base64abc[bytes[i - 2] >> 2];
+        result += base64abc[(bytes[i - 2] & 0x03) << 4];
         result += '==';
     }
 
-    if (i === len) {
+    if (i === byteLength) {
         // 还有 2 个字节待写入
-        result += base64abc[(bytes[i - 2]) >> 2];
-        result += base64abc[
-            (((bytes[i - 2]) & 0x03) << 4)
-            | ((bytes[i - 1]) >> 4)
-        ];
-        result += base64abc[((bytes[i - 1]) & 0x0f) << 2];
+        result += base64abc[bytes[i - 2] >> 2];
+        result += base64abc[((bytes[i - 2] & 0x03) << 4) | (bytes[i - 1] >> 4)];
+        result += base64abc[(bytes[i - 1] & 0x0f) << 2];
         result += '=';
     }
 
@@ -90,34 +93,56 @@ export function encodeBase64Buffer(data: BufferSource): string {
 
 /**
  * 将 Base64 编码的字符串转换为 Uint8Array。
+ *
+ * 在支持 atob 的环境（浏览器）下使用原生实现以获得更好的性能，
+ * 在不支持的环境下使用纯 JS 实现。
+ *
  * @param data - Base64 编码的字符串。
  * @returns 解码后的 Uint8Array。
  * @since 1.0.0
  * @example
  * ```ts
- * const buffer = decodeBase64Buffer('SGVsbG8=');
+ * const buffer = decodeBase64('SGVsbG8=');
  * console.log(buffer); // Uint8Array [72, 101, 108, 108, 111]
+ *
+ * // 解码为字符串
+ * const text = new TextDecoder().decode(decodeBase64('SGVsbG8sIFdvcmxkIQ=='));
+ * console.log(text); // 'Hello, World!'
  * ```
  */
-export function decodeBase64Buffer(data: string): Uint8Array<ArrayBuffer> {
-    const len = data.length;
+export const decodeBase64: (data: string) => Uint8Array<ArrayBuffer> = typeof atob === 'function'
+    ? decodeBase64Native
+    : decodeBase64Pure;
 
-    let bufferLength = len * 0.75;
+// #region Internal Functions
 
-    if (data[len - 1] === '=') {
-        bufferLength--;
-        if (data[len - 2] === '=') {
-            bufferLength--;
+/**
+ * 原生实现：使用 atob 将 Base64 编码的字符串转换为 Uint8Array。
+ */
+function decodeBase64Native(data: string): Uint8Array<ArrayBuffer> {
+    return decodeByteString(atob(data));
+}
+
+/**
+ * 纯 JS 实现：将 Base64 编码的字符串转换为 Uint8Array。
+ */
+function decodeBase64Pure(data: string): Uint8Array<ArrayBuffer> {
+    const { length } = data;
+
+    let byteLength = length * 0.75;
+
+    if (data[length - 1] === '=') {
+        byteLength--;
+        if (data[length - 2] === '=') {
+            byteLength--;
         }
     }
 
-    const bytes = new Uint8Array(bufferLength);
-
-    let pos = 0;
-
+    const bytes = new Uint8Array(byteLength);
     const table = lookup.force();
 
-    for (let i = 0; i < len; i += 4) {
+    let pos = 0;
+    for (let i = 0; i < length; i += 4) {
         const encoded1 = table[data.charCodeAt(i)];
         const encoded2 = table[data.charCodeAt(i + 1)];
         const encoded3 = table[data.charCodeAt(i + 2)];
@@ -130,3 +155,5 @@ export function decodeBase64Buffer(data: string): Uint8Array<ArrayBuffer> {
 
     return bytes;
 }
+
+// #endregion
