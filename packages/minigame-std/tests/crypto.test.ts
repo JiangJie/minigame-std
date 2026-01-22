@@ -17,12 +17,12 @@ test('calculate sha', async () => {
     const data = 'minigame-std-中文';
     const sha1Str = '431de9a89a769f4fb56a1c128fb7208bebb37960';
 
-    expect(await cryptos.sha1(data)).toBe(sha1Str);
-    expect(await cryptos.sha1(encodeUtf8(data))).toBe(sha1Str);
+    expect((await cryptos.sha1(data)).unwrap()).toBe(sha1Str);
+    expect((await cryptos.sha1(encodeUtf8(data))).unwrap()).toBe(sha1Str);
 
-    expect(await cryptos.sha256(data)).toBe('9cff73e4d0e15d78089294a8519788df44f306411e8d20f5f3770e564a73467f');
-    expect(await cryptos.sha384(data)).toBe('23ba7aac72c86e88befc6094e8f903645e2531cf14ac57edf1796e74e40a6e567b0255502a342d3085493d34e87b0541');
-    expect(await cryptos.sha512(data)).toBe('b4ebfef03638039622452ce378974fba515a8cb46c07e667bf80cdae06e69127123d5c32d85deb0ccc9ce563e5939b3340a604b45bd6493e663ae266c203d694');
+    expect((await cryptos.sha256(data)).unwrap()).toBe('9cff73e4d0e15d78089294a8519788df44f306411e8d20f5f3770e564a73467f');
+    expect((await cryptos.sha384(data)).unwrap()).toBe('23ba7aac72c86e88befc6094e8f903645e2531cf14ac57edf1796e74e40a6e567b0255502a342d3085493d34e87b0541');
+    expect((await cryptos.sha512(data)).unwrap()).toBe('b4ebfef03638039622452ce378974fba515a8cb46c07e667bf80cdae06e69127123d5c32d85deb0ccc9ce563e5939b3340a604b45bd6493e663ae266c203d694');
 });
 
 test('calculate hmac', async () => {
@@ -187,7 +187,7 @@ test('calculate md5 with data requiring extra padding block', () => {
 
 test('calculate sha256 with ArrayBuffer', async () => {
     const data = encodeUtf8('test');
-    const sha256Str = await cryptos.sha256(data);
+    const sha256Str = (await cryptos.sha256(data)).unwrap();
 
     expect(sha256Str).toBe('9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08');
 });
@@ -381,17 +381,17 @@ test('MD5 with binary data', () => {
 test('SHA with binary data', async () => {
     const data = new Uint8Array([0x00, 0x01, 0x02, 0x03, 0xff]);
 
-    const sha1 = await cryptos.sha1(data);
+    const sha1 = (await cryptos.sha1(data)).unwrap();
     expect(typeof sha1).toBe('string');
     expect(sha1.length).toBe(40);
 
-    const sha256 = await cryptos.sha256(data);
+    const sha256 = (await cryptos.sha256(data)).unwrap();
     expect(sha256.length).toBe(64);
 
-    const sha384 = await cryptos.sha384(data);
+    const sha384 = (await cryptos.sha384(data)).unwrap();
     expect(sha384.length).toBe(96);
 
-    const sha512 = await cryptos.sha512(data);
+    const sha512 = (await cryptos.sha512(data)).unwrap();
     expect(sha512.length).toBe(128);
 });
 

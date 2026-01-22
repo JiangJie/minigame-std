@@ -3,6 +3,7 @@
  * Web 平台的 SHA 哈希实现。
  */
 
+import { tryAsyncResult, type AsyncIOResult } from 'happy-rusty';
 import { dataSourceToBytes } from '../../codec/helpers.ts';
 import { encodeHex } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
@@ -14,8 +15,9 @@ import type { SHA } from '../crypto_defines.ts';
  * @param hash - SHA 算法。
  * @returns 计算得到的哈希值。
  */
-export async function sha(data: DataSource, hash: SHA): Promise<string> {
-    const hashBuffer = await crypto.subtle.digest(hash, dataSourceToBytes(data));
-
-    return encodeHex(hashBuffer);
+export function sha(data: DataSource, hash: SHA): AsyncIOResult<string> {
+    return tryAsyncResult(async () => {
+        const digest = await crypto.subtle.digest(hash, dataSourceToBytes(data));
+        return encodeHex(digest);
+    });
 }
