@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
-import { cryptos, decodeBase64, decodeByteString, decodeUtf8, encodeByteString, encodeUtf8, type DataSource } from '../src/mod.ts';
+import { cryptos, decodeBase64, decodeByteString, decodeUtf8, encodeUtf8, type DataSource } from '../src/mod.ts';
 // Direct imports for testing mina implementations (they don't use wx API)
-import { createHMAC as minaCreateHMAC } from '../src/std/crypto/hmac/mina_hmac.ts';
+import { createHMAC as pureCreateHMAC } from '../src/std/crypto/hmac/hmac.ts';
 import { importPublicKey as minaImportPublicKey } from '../src/std/crypto/rsa/mina_rsa.ts';
 import { sha1 as minaSha1, sha256 as minaSha256, sha384 as minaSha384, sha512 as minaSha512 } from '../src/std/crypto/sha/mina_sha.ts';
 
@@ -434,68 +434,62 @@ describe('mina SHA implementation (rsa-oaep-encryption library)', () => {
     });
 });
 
-describe('mina HMAC implementation (rsa-oaep-encryption library)', () => {
-    test('minaCreateHMAC SHA-1 produces correct result', () => {
+describe('Pure JS HMAC implementation (rsa-oaep-encryption library)', () => {
+    test('pureCreateHMAC SHA-1 produces correct result', async () => {
         const key = '密码';
         const data = 'minigame-std-中文';
 
-        const hmac = minaCreateHMAC('SHA-1', encodeByteString(key));
-        hmac.update(encodeByteString(data));
-        expect(hmac.digest().toHex()).toBe('c039c11a31199388dfb540f989d27f1ec099a43e');
+        const result = await pureCreateHMAC('SHA-1', key, data);
+        expect(result.unwrap()).toBe('c039c11a31199388dfb540f989d27f1ec099a43e');
     });
 
-    test('minaCreateHMAC SHA-256 produces correct result', () => {
+    test('pureCreateHMAC SHA-256 produces correct result', async () => {
         const key = '密码';
         const data = 'minigame-std-中文';
 
-        const hmac = minaCreateHMAC('SHA-256', encodeByteString(key));
-        hmac.update(encodeByteString(data));
-        expect(hmac.digest().toHex()).toBe('5e6bcf9fd1f62617773c18d420ef200dfd46dc15373d1192ff02cf648d703748');
+        const result = await pureCreateHMAC('SHA-256', key, data);
+        expect(result.unwrap()).toBe('5e6bcf9fd1f62617773c18d420ef200dfd46dc15373d1192ff02cf648d703748');
     });
 
-    test('minaCreateHMAC SHA-384 produces correct result', () => {
+    test('pureCreateHMAC SHA-384 produces correct result', async () => {
         const key = '密码';
         const data = 'minigame-std-中文';
 
-        const hmac = minaCreateHMAC('SHA-384', encodeByteString(key));
-        hmac.update(encodeByteString(data));
-        expect(hmac.digest().toHex()).toBe('7e011216b97450f06de084cdc6bd5f6e206dba1aa87519129dfc289ae9aa6231800188a0defe9543321365db2acc91f6');
+        const result = await pureCreateHMAC('SHA-384', key, data);
+        expect(result.unwrap()).toBe('7e011216b97450f06de084cdc6bd5f6e206dba1aa87519129dfc289ae9aa6231800188a0defe9543321365db2acc91f6');
     });
 
-    test('minaCreateHMAC SHA-512 produces correct result', () => {
+    test('pureCreateHMAC SHA-512 produces correct result', async () => {
         const key = '密码';
         const data = 'minigame-std-中文';
 
-        const hmac = minaCreateHMAC('SHA-512', encodeByteString(key));
-        hmac.update(encodeByteString(data));
-        expect(hmac.digest().toHex()).toBe('e781e747d4358000756e7752086dbf37822bd5f4733df2953a6eb96945b670cad1df950d4ba2f09cdf0e90beba1cdab9f0798ce6814b5aad7521d41bf3b4d0f3');
+        const result = await pureCreateHMAC('SHA-512', key, data);
+        expect(result.unwrap()).toBe('e781e747d4358000756e7752086dbf37822bd5f4733df2953a6eb96945b670cad1df950d4ba2f09cdf0e90beba1cdab9f0798ce6814b5aad7521d41bf3b4d0f3');
     });
 
-    test('minaCreateHMAC with long key (longer than block size)', () => {
+    test('pureCreateHMAC with long key (longer than block size)', async () => {
         // Key longer than block size should be hashed first
         const longKey = 'a'.repeat(200);
         const data = 'test data';
 
-        const hmac = minaCreateHMAC('SHA-256', longKey);
-        hmac.update(data);
-        const result = hmac.digest().toHex();
+        const result = await pureCreateHMAC('SHA-256', longKey, data);
+        const hex = result.unwrap();
 
-        expect(typeof result).toBe('string');
-        expect(result.length).toBe(64);
+        expect(typeof hex).toBe('string');
+        expect(hex.length).toBe(64);
     });
 
-    test('minaCreateHMAC with key exactly equal to block size', () => {
+    test('pureCreateHMAC with key exactly equal to block size', async () => {
         // SHA-256 blockLength is 64 bytes
         // Key with exactly 64 bytes should skip the padding branch (line 71)
         const exactKey = 'a'.repeat(64);
         const data = 'test data';
 
-        const hmac = minaCreateHMAC('SHA-256', exactKey);
-        hmac.update(data);
-        const result = hmac.digest().toHex();
+        const result = await pureCreateHMAC('SHA-256', exactKey, data);
+        const hex = result.unwrap();
 
-        expect(typeof result).toBe('string');
-        expect(result.length).toBe(64); // SHA-256 produces 64 hex chars
+        expect(typeof hex).toBe('string');
+        expect(hex.length).toBe(64); // SHA-256 produces 64 hex chars
     });
 });
 
