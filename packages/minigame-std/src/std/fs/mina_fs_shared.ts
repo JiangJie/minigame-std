@@ -7,7 +7,7 @@ import { normalize } from '@std/path/posix';
 import { NOT_FOUND_ERROR, ROOT_DIR, type ExistsOptions } from 'happy-opfs';
 import { Err, Lazy, Ok, RESULT_FALSE, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { bufferSourceToAb, miniGameFailureToError } from '../internal/mod.ts';
-import type { FileEncoding, MinaWriteFileContent, ReadOptions } from './fs_define.ts';
+import type { FileEncoding, ReadOptions, WriteFileContent } from './fs_define.ts';
 
 // #region Internal Variables
 
@@ -52,7 +52,7 @@ export function getFs(): WechatMinigame.FileSystemManager {
  * 获取文件系统的根路径。
  * @returns 文件系统的根路径。
  */
-export function getRootUsrPath(): string {
+export function getUsrPath(): string {
     return usrPath.force();
 }
 
@@ -196,7 +196,7 @@ export interface GetWriteFileContents {
 /**
  * 获取写入文件的参数。
  */
-export function getWriteFileContents(contents: MinaWriteFileContent): GetWriteFileContents {
+export function getWriteFileContents(contents: WriteFileContent): GetWriteFileContents {
     const isBin = typeof contents !== 'string';
 
     const encoding = isBin ? undefined : 'utf8';

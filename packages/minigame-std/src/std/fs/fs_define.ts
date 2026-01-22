@@ -1,8 +1,10 @@
 import type { FetchInit } from '@happy-ts/fetch-t';
-import type { FsRequestInit, ReadFileContent as OPFSReadFileContent, WriteFileContent as OPFSWriteFileContent, WriteSyncFileContent as OPFSWriteSyncFileContent, UploadRequestInit, ZipFromUrlRequestInit } from 'happy-opfs';
+import type { FsRequestInit, UploadRequestInit, ZipFromUrlRequestInit } from 'happy-opfs';
+import type { DataSource } from '../defines.ts';
 
 /**
- * 异步写入文件的内容类型，支持 `ArrayBuffer` `TypedArray` `string` `ReadableStream`。
+ * 异步写入文件的内容类型，支持 `ArrayBuffer` `TypedArray` `string`。
+ * 小游戏不支持 `Blob` 和 `ReadableStream`，因此直接使用 `DataSource`。
  * @since 1.0.0
  * @example
  * ```ts
@@ -12,29 +14,11 @@ import type { FsRequestInit, ReadFileContent as OPFSReadFileContent, WriteFileCo
  * await fs.writeFile('/path/to/file.txt', content);
  * ```
  */
-export type WriteFileContent = Exclude<OPFSWriteFileContent, Blob>;
-
-/**
- * 小游戏写入内容类型，排除 ReadableStream 因为小游戏不支持。
- */
-export type MinaWriteFileContent = Exclude<WriteFileContent, ReadableStream<Uint8Array<ArrayBuffer>>>;
-
-/**
- * 同步写入文件的内容类型，支持 `ArrayBuffer` `TypedArray` `string`。
- * 排除了 `Blob` 和 `ReadableStream`，因为它们需要异步操作。
- * @since 1.1.0
- * @example
- * ```ts
- * import { fs, type WriteSyncFileContent } from 'minigame-std';
- *
- * const content: WriteSyncFileContent = new Uint8Array([1, 2, 3]);
- * fs.writeFileSync('/path/to/file.bin', content);
- * ```
- */
-export type WriteSyncFileContent = Exclude<OPFSWriteSyncFileContent, Blob>;
+export type WriteFileContent = DataSource;
 
 /**
  * 读取文件的内容类型，支持 `ArrayBuffer` `string`。
+ * 小游戏不支持 `Blob`、`File` 和 `ReadableStream`。
  * @since 1.0.0
  * @example
  * ```ts
@@ -44,7 +28,7 @@ export type WriteSyncFileContent = Exclude<OPFSWriteSyncFileContent, Blob>;
  * const content: ReadFileContent = new ArrayBuffer(8);
  * ```
  */
-export type ReadFileContent = Exclude<OPFSReadFileContent, Blob>;
+export type ReadFileContent = ArrayBuffer | string;
 
 /**
  * 指定编码读取文件的选项。

@@ -26,7 +26,7 @@ import {
 } from 'happy-opfs';
 import { Ok, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
-import type { MinaWriteFileContent, StatOptions, UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent, ZipFromUrlOptions } from './fs_define.ts';
+import type { StatOptions, UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent, ZipFromUrlOptions } from './fs_define.ts';
 import { convertFileSystemHandleToStats } from './fs_helpers.ts';
 import {
     appendFile as minaAppendFile,
@@ -220,7 +220,7 @@ export async function stat(path: string, options?: StatOptions): AsyncIOResult<W
  * ```
  */
 export function writeFile(filePath: string, contents: WriteFileContent, options?: WriteOptions): AsyncVoidIOResult {
-    return (isMinaEnv() ? minaWriteFile : webWriteFile)(filePath, contents as MinaWriteFileContent, options);
+    return (isMinaEnv() ? minaWriteFile : webWriteFile)(filePath, contents, options);
 }
 
 /**
@@ -238,7 +238,7 @@ export function writeFile(filePath: string, contents: WriteFileContent, options?
  * ```
  */
 export function appendFile(filePath: string, contents: WriteFileContent): AsyncVoidIOResult {
-    return (isMinaEnv() ? minaAppendFile : webAppendFile)(filePath, contents as MinaWriteFileContent);
+    return (isMinaEnv() ? minaAppendFile : webAppendFile)(filePath, contents);
 }
 
 /**

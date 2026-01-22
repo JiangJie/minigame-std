@@ -4,10 +4,10 @@
  */
 
 import { basename, dirname, join, SEPARATOR } from '@std/path/posix';
-import * as fflate from 'fflate/browser';
+import { zipSync as compressSync, unzipSync as decompressSync, type AsyncZippable, type FlateError } from 'fflate/browser';
 import { type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
-import { Err, Ok, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
-import type { MinaWriteFileContent, ReadFileContent, ReadOptions, StatOptions } from './fs_define.ts';
+import { Err, RESULT_VOID, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
+import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
 import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError, validateAbsolutePath, validateExistsOptions } from './mina_fs_shared.ts';
 
 /**
@@ -110,7 +110,7 @@ export function statSync(path: string, options?: StatOptions): IOResult<WechatMi
 /**
  * `writeFile` 的同步版本。
  */
-export function writeFileSync(filePath: string, contents: MinaWriteFileContent, options?: WriteOptions): VoidIOResult {
+export function writeFileSync(filePath: string, contents: WriteFileContent, options?: WriteOptions): VoidIOResult {
     const filePathRes = validateAbsolutePath(filePath);
     if (filePathRes.isErr()) return filePathRes.asErr();
     filePath = filePathRes.unwrap();
@@ -119,10 +119,8 @@ export function writeFileSync(filePath: string, contents: MinaWriteFileContent, 
     const { append = false, create = true } = options ?? {};
 
     if (create) {
-        const res = mkdirSync(dirname(filePath));
-        if (res.isErr()) {
-            return res;
-        }
+        const result = mkdirSync(dirname(filePath));
+        if (result.isErr()) return result;
     }
 
     const { data, encoding } = getWriteFileContents(contents);
@@ -133,7 +131,7 @@ export function writeFileSync(filePath: string, contents: MinaWriteFileContent, 
 /**
  * `appendFile` 的同步版本。
  */
-export function appendFileSync(filePath: string, contents: MinaWriteFileContent): VoidIOResult {
+export function appendFileSync(filePath: string, contents: WriteFileContent): VoidIOResult {
     return writeFileSync(filePath, contents, {
         append: true,
     });
@@ -161,13 +159,11 @@ export function copySync(srcPath: string, destPath: string): VoidIOResult {
                 const srcEntryPath = srcPath + path;
                 const destEntryPath = destPath + path;
 
-                const res = (stats.isDirectory()
+                const result = (stats.isDirectory()
                     ? mkdirSync(destEntryPath)
                     : copyFileSync(srcEntryPath, destEntryPath));
 
-                if (res.isErr()) {
-                    return res;
-                }
+                if (result.isErr()) return result;
             }
 
             return RESULT_VOID;
@@ -193,16 +189,14 @@ export function existsSync(path: string, options?: ExistsOptions): IOResult<bool
  * `emptyDir` 的同步版本。
  */
 export function emptyDirSync(dirPath: string): VoidIOResult {
-    const res = readDirSync(dirPath);
-    if (res.isErr()) {
-        return isNotFoundError(res.unwrapErr()) ? mkdirSync(dirPath) : res.asErr();
+    const readDirRes = readDirSync(dirPath);
+    if (readDirRes.isErr()) {
+        return isNotFoundError(readDirRes.unwrapErr()) ? mkdirSync(dirPath) : readDirRes.asErr();
     }
 
-    for (const name of res.unwrap()) {
-        const res = removeSync(join(dirPath, name));
-        if (res.isErr()) {
-            return res.asErr();
-        }
+    for (const name of readDirRes.unwrap()) {
+        const removeRes = removeSync(join(dirPath, name));
+        if (removeRes.isErr()) return removeRes.asErr();
     }
 
     return RESULT_VOID;
@@ -213,11 +207,7 @@ export function emptyDirSync(dirPath: string): VoidIOResult {
  */
 export function readJsonFileSync<T>(filePath: string): IOResult<T> {
     return readTextFileSync(filePath).andThen(contents => {
-        try {
-            return Ok(JSON.parse(contents));
-        } catch (e) {
-            return Err(e as Error);
-        }
+        return tryResult(JSON.parse, contents);
     });
 }
 
@@ -225,11 +215,9 @@ export function readJsonFileSync<T>(filePath: string): IOResult<T> {
  * `writeJsonFile` 的同步版本。
  */
 export function writeJsonFileSync<T>(filePath: string, data: T): VoidIOResult {
-    try {
-        return writeFileSync(filePath, JSON.stringify(data));
-    } catch (e) {
-        return Err(e as Error);
-    }
+    const result = tryResult(JSON.stringify, data);
+
+    return result.andThen(text => writeFileSync(filePath, text));
 }
 
 /**
@@ -257,22 +245,20 @@ export function unzipSync(zipFilePath: string, destDir: string): VoidIOResult {
         const data = new Uint8Array(buffer);
 
         try {
-            const unzipped = fflate.unzipSync(data);
+            const unzipped = decompressSync(data);
 
             for (const path in unzipped) {
                 // 忽略目录
                 if (path.at(-1) !== SEPARATOR) {
                     // 不能用 json，否则 http://usr 会变成 http:/usr
-                    const res = writeFileSync(`${ destDir }/${ path }`, unzipped[path] as Uint8Array<ArrayBuffer>);
-                    if (res.isErr()) {
-                        return res.asErr();
-                    }
+                    const writeFileRes = writeFileSync(`${ destDir }/${ path }`, unzipped[path] as Uint8Array<ArrayBuffer>);
+                    if (writeFileRes.isErr()) return writeFileRes.asErr();
                 }
             }
 
             return RESULT_VOID;
         } catch (e) {
-            return Err(e as fflate.FlateError);
+            return Err(e as FlateError);
         }
     });
 }
@@ -290,49 +276,43 @@ export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOp
     zipFilePath = zipFilePathRes.unwrap();
 
     return statSync(sourcePath).andThen(stats => {
-        const zipped: fflate.AsyncZippable = {};
+        const zipped: AsyncZippable = {};
 
         const sourceName = basename(sourcePath);
 
         if (stats.isFile()) {
             // 文件
-            const res = readFileSync(sourcePath);
-            if (res.isErr()) {
-                return res.asErr();
-            }
+            const readFileRes = readFileSync(sourcePath);
+            if (readFileRes.isErr()) return readFileRes.asErr();
 
-            zipped[sourceName] = new Uint8Array(res.unwrap());
+            zipped[sourceName] = new Uint8Array(readFileRes.unwrap());
         } else {
             // 目录
-            const res = statSync(sourcePath, {
+            const statRes = statSync(sourcePath, {
                 recursive: true,
             });
-            if (res.isErr()) {
-                return res.asErr();
-            }
+            if (statRes.isErr()) return statRes.asErr();
 
             // 默认保留根目录
             const preserveRoot = options?.preserveRoot ?? true;
 
-            for (const { path, stats } of res.unwrap()) {
+            for (const { path, stats } of statRes.unwrap()) {
                 if (stats.isFile()) {
                     const entryName = preserveRoot ? join(sourceName, path) : path;
                     // 不能用 join，否则 http://usr 会变成 http:/usr
-                    const res = readFileSync(sourcePath + path);
-                    if (res.isErr()) {
-                        return res.asErr();
-                    }
+                    const readFileRes = readFileSync(sourcePath + path);
+                    if (readFileRes.isErr()) return readFileRes.asErr();
 
-                    zipped[entryName] = new Uint8Array(res.unwrap());
+                    zipped[entryName] = new Uint8Array(readFileRes.unwrap());
                 }
             }
         }
 
         try {
-            const u8a = fflate.zipSync(zipped) as Uint8Array<ArrayBuffer>;
-            return writeFileSync(zipFilePath, u8a);
+            const bytes = compressSync(zipped) as Uint8Array<ArrayBuffer>;
+            return writeFileSync(zipFilePath, bytes);
         } catch (e) {
-            return Err(e as fflate.FlateError);
+            return Err(e as FlateError);
         }
     });
 }
@@ -346,12 +326,7 @@ export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOp
  * @returns
  */
 function trySyncOp<T>(op: () => T, errToResult: (err: WechatMinigame.FileError) => IOResult<T> = fileErrorToResult): IOResult<T> {
-    try {
-        const res = op();
-        return Ok(res);
-    } catch (e: unknown) {
-        return errToResult(e as WechatMinigame.FileError);
-    }
+    return tryResult<T, WechatMinigame.FileError>(op).orElse(errToResult);
 }
 
 function copyFileSync(srcPath: string, destPath: string): VoidIOResult {

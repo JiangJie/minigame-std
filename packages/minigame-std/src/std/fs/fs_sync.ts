@@ -19,7 +19,7 @@ import {
 } from 'happy-opfs';
 import { Ok, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
-import type { StatOptions, WriteSyncFileContent } from './fs_define.ts';
+import type { StatOptions, WriteFileContent } from './fs_define.ts';
 import { convertFileSystemHandleLikeToStats } from './fs_helpers.ts';
 import {
     appendFileSync as minaAppendFileSync,
@@ -221,7 +221,7 @@ export function statSync(path: string, options?: StatOptions): IOResult<WechatMi
  * }
  * ```
  */
-export function writeFileSync(filePath: string, contents: WriteSyncFileContent): VoidIOResult {
+export function writeFileSync(filePath: string, contents: WriteFileContent): VoidIOResult {
     return (isMinaEnv() ? minaWriteFileSync : webWriteFileSync)(filePath, contents);
 }
 
@@ -257,7 +257,7 @@ export function copySync(srcPath: string, destPath: string): VoidIOResult {
  * }
  * ```
  */
-export function appendFileSync(filePath: string, contents: WriteSyncFileContent): VoidIOResult {
+export function appendFileSync(filePath: string, contents: WriteFileContent): VoidIOResult {
     return (isMinaEnv() ? minaAppendFileSync : webAppendFileSync)(filePath, contents);
 }
 
