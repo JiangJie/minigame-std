@@ -1,15 +1,39 @@
 /**
  * 在 Uint8Array 和 base64 编码字符串之间进行编解码。
  *
- * - encodeBase64: 全平台使用纯 JS 实现，因为原生 btoa 存在 Latin1 限制且需要额外转换，性能较差
- * - decodeBase64: 支持 atob 时使用 atob，否则使用纯 JS 实现
+ * ## 为什么使用纯 JS 实现？
+ *
+ * 虽然浏览器提供了原生的 btoa/atob 方法，但它们存在以下问题：
+ *
+ * 1. **Latin1 限制**：btoa/atob 只能处理 Latin1 字符（0x00-0xFF），
+ *    处理 UTF-8 数据需要额外的 string ↔ bytes 转换
+ *
+ * 2. **性能问题**：由于需要额外的转换步骤，原生方案反而更慢：
+ *    - 编码：`string → UTF-8 bytes → Latin1 string → btoa`
+ *    - 解码：`atob → Latin1 string → bytes`
+ *
+ * 3. **Benchmark 结果**：纯 JS 实现在所有场景下都比原生方案更快：
+ *    - 编码：纯 JS 比 btoa 快 1.6x ~ 4.1x
+ *    - 解码：纯 JS 比 atob 快 1.1x ~ 2.5x
+ *
+ * ## 如何运行 Benchmark
+ *
+ * ```bash
+ * pnpm run bench
+ * ```
+ *
+ * Benchmark 文件位于 `benchmarks/base64.bench.ts`，测试了不同长度和类型的字符串：
+ * - 短字符串 (13 chars)
+ * - 中等字符串 (1000 chars)
+ * - 长字符串 (10000 chars)
+ * - 中文字符串 (400 chars)
+ * - 混合字符串 (1650 chars)
  *
  * 源自 @std/encoding/base64 和 https://github.com/cross-org/base64
  */
 
 import { Lazy } from 'happy-rusty';
 import type { DataSource } from '../defines.ts';
-import { decodeByteString } from './bytestring.ts';
 import { dataSourceToBytes } from './helpers.ts';
 
 // #region Internal Variables
@@ -94,8 +118,7 @@ export function encodeBase64(data: DataSource): string {
 /**
  * 将 Base64 编码的字符串转换为 Uint8Array。
  *
- * 在支持 atob 的环境（浏览器）下使用原生实现以获得更好的性能，
- * 在不支持的环境下使用纯 JS 实现。
+ * 全平台使用纯 JS 实现，benchmark 显示比 atob + 字符串转换更快。
  *
  * @param data - Base64 编码的字符串。
  * @returns 解码后的 Uint8Array。
@@ -106,27 +129,11 @@ export function encodeBase64(data: DataSource): string {
  * console.log(buffer); // Uint8Array [72, 101, 108, 108, 111]
  *
  * // 解码为字符串
- * const text = new TextDecoder().decode(decodeBase64('SGVsbG8sIFdvcmxkIQ=='));
+ * const text = decodeUtf8(decodeBase64('SGVsbG8sIFdvcmxkIQ=='));
  * console.log(text); // 'Hello, World!'
  * ```
  */
-export const decodeBase64: (data: string) => Uint8Array<ArrayBuffer> = typeof atob === 'function'
-    ? decodeBase64Native
-    : decodeBase64Pure;
-
-// #region Internal Functions
-
-/**
- * 原生实现：使用 atob 将 Base64 编码的字符串转换为 Uint8Array。
- */
-function decodeBase64Native(data: string): Uint8Array<ArrayBuffer> {
-    return decodeByteString(atob(data));
-}
-
-/**
- * 纯 JS 实现：将 Base64 编码的字符串转换为 Uint8Array。
- */
-function decodeBase64Pure(data: string): Uint8Array<ArrayBuffer> {
+export function decodeBase64(data: string): Uint8Array<ArrayBuffer> {
     const { length } = data;
 
     let byteLength = length * 0.75;
@@ -155,5 +162,3 @@ function decodeBase64Pure(data: string): Uint8Array<ArrayBuffer> {
 
     return bytes;
 }
-
-// #endregion

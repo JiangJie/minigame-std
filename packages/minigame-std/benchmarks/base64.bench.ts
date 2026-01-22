@@ -1,53 +1,34 @@
 /**
  * Base64 编解码性能测试
  *
- * 对比纯 JS 实现和原生 btoa/atob 的性能差异
+ * 编码：对比纯 JS 实现和原生 btoa 的性能差异
+ * 解码：对比纯 JS 实现和原生 atob 的性能差异
  *
  * 运行方式：pnpm run bench
  */
 
 import { bench, describe } from 'vitest';
 import { decodeBase64, encodeBase64 } from '../src/std/codec/base64.ts';
-import { encodeUtf8 } from '../src/std/codec/mod.ts';
+import { decodeByteString, encodeByteString, encodeUtf8 } from '../src/std/codec/mod.ts';
 
-// ===================== 原生 btoa/atob 方案 =====================
-
-/**
- * 将字节数组转换为 Latin1 字符串（用于 btoa）
- */
-function bytesToBinaryString(bytes: Uint8Array): string {
-    let result = '';
-    for (const byte of bytes) {
-        result += String.fromCharCode(byte);
-    }
-    return result;
-}
-
-/**
- * 将 Latin1 字符串转换为字节数组（用于 atob）
- */
-function binaryStringToBytes(str: string): Uint8Array {
-    const bytes = new Uint8Array(str.length);
-    for (let i = 0; i < str.length; i++) {
-        bytes[i] = str.charCodeAt(i);
-    }
-    return bytes;
-}
+// ===================== 编码方案 =====================
 
 /**
  * 原生方案：使用 btoa 编码
  * 流程：string → UTF-8 bytes → Latin1 string → btoa → Base64
  */
 function encodeBase64Native(data: string): string {
-    return btoa(bytesToBinaryString(encodeUtf8(data)));
+    return btoa(encodeByteString(encodeUtf8(data)));
 }
+
+// ===================== 解码方案 =====================
 
 /**
  * 原生方案：使用 atob 解码
- * 流程：Base64 → atob → Latin1 string → bytes → UTF-8 string
+ * 流程：Base64 → atob → Latin1 string → bytes
  */
-function decodeBase64Native(data: string): string {
-    return new TextDecoder().decode(binaryStringToBytes(atob(data)));
+function decodeBase64Native(data: string): Uint8Array<ArrayBuffer> {
+    return decodeByteString(atob(data));
 }
 
 // ===================== 测试数据 =====================
