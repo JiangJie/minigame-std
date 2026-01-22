@@ -171,33 +171,57 @@ export async function stat(path: string, options?: StatOptions): AsyncIOResult<W
  */
 export async function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     if (isMinaEnv()) {
-        return await minaStat(path, options);
+        return minaStat(path, options);
     }
 
-    return (await webStat(path)).andThenAsync(async (handle): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> => {
-        const entryStats = await convertFileSystemHandleToStats(handle);
+    const statRes = await webStat(path);
+    if (statRes.isErr()) return statRes.asErr();
 
-        if (entryStats.isFile() || !options?.recursive) {
-            return Ok(entryStats);
-        }
+    const handle = statRes.unwrap();
 
-        // 递归读取目录
-        return (await webReadDir(path)).andThenAsync(async entries => {
-            const statsArr: WechatMinigame.FileStats[] = [{
+    const entryStatsRes = await convertFileSystemHandleToStats(handle);
+    if (entryStatsRes.isErr()) return entryStatsRes;
+
+    const entryStats = entryStatsRes.unwrap();
+    if (entryStats.isFile() || !options?.recursive) {
+        return entryStatsRes;
+    }
+
+    // 递归读取目录
+    const readDirRes = await webReadDir(path);
+    if (readDirRes.isErr()) return readDirRes.asErr();
+
+    const entries = readDirRes.unwrap();
+    const statsArr: WechatMinigame.FileStats[] = [{
+        path,
+        stats: entryStats,
+    }];
+
+    const tasks: AsyncIOResult<{
+        path: string;
+        stats: WechatMinigame.Stats;
+    }>[] = [];
+
+    for await (const { path, handle } of entries) {
+        tasks.push((async () => {
+            const statsRes = await convertFileSystemHandleToStats(handle);
+            return statsRes.map(stats => ({
                 path,
-                stats: entryStats,
-            }];
+                stats,
+            }));
+        })());
+    }
 
-            for await (const { path, handle } of entries) {
-                statsArr.push({
-                    path,
-                    stats: await convertFileSystemHandleToStats(handle),
-                });
-            }
+    if (tasks.length > 0) {
+        const results = await Promise.all(tasks);
+        for (const result of results) {
+            if (result.isErr()) return result.asErr();
 
-            return Ok(statsArr);
-        });
-    });
+            statsArr.push(result.unwrap());
+        }
+    }
+
+    return Ok(statsArr);
 }
 
 /**
