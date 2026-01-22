@@ -105,12 +105,12 @@ export function readFile(filePath: string, options: ReadOptions & {
 /**
  * 以二进制格式读取文件。
  * @param filePath - 文件路径。
- * @param options - 读取选项，指定编码为 'binary'。
- * @returns 包含文件内容的 ArrayBuffer 的异步结果。
+ * @param options - 读取选项，指定编码为 'bytes'。
+ * @returns 包含文件内容的 Uint8Array<ArrayBuffer> 的异步结果。
  */
 export function readFile(filePath: string, options?: ReadOptions & {
-    encoding: 'binary';
-}): AsyncIOResult<ArrayBuffer>;
+    encoding: 'bytes';
+}): AsyncIOResult<Uint8Array<ArrayBuffer>>;
 
 /**
  * 读取文件内容，可选地指定编码和返回类型。
@@ -132,7 +132,11 @@ export async function readFile(filePath: string, options?: ReadOptions): AsyncIO
     });
 
     return readFileRes
-        .map(x => x.data)
+        .map(x => {
+            const data = x.data;
+            // 小游戏返回的是 ArrayBuffer，需要转换为 Uint8Array
+            return typeof data === 'string' ? data : new Uint8Array(data);
+        })
         .orElse(fileErrorToResult);
 }
 

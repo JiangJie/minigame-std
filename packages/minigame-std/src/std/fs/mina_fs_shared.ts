@@ -7,7 +7,7 @@ import { normalize } from '@std/path/posix';
 import { NOT_FOUND_ERROR, ROOT_DIR, type ExistsOptions } from 'happy-opfs';
 import { Err, Lazy, Ok, RESULT_FALSE, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { bufferSourceToAb, miniGameFailureToError } from '../internal/mod.ts';
-import type { FileEncoding, ReadOptions, WriteFileContent } from './fs_define.ts';
+import type { ReadOptions, WriteFileContent } from './fs_define.ts';
 
 // #region Internal Variables
 
@@ -169,16 +169,12 @@ export function errToMkdirResult(err: WechatMinigame.FileError): VoidIOResult {
 
 /**
  * 获取读取文件的编码。
+ * @returns 返回 `'utf8'` 或 `undefined`（读取二进制时不传 encoding）。
  */
-export function getReadFileEncoding(options?: ReadOptions): FileEncoding | undefined {
+export function getReadFileEncoding(options?: ReadOptions): 'utf8' | undefined {
     // NOTE: 想要读取 ArrayBuffer 就不能传 encoding
-    // 如果传了 'binary'，读出来的是字符串
-    let encoding: FileEncoding | undefined = options?.encoding;
-    if (!encoding || encoding === 'binary') {
-        encoding = undefined;
-    }
-
-    return encoding;
+    // 如果传了 'bytes' 或不传，返回 undefined
+    return options?.encoding === 'utf8' ? 'utf8' : undefined;
 }
 
 /**
@@ -191,7 +187,7 @@ export function errToRemoveResult(err: WechatMinigame.FileError): VoidIOResult {
 
 export interface GetWriteFileContents {
     data: string | ArrayBuffer;
-    encoding: FileEncoding | undefined;
+    encoding?: 'utf8';
 }
 /**
  * 获取写入文件的参数。

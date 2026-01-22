@@ -99,23 +99,19 @@ export function readDirSync(dirPath: string): IOResult<string[]> {
 /**
  * `readFile` 的同步版本，读取文件内容。
  * @param filePath - 文件的路径。
- * @returns 包含文件内容的 ArrayBuffer 的操作结果。
+ * @returns 包含文件内容的 Uint8Array<ArrayBuffer> 的操作结果。
  * @since 1.1.0
  * @example
  * ```ts
  * const result = readFileSync('/path/to/file.txt');
  * if (result.isOk()) {
- *     const buffer = result.unwrap();
- *     console.log(new TextDecoder().decode(buffer));
+ *     const bytes = result.unwrap();
+ *     console.log(decodeUtf8(bytes));
  * }
  * ```
  */
-export function readFileSync(filePath: string): IOResult<ArrayBuffer> {
-    if (isMinaEnv()) {
-        return minaReadFileSync(filePath);
-    }
-
-    return webReadFileSync(filePath).map(data => data.buffer);
+export function readFileSync(filePath: string): IOResult<Uint8Array<ArrayBuffer>> {
+    return (isMinaEnv() ? minaReadFileSync : webReadFileSync)(filePath);
 }
 
 /**

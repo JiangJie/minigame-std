@@ -104,7 +104,8 @@ export async function readDir(dirPath: string): AsyncIOResult<string[]> {
         return minaReadDir(dirPath);
     }
 
-    return (await webReadDir(dirPath)).andThenAsync(async entries => {
+    const readDirRes = await webReadDir(dirPath);
+    return readDirRes.andThenAsync(async entries => {
         const items: string[] = [];
         for await (const { path } of entries) {
             items.push(path);
@@ -116,24 +117,19 @@ export async function readDir(dirPath: string): AsyncIOResult<string[]> {
 /**
  * 读取文件内容。
  * @param filePath - 文件的路径。
- * @returns 包含文件内容的 ArrayBuffer 的异步操作结果。
+ * @returns 包含文件内容的 Uint8Array<ArrayBuffer> 的异步操作结果。
  * @since 1.0.0
  * @example
  * ```ts
  * const result = await readFile('/path/to/file.txt');
  * if (result.isOk()) {
- *     const buffer = result.unwrap();
- *     console.log(new TextDecoder().decode(buffer));
+ *     const bytes = result.unwrap();
+ *     console.log(decodeUtf8(bytes));
  * }
  * ```
  */
-export async function readFile(filePath: string): AsyncIOResult<ArrayBuffer> {
-    if (isMinaEnv()) {
-        return minaReadFile(filePath);
-    }
-
-    return (await webReadFile(filePath))
-        .map(data => data.buffer);
+export function readFile(filePath: string): AsyncIOResult<Uint8Array<ArrayBuffer>> {
+    return (isMinaEnv() ? minaReadFile : webReadFile)(filePath);
 }
 
 /**
@@ -446,7 +442,7 @@ export function unzip(zipFilePath: string, targetPath: string): AsyncVoidIOResul
  * }
  * ```
  */
-export async function unzipFromUrl(zipFileUrl: string, targetPath: string, options?: UnionDownloadFileOptions): AsyncVoidIOResult {
+export function unzipFromUrl(zipFileUrl: string, targetPath: string, options?: UnionDownloadFileOptions): AsyncVoidIOResult {
     return (isMinaEnv() ? minaUnzipFromUrl : webUnzipFromUrl)(zipFileUrl, targetPath, options);
 }
 

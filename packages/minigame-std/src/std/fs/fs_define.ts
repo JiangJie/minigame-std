@@ -17,18 +17,18 @@ import type { DataSource } from '../defines.ts';
 export type WriteFileContent = DataSource;
 
 /**
- * 读取文件的内容类型，支持 `ArrayBuffer` `string`。
+ * 读取文件的内容类型，支持 `Uint8Array<ArrayBuffer>` `string`。
  * 小游戏不支持 `Blob`、`File` 和 `ReadableStream`。
  * @since 1.0.0
  * @example
  * ```ts
  * import type { ReadFileContent } from 'minigame-std';
  *
- * // ReadFileContent 可以是 ArrayBuffer 或 string
- * const content: ReadFileContent = new ArrayBuffer(8);
+ * // ReadFileContent 可以是 Uint8Array<ArrayBuffer> 或 string
+ * const content: ReadFileContent = new Uint8Array(8);
  * ```
  */
-export type ReadFileContent = ArrayBuffer | string;
+export type ReadFileContent = Uint8Array<ArrayBuffer> | string;
 
 /**
  * 指定编码读取文件的选项。
@@ -42,9 +42,9 @@ export type ReadFileContent = ArrayBuffer | string;
  */
 export interface ReadOptions {
     /**
-     * 读取文件的编码类型，支持 `binary(ArrayBuffer)` `utf8(string)` `blob(Blob)`。
+     * 读取文件的编码类型，支持 `bytes(Uint8Array)` `utf8(string)`。
      *
-     * @defaultValue `'binary'`
+     * @defaultValue `'bytes'`
      */
     encoding?: FileEncoding;
 }
@@ -59,7 +59,7 @@ export interface ReadOptions {
  * const encoding: FileEncoding = 'utf8';
  * ```
  */
-export type FileEncoding = 'binary' | 'utf8';
+export type FileEncoding = 'bytes' | 'utf8';
 
 /**
  * 下载文件的选项。

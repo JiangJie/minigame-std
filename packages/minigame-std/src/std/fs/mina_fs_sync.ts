@@ -54,16 +54,20 @@ export function readFileSync(filePath: string, options: ReadOptions & {
     encoding: 'utf8';
 }): IOResult<string>;
 export function readFileSync(filePath: string, options?: ReadOptions & {
-    encoding: 'binary';
-}): IOResult<ArrayBuffer>;
-export function readFileSync<T extends ReadFileContent>(filePath: string, options?: ReadOptions): IOResult<T> {
+    encoding: 'bytes';
+}): IOResult<Uint8Array<ArrayBuffer>>;
+export function readFileSync(filePath: string, options?: ReadOptions): IOResult<ReadFileContent> {
     const filePathRes = validateAbsolutePath(filePath);
     if (filePathRes.isErr()) return filePathRes.asErr();
     filePath = filePathRes.unwrap();
 
     const encoding = getReadFileEncoding(options);
 
-    return trySyncOp(() => getFs().readFileSync(filePath, encoding) as T);
+    return trySyncOp(() => {
+        const data = getFs().readFileSync(filePath, encoding);
+        // 小游戏返回的是 ArrayBuffer，需要转换为 Uint8Array
+        return typeof data === 'string' ? data : new Uint8Array(data);
+    });
 }
 
 /**
