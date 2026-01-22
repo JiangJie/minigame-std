@@ -4,7 +4,7 @@
  */
 
 import { normalize } from '@std/path/posix';
-import { NOT_FOUND_ERROR, ROOT_DIR, type ExistsOptions } from 'happy-opfs';
+import { NOT_FOUND_ERROR, NOTHING_TO_ZIP_ERROR, ROOT_DIR, type ExistsOptions } from 'happy-opfs';
 import { Err, Lazy, Ok, RESULT_FALSE, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { bufferSourceToAb, miniGameFailureToError } from '../internal/mod.ts';
 import type { ReadOptions, WriteFileContent } from './fs_define.ts';
@@ -39,6 +39,8 @@ const rootPath = Lazy(() => {
 });
 
 // #endregion
+
+export const EMPTY_BYTES: Uint8Array<ArrayBuffer> = new Uint8Array(0);
 
 /**
  * 获取小游戏文件系统管理器实例。
@@ -236,4 +238,11 @@ export function validateExistsOptions(options?: ExistsOptions): VoidIOResult {
     return isDirectory && isFile
         ? Err(new Error('isDirectory and isFile cannot both be true'))
         : RESULT_VOID;
+}
+
+export function createNothingToZipError(): Error {
+    const error = new Error('Nothing to zip');
+    error.name = NOTHING_TO_ZIP_ERROR;
+
+    return error;
 }

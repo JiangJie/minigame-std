@@ -4,7 +4,7 @@
  */
 
 import { FetchError, type FetchResult } from '@happy-ts/fetch-t';
-import { basename, dirname } from '@std/path/posix';
+import { basename, dirname, SEPARATOR } from '@std/path/posix';
 import { zip as compress, type AsyncZippable } from 'fflate/browser';
 import type { ExistsOptions, WriteOptions, ZipOptions } from 'happy-opfs';
 import { Err, Ok, RESULT_VOID, tryResult, type AsyncIOResult, type AsyncVoidIOResult, type IOResult } from 'happy-rusty';
@@ -14,7 +14,7 @@ import { createFailedFetchTask, miniGameFailureToResult, validateSafeUrl } from 
 import { asyncResultify } from '../utils/mod.ts';
 import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
 import { createAbortError } from './fs_helpers.ts';
-import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, validateAbsolutePath, validateExistsOptions } from './mina_fs_shared.ts';
+import { createNothingToZipError, EMPTY_BYTES, errToMkdirResult, errToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, validateAbsolutePath, validateExistsOptions } from './mina_fs_shared.ts';
 
 /**
  * 递归创建文件夹，相当于`mkdir -p`。
@@ -627,7 +627,7 @@ export async function zip(sourcePath: string, zipFilePath: string, options?: Zip
 export async function zip(sourcePath: string, zipFilePath?: string | ZipOptions, options?: ZipOptions): AsyncZipIOResult {
     if (typeof zipFilePath === 'string') {
         const zipFilePathRes = validateAbsolutePath(zipFilePath);
-        if (zipFilePathRes.isErr()) return zipFilePathRes.asErr() as ZipIOResult;
+        if (zipFilePathRes.isErr()) return zipFilePathRes.asErr();
         zipFilePath = zipFilePathRes.unwrap();
     } else {
         options = zipFilePath;
@@ -635,7 +635,7 @@ export async function zip(sourcePath: string, zipFilePath?: string | ZipOptions,
     }
 
     const statRes = await stat(sourcePath);
-    if (statRes.isErr()) return statRes.asErr() as ZipIOResult;
+    if (statRes.isErr()) return statRes.asErr();
 
     const stats = statRes.unwrap();
     const sourceName = basename(sourcePath);
@@ -644,7 +644,7 @@ export async function zip(sourcePath: string, zipFilePath?: string | ZipOptions,
     if (stats.isFile()) {
     // 文件
         const readFileRes = await readFile(sourcePath);
-        if (readFileRes.isErr()) return readFileRes.asErr() as ZipIOResult;
+        if (readFileRes.isErr()) return readFileRes;
 
         zippable[sourceName] = new Uint8Array(readFileRes.unwrap());
     } else {
@@ -652,21 +652,52 @@ export async function zip(sourcePath: string, zipFilePath?: string | ZipOptions,
         const statRes = await stat(sourcePath, {
             recursive: true,
         });
-        if (statRes.isErr()) return statRes.asErr() as ZipIOResult;
+        if (statRes.isErr()) return statRes.asErr();
 
         // 默认保留根目录
         const preserveRoot = options?.preserveRoot ?? true;
+        if (preserveRoot) {
+            // 添加根目录条目
+            zippable[sourceName + SEPARATOR] = EMPTY_BYTES;
+        }
+
+        const tasks: AsyncIOResult<{
+            entryName: string;
+            data: Uint8Array<ArrayBuffer>;
+        }>[] = [];
 
         for (const { path, stats } of statRes.unwrap()) {
-            if (stats.isFile()) {
-                const entryName = preserveRoot ? sourceName + path : path;
-                // 不能用 join，否则 http://usr 会变成 http:/usr
-                const readFileRes = await readFile(sourcePath + path);
-                if (readFileRes.isErr()) return readFileRes.asErr() as ZipIOResult;
+            const entryName = preserveRoot ? sourceName + path : path;
 
-                zippable[entryName] = new Uint8Array(readFileRes.unwrap());
+            if (stats.isFile()) {
+                // 不能用 join，否则 http://usr 会变成 http:/usr
+                tasks.push((async () => {
+                    const dataRes = await readFile(sourcePath + path);
+                    return dataRes.map(data => ({
+                        entryName,
+                        data,
+                    }));
+                })());
+            } else {
+                // 文件夹 - 添加带有尾部斜杠和空内容的条目
+                zippable[entryName + SEPARATOR] = EMPTY_BYTES;
             }
         }
+
+        if (tasks.length > 0) {
+            const results = await Promise.all(tasks);
+            for (const result of results) {
+                if (result.isErr()) return result.asErr();
+
+                const { entryName, data } = result.unwrap();
+                zippable[entryName] = data;
+            }
+        }
+    }
+
+    // Nothing to zip - 和标准 zip 命令的行为一致
+    if (Object.keys(zippable).length === 0) {
+        return Err(createNothingToZipError());
     }
 
     return zipTo(zippable, zipFilePath);
@@ -695,7 +726,7 @@ export async function zipFromUrl(sourceUrl: string, zipFilePath?: string | Downl
 
     return downloadRes.andThenAsync(async ({ tempFilePath }) => {
         const readFileRes = await readFile(tempFilePath);
-        if (readFileRes.isErr()) return readFileRes.asErr() as ZipIOResult;
+        if (readFileRes.isErr()) return readFileRes;
 
         const sourceName = basename(tempFilePath);
         const zippable = {
@@ -727,7 +758,7 @@ function zipTo(zippable: AsyncZippable, zipFilePath?: string): AsyncZipIOResult 
         consume: true,
     }, async (err, bytesLike) => {
         if (err) {
-            future.resolve(Err(err) as ZipIOResult);
+            future.resolve(Err(err));
             return;
         }
 

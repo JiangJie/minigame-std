@@ -3,12 +3,12 @@
  * 小游戏平台的同步文件系统操作实现。
  */
 
-import { basename, dirname, join, SEPARATOR } from '@std/path/posix';
+import { basename, dirname, SEPARATOR } from '@std/path/posix';
 import { zipSync as compressSync, unzipSync as decompressSync, type AsyncZippable, type FlateError } from 'fflate/browser';
 import { type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
 import { Err, RESULT_VOID, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
-import { errToMkdirResult, errToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError, validateAbsolutePath, validateExistsOptions } from './mina_fs_shared.ts';
+import { createNothingToZipError, EMPTY_BYTES, errToMkdirResult, errToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError, validateAbsolutePath, validateExistsOptions } from './mina_fs_shared.ts';
 
 /**
  * `mkdir` 的同步版本。
@@ -199,7 +199,7 @@ export function emptyDirSync(dirPath: string): VoidIOResult {
     }
 
     for (const name of readDirRes.unwrap()) {
-        const removeRes = removeSync(join(dirPath, name));
+        const removeRes = removeSync(dirPath + name);
         if (removeRes.isErr()) return removeRes.asErr();
     }
 
@@ -280,7 +280,7 @@ export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOp
     zipFilePath = zipFilePathRes.unwrap();
 
     return statSync(sourcePath).andThen(stats => {
-        const zipped: AsyncZippable = {};
+        const zippable: AsyncZippable = {};
 
         const sourceName = basename(sourcePath);
 
@@ -289,7 +289,7 @@ export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOp
             const readFileRes = readFileSync(sourcePath);
             if (readFileRes.isErr()) return readFileRes.asErr();
 
-            zipped[sourceName] = new Uint8Array(readFileRes.unwrap());
+            zippable[sourceName] = new Uint8Array(readFileRes.unwrap());
         } else {
             // 目录
             const statRes = statSync(sourcePath, {
@@ -299,25 +299,36 @@ export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOp
 
             // 默认保留根目录
             const preserveRoot = options?.preserveRoot ?? true;
+            if (preserveRoot) {
+                // 添加根目录条目
+                zippable[sourceName + SEPARATOR] = EMPTY_BYTES;
+            }
 
             for (const { path, stats } of statRes.unwrap()) {
+                const entryName = preserveRoot ? sourceName + path : path;
+
                 if (stats.isFile()) {
-                    const entryName = preserveRoot ? join(sourceName, path) : path;
                     // 不能用 join，否则 http://usr 会变成 http:/usr
                     const readFileRes = readFileSync(sourcePath + path);
                     if (readFileRes.isErr()) return readFileRes.asErr();
 
-                    zipped[entryName] = new Uint8Array(readFileRes.unwrap());
+                    zippable[entryName] = new Uint8Array(readFileRes.unwrap());
+                } else {
+                    // 文件夹 - 添加带有尾部斜杠和空内容的条目
+                    zippable[entryName + SEPARATOR] = EMPTY_BYTES;
                 }
             }
         }
 
-        try {
-            const bytes = compressSync(zipped) as Uint8Array<ArrayBuffer>;
-            return writeFileSync(zipFilePath, bytes);
-        } catch (e) {
-            return Err(e as FlateError);
+        // Nothing to zip - 和标准 zip 命令的行为一致
+        if (Object.keys(zippable).length === 0) {
+            return Err(createNothingToZipError());
         }
+
+        return tryResult(() => compressSync(zippable))
+            .andThen(bytes => {
+                return writeFileSync(zipFilePath, bytes as Uint8Array<ArrayBuffer>);
+            });
     });
 }
 
