@@ -3,6 +3,7 @@
  * @module codec
  */
 
+export * from './base64.ts';
 export * from './bytestring.ts';
 export * from './hex.ts';
 export * from './utf8/mod.ts';

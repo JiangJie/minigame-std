@@ -5,8 +5,7 @@
 
 import { Ok, tryResult, type AsyncIOResult, type IOResult } from 'happy-rusty';
 import { importPublicKey as importKey, sha1, sha256, sha384, sha512 } from 'rsa-oaep-encryption';
-import { encodeBase64 } from '../../base64/mod.ts';
-import { decodeUtf8 } from '../../codec/mod.ts';
+import { decodeUtf8, encodeBase64 } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
 import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
 

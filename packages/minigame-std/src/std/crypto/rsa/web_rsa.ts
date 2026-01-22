@@ -4,9 +4,8 @@
  */
 
 import { Err, tryAsyncResult, type AsyncIOResult } from 'happy-rusty';
-import { encodeBase64 } from '../../base64/mod.ts';
 import { dataSourceToBytes } from '../../codec/helpers.ts';
-import { decodeByteString } from '../../codec/mod.ts';
+import { decodeByteString, encodeBase64 } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
 import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
 

@@ -1,5 +1,4 @@
 export * as audio from './std/audio/mod.ts';
-export * from './std/base64/mod.ts';
 export * as clipboard from './std/clipboard/mod.ts';
 export * from './std/codec/mod.ts';
 export * as cryptos /* Avoid conflict with global `crypto` */ from './std/crypto/mod.ts';

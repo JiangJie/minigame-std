@@ -8,9 +8,9 @@
  */
 
 import { Lazy } from 'happy-rusty';
-import { decodeByteString } from '../codec/bytestring.ts';
-import { dataSourceToBytes } from '../codec/helpers.ts';
 import type { DataSource } from '../defines.ts';
+import { decodeByteString } from './bytestring.ts';
+import { dataSourceToBytes } from './helpers.ts';
 
 // #region Internal Variables
 

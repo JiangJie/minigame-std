@@ -7,7 +7,7 @@
  */
 
 import { bench, describe } from 'vitest';
-import { decodeBase64, encodeBase64 } from '../src/std/base64/mod.ts';
+import { decodeBase64, encodeBase64 } from '../src/std/codec/base64.ts';
 import { encodeUtf8 } from '../src/std/codec/mod.ts';
 
 // ===================== 原生 btoa/atob 方案 =====================
@@ -17,8 +17,8 @@ import { encodeUtf8 } from '../src/std/codec/mod.ts';
  */
 function bytesToBinaryString(bytes: Uint8Array): string {
     let result = '';
-    for (let i = 0; i < bytes.length; i++) {
-        result += String.fromCharCode(bytes[i]);
+    for (const byte of bytes) {
+        result += String.fromCharCode(byte);
     }
     return result;
 }
