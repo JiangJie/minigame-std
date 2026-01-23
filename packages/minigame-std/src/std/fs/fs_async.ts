@@ -24,7 +24,7 @@ import {
     type WriteOptions,
     type ZipOptions,
 } from 'happy-opfs';
-import { Ok, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
+import { tryAsyncResult, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import type { StatOptions, UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent, ZipFromUrlOptions } from './fs_define.ts';
 import { convertFileSystemHandleToStats } from './fs_helpers.ts';
@@ -153,11 +153,11 @@ export function remove(path: string): AsyncVoidIOResult {
     return (isMinaEnv() ? minaRemove : webRemove)(path);
 }
 
-export async function stat(path: string): AsyncIOResult<WechatMinigame.Stats>;
-export async function stat(path: string, options: StatOptions & {
+export function stat(path: string): AsyncIOResult<WechatMinigame.Stats>;
+export function stat(path: string, options: StatOptions & {
     recursive: true;
 }): AsyncIOResult<WechatMinigame.FileStats[]>;
-export async function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
+export function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
 /**
  * 获取文件或目录的状态信息。
  * @param path - 文件或目录的路径。
@@ -183,7 +183,7 @@ export async function stat(path: string, options?: StatOptions): AsyncIOResult<W
 
     const handle = statRes.unwrap();
 
-    const entryStatsRes = await convertFileSystemHandleToStats(handle);
+    const entryStatsRes = await tryAsyncResult(convertFileSystemHandleToStats(handle));
     if (entryStatsRes.isErr()) return entryStatsRes;
 
     const entryStats = entryStatsRes.unwrap();
@@ -193,39 +193,24 @@ export async function stat(path: string, options?: StatOptions): AsyncIOResult<W
 
     // 递归读取目录
     const readDirRes = await webReadDir(path);
-    if (readDirRes.isErr()) return readDirRes.asErr();
+    return readDirRes.andTryAsync(async entries => {
+        const tasks = [Promise.resolve({
+            path,
+            stats: entryStats,
+        })];
 
-    const entries = readDirRes.unwrap();
-    const statsArr: WechatMinigame.FileStats[] = [{
-        path,
-        stats: entryStats,
-    }];
-
-    const tasks: AsyncIOResult<{
-        path: string;
-        stats: WechatMinigame.Stats;
-    }>[] = [];
-
-    for await (const { path, handle } of entries) {
-        tasks.push((async () => {
-            const statsRes = await convertFileSystemHandleToStats(handle);
-            return statsRes.map(stats => ({
-                path,
-                stats,
-            }));
-        })());
-    }
-
-    if (tasks.length > 0) {
-        const results = await Promise.all(tasks);
-        for (const result of results) {
-            if (result.isErr()) return result.asErr();
-
-            statsArr.push(result.unwrap());
+        for await (const { path, handle } of entries) {
+            tasks.push((async () => {
+                const stats = await convertFileSystemHandleToStats(handle);
+                return {
+                    path,
+                    stats,
+                };
+            })());
         }
-    }
 
-    return Ok(statsArr);
+        return Promise.all(tasks);
+    });
 }
 
 /**

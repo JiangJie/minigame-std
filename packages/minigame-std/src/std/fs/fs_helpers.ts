@@ -4,7 +4,6 @@
  */
 
 import { ABORT_ERROR, isFileHandle, isFileHandleLike, type FileSystemHandleLike } from 'happy-opfs';
-import { Ok, tryAsyncResult, type AsyncIOResult } from 'happy-rusty';
 
 /**
  * 将 `FileSystemHandleLike` 转换为小游戏 `Stats`。
@@ -29,26 +28,24 @@ export function convertFileSystemHandleLikeToStats(handleLike: FileSystemHandleL
  * @param handle - FileSystemHandle
  * @returns
  */
-export async function convertFileSystemHandleToStats(handle: FileSystemHandle): AsyncIOResult<WechatMinigame.Stats> {
+export async function convertFileSystemHandleToStats(handle: FileSystemHandle): Promise<WechatMinigame.Stats> {
     const isFile = isFileHandle(handle);
     let size = 0;
     let lastModified = 0;
 
     if (isFile) {
-        const fileRes = await tryAsyncResult(handle.getFile());
-        if (fileRes.isErr()) return fileRes.asErr();
-
-        ({ size, lastModified } = fileRes.unwrap());
+        const file = await handle.getFile();
+        ({ size, lastModified } = file);
     }
 
-    return Ok({
+    return {
         isFile: (): boolean => isFile,
         isDirectory: (): boolean => !isFile,
         size,
         lastModifiedTime: lastModified,
         lastAccessedTime: 0,
         mode: 0,
-    });
+    };
 }
 
 /**
