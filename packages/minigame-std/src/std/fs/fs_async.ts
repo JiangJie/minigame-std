@@ -100,22 +100,7 @@ export function move(srcPath: string, destPath: string): AsyncVoidIOResult {
  * ```
  */
 export async function readDir(dirPath: string): AsyncIOResult<string[]> {
-    if (isMinaEnv()) {
-        return minaReadDir(dirPath);
-    }
-
-    const readDirRes = await webReadDir(dirPath);
-    return readDirRes.andTryAsync(async entries => {
-        if (typeof Array.fromAsync === 'function') {
-            return Array.fromAsync(entries, ({ path }) => path);
-        }
-
-        const items: string[] = [];
-        for await (const { path } of entries) {
-            items.push(path);
-        }
-        return items;
-    });
+    return (isMinaEnv() ? minaReadDir : webToMinaReadDir)(dirPath);
 }
 
 /**
@@ -174,43 +159,7 @@ export function stat(path: string, options?: StatOptions): AsyncIOResult<WechatM
  * ```
  */
 export async function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
-    if (isMinaEnv()) {
-        return minaStat(path, options);
-    }
-
-    const statRes = await webStat(path);
-    if (statRes.isErr()) return statRes.asErr();
-
-    const handle = statRes.unwrap();
-
-    const entryStatsRes = await tryAsyncResult(convertFileSystemHandleToStats(handle));
-    if (entryStatsRes.isErr()) return entryStatsRes;
-
-    const entryStats = entryStatsRes.unwrap();
-    if (entryStats.isFile() || !options?.recursive) {
-        return entryStatsRes;
-    }
-
-    // 递归读取目录
-    const readDirRes = await webReadDir(path);
-    return readDirRes.andTryAsync(async entries => {
-        const tasks = [Promise.resolve({
-            path,
-            stats: entryStats,
-        })];
-
-        for await (const { path, handle } of entries) {
-            tasks.push((async () => {
-                const stats = await convertFileSystemHandleToStats(handle);
-                return {
-                    path,
-                    stats,
-                };
-            })());
-        }
-
-        return Promise.all(tasks);
-    });
+    return (isMinaEnv() ? minaStat : webToMinaStat)(path, options);
 }
 
 /**
@@ -492,13 +441,9 @@ export function zip(sourcePath: string, options?: ZipOptions): AsyncIOResult<Uin
 export function zip(sourcePath: string, zipFilePath: string, options?: ZipOptions): AsyncVoidIOResult;
 export function zip(sourcePath: string, zipFilePath?: string | ZipOptions, options?: ZipOptions): AsyncVoidIOResult | AsyncIOResult<Uint8Array> {
     if (typeof zipFilePath === 'string') {
-        return isMinaEnv()
-            ? minaZip(sourcePath, zipFilePath, options)
-            : webZip(sourcePath, zipFilePath, options);
+        return (isMinaEnv() ? minaZip : webZip)(sourcePath, zipFilePath, options);
     } else {
-        return isMinaEnv()
-            ? minaZip(sourcePath, zipFilePath)
-            : webZip(sourcePath, zipFilePath);
+        return (isMinaEnv() ? minaZip : webZip)(sourcePath, zipFilePath);
     }
 }
 
@@ -544,3 +489,64 @@ export function zipFromUrl(sourceUrl: string, zipFilePath?: string | ZipFromUrlO
             : webZipFromUrl(sourceUrl, zipFilePath);
     }
 }
+
+// #region Internal Functions
+
+/**
+ * 将 Web 端的读取目录结果转换为小游戏端的读取目录结果。
+ */
+async function webToMinaReadDir(dirPath: string): AsyncIOResult<string[]> {
+    const readDirRes = await webReadDir(dirPath);
+    return readDirRes.andTryAsync(async entries => {
+        if (typeof Array.fromAsync === 'function') {
+            return Array.fromAsync(entries, ({ path }) => path);
+        }
+
+        const items: string[] = [];
+        for await (const { path } of entries) {
+            items.push(path);
+        }
+        return items;
+    });
+}
+
+/**
+ * 将 Web 端的 stat 结果转换为小游戏端的 stat 结果。
+ */
+async function webToMinaStat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
+    const statRes = await webStat(path);
+    if (statRes.isErr()) return statRes.asErr();
+
+    const handle = statRes.unwrap();
+
+    const entryStatsRes = await tryAsyncResult(convertFileSystemHandleToStats(handle));
+    if (entryStatsRes.isErr()) return entryStatsRes;
+
+    const entryStats = entryStatsRes.unwrap();
+    if (entryStats.isFile() || !options?.recursive) {
+        return entryStatsRes;
+    }
+
+    // 递归读取目录
+    const readDirRes = await webReadDir(path);
+    return readDirRes.andTryAsync(async entries => {
+        const tasks = [Promise.resolve({
+            path,
+            stats: entryStats,
+        })];
+
+        for await (const { path, handle } of entries) {
+            tasks.push((async () => {
+                const stats = await convertFileSystemHandleToStats(handle);
+                return {
+                    path,
+                    stats,
+                };
+            })());
+        }
+
+        return Promise.all(tasks);
+    });
+}
+
+// #endregion

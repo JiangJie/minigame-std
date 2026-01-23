@@ -89,11 +89,7 @@ export function moveSync(srcPath: string, destPath: string): VoidIOResult {
  * ```
  */
 export function readDirSync(dirPath: string): IOResult<string[]> {
-    return isMinaEnv()
-        ? minaReadDirSync(dirPath)
-        : webReadDirSync(dirPath).map(x => {
-            return x.map(y => y.path);
-        });
+    return (isMinaEnv() ? minaReadDirSync : webToMinaReadDirSync)(dirPath);
 }
 
 /**
@@ -173,34 +169,7 @@ export function statSync(path: string, options: StatOptions & {
  */
 export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
 export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
-    if (isMinaEnv()) {
-        return minaStatSync(path, options);
-    }
-
-    return webStatSync(path).andThen((handleLike): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> => {
-        const entryStats = convertFileSystemHandleLikeToStats(handleLike);
-
-        if (entryStats.isFile() || !options?.recursive) {
-            return Ok(entryStats);
-        }
-
-        // 递归读取目录
-        return webReadDirSync(path).andThen(entries => {
-            const statsArr: WechatMinigame.FileStats[] = [{
-                path,
-                stats: entryStats,
-            }];
-
-            for (const { path, handle } of entries) {
-                statsArr.push({
-                    path,
-                    stats: convertFileSystemHandleLikeToStats(handle),
-                });
-            }
-
-            return Ok(statsArr);
-        });
-    });
+    return (isMinaEnv() ? minaStatSync : webToMinaStatSync)(path, options);
 }
 
 /**
@@ -380,3 +349,48 @@ export function unzipSync(zipFilePath: string, targetPath: string): VoidIOResult
 export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOptions): VoidIOResult {
     return (isMinaEnv() ? minaZipSync : webZipSync)(sourcePath, zipFilePath, options);
 }
+
+// #region Internal Functions
+
+/**
+ * 将 Web 端的读取目录结果转换为小游戏端的读取目录结果。
+ */
+function webToMinaReadDirSync(dirPath: string): IOResult<string[]> {
+    const readDirRes = webReadDirSync(dirPath);
+    return readDirRes.map(entries => {
+        return entries.map(({ path }) => path);
+    });
+}
+
+/**
+ * 将 Web 端的 stat 结果转换为小游戏端的 stat 结果。
+ */
+function webToMinaStatSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
+    const statRes = webStatSync(path);
+    if (statRes.isErr()) return statRes.asErr();
+
+    const handleLike = statRes.unwrap();
+
+    const entryStats = convertFileSystemHandleLikeToStats(handleLike);
+    if (entryStats.isFile() || !options?.recursive) {
+        return Ok(entryStats);
+    }
+
+    // 递归读取目录
+    const readDirRes = webReadDirSync(path);
+    return readDirRes.map(entries => {
+        const statsArr = entries.map(({ path, handle }) => ({
+            path,
+            stats: convertFileSystemHandleLikeToStats(handle),
+        }));
+
+        statsArr.unshift({
+            path,
+            stats: entryStats,
+        });
+
+        return statsArr;
+    });
+}
+
+// #endregion
