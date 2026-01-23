@@ -105,12 +105,16 @@ export async function readDir(dirPath: string): AsyncIOResult<string[]> {
     }
 
     const readDirRes = await webReadDir(dirPath);
-    return readDirRes.andThenAsync(async entries => {
+    return readDirRes.andTryAsync(async entries => {
+        if (typeof Array.fromAsync === 'function') {
+            return Array.fromAsync(entries, ({ path }) => path);
+        }
+
         const items: string[] = [];
         for await (const { path } of entries) {
             items.push(path);
         }
-        return Ok(items);
+        return items;
     });
 }
 
