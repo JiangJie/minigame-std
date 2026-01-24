@@ -118,58 +118,69 @@ export function validateAbsolutePath(path: string): IOResult<string> {
 }
 
 /**
- * 判断是否文件或者文件夹不存在。
- * @param err - 错误对象。
+ * 验证提供的 ExistsOptions 是否有效。
+ * `isDirectory` 和 `isFile` 不能同时为 `true`。
+ *
+ * @param options - 要验证的 ExistsOptions。
+ * @returns 表示成功或错误的 VoidIOResult。
  */
-export function isNotFoundIOError(err: WechatMinigame.FileError): boolean {
-    // 1300002	no such file or directory ${path}
-    // 可能没有errCode
-    // 同步接口抛出异常是 `Error`，但 instanceof Error 却是 false
-    return err.errCode === 1300002 || (err.errMsg ?? (err as unknown as Error).message).includes('no such file or directory');
+export function validateExistsOptions(options?: ExistsOptions): VoidIOResult {
+    const { isDirectory = false, isFile = false } = options ?? {};
+
+    return isDirectory && isFile
+        ? Err(new Error('isDirectory and isFile cannot both be true'))
+        : RESULT_VOID;
 }
 
 /**
- * 判断是否文件或者文件夹已存在。
- * @param err - 错误对象。
+ * 判断错误是否为 `NotFoundError`。
+ * @param error - 要检查的错误。
+ * @returns 如果是 `NotFoundError` 返回 `true`，否则返回 `false`。
  */
-export function isAlreadyExistsIOError(err: WechatMinigame.FileError): boolean {
-    // 1301005	file already exists ${dirPath}	已有同名文件或目录
-    // 可能没有errCode
-    // 同步接口抛出异常是 `Error`，但 instanceof Error 却是 false
-    return err.errCode === 1301005 || (err.errMsg ?? (err as unknown as Error).message).includes('already exists');
+export function isNotFoundError(error: Error): boolean {
+    return error.name === NOT_FOUND_ERROR;
 }
 
 /**
  * 将错误对象转换为 IOResult 类型。
  * @typeParam T - Result 的 Ok 类型。
- * @param err - 错误对象。
+ * @param error - IO 操作的错误对象, 可以是同步(Error)或者异步(WechatMinigame.FileError)的。
  * @returns 转换后的 IOResult 对象。
  */
-export function fileErrorToResult<T>(err: WechatMinigame.FileError): IOResult<T> {
-    const error = miniGameFailureToError(err);
+export function fileErrorToResult<T>(error: FileError): IOResult<T> {
+    const err = miniGameFailureToError(error);
 
-    if (isNotFoundIOError(err)) {
-        error.name = NOT_FOUND_ERROR;
+    if (isNotFoundFileError(err)) {
+        err.name = NOT_FOUND_ERROR;
     }
 
-    return Err(error);
-}
-
-/**
- * 判断错误是否为 `NotFoundError`。
- * @param err - 要检查的错误。
- * @returns 如果是 `NotFoundError` 返回 `true`，否则返回 `false`。
- */
-export function isNotFoundError(err: Error): boolean {
-    return err.name === NOT_FOUND_ERROR;
+    return Err(err);
 }
 
 /**
  * 处理 `mkdir` 的错误。
  */
-export function errToMkdirResult(err: WechatMinigame.FileError): VoidIOResult {
+export function fileErrorToMkdirResult(error: FileError): VoidIOResult {
     // 已存在当做成功
-    return isAlreadyExistsIOError(err) ? RESULT_VOID : fileErrorToResult(err);
+    return isAlreadyExistsFileError(error) ? RESULT_VOID : fileErrorToResult(error);
+}
+
+/**
+ * 处理 `remove` 的错误。
+ */
+export function fileErrorToRemoveResult(error: FileError): VoidIOResult {
+    // 目标 path 本就不存在，当做成功
+    return isNotFoundFileError(error) ? RESULT_VOID : fileErrorToResult(error);
+}
+
+/*
+ * 创建 `NothingToZipError` 错误。
+ */
+export function createNothingToZipError(): Error {
+    const error = new Error('Nothing to zip');
+    error.name = NOTHING_TO_ZIP_ERROR;
+
+    return error;
 }
 
 /**
@@ -183,18 +194,6 @@ export function getReadFileEncoding(options?: ReadOptions): 'utf8' | undefined {
 }
 
 /**
- * 处理 `remove` 的错误。
- */
-export function errToRemoveResult(err: WechatMinigame.FileError): VoidIOResult {
-    // 目标 path 本就不存在，当做成功
-    return isNotFoundIOError(err) ? RESULT_VOID : fileErrorToResult(err);
-}
-
-export interface GetWriteFileContents {
-    data: string | ArrayBuffer;
-    encoding?: 'utf8';
-}
-/**
  * 获取写入文件的参数。
  */
 export function getWriteFileContents(contents: WriteFileContent): GetWriteFileContents {
@@ -203,12 +202,10 @@ export function getWriteFileContents(contents: WriteFileContent): GetWriteFileCo
     const encoding = isBin ? undefined : 'utf8';
     const data = isBin ? bufferSourceToAb(contents) : contents;
 
-    const res: GetWriteFileContents = {
+    return {
         data,
         encoding,
     };
-
-    return res;
 }
 
 /**
@@ -228,24 +225,56 @@ export function getExistsResult(statResult: IOResult<WechatMinigame.Stats>, opti
     });
 }
 
+// #region Internal Types
+
+type FileError = WechatMinigame.FileError | (Error & {
+    errno?: number;
+});
+
+interface GetWriteFileContents {
+    data: string | ArrayBuffer;
+    encoding?: 'utf8';
+}
+
+// #endregion
+
+// #region Internal Functions
+
 /**
- * 验证提供的 ExistsOptions 是否有效。
- * `isDirectory` 和 `isFile` 不能同时为 `true`。
- *
- * @param options - 要验证的 ExistsOptions。
- * @returns 表示成功或错误的 VoidIOResult。
+ * 标准化同步或异步的文件错误对象。
+ * @param error - IO 操作的错误对象, 可以是同步(Error)或者异步(WechatMinigame.FileError)的。
  */
-export function validateExistsOptions(options?: ExistsOptions): VoidIOResult {
-    const { isDirectory = false, isFile = false } = options ?? {};
-
-    return isDirectory && isFile
-        ? Err(new Error('isDirectory and isFile cannot both be true'))
-        : RESULT_VOID;
+function normalizeFileError(error: FileError): WechatMinigame.FileError {
+    return error instanceof Error
+        ? {
+            errCode: error.errno ?? 0,
+            errMsg: error.message,
+        }
+        : error;
 }
 
-export function createNothingToZipError(): Error {
-    const error = new Error('Nothing to zip');
-    error.name = NOTHING_TO_ZIP_ERROR;
-
-    return error;
+/**
+ * 判断是否文件或者文件夹不存在。
+ * @param error - IO 操作的错误对象, 可以是同步(Error)或者异步(WechatMinigame.FileError)的。
+ */
+function isNotFoundFileError(error: FileError): boolean {
+    // 1300002	no such file or directory ${path}
+    const { errCode, errMsg } = normalizeFileError(error);
+    // 可能没有errCode
+    return errCode === 1300002
+        || errMsg.includes('no such file or directory');
 }
+
+/**
+ * 判断是否文件或者文件夹已存在。
+ * @param error - IO 操作的错误对象, 可以是同步(Error)或者异步(WechatMinigame.FileError)的。
+ */
+function isAlreadyExistsFileError(error: FileError): boolean {
+    // 1301005	file already exists ${dirPath}	已有同名文件或目录
+    const { errCode, errMsg } = normalizeFileError(error);
+    // 可能没有errCode
+    return errCode === 1301005
+        || errMsg.includes('already exists');
+}
+
+// #endregion

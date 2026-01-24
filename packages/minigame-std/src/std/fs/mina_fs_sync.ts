@@ -8,7 +8,7 @@ import { zipSync as compressSync, unzipSync as decompressSync, type AsyncZippabl
 import { type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
 import { Err, RESULT_VOID, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
-import { createNothingToZipError, EMPTY_BYTES, errToMkdirResult, errToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError, validateAbsolutePath, validateExistsOptions } from './mina_fs_shared.ts';
+import { createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError, validateAbsolutePath, validateExistsOptions } from './mina_fs_shared.ts';
 
 /**
  * `mkdir` 的同步版本。
@@ -18,7 +18,7 @@ export function mkdirSync(dirPath: string): VoidIOResult {
     if (dirPathRes.isErr()) return dirPathRes.asErr();
     dirPath = dirPathRes.unwrap();
 
-    return trySyncOp(() => getFs().mkdirSync(dirPath, true), errToMkdirResult);
+    return trySyncOp(() => getFs().mkdirSync(dirPath, true), fileErrorToMkdirResult);
 }
 
 /**
@@ -92,7 +92,7 @@ export function removeSync(path: string): VoidIOResult {
         } else {
             getFs().unlinkSync(path);
         }
-    }, errToRemoveResult);
+    }, fileErrorToRemoveResult);
 }
 
 /**

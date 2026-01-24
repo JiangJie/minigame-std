@@ -3,7 +3,6 @@ import {
     bufferSourceToAb,
     bufferSourceToBytes,
     miniGameFailureToError,
-    miniGameFailureToResult,
 } from '../src/std/internal/mod.ts';
 
 // bufferSource2U8a tests
@@ -121,24 +120,6 @@ test('miniGameFailureToError prefers errMsg over message', () => {
     const error = miniGameFailureToError(mixedObject);
 
     expect(error.message).toBe('errMsg value');
-});
-
-// miniGameFailureToResult tests
-test('miniGameFailureToResult returns Err result', () => {
-    const callbackResult = { errMsg: 'API failed' };
-    const result = miniGameFailureToResult<string>(callbackResult);
-
-    expect(result.isErr()).toBe(true);
-    expect(result.unwrapErr()).toBeInstanceOf(Error);
-    expect(result.unwrapErr().message).toBe('API failed');
-});
-
-test('miniGameFailureToResult preserves error message', () => {
-    const callbackResult = { errMsg: 'setStorage:fail permission denied' };
-    const result = miniGameFailureToResult<void>(callbackResult);
-
-    expect(result.isErr()).toBe(true);
-    expect(result.unwrapErr().message).toBe('setStorage:fail permission denied');
 });
 
 // Additional bufferSource2U8a edge cases

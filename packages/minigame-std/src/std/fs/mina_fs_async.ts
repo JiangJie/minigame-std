@@ -10,11 +10,11 @@ import type { ExistsOptions, WriteOptions, ZipOptions } from 'happy-opfs';
 import { Err, Ok, RESULT_VOID, tryResult, type AsyncIOResult, type AsyncVoidIOResult, type IOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import type { FetchTask } from '../fetch/fetch_defines.ts';
-import { createFailedFetchTask, miniGameFailureToResult, validateSafeUrl } from '../internal/mod.ts';
+import { createFailedFetchTask, miniGameFailureToError, validateSafeUrl } from '../internal/mod.ts';
 import { asyncResultify } from '../utils/mod.ts';
 import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
 import { createAbortError } from './fs_helpers.ts';
-import { createNothingToZipError, EMPTY_BYTES, errToMkdirResult, errToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, validateAbsolutePath, validateExistsOptions } from './mina_fs_shared.ts';
+import { createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, validateAbsolutePath, validateExistsOptions } from './mina_fs_shared.ts';
 
 /**
  * 递归创建文件夹，相当于`mkdir -p`。
@@ -32,12 +32,12 @@ export async function mkdir(dirPath: string): AsyncVoidIOResult {
     }
 
     const statRes = await stat(dirPath);
-
     if (statRes.isOk()) {
         // 存在则不创建
         return RESULT_VOID;
     }
 
+    // 递归创建
     const mkdirRes = await asyncResultify(getFs().mkdir)({
         dirPath,
         recursive: true,
@@ -45,7 +45,7 @@ export async function mkdir(dirPath: string): AsyncVoidIOResult {
 
     return mkdirRes
         .and(RESULT_VOID)
-        .orElse(errToMkdirResult);
+        .orElse(fileErrorToMkdirResult);
 }
 
 /**
@@ -169,7 +169,7 @@ export async function remove(path: string): AsyncVoidIOResult {
 
     return removeRes
         .and(RESULT_VOID)
-        .orElse(errToRemoveResult);
+        .orElse(fileErrorToRemoveResult);
 }
 
 /**
@@ -751,6 +751,16 @@ type AsyncZipIOResult = Promise<ZipIOResult>;
 
 // #region Internal Functions
 
+/**
+ * 将错误对象转换为 IOResult 类型。
+ */
+function miniGameFailureToResult<T>(error: WechatMinigame.GeneralCallbackResult): IOResult<T> {
+    return Err(miniGameFailureToError(error));
+}
+
+/**
+ * 将 zippable 对象压缩为 zip 文件。
+ */
 function zipTo(zippable: AsyncZippable, zipFilePath?: string): AsyncZipIOResult {
     const future = new Future<ZipIOResult>();
 

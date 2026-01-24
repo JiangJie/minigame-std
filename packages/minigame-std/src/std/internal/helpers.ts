@@ -4,30 +4,20 @@
  */
 
 import type { FetchTask } from '@happy-ts/fetch-t';
-import { Err, type IOResult } from 'happy-rusty';
+import { type IOResult } from 'happy-rusty';
 
 /**
  * 将小游戏失败回调的结果转换为 `Error` 类型。
  *
  * 如果是异步 API 的 `fail` 回调返回的结果通常是 `WechatMinigame.GeneralCallbackResult` 或者变体类型，
  * 如果是同步 API throw 的异常通常是一个类似 `Error` 的类型。
- * @param err - 小游戏错误对象。
+ * @param error - 小游戏错误对象。
  * @returns 转换后的 `Error` 对象。
  */
-export function miniGameFailureToError(err: WechatMinigame.GeneralCallbackResult | Error): Error {
-    return err instanceof Error
-        ? err
-        : new Error(err.errMsg);
-}
-
-/**
- * 将错误对象转换为 IOResult 类型。
- * @typeParam T - Result 的 Ok 类型。
- * @param err - 错误对象。
- * @returns 转换后的 IOResult 对象。
- */
-export function miniGameFailureToResult<T>(err: WechatMinigame.GeneralCallbackResult): IOResult<T> {
-    return Err(miniGameFailureToError(err));
+export function miniGameFailureToError(error: WechatMinigame.GeneralCallbackResult | Error): Error {
+    return error instanceof Error
+        ? error
+        : new Error(error.errMsg);
 }
 
 /**
