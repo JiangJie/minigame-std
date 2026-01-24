@@ -12,11 +12,6 @@ import type { ReadOptions, WriteFileContent } from './fs_define.ts';
 // #region Internal Variables
 
 /**
- * 通过 `wx.env.USER_DATA_PATH` 获取的用户数据根目录。
- */
-const USR = 'usr' as const;
-
-/**
  * 小游戏文件系统管理器实例。
  *
  */
@@ -35,7 +30,7 @@ const usrPath = Lazy(() => wx.env.USER_DATA_PATH);
 const rootPath = Lazy(() => {
     const path = usrPath.force();
     // 剥离 `usr`
-    return path.slice(0, path.indexOf(USR));
+    return `${ path.split('://')[0] }://`;
 });
 
 // #endregion
@@ -88,6 +83,10 @@ export function validateAbsolutePath(path: string): IOResult<string> {
         isFullPath = true;
         // 先剥离协议前缀，避免 normalize 将 `://` 转换为 `:/`
         path = path.slice(rootPath.force().length);
+        // 传根路径没意义
+        if (!path) {
+            return Err(new Error('Path must not be root directory'));
+        }
     }
 
     // 标准化路径（处理 `.`、`..` 等）并去除末尾的 `/`
@@ -98,6 +97,10 @@ export function validateAbsolutePath(path: string): IOResult<string> {
 
     // 完整路径：重新拼接协议前缀
     if (isFullPath) {
+        // 还是根路径
+        if (path === ROOT_DIR) {
+            return Err(new Error('Path must not be root directory'));
+        }
         // 确保路径不是以 `/` 开头，避免 `wxfile:///usr` 这样的多斜杠情况
         if (path[0] === ROOT_DIR) {
             path = path.slice(1);
