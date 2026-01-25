@@ -8,7 +8,7 @@ import { zipSync as compressSync, unzipSync as decompressSync, type AsyncZippabl
 import { type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
 import { Err, RESULT_VOID, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
-import { createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
+import { createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
 
 /**
  * `mkdir` 的同步版本。
@@ -18,6 +18,23 @@ export function mkdirSync(dirPath: string): VoidIOResult {
     if (dirPathRes.isErr()) return dirPathRes.asErr();
     dirPath = dirPathRes.unwrap();
 
+    // 根目录无需创建
+    if (dirPath === getUsrPath()) {
+        return RESULT_VOID;
+    }
+
+    const statRes = statSync(dirPath);
+    if (statRes.isOk()) {
+        // 已存在并且是文件
+        if (statRes.unwrap().isFile()) {
+            return Err(new Error(`${ dirPath } already exists but is a file`));
+        }
+
+        // 存在文件夹则不创建
+        return RESULT_VOID;
+    }
+
+    // 递归创建
     return trySyncOp(() => getFs().mkdirSync(dirPath, true), fileErrorToMkdirResult);
 }
 

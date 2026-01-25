@@ -34,7 +34,12 @@ export async function mkdir(dirPath: string): AsyncVoidIOResult {
 
     const statRes = await stat(dirPath);
     if (statRes.isOk()) {
-        // 存在则不创建
+        // 已存在并且是文件
+        if (statRes.unwrap().isFile()) {
+            return Err(new Error(`${ dirPath } already exists but is a file`));
+        }
+
+        // 存在文件夹则不创建
         return RESULT_VOID;
     }
 
