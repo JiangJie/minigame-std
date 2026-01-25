@@ -341,13 +341,13 @@ export function downloadFile(fileUrl: string, options?: UnionDownloadFileOptions
 export function downloadFile(fileUrl: string, filePath: string, options?: UnionDownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | Response>;
 export function downloadFile(fileUrl: string, filePath?: string | UnionDownloadFileOptions, options?: UnionDownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | DownloadFileTempResponse | Response> {
     if (typeof filePath === 'string') {
-        return (isMinaEnv()
+        return isMinaEnv()
             ? minaDownloadFile(fileUrl, filePath, options)
-            : webDownloadFile(fileUrl, filePath, options)) as FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | Response>;
+            : webDownloadFile(fileUrl, filePath, options);
     } else {
-        return (isMinaEnv()
+        return isMinaEnv()
             ? minaDownloadFile(fileUrl, filePath)
-            : webDownloadFile(fileUrl, filePath)) as FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | DownloadFileTempResponse>;
+            : webDownloadFile(fileUrl, filePath);
     }
 }
 
@@ -368,9 +368,9 @@ export function downloadFile(fileUrl: string, filePath?: string | UnionDownloadF
  * ```
  */
 export function uploadFile(filePath: string, fileUrl: string, options?: UnionUploadFileOptions): FetchTask<WechatMinigame.UploadFileSuccessCallbackResult | Response> {
-    return (isMinaEnv()
+    return isMinaEnv()
         ? minaUploadFile(filePath, fileUrl, options)
-        : webUploadFile(filePath, fileUrl, options)) as FetchTask<WechatMinigame.UploadFileSuccessCallbackResult | Response>;
+        : webUploadFile(filePath, fileUrl, options);
 }
 
 /**
@@ -424,7 +424,7 @@ export function unzipFromUrl(zipFileUrl: string, targetPath: string, options?: U
  * }
  * ```
  */
-export function zip(sourcePath: string, options?: ZipOptions): AsyncIOResult<Uint8Array>;
+export function zip(sourcePath: string, options?: ZipOptions): AsyncIOResult<Uint8Array<ArrayBuffer>>;
 /**
  * 压缩文件或文件夹并保存到指定路径。
  * @param sourcePath - 需要压缩的文件（夹）路径。
@@ -441,7 +441,7 @@ export function zip(sourcePath: string, options?: ZipOptions): AsyncIOResult<Uin
  * ```
  */
 export function zip(sourcePath: string, zipFilePath: string, options?: ZipOptions): AsyncVoidIOResult;
-export function zip(sourcePath: string, zipFilePath?: string | ZipOptions, options?: ZipOptions): AsyncVoidIOResult | AsyncIOResult<Uint8Array> {
+export function zip(sourcePath: string, zipFilePath?: string | ZipOptions, options?: ZipOptions): AsyncIOResult<Uint8Array<ArrayBuffer> | void> {
     if (typeof zipFilePath === 'string') {
         return (isMinaEnv() ? minaZip : webZip)(sourcePath, zipFilePath, options);
     } else {
@@ -463,7 +463,7 @@ export function zip(sourcePath: string, zipFilePath?: string | ZipOptions, optio
  * }
  * ```
  */
-export function zipFromUrl(sourceUrl: string, options?: ZipFromUrlOptions): AsyncIOResult<Uint8Array>;
+export function zipFromUrl(sourceUrl: string, options?: ZipFromUrlOptions): AsyncIOResult<Uint8Array<ArrayBuffer>>;
 /**
  * 下载文件并压缩为 zip 文件。
  * @param sourceUrl - 要下载的文件 URL。
@@ -480,7 +480,7 @@ export function zipFromUrl(sourceUrl: string, options?: ZipFromUrlOptions): Asyn
  * ```
  */
 export function zipFromUrl(sourceUrl: string, zipFilePath: string, options?: ZipFromUrlOptions): AsyncVoidIOResult;
-export function zipFromUrl(sourceUrl: string, zipFilePath?: string | ZipFromUrlOptions, options?: ZipFromUrlOptions): AsyncVoidIOResult | AsyncIOResult<Uint8Array> {
+export function zipFromUrl(sourceUrl: string, zipFilePath?: string | ZipFromUrlOptions, options?: ZipFromUrlOptions): AsyncIOResult<Uint8Array<ArrayBuffer> | void> {
     if (typeof zipFilePath === 'string') {
         return isMinaEnv()
             ? minaZipFromUrl(sourceUrl, zipFilePath, options)

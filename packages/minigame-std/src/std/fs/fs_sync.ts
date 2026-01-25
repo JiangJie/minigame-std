@@ -193,24 +193,6 @@ export function writeFileSync(filePath: string, contents: WriteFileContent): Voi
 }
 
 /**
- * `copy` 的同步版本，复制文件或文件夹。
- * @param srcPath - 源文件或文件夹路径。
- * @param destPath - 目标文件或文件夹路径。
- * @returns 操作的结果。
- * @since 1.1.0
- * @example
- * ```ts
- * const result = copySync('/src/file.txt', '/dest/file.txt');
- * if (result.isOk()) {
- *     console.log('复制成功');
- * }
- * ```
- */
-export function copySync(srcPath: string, destPath: string): VoidIOResult {
-    return (isMinaEnv() ? minaCopySync : webCopySync)(srcPath, destPath);
-}
-
-/**
  * `appendFile` 的同步版本，向文件追加内容。
  * @param filePath - 文件路径。
  * @param contents - 要追加的内容。
@@ -226,6 +208,24 @@ export function copySync(srcPath: string, destPath: string): VoidIOResult {
  */
 export function appendFileSync(filePath: string, contents: WriteFileContent): VoidIOResult {
     return (isMinaEnv() ? minaAppendFileSync : webAppendFileSync)(filePath, contents);
+}
+
+/**
+ * `copy` 的同步版本，复制文件或文件夹。
+ * @param srcPath - 源文件或文件夹路径。
+ * @param destPath - 目标文件或文件夹路径。
+ * @returns 操作的结果。
+ * @since 1.1.0
+ * @example
+ * ```ts
+ * const result = copySync('/src/file.txt', '/dest/file.txt');
+ * if (result.isOk()) {
+ *     console.log('复制成功');
+ * }
+ * ```
+ */
+export function copySync(srcPath: string, destPath: string): VoidIOResult {
+    return (isMinaEnv() ? minaCopySync : webCopySync)(srcPath, destPath);
 }
 
 /**
@@ -333,6 +333,9 @@ export function unzipSync(zipFilePath: string, targetPath: string): VoidIOResult
     return (isMinaEnv() ? minaUnzipSync : webUnzipSync)(zipFilePath, targetPath);
 }
 
+export function zipSync(sourcePath: string, options?: ZipOptions): IOResult<Uint8Array<ArrayBuffer>>;
+export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOptions): VoidIOResult;
+
 /**
  * `zip` 的同步版本，压缩文件或文件夹。
  * @param sourcePath - 需要压缩的文件（夹）路径。
@@ -348,8 +351,12 @@ export function unzipSync(zipFilePath: string, targetPath: string): VoidIOResult
  * }
  * ```
  */
-export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOptions): VoidIOResult {
-    return (isMinaEnv() ? minaZipSync : webZipSync)(sourcePath, zipFilePath, options);
+export function zipSync(sourcePath: string, zipFilePath?: string | ZipOptions, options?: ZipOptions): IOResult<Uint8Array<ArrayBuffer> | void> {
+    if (typeof zipFilePath === 'string') {
+        return (isMinaEnv() ? minaZipSync : webZipSync)(sourcePath, zipFilePath, options);
+    } else {
+        return (isMinaEnv() ? minaZipSync : webZipSync)(sourcePath, zipFilePath);
+    }
 }
 
 // #region Internal Functions
