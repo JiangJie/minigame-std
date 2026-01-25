@@ -6,7 +6,7 @@
 import { FetchError, type FetchResult } from '@happy-ts/fetch-t';
 import { basename, dirname, SEPARATOR } from '@std/path/posix';
 import { zip as compress, type AsyncZippable } from 'fflate/browser';
-import type { ExistsOptions, WriteOptions, ZipOptions } from 'happy-opfs';
+import { ROOT_DIR, type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
 import { Err, Ok, RESULT_VOID, tryResult, type AsyncIOResult, type AsyncVoidIOResult, type IOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import type { FetchTask } from '../fetch/fetch_defines.ts';
@@ -14,7 +14,7 @@ import { createFailedFetchTask, miniGameFailureToError, validateSafeUrl } from '
 import { asyncResultify } from '../utils/mod.ts';
 import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
 import { createAbortError } from './fs_helpers.ts';
-import { createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, validateAbsolutePath, validateExistsOptions } from './mina_fs_shared.ts';
+import { createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
 
 /**
  * 递归创建文件夹，相当于`mkdir -p`。
@@ -22,6 +22,7 @@ import { createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileError
  * @returns 创建操作的异步结果。
  */
 export async function mkdir(dirPath: string): AsyncVoidIOResult {
+    // 为了检查根路径, 提前 validateAbsolutePath
     const dirPathRes = validateAbsolutePath(dirPath);
     if (dirPathRes.isErr()) return dirPathRes.asErr();
     dirPath = dirPathRes.unwrap();
@@ -113,6 +114,14 @@ export function readFile(filePath: string, options?: ReadOptions & {
 }): AsyncIOResult<Uint8Array<ArrayBuffer>>;
 
 /**
+ * 读取文件内容。
+ * @param filePath - 文件路径。
+ * @param options - 读取选项。
+ * @returns 包含文件内容的异步结果。
+ */
+export function readFile(filePath: string, options?: ReadOptions): AsyncIOResult<ReadFileContent>;
+
+/**
  * 读取文件内容，可选地指定编码和返回类型。
  * @template T - 返回内容的类型。
  * @param filePath - 文件路径。
@@ -125,7 +134,6 @@ export async function readFile(filePath: string, options?: ReadOptions): AsyncIO
     filePath = filePathRes.unwrap();
 
     const encoding = getReadFileEncoding(options);
-
     const readFileRes = await asyncResultify(getFs().readFile)({
         filePath,
         encoding,
@@ -133,7 +141,7 @@ export async function readFile(filePath: string, options?: ReadOptions): AsyncIO
 
     return readFileRes
         .map(x => {
-            const data = x.data;
+            const { data } = x;
             // 小游戏返回的是 ArrayBuffer，需要转换为 Uint8Array
             return typeof data === 'string' ? data : new Uint8Array(data);
         })
@@ -146,16 +154,14 @@ export async function readFile(filePath: string, options?: ReadOptions): AsyncIO
  * @returns 删除操作的异步结果。
  */
 export async function remove(path: string): AsyncVoidIOResult {
-    const pathRes = validateAbsolutePath(path);
-    if (pathRes.isErr()) return pathRes.asErr();
-    path = pathRes.unwrap();
-
     const statRes = await stat(path);
-
     if (statRes.isErr()) {
         // 不存在当做成功
         return isNotFoundError(statRes.unwrapErr()) ? RESULT_VOID : statRes.asErr();
     }
+
+    // stat 已经校验通过了
+    path = validateAbsolutePath(path).unwrap();
 
     // 文件夹还是文件
     const removeRes = await (statRes.unwrap().isDirectory()
@@ -178,10 +184,12 @@ export async function remove(path: string): AsyncVoidIOResult {
  * @param options - 可选选项。
  * @returns 包含状态信息的异步结果。
  */
-export function stat(path: string): AsyncIOResult<WechatMinigame.Stats>;
+export function stat(path: string, options?: StatOptions & {
+    recursive: false;
+}): AsyncIOResult<WechatMinigame.Stats>;
 export function stat(path: string, options: StatOptions & {
     recursive: true;
-}): AsyncIOResult<WechatMinigame.FileStats[]>;
+}): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
 export function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
 export async function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     const pathRes = validateAbsolutePath(path);
@@ -206,37 +214,36 @@ export async function stat(path: string, options?: StatOptions): AsyncIOResult<W
  * @returns 写入操作的异步结果。
  */
 export async function writeFile(filePath: string, contents: WriteFileContent, options?: WriteOptions): AsyncVoidIOResult {
-    const filePathRes = validateAbsolutePath(filePath);
-    if (filePathRes.isErr()) return filePathRes.asErr();
-    filePath = filePathRes.unwrap();
-
     // 默认创建
     const { append = false, create = true } = options ?? {};
-
-    if (create) {
-        const mkdirRes = await mkdir(dirname(filePath));
-        if (mkdirRes.isErr()) {
-            return mkdirRes;
-        }
-    }
 
     const fs = getFs();
     let writeMethod: typeof fs.appendFile | typeof fs.writeFile = fs.writeFile;
 
     if (append) {
-        // append先判断文件是否存在
+        // append 先判断文件是否存在
         const existsRes = await exists(filePath);
-        if (existsRes.isErr()) {
-            return existsRes.asErr();
-        }
+        if (existsRes.isErr()) return existsRes.asErr();
 
         if (existsRes.unwrap()) {
-            // 文件存在才能使用appendFile
+            // 文件存在才能使用 appendFile
             writeMethod = fs.appendFile;
         }
     }
 
-    const { data, encoding } = getWriteFileContents(contents);
+    // 减少可能的重复校验
+    const filePathRes = validateAbsolutePath(filePath);
+    if (filePathRes.isErr()) return filePathRes.asErr();
+    filePath = filePathRes.unwrap();
+
+    if (create) {
+        const mkdirRes = await mkdir(dirname(filePath));
+        if (mkdirRes.isErr()) return mkdirRes;
+    }
+
+    const contentsRes = getWriteFileContents(contents);
+    if (contentsRes.isErr()) return contentsRes.asErr();
+    const { data, encoding } = contentsRes.unwrap();
 
     const writeRes = await asyncResultify(writeMethod)({
         filePath,
@@ -261,17 +268,6 @@ export function appendFile(filePath: string, contents: WriteFileContent): AsyncV
     });
 }
 
-async function copyFile(srcPath: string, destPath: string): AsyncVoidIOResult {
-    const copyRes = await asyncResultify(getFs().copyFile)({
-        srcPath,
-        destPath,
-    });
-
-    return copyRes
-        .and(RESULT_VOID)
-        .orElse(fileErrorToResult);
-}
-
 /**
  * 复制文件或文件夹。
  *
@@ -280,10 +276,6 @@ async function copyFile(srcPath: string, destPath: string): AsyncVoidIOResult {
  * @returns 操作的异步结果。
  */
 export async function copy(srcPath: string, destPath: string): AsyncVoidIOResult {
-    const srcPathRes = validateAbsolutePath(srcPath);
-    if (srcPathRes.isErr()) return srcPathRes.asErr();
-    srcPath = srcPathRes.unwrap();
-
     const destPathRes = validateAbsolutePath(destPath);
     if (destPathRes.isErr()) return destPathRes.asErr();
     destPath = destPathRes.unwrap();
@@ -291,34 +283,41 @@ export async function copy(srcPath: string, destPath: string): AsyncVoidIOResult
     const statRes = await stat(srcPath, {
         recursive: true,
     });
+    if (statRes.isErr()) return statRes.asErr();
 
-    return statRes.andThenAsync(async statsArray => {
-        // 目录
-        if (Array.isArray(statsArray)) {
-            for (const { path, stats } of statsArray) {
-                // 不能用join
-                const srcEntryPath = srcPath + path;
-                const destEntryPath = destPath + path;
+    // stat 已经校验通过了
+    srcPath = validateAbsolutePath(srcPath).unwrap();
 
-                const copyRes = await (stats.isDirectory()
-                    ? mkdir(destEntryPath)
-                    // 文件的父目录一定先于文件创建, 所以不需要额外 mkdir
-                    : copyFile(srcEntryPath, destEntryPath));
+    const statsOrFileStats = statRes.unwrap();
+    // 目录和子目录/文件
+    if (Array.isArray(statsOrFileStats)) {
+        for (const { path, stats } of statsOrFileStats) {
+            // path 是以 `/` 开头的
+            // 不能用join
+            const srcEntryPath = srcPath + path;
+            const destEntryPath = destPath + path;
 
-                if (copyRes.isErr()) {
-                    return copyRes;
-                }
-            }
+            const copyRes = await (stats.isDirectory()
+                ? mkdir(destEntryPath)
+                // 由于串行执行, 文件的父目录一定先于文件创建, 所以不需要额外 mkdir
+                : copyFile(srcEntryPath, destEntryPath));
 
-            return RESULT_VOID;
-        } else {
-            // 文件
-            const mkdirRes = await mkdir(dirname(destPath));
-            return mkdirRes.andThenAsync(() => {
-                return copyFile(srcPath, destPath);
-            });
+            if (copyRes.isErr()) return copyRes;
         }
-    });
+
+        return RESULT_VOID;
+    } else {
+        // 单个目录
+        if (statsOrFileStats.isDirectory()) {
+            return mkdir(destPath);
+        }
+
+        // 单个文件
+        const mkdirRes = await mkdir(dirname(destPath));
+        return mkdirRes.andThenAsync(() => {
+            return copyFile(srcPath, destPath);
+        });
+    }
 }
 
 /**
@@ -341,10 +340,6 @@ export async function exists(path: string, options?: ExistsOptions): AsyncIOResu
  * @returns 清空操作的异步结果。
  */
 export async function emptyDir(dirPath: string): AsyncVoidIOResult {
-    const dirPathRes = validateAbsolutePath(dirPath);
-    if (dirPathRes.isErr()) return dirPathRes.asErr();
-    dirPath = dirPathRes.unwrap();
-
     const readDirRes = await readDir(dirPath);
     if (readDirRes.isErr()) {
         // 不存在则创建
@@ -353,12 +348,26 @@ export async function emptyDir(dirPath: string): AsyncVoidIOResult {
             : readDirRes.asErr();
     }
 
-    const tasks = readDirRes.unwrap().map(name => remove(dirPath + name));
+    // readDir 已经校验通过了
+    dirPath = validateAbsolutePath(dirPath).unwrap();
+
+    const tasks = readDirRes.unwrap().map(name => remove(dirPath + SEPARATOR + name));
     const taskResults = await Promise.all(tasks);
     // 是否有失败？
     const failed = taskResults.find(x => x.isErr());
 
     return failed ?? RESULT_VOID;
+}
+
+/**
+ * 读取文本文件的内容。
+ * @param filePath - 文件路径。
+ * @returns 包含文件文本内容的异步结果。
+ */
+export function readTextFile(filePath: string): AsyncIOResult<string> {
+    return readFile(filePath, {
+        encoding: 'utf8',
+    });
 }
 
 /**
@@ -384,17 +393,6 @@ export async function writeJsonFile<T>(filePath: string, data: T): AsyncVoidIORe
     const result = tryResult(JSON.stringify, data);
 
     return result.andThenAsync(text => writeFile(filePath, text));
-}
-
-/**
- * 读取文本文件的内容。
- * @param filePath - 文件路径。
- * @returns 包含文件文本内容的异步结果。
- */
-export function readTextFile(filePath: string): AsyncIOResult<string> {
-    return readFile(filePath, {
-        encoding: 'utf8',
-    });
 }
 
 /**
@@ -479,7 +477,7 @@ export function downloadFile(fileUrl: string, filePath?: string | DownloadFileOp
         }
     };
 
-    if (typeof filePath === 'string' && filePath) {
+    if (typeof filePath === 'string') {
         // 如果目录不存在则创建
         mkdir(dirname(filePath)).then(mkdirRes => {
             if (aborted) {
@@ -637,12 +635,14 @@ export async function zip(sourcePath: string, zipFilePath?: string | ZipOptions,
     const statRes = await stat(sourcePath);
     if (statRes.isErr()) return statRes.asErr();
 
-    const stats = statRes.unwrap();
+    // stat 已经校验通过了
+    sourcePath = validateAbsolutePath(sourcePath).unwrap();
     const sourceName = basename(sourcePath);
+
     const zippable: AsyncZippable = {};
 
-    if (stats.isFile()) {
-    // 文件
+    if (statRes.unwrap().isFile()) {
+        // 文件
         const readFileRes = await readFile(sourcePath);
         if (readFileRes.isErr()) return readFileRes;
 
@@ -653,6 +653,7 @@ export async function zip(sourcePath: string, zipFilePath?: string | ZipOptions,
             recursive: true,
         });
         if (statRes.isErr()) return statRes.asErr();
+        const statsOrFileStats = statRes.unwrap();
 
         // 默认保留根目录
         const preserveRoot = options?.preserveRoot ?? true;
@@ -661,36 +662,41 @@ export async function zip(sourcePath: string, zipFilePath?: string | ZipOptions,
             zippable[sourceName + SEPARATOR] = EMPTY_BYTES;
         }
 
-        const tasks: AsyncIOResult<{
-            entryName: string;
-            data: Uint8Array<ArrayBuffer>;
-        }>[] = [];
+        if (Array.isArray(statsOrFileStats)) {
+            const tasks: AsyncIOResult<{
+                entryName: string;
+                data: Uint8Array<ArrayBuffer>;
+            }>[] = [];
 
-        for (const { path, stats } of statRes.unwrap()) {
-            const entryName = preserveRoot ? sourceName + path : path;
+            for (const { path, stats } of statsOrFileStats) {
+                // stat 在 recursive 模式下会包含根目录, 并且 path 以 `/` 开头
+                if (path === ROOT_DIR) continue;
 
-            if (stats.isFile()) {
-                // 不能用 join，否则 http://usr 会变成 http:/usr
-                tasks.push((async () => {
-                    const dataRes = await readFile(sourcePath + path);
-                    return dataRes.map(data => ({
-                        entryName,
-                        data,
-                    }));
-                })());
-            } else {
-                // 文件夹 - 添加带有尾部斜杠和空内容的条目
-                zippable[entryName + SEPARATOR] = EMPTY_BYTES;
+                const entryName = preserveRoot ? sourceName + path : path.slice(1);
+
+                if (stats.isFile()) {
+                    // 不能用 join，否则 http://usr 会变成 http:/usr
+                    tasks.push((async () => {
+                        const readFileRes = await readFile(sourcePath + path);
+                        return readFileRes.map(data => ({
+                            entryName,
+                            data,
+                        }));
+                    })());
+                } else {
+                    // 文件夹 - 添加带有尾部斜杠和空内容的条目
+                    zippable[entryName + SEPARATOR] = EMPTY_BYTES;
+                }
             }
-        }
 
-        if (tasks.length > 0) {
-            const results = await Promise.all(tasks);
-            for (const result of results) {
-                if (result.isErr()) return result.asErr();
+            if (tasks.length > 0) {
+                const results = await Promise.all(tasks);
+                for (const result of results) {
+                    if (result.isErr()) return result.asErr();
 
-                const { entryName, data } = result.unwrap();
-                zippable[entryName] = data;
+                    const { entryName, data } = result.unwrap();
+                    zippable[entryName] = data;
+                }
             }
         }
     }
@@ -717,7 +723,11 @@ export async function zipFromUrl(sourceUrl: string, options?: DownloadFileOption
  */
 export async function zipFromUrl(sourceUrl: string, zipFilePath: string, options?: DownloadFileOptions): AsyncVoidIOResult;
 export async function zipFromUrl(sourceUrl: string, zipFilePath?: string | DownloadFileOptions, options?: DownloadFileOptions): AsyncZipIOResult {
-    if (typeof zipFilePath !== 'string') {
+    if (typeof zipFilePath === 'string') {
+        const zipFilePathRes = validateAbsolutePath(zipFilePath);
+        if (zipFilePathRes.isErr()) return zipFilePathRes.asErr();
+        zipFilePath = zipFilePathRes.unwrap();
+    } else {
         options = zipFilePath;
         zipFilePath = undefined;
     }
@@ -730,7 +740,7 @@ export async function zipFromUrl(sourceUrl: string, zipFilePath?: string | Downl
 
         const sourceName = basename(tempFilePath);
         const zippable = {
-            [sourceName]: new Uint8Array(readFileRes.unwrap()),
+            [sourceName]: readFileRes.unwrap(),
         };
 
         return zipTo(zippable, zipFilePath);
@@ -740,9 +750,8 @@ export async function zipFromUrl(sourceUrl: string, zipFilePath?: string | Downl
 // #region Internal Types
 
 /**
- * zip 操作的结果。
+ * 异步的 zip 操作的结果。
  */
-type ZipIOResult = IOResult<Uint8Array<ArrayBuffer> | void>;
 type AsyncZipIOResult = Promise<ZipIOResult>;
 
 // #endregion
@@ -756,6 +765,20 @@ type AsyncZipIOResult = Promise<ZipIOResult>;
  */
 function miniGameFailureToResult<T>(error: WechatMinigame.GeneralCallbackResult): IOResult<T> {
     return Err(miniGameFailureToError(error));
+}
+
+/**
+ * 复制文件。
+ */
+async function copyFile(srcPath: string, destPath: string): AsyncVoidIOResult {
+    const copyRes = await asyncResultify(getFs().copyFile)({
+        srcPath,
+        destPath,
+    });
+
+    return copyRes
+        .and(RESULT_VOID)
+        .orElse(fileErrorToResult);
 }
 
 /**

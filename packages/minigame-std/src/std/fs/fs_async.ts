@@ -496,6 +496,7 @@ export function zipFromUrl(sourceUrl: string, zipFilePath?: string | ZipFromUrlO
  * 将 Web 端的读取目录结果转换为小游戏端的读取目录结果。
  */
 async function webToMinaReadDir(dirPath: string): AsyncIOResult<string[]> {
+    // 小游戏不支持 recursive 选项
     const readDirRes = await webReadDir(dirPath);
     return readDirRes.andTryAsync(async entries => {
         if (typeof Array.fromAsync === 'function') {

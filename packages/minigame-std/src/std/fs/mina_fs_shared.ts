@@ -5,7 +5,7 @@
 
 import { normalize } from '@std/path/posix';
 import { NOT_FOUND_ERROR, NOTHING_TO_ZIP_ERROR, ROOT_DIR, type ExistsOptions } from 'happy-opfs';
-import { Err, Lazy, Ok, RESULT_FALSE, RESULT_VOID, type IOResult, type VoidIOResult } from 'happy-rusty';
+import { Err, Lazy, Ok, RESULT_FALSE, RESULT_VOID, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { bufferSourceToAb, miniGameFailureToError } from '../internal/mod.ts';
 import type { ReadOptions, WriteFileContent } from './fs_define.ts';
 
@@ -34,6 +34,11 @@ const rootPath = Lazy(() => {
 });
 
 // #endregion
+
+/**
+ * zip 操作的结果。
+ */
+export type ZipIOResult = IOResult<Uint8Array<ArrayBuffer> | void>;
 
 export const EMPTY_BYTES: Uint8Array<ArrayBuffer> = new Uint8Array(0);
 
@@ -196,16 +201,26 @@ export function getReadFileEncoding(options?: ReadOptions): 'utf8' | undefined {
 /**
  * 获取写入文件的参数。
  */
-export function getWriteFileContents(contents: WriteFileContent): GetWriteFileContents {
+export function getWriteFileContents(contents: WriteFileContent): IOResult<GetWriteFileContents> {
     const isBin = typeof contents !== 'string';
 
-    const encoding = isBin ? undefined : 'utf8';
-    const data = isBin ? bufferSourceToAb(contents) : contents;
+    let data: string | ArrayBuffer;
 
-    return {
+    if (isBin) {
+        const result = tryResult(() => bufferSourceToAb(contents));
+        if (result.isErr()) return result.asErr();
+
+        data = result.unwrap();
+    } else {
+        data = contents;
+    }
+
+    const encoding = isBin ? undefined : 'utf8';
+
+    return Ok({
         data,
         encoding,
-    };
+    });
 }
 
 /**

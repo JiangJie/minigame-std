@@ -356,6 +356,7 @@ export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOp
  * 将 Web 端的读取目录结果转换为小游戏端的读取目录结果。
  */
 function webToMinaReadDirSync(dirPath: string): IOResult<string[]> {
+    // 小游戏不支持 recursive 选项
     const readDirRes = webReadDirSync(dirPath);
     return readDirRes.map(entries => {
         return entries.map(({ path }) => path);
