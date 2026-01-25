@@ -6,15 +6,15 @@
 import { FetchError, type FetchResult } from '@happy-ts/fetch-t';
 import { basename, dirname, SEPARATOR } from '@std/path/posix';
 import { zip as compress, type AsyncZippable } from 'fflate/browser';
-import { ROOT_DIR, type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
-import { Err, Ok, RESULT_VOID, tryResult, type AsyncIOResult, type AsyncVoidIOResult, type IOResult } from 'happy-rusty';
+import { type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
+import { Err, Ok, RESULT_VOID, tryResult, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import type { FetchTask } from '../fetch/fetch_defines.ts';
 import { createFailedFetchTask, miniGameFailureToError, validateSafeUrl } from '../internal/mod.ts';
 import { asyncResultify } from '../utils/mod.ts';
 import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
 import { createAbortError } from './fs_helpers.ts';
-import { createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
+import { createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
 
 /**
  * 递归创建文件夹，相当于`mkdir -p`。
@@ -189,20 +189,21 @@ export function stat(path: string, options?: StatOptions & {
 }): AsyncIOResult<WechatMinigame.Stats>;
 export function stat(path: string, options: StatOptions & {
     recursive: true;
-}): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
+}): AsyncIOResult<WechatMinigame.FileStats[]>;
 export function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
 export async function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     const pathRes = validateAbsolutePath(path);
     if (pathRes.isErr()) return pathRes.asErr();
     path = pathRes.unwrap();
 
+    const { recursive = false } = options ?? {};
     const statRes = await asyncResultify(getFs().stat)({
         path,
-        recursive: options?.recursive ?? false,
+        recursive,
     });
 
     return statRes
-        .map(x => x.stats)
+        .map(x => normalizeStats(x.stats, recursive))
         .orElse(fileErrorToResult);
 }
 
@@ -288,36 +289,34 @@ export async function copy(srcPath: string, destPath: string): AsyncVoidIOResult
     // stat 已经校验通过了
     srcPath = validateAbsolutePath(srcPath).unwrap();
 
-    const statsOrFileStats = statRes.unwrap();
-    // 目录和子目录/文件
-    if (Array.isArray(statsOrFileStats)) {
-        for (const { path, stats } of statsOrFileStats) {
-            // path 是以 `/` 开头的
-            // 不能用join
-            const srcEntryPath = srcPath + path;
-            const destEntryPath = destPath + path;
+    for (const { path, stats } of statRes.unwrap()) {
+        let copyRes: VoidIOResult;
 
-            const copyRes = await (stats.isDirectory()
+        if (!path) {
+            // 根目录或者文件
+            if (stats.isDirectory()) {
+                copyRes = await mkdir(destPath);
+            } else {
+                const mkdirRes = await mkdir(dirname(destPath));
+                copyRes = await mkdirRes.andThenAsync(() => {
+                    return copyFile(srcPath, destPath);
+                });
+            }
+        } else {
+            // 不能用join
+            const srcEntryPath = srcPath + SEPARATOR + path;
+            const destEntryPath = destPath + SEPARATOR + path;
+
+            copyRes = await (stats.isDirectory()
                 ? mkdir(destEntryPath)
                 // 由于串行执行, 文件的父目录一定先于文件创建, 所以不需要额外 mkdir
                 : copyFile(srcEntryPath, destEntryPath));
-
-            if (copyRes.isErr()) return copyRes;
         }
 
-        return RESULT_VOID;
-    } else {
-        // 单个目录
-        if (statsOrFileStats.isDirectory()) {
-            return mkdir(destPath);
-        }
-
-        // 单个文件
-        const mkdirRes = await mkdir(dirname(destPath));
-        return mkdirRes.andThenAsync(() => {
-            return copyFile(srcPath, destPath);
-        });
+        if (copyRes.isErr()) return copyRes;
     }
+
+    return RESULT_VOID;
 }
 
 /**
@@ -632,8 +631,11 @@ export async function zip(sourcePath: string, zipFilePath?: string | ZipOptions,
         zipFilePath = undefined;
     }
 
-    const statRes = await stat(sourcePath);
+    const statRes = await stat(sourcePath, {
+        recursive: true,
+    });
     if (statRes.isErr()) return statRes.asErr();
+    const statsArray = statRes.unwrap();
 
     // stat 已经校验通过了
     sourcePath = validateAbsolutePath(sourcePath).unwrap();
@@ -641,20 +643,14 @@ export async function zip(sourcePath: string, zipFilePath?: string | ZipOptions,
 
     const zippable: AsyncZippable = {};
 
-    if (statRes.unwrap().isFile()) {
-        // 文件
+    if (statsArray.length === 1 && statsArray[0].stats.isFile()) {
+    // sourcePath 是文件
         const readFileRes = await readFile(sourcePath);
         if (readFileRes.isErr()) return readFileRes;
 
-        zippable[sourceName] = new Uint8Array(readFileRes.unwrap());
+        zippable[sourceName] = readFileRes.unwrap();
     } else {
-        // 目录
-        const statRes = await stat(sourcePath, {
-            recursive: true,
-        });
-        if (statRes.isErr()) return statRes.asErr();
-        const statsOrFileStats = statRes.unwrap();
-
+        // sourcePath 是目录
         // 默认保留根目录
         const preserveRoot = options?.preserveRoot ?? true;
         if (preserveRoot) {
@@ -662,41 +658,39 @@ export async function zip(sourcePath: string, zipFilePath?: string | ZipOptions,
             zippable[sourceName + SEPARATOR] = EMPTY_BYTES;
         }
 
-        if (Array.isArray(statsOrFileStats)) {
-            const tasks: AsyncIOResult<{
-                entryName: string;
-                data: Uint8Array<ArrayBuffer>;
-            }>[] = [];
+        const tasks: AsyncIOResult<{
+            entryName: string;
+            data: Uint8Array<ArrayBuffer>;
+        }>[] = [];
 
-            for (const { path, stats } of statsOrFileStats) {
-                // stat 在 recursive 模式下会包含根目录, 并且 path 以 `/` 开头
-                if (path === ROOT_DIR) continue;
+        for (const { path, stats } of statRes.unwrap()) {
+            // 这里就跳过根目录了
+            if (!path) continue;
 
-                const entryName = preserveRoot ? sourceName + path : path.slice(1);
+            const entryName = preserveRoot ? sourceName + SEPARATOR + path : path;
 
-                if (stats.isFile()) {
-                    // 不能用 join，否则 http://usr 会变成 http:/usr
-                    tasks.push((async () => {
-                        const readFileRes = await readFile(sourcePath + path);
-                        return readFileRes.map(data => ({
-                            entryName,
-                            data,
-                        }));
-                    })());
-                } else {
-                    // 文件夹 - 添加带有尾部斜杠和空内容的条目
-                    zippable[entryName + SEPARATOR] = EMPTY_BYTES;
-                }
+            if (stats.isFile()) {
+                // 不能用 join，否则 http://usr 会变成 http:/usr
+                tasks.push((async () => {
+                    const readFileRes = await readFile(sourcePath + SEPARATOR + path);
+                    return readFileRes.map(data => ({
+                        entryName,
+                        data,
+                    }));
+                })());
+            } else {
+                // 文件夹 - 添加带有尾部斜杠和空内容的条目
+                zippable[entryName + SEPARATOR] = EMPTY_BYTES;
             }
+        }
 
-            if (tasks.length > 0) {
-                const results = await Promise.all(tasks);
-                for (const result of results) {
-                    if (result.isErr()) return result.asErr();
+        if (tasks.length > 0) {
+            const results = await Promise.all(tasks);
+            for (const result of results) {
+                if (result.isErr()) return result.asErr();
 
-                    const { entryName, data } = result.unwrap();
-                    zippable[entryName] = data;
-                }
+                const { entryName, data } = result.unwrap();
+                zippable[entryName] = data;
             }
         }
     }

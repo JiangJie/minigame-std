@@ -24,7 +24,7 @@ import {
     type WriteOptions,
     type ZipOptions,
 } from 'happy-opfs';
-import { tryAsyncResult, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
+import { Ok, tryAsyncResult, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import type { StatOptions, UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent, ZipFromUrlOptions } from './fs_define.ts';
 import { convertFileSystemHandleToStats } from './fs_helpers.ts';
@@ -138,7 +138,9 @@ export function remove(path: string): AsyncVoidIOResult {
     return (isMinaEnv() ? minaRemove : webRemove)(path);
 }
 
-export function stat(path: string): AsyncIOResult<WechatMinigame.Stats>;
+export function stat(path: string, options?: StatOptions & {
+    recursive: false;
+}): AsyncIOResult<WechatMinigame.Stats>;
 export function stat(path: string, options: StatOptions & {
     recursive: true;
 }): AsyncIOResult<WechatMinigame.FileStats[]>;
@@ -523,16 +525,25 @@ async function webToMinaStat(path: string, options?: StatOptions): AsyncIOResult
     const entryStatsRes = await tryAsyncResult(convertFileSystemHandleToStats(handle));
     if (entryStatsRes.isErr()) return entryStatsRes;
 
-    const entryStats = entryStatsRes.unwrap();
-    if (entryStats.isFile() || !options?.recursive) {
+    // 非递归模式直接返回
+    if (!options?.recursive) {
         return entryStatsRes;
+    }
+
+    const entryStats = entryStatsRes.unwrap();
+    if (entryStats.isFile()) {
+        return Ok([{
+            path: '', // 当前文件本身的相对路径
+            stats: entryStats,
+        }]);
     }
 
     // 递归读取目录
     const readDirRes = await webReadDir(path);
     return readDirRes.andTryAsync(async entries => {
+        // 只要是 recursive 模式下的目录, 就返回数组(即使空目录)
         const tasks = [Promise.resolve({
-            path,
+            path: '', // 当前文件夹本身的相对路径
             stats: entryStats,
         })];
 

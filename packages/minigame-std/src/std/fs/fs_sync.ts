@@ -140,7 +140,9 @@ export function removeSync(path: string): VoidIOResult {
  * }
  * ```
  */
-export function statSync(path: string): IOResult<WechatMinigame.Stats>;
+export function statSync(path: string, options?: StatOptions & {
+    recursive: false;
+}): IOResult<WechatMinigame.Stats>;
 /**
  * `stat` 的同步版本，递归获取目录下所有文件和子目录的状态信息。
  * @param path - 目录的路径。
@@ -373,8 +375,17 @@ function webToMinaStatSync(path: string, options?: StatOptions): IOResult<Wechat
     const handleLike = statRes.unwrap();
 
     const entryStats = convertFileSystemHandleLikeToStats(handleLike);
-    if (entryStats.isFile() || !options?.recursive) {
+
+    // 非递归模式直接返回
+    if (!options?.recursive) {
         return Ok(entryStats);
+    }
+
+    if (entryStats.isFile()) {
+        return Ok([{
+            path: '', // 当前文件本身的相对路径
+            stats: entryStats,
+        }]);
     }
 
     // 递归读取目录
@@ -385,8 +396,9 @@ function webToMinaStatSync(path: string, options?: StatOptions): IOResult<Wechat
             stats: convertFileSystemHandleLikeToStats(handle),
         }));
 
+        // 只要是 recursive 模式下的目录, 就返回数组(即使是空目录)
         statsArr.unshift({
-            path,
+            path: '', // 当前文件夹本身的相对路径
             stats: entryStats,
         });
 

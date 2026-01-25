@@ -5,10 +5,10 @@
 
 import { basename, dirname, SEPARATOR } from '@std/path/posix';
 import { zipSync as compressSync, unzipSync as decompressSync, type AsyncZippable } from 'fflate/browser';
-import { ROOT_DIR, type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
+import { type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
 import { Err, RESULT_VOID, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
-import { createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
+import { createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
 
 /**
  * `mkdir` 的同步版本。
@@ -98,17 +98,22 @@ export function removeSync(path: string): VoidIOResult {
 /**
  * `stat` 的同步版本。
  */
-export function statSync(path: string): IOResult<WechatMinigame.Stats>;
+export function statSync(path: string, options?: StatOptions & {
+    recursive: false;
+}): IOResult<WechatMinigame.Stats>;
 export function statSync(path: string, options: StatOptions & {
     recursive: true;
-}): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
+}): IOResult<WechatMinigame.FileStats[]>;
 export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
 export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     const pathRes = validateAbsolutePath(path);
     if (pathRes.isErr()) return pathRes.asErr();
     path = pathRes.unwrap();
 
-    return trySyncOp(() => getFs().statSync(path, options?.recursive ?? false));
+    const { recursive = false } = options ?? {};
+
+    return trySyncOp(() => getFs().statSync(path, recursive))
+        .map(x => normalizeStats(x, recursive));
 }
 
 /**
@@ -160,35 +165,34 @@ export function copySync(srcPath: string, destPath: string): VoidIOResult {
     // statSync 已经校验通过了
     srcPath = validateAbsolutePath(srcPath).unwrap();
 
-    const statsOrFileStats = statRes.unwrap();
-    // 目录
-    if (Array.isArray(statsOrFileStats)) {
-        for (const { path, stats } of statsOrFileStats) {
-            // path 是以 `/` 开头的
+    for (const { path, stats } of statRes.unwrap()) {
+        let copyRes: VoidIOResult;
+
+        if (!path) {
+            // 根目录或者文件
+            if (stats.isDirectory()) {
+                copyRes = mkdirSync(destPath);
+            } else {
+                const mkdirRes = mkdirSync(dirname(destPath));
+                copyRes = mkdirRes.andThen(() => {
+                    return copyFileSync(srcPath, destPath);
+                });
+            }
+        } else {
             // 不能用join
-            const srcEntryPath = srcPath + path;
-            const destEntryPath = destPath + path;
+            const srcEntryPath = srcPath + SEPARATOR + path;
+            const destEntryPath = destPath + SEPARATOR + path;
 
-            const result = (stats.isDirectory()
+            copyRes = (stats.isDirectory()
                 ? mkdirSync(destEntryPath)
+                // 由于串行执行, 文件的父目录一定先于文件创建, 所以不需要额外 mkdir
                 : copyFileSync(srcEntryPath, destEntryPath));
-
-            if (result.isErr()) return result;
         }
 
-        return RESULT_VOID;
-    } else {
-        // 单个目录
-        if (statsOrFileStats.isDirectory()) {
-            return mkdirSync(destPath);
-        }
-
-        // 单个文件
-        const mkdirRes = mkdirSync(dirname(destPath));
-        return mkdirRes.andThen(() => {
-            return copyFileSync(srcPath, destPath);
-        });
+        if (copyRes.isErr()) return copyRes;
     }
+
+    return RESULT_VOID;
 }
 
 /**
@@ -299,8 +303,11 @@ export function zipSync(sourcePath: string, zipFilePath?: string | ZipOptions, o
         zipFilePath = undefined;
     }
 
-    const statRes = statSync(sourcePath);
+    const statRes = statSync(sourcePath, {
+        recursive: true,
+    });
     if (statRes.isErr()) return statRes.asErr();
+    const statsArray = statRes.unwrap();
 
     // statSync 已经校验通过了
     sourcePath = validateAbsolutePath(sourcePath).unwrap();
@@ -308,20 +315,14 @@ export function zipSync(sourcePath: string, zipFilePath?: string | ZipOptions, o
 
     const zippable: AsyncZippable = {};
 
-    if (statRes.unwrap().isFile()) {
-        // 文件
+    if (statsArray.length === 1 && statsArray[0].stats.isFile()) {
+    // sourcePath 是文件
         const readFileRes = readFileSync(sourcePath);
         if (readFileRes.isErr()) return readFileRes;
 
         zippable[sourceName] = readFileRes.unwrap();
     } else {
-        // 目录
-        const statRes = statSync(sourcePath, {
-            recursive: true,
-        });
-        if (statRes.isErr()) return statRes.asErr();
-        const statsOrFileStats = statRes.unwrap();
-
+        // sourcePath 是目录
         // 默认保留根目录
         const preserveRoot = options?.preserveRoot ?? true;
         if (preserveRoot) {
@@ -329,23 +330,21 @@ export function zipSync(sourcePath: string, zipFilePath?: string | ZipOptions, o
             zippable[sourceName + SEPARATOR] = EMPTY_BYTES;
         }
 
-        if (Array.isArray(statsOrFileStats)) {
-            for (const { path, stats } of statsOrFileStats) {
-                // statSync 在 recursive 模式下会包含根目录, 并且 path 以 `/` 开头
-                if (path === ROOT_DIR) continue;
+        for (const { path, stats } of statsArray) {
+            // 这里就跳过根目录了
+            if (!path) continue;
 
-                const entryName = preserveRoot ? sourceName + path : path.slice(1);
+            const entryName = preserveRoot ? sourceName + SEPARATOR + path : path;
 
-                if (stats.isFile()) {
-                    // 不能用 join，否则 http://usr 会变成 http:/usr
-                    const readFileRes = readFileSync(sourcePath + path);
-                    if (readFileRes.isErr()) return readFileRes;
+            if (stats.isFile()) {
+                // 不能用 join，否则 http://usr 会变成 http:/usr
+                const readFileRes = readFileSync(sourcePath + SEPARATOR + path);
+                if (readFileRes.isErr()) return readFileRes;
 
-                    zippable[entryName] = readFileRes.unwrap();
-                } else {
-                    // 文件夹 - 添加带有尾部斜杠和空内容的条目
-                    zippable[entryName + SEPARATOR] = EMPTY_BYTES;
-                }
+                zippable[entryName] = readFileRes.unwrap();
+            } else {
+                // 文件夹 - 添加带有尾部斜杠和空内容的条目
+                zippable[entryName + SEPARATOR] = EMPTY_BYTES;
             }
         }
     }

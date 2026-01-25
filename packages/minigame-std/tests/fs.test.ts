@@ -130,7 +130,7 @@ describe('fs stat', () => {
         const result = await fs.stat(filePath);
         expect(result.isOk()).toBe(true);
 
-        const stats = result.unwrap() as WechatMinigame.Stats;
+        const stats = result.unwrap();
         // Verify Stats interface methods
         expect(typeof stats.isFile).toBe('function');
         expect(typeof stats.isDirectory).toBe('function');
@@ -145,7 +145,7 @@ describe('fs stat', () => {
         const result = await fs.stat(dirPath);
         expect(result.isOk()).toBe(true);
 
-        const stats = result.unwrap() as WechatMinigame.Stats;
+        const stats = result.unwrap();
         expect(stats.isFile()).toBe(false);
         expect(stats.isDirectory()).toBe(true);
     });
@@ -159,7 +159,7 @@ describe('fs stat', () => {
         const result = await fs.stat(dirPath, { recursive: true });
         expect(result.isOk()).toBe(true);
 
-        const statsArr = result.unwrap() as WechatMinigame.FileStats[];
+        const statsArr = result.unwrap();
         // Verify it returns an array
         expect(Array.isArray(statsArr)).toBe(true);
         // Should include dir itself + 2 files
@@ -173,9 +173,24 @@ describe('fs stat', () => {
             expect(typeof item.stats.isDirectory).toBe('function');
         });
 
-        // First item should be the directory itself
-        expect(statsArr[0].path).toBe(dirPath);
+        // First item should be the directory itself (relative path is empty)
+        expect(statsArr[0].path).toBe('');
         expect(statsArr[0].stats.isDirectory()).toBe(true);
+    });
+
+    test('stat with recursive on file returns FileStats array', async () => {
+        const filePath = `${ TEST_DIR }/stat-recursive-file`;
+        await fs.writeFile(filePath, 'content');
+
+        const result = await fs.stat(filePath, { recursive: true });
+        expect(result.isOk()).toBe(true);
+
+        const statsArr = result.unwrap();
+        // Verify it returns an array with 1 element
+        expect(statsArr.length).toBe(1);
+        // First item should be the file itself (relative path is empty)
+        expect(statsArr[0].path).toBe('');
+        expect(statsArr[0].stats.isFile()).toBe(true);
     });
 
     test('stat without recursive on directory returns single Stats', async () => {
@@ -186,7 +201,7 @@ describe('fs stat', () => {
         const result = await fs.stat(dirPath);
         expect(result.isOk()).toBe(true);
 
-        const stats = result.unwrap() as WechatMinigame.Stats;
+        const stats = result.unwrap();
         // Should return single Stats, not array
         expect(Array.isArray(stats)).toBe(false);
         expect(stats.isDirectory()).toBe(true);
@@ -208,7 +223,7 @@ describe('fs stat', () => {
             return;
         }
 
-        const stats = result.unwrap() as WechatMinigame.Stats;
+        const stats = result.unwrap();
         expect(stats.isFile()).toBe(true);
         expect(stats.isDirectory()).toBe(false);
         expect(stats.size).toBeGreaterThan(0);
@@ -225,7 +240,7 @@ describe('fs stat', () => {
             return;
         }
 
-        const stats = result.unwrap() as WechatMinigame.Stats;
+        const stats = result.unwrap();
         expect(stats.isFile()).toBe(false);
         expect(stats.isDirectory()).toBe(true);
         expect(stats.size).toBe(0);
@@ -245,7 +260,7 @@ describe('fs stat', () => {
             return;
         }
 
-        const statsArr = result.unwrap() as WechatMinigame.FileStats[];
+        const statsArr = result.unwrap();
         expect(Array.isArray(statsArr)).toBe(true);
         expect(statsArr.length).toBeGreaterThanOrEqual(3);
 

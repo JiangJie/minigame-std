@@ -240,6 +240,29 @@ export function getExistsResult(statResult: IOResult<WechatMinigame.Stats>, opti
     });
 }
 
+/**
+ * 根据 `recursive` 不同标准化 `stat` 的结果。
+ * - `recursive=false`: 返回单个 `Stats` 或 `FileStats[]`
+ * - `recursive=true`: 始终返回 `FileStats[]`，即使是单个文件或空目录
+ *   - 如果是单个 `Stats`，包装成数组，path 设为 '' 表示当前项目
+ */
+export function normalizeStats(statsOrFileStats: WechatMinigame.Stats | WechatMinigame.FileStats[], recursive: boolean): WechatMinigame.Stats | WechatMinigame.FileStats[] {
+    if (Array.isArray(statsOrFileStats)) {
+        return statsOrFileStats.map(({ path, stats }) => ({
+            path: path.slice(1), // 返回相对路径, 去掉开头的 `/`
+            stats,
+        }));
+    }
+
+    // 只要是 recursive 就返回数组(即使是文件或者空目录))
+    return recursive
+        ? [{
+            path: '', // 当前文件夹本身的相对路径
+            stats: statsOrFileStats,
+        }]
+        : statsOrFileStats;
+}
+
 // #region Internal Types
 
 type FileError = WechatMinigame.FileError | (Error & {
