@@ -16,11 +16,12 @@ import {
     writeJsonFileSync as webWriteJsonFileSync,
     zipSync as webZipSync,
     type AppendOptions,
+    type ExistsOptions,
     type ZipOptions,
 } from 'happy-opfs';
 import { Ok, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
-import type { StatOptions, WriteFileContent } from './fs_define.ts';
+import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
 import { convertFileSystemHandleLikeToStats } from './fs_helpers.ts';
 import {
     appendFileSync as minaAppendFileSync,
@@ -94,9 +95,47 @@ export function readDirSync(dirPath: string): IOResult<string[]> {
 }
 
 /**
+ * 以 UTF-8 格式读取文件。
+ * @param filePath - 文件路径。
+ * @param options - 读取选项，指定编码为 'utf8'。
+ * @returns 包含文件内容的字符串的操作结果。
+ * @since 1.1.0
+ * @example
+ * ```ts
+ * const result = readFileSync('/path/to/file.txt', { encoding: 'utf8' });
+ * if (result.isOk()) {
+ *     console.log(result.unwrap());
+ * }
+ * ```
+ */
+export function readFileSync(filePath: string, options: ReadOptions & {
+    encoding: 'utf8';
+}): IOResult<string>;
+
+/**
+ * 以二进制格式读取文件。
+ * @param filePath - 文件路径。
+ * @param options - 读取选项，指定编码为 'bytes'。
+ * @returns 包含文件内容的 Uint8Array<ArrayBuffer> 的操作结果。
+ * @since 1.1.0
+ * @example
+ * ```ts
+ * const result = readFileSync('/path/to/file.txt', { encoding: 'bytes' });
+ * if (result.isOk()) {
+ *     const bytes = result.unwrap();
+ *     console.log(decodeUtf8(bytes));
+ * }
+ * ```
+ */
+export function readFileSync(filePath: string, options?: ReadOptions & {
+    encoding: 'bytes';
+}): IOResult<Uint8Array<ArrayBuffer>>;
+
+/**
  * `readFile` 的同步版本，读取文件内容。
  * @param filePath - 文件的路径。
- * @returns 包含文件内容的 Uint8Array<ArrayBuffer> 的操作结果。
+ * @param options - 可选的读取选项。
+ * @returns 包含文件内容的操作结果。
  * @since 1.1.0
  * @example
  * ```ts
@@ -107,8 +146,11 @@ export function readDirSync(dirPath: string): IOResult<string[]> {
  * }
  * ```
  */
-export function readFileSync(filePath: string): IOResult<Uint8Array<ArrayBuffer>> {
-    return (isMinaEnv() ? minaReadFileSync : webReadFileSync)(filePath);
+export function readFileSync(filePath: string, options?: ReadOptions): IOResult<ReadFileContent>;
+export function readFileSync(filePath: string, options?: ReadOptions): IOResult<ReadFileContent> {
+    return isMinaEnv()
+        ? minaReadFileSync(filePath, options)
+        : webReadFileSync(filePath, options) as IOResult<ReadFileContent>;
 }
 
 /**
@@ -233,6 +275,7 @@ export function copySync(srcPath: string, destPath: string): VoidIOResult {
 /**
  * `exists` 的同步版本，检查指定路径的文件或目录是否存在。
  * @param path - 文件或目录的路径。
+ * @param options - 可选的检查选项。
  * @returns 存在返回 true 的操作结果。
  * @since 1.1.0
  * @example
@@ -243,8 +286,8 @@ export function copySync(srcPath: string, destPath: string): VoidIOResult {
  * }
  * ```
  */
-export function existsSync(path: string): IOResult<boolean> {
-    return (isMinaEnv() ? minaExistsSync : webExistsSync)(path);
+export function existsSync(path: string, options?: ExistsOptions): IOResult<boolean> {
+    return (isMinaEnv() ? minaExistsSync : webExistsSync)(path, options);
 }
 
 /**

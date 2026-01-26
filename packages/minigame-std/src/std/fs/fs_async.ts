@@ -22,12 +22,13 @@ import {
     zipFromUrl as webZipFromUrl,
     type AppendOptions,
     type DownloadFileTempResponse,
+    type ExistsOptions,
     type WriteOptions,
     type ZipOptions,
 } from 'happy-opfs';
 import { Ok, tryAsyncResult, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
-import type { StatOptions, UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent, ZipFromUrlOptions } from './fs_define.ts';
+import type { ReadFileContent, ReadOptions, StatOptions, UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent, ZipFromUrlOptions } from './fs_define.ts';
 import { convertFileSystemHandleToStats } from './fs_helpers.ts';
 import {
     appendFile as minaAppendFile,
@@ -105,9 +106,47 @@ export async function readDir(dirPath: string): AsyncIOResult<string[]> {
 }
 
 /**
+ * 以 UTF-8 格式读取文件。
+ * @param filePath - 文件路径。
+ * @param options - 读取选项，指定编码为 'utf8'。
+ * @returns 包含文件内容的字符串的异步操作结果。
+ * @since 1.0.0
+ * @example
+ * ```ts
+ * const result = await readFile('/path/to/file.txt', { encoding: 'utf8' });
+ * if (result.isOk()) {
+ *     console.log(result.unwrap());
+ * }
+ * ```
+ */
+export function readFile(filePath: string, options: ReadOptions & {
+    encoding: 'utf8';
+}): AsyncIOResult<string>;
+
+/**
+ * 以二进制格式读取文件。
+ * @param filePath - 文件路径。
+ * @param options - 读取选项，指定编码为 'bytes'。
+ * @returns 包含文件内容的 Uint8Array<ArrayBuffer> 的异步操作结果。
+ * @since 1.0.0
+ * @example
+ * ```ts
+ * const result = await readFile('/path/to/file.txt', { encoding: 'bytes' });
+ * if (result.isOk()) {
+ *     const bytes = result.unwrap();
+ *     console.log(decodeUtf8(bytes));
+ * }
+ * ```
+ */
+export function readFile(filePath: string, options?: ReadOptions & {
+    encoding: 'bytes';
+}): AsyncIOResult<Uint8Array<ArrayBuffer>>;
+
+/**
  * 读取文件内容。
  * @param filePath - 文件的路径。
- * @returns 包含文件内容的 Uint8Array<ArrayBuffer> 的异步操作结果。
+ * @param options - 可选的读取选项。
+ * @returns 包含文件内容的异步操作结果。
  * @since 1.0.0
  * @example
  * ```ts
@@ -118,8 +157,18 @@ export async function readDir(dirPath: string): AsyncIOResult<string[]> {
  * }
  * ```
  */
-export function readFile(filePath: string): AsyncIOResult<Uint8Array<ArrayBuffer>> {
-    return (isMinaEnv() ? minaReadFile : webReadFile)(filePath);
+export function readFile(filePath: string, options?: ReadOptions): AsyncIOResult<ReadFileContent>;
+/**
+ * 读取文件内容，可选地指定编码和返回类型。
+ * @template T - 返回内容的类型。
+ * @param filePath - 文件路径。
+ * @param options - 可选的读取选项。
+ * @returns 包含文件内容的异步操作结果。
+ */
+export function readFile(filePath: string, options?: ReadOptions): AsyncIOResult<ReadFileContent> {
+    return isMinaEnv()
+        ? minaReadFile(filePath, options)
+        : webReadFile(filePath, options) as AsyncIOResult<ReadFileContent>;
 }
 
 /**
@@ -224,6 +273,7 @@ export function copy(srcPath: string, destPath: string): AsyncVoidIOResult {
 /**
  * 检查指定路径的文件或目录是否存在。
  * @param path - 文件或目录的路径。
+ * @param options - 可选的检查选项。
  * @returns 存在返回 true 的异步操作结果。
  * @since 1.0.0
  * @example
@@ -234,8 +284,8 @@ export function copy(srcPath: string, destPath: string): AsyncVoidIOResult {
  * }
  * ```
  */
-export function exists(path: string): AsyncIOResult<boolean> {
-    return (isMinaEnv() ? minaExists : webExists)(path);
+export function exists(path: string, options?: ExistsOptions): AsyncIOResult<boolean> {
+    return (isMinaEnv() ? minaExists : webExists)(path, options);
 }
 
 /**
