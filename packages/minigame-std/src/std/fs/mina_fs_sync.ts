@@ -360,7 +360,7 @@ export function zipSync(sourcePath: string, zipFilePath?: string | ZipOptions, o
     const zippable: AsyncZippable = {};
 
     if (statsArray.length === 1 && statsArray[0].stats.isFile()) {
-    // sourcePath 是文件
+        // sourcePath 是文件
         const readFileRes = readFileSync(sourcePath);
         if (readFileRes.isErr()) return readFileRes;
 
@@ -417,10 +417,7 @@ function trySyncOp<T>(op: () => T, errToResult: (err: Error) => IOResult<T> = fi
 }
 
 function copyFileSync(srcPath: string, destPath: string): VoidIOResult {
-    return trySyncOp(() => (getFs().copyFile({
-        srcPath,
-        destPath,
-    })));
+    return trySyncOp(() => getFs().copyFileSync(srcPath, destPath));
 }
 
 // #endregion
