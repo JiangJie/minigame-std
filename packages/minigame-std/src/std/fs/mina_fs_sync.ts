@@ -6,7 +6,7 @@
 import { basename, dirname, SEPARATOR } from '@std/path/posix';
 import { zipSync as compressSync, unzipSync as decompressSync, type AsyncZippable } from 'fflate/browser';
 import { type AppendOptions, type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
-import { Err, RESULT_VOID, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
+import { RESULT_VOID, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
 import { createDirIsFileError, createFileNotExistsError, createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
 
@@ -27,7 +27,7 @@ export function mkdirSync(dirPath: string): VoidIOResult {
     if (statRes.isOk()) {
         // 已存在并且是文件
         if (statRes.unwrap().isFile()) {
-            return Err(createDirIsFileError(dirPath));
+            return createDirIsFileError(dirPath);
         }
 
         // 存在文件夹则不创建
@@ -154,7 +154,7 @@ export function writeFileSync(filePath: string, contents: WriteFileContent, opti
         } else {
             // 文件不存在，根据 create 参数决定
             if (!create) {
-                return Err(createFileNotExistsError(filePath));
+                return createFileNotExistsError(filePath);
             }
             // create=true 时使用 writeFileSync 创建文件
             writeMethod = fs.writeFileSync;
@@ -395,7 +395,7 @@ export function zipSync(sourcePath: string, zipFilePath?: string | ZipOptions, o
 
     // Nothing to zip - 和标准 zip 命令的行为一致
     if (Object.keys(zippable).length === 0) {
-        return Err(createNothingToZipError());
+        return createNothingToZipError();
     }
 
     return tryResult(() => compressSync(zippable))

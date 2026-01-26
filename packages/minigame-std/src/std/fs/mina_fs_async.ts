@@ -36,7 +36,7 @@ export async function mkdir(dirPath: string): AsyncVoidIOResult {
     if (statRes.isOk()) {
         // 已存在并且是文件
         if (statRes.unwrap().isFile()) {
-            return Err(createDirIsFileError(dirPath));
+            return createDirIsFileError(dirPath);
         }
 
         // 存在文件夹则不创建
@@ -237,7 +237,7 @@ export async function writeFile(filePath: string, contents: WriteFileContent, op
         } else {
             // 文件不存在，根据 create 参数决定
             if (!create) {
-                return Err(createFileNotExistsError(filePath));
+                return createFileNotExistsError(filePath);
             }
             // create=true 时使用 writeFile 创建文件
             writeMethod = fs.writeFile;
@@ -712,7 +712,7 @@ export async function zip(sourcePath: string, zipFilePath?: string | ZipOptions,
 
     // Nothing to zip - 和标准 zip 命令的行为一致
     if (Object.keys(zippable).length === 0) {
-        return Err(createNothingToZipError());
+        return createNothingToZipError();
     }
 
     return zipTo(zippable, zipFilePath);

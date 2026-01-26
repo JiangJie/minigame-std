@@ -181,29 +181,29 @@ export function fileErrorToRemoveResult(error: FileError): VoidIOResult {
 /*
  * 创建 `NothingToZipError` 错误。
  */
-export function createNothingToZipError(): Error {
+export function createNothingToZipError(): IOResult<never> {
     const error = new Error('Nothing to zip');
     error.name = NOTHING_TO_ZIP_ERROR;
 
-    return error;
+    return Err(error);
 }
 
 /*
  * 创建"文件不存在且 create 为 false"的错误。
  * @param filePath - 文件路径。
- * @returns 错误对象。
+ * @returns 错误结果。
  */
-export function createFileNotExistsError(filePath: string): Error {
-    return new Error(`Cannot append to non-existent file: ${ filePath }`);
+export function createFileNotExistsError(filePath: string): IOResult<never> {
+    return Err(new Error(`Cannot append to non-existent file: ${ filePath }`));
 }
 
 /*
  * 创建"目录已存在但是文件"的错误。
  * @param dirPath - 目录路径。
- * @returns 错误对象。
+ * @returns 错误结果。
  */
-export function createDirIsFileError(dirPath: string): Error {
-    return new Error(`${ dirPath } already exists but is a file`);
+export function createDirIsFileError(dirPath: string): IOResult<never> {
+    return Err(new Error(`Path already exists but is a file: ${ dirPath }`));
 }
 
 /**
