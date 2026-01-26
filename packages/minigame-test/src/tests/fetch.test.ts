@@ -5,7 +5,7 @@ export async function testFetch(): Promise<void> {
     // 测试1：可中止的请求
     const fetchTask = fetchT<{
         name: string;
-    }>('https://jsr.io/@happy-js/minigame-std/meta.json', {
+    }>('https://raw.githubusercontent.com/JiangJie/minigame-std/main/package.json', {
         abortable: true,
         responseType: 'json',
         onChunk: (chunk) => {
@@ -20,15 +20,15 @@ export async function testFetch(): Promise<void> {
     const res = await fetchTask.result;
 
     if (res.isErr()) {
-        assert((res.unwrapErr() as Error).name === 'AbortError');
+        assert((res.unwrapErr()).name === 'AbortError');
     } else {
-        assert(res.unwrap().name === 'minigame-std');
+        assert(res.unwrap().name === 'minigame-std-monorepo');
     }
 
     // 测试2：超时请求
     const task = fetchT<{
         name: string;
-    }>('https://jsr.io/@happy-js/minigame-std/meta.json', {
+    }>('https://raw.githubusercontent.com/JiangJie/minigame-std/main/package.json', {
         responseType: 'json',
         timeout: 10,
     });
@@ -36,8 +36,8 @@ export async function testFetch(): Promise<void> {
     const res2 = await task.result;
 
     if (res2.isErr()) {
-        assert((res2.unwrapErr() as Error).name === 'TimeoutError');
+        assert((res2.unwrapErr()).name === 'TimeoutError');
     } else {
-        assert(res2.unwrap().name === 'minigame-std');
+        assert(res2.unwrap().name === 'minigame-std-monorepo');
     }
 }
