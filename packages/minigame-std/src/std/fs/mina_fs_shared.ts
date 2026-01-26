@@ -259,7 +259,7 @@ export function getExistsResult(statResult: IOResult<WechatMinigame.Stats>, opti
 }
 
 /**
- * 根据 `recursive` 不同标准化 `stat` 的结果。
+ * 根据 `recursive` 不同标准化 `stat` 的结果(recursive=true 的时候开发者工具对于文件和空文件夹会返回单个 Stats)。
  * - `recursive=false`: 返回单个 `Stats` 或 `FileStats[]`
  * - `recursive=true`: 始终返回 `FileStats[]`，即使是单个文件或空目录
  *   - 如果是单个 `Stats`，包装成数组，path 设为 '' 表示当前项目
