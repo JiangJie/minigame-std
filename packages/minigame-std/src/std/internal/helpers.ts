@@ -17,7 +17,8 @@ import { type IOResult } from 'happy-rusty';
 export function miniGameFailureToError(error: WechatMinigame.GeneralCallbackResult | Error): Error {
     return error instanceof Error
         ? error
-        : new Error(error.errMsg);
+        // NOTE: 有可能 error 是一个长得像 Error 但不是 Error 实例的对象, 例如: "statSync:fail no such file or directory"
+        : new Error(error.errMsg ?? (error as unknown as { message: string; }).message);
 }
 
 /**
