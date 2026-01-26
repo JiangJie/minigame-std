@@ -8,7 +8,7 @@ import { zipSync as compressSync, unzipSync as decompressSync, type AsyncZippabl
 import { type AppendOptions, type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
 import { Err, RESULT_VOID, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
-import { createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
+import { createFileNotExistsError, createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
 
 /**
  * `mkdir` 的同步版本。
@@ -137,14 +137,37 @@ export function statSync(path: string, options?: StatOptions): IOResult<WechatMi
  * `writeFile` 的同步版本。
  */
 export function writeFileSync(filePath: string, contents: WriteFileContent, options?: WriteOptions): VoidIOResult {
+    // 默认创建
+    const { append = false, create = true } = options ?? {};
+
+    const fs = getFs();
+    let writeMethod: typeof fs.appendFileSync | typeof fs.writeFileSync = fs.writeFileSync;
+
+    if (append) {
+        // append 模式，先检查文件是否存在
+        const existsRes = existsSync(filePath);
+        if (existsRes.isErr()) return existsRes.asErr();
+
+        if (existsRes.unwrap()) {
+            // 文件存在，使用 appendFileSync
+            writeMethod = fs.appendFileSync;
+        } else {
+            // 文件不存在，根据 create 参数决定
+            if (!create) {
+                return Err(createFileNotExistsError(filePath));
+            }
+            // create=true 时使用 writeFileSync 创建文件
+            writeMethod = fs.writeFileSync;
+        }
+    }
+
+    // 减少可能的重复校验
     const filePathRes = validateAbsolutePath(filePath);
     if (filePathRes.isErr()) return filePathRes.asErr();
     filePath = filePathRes.unwrap();
 
-    // 默认创建
-    const { append = false, create = true } = options ?? {};
-
-    if (create) {
+    // 使用 writeFileSync 时（文件不存在或非 append 模式）需要创建目录
+    if (create && writeMethod === fs.writeFileSync) {
         const result = mkdirSync(dirname(filePath));
         if (result.isErr()) return result;
     }
@@ -154,7 +177,7 @@ export function writeFileSync(filePath: string, contents: WriteFileContent, opti
 
     const { data, encoding } = contentsRes.unwrap();
 
-    return trySyncOp(() => (append ? getFs().appendFileSync : getFs().writeFileSync)(filePath, data, encoding));
+    return trySyncOp(() => writeMethod(filePath, data, encoding));
 }
 
 /**

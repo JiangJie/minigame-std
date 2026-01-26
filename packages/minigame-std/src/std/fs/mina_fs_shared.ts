@@ -188,6 +188,15 @@ export function createNothingToZipError(): Error {
     return error;
 }
 
+/*
+ * 创建"文件不存在且 create 为 false"的错误。
+ * @param filePath - 文件路径。
+ * @returns 错误对象。
+ */
+export function createFileNotExistsError(filePath: string): Error {
+    return new Error(`Cannot append to non-existent file: ${ filePath }`);
+}
+
 /**
  * 获取读取文件的编码。
  * @returns 返回 `'utf8'` 或 `undefined`（读取二进制时不传 encoding）。

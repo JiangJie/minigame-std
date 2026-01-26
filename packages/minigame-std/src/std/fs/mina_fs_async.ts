@@ -14,7 +14,7 @@ import { createFailedFetchTask, miniGameFailureToError, validateSafeUrl } from '
 import { asyncResultify } from '../utils/mod.ts';
 import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
 import { createAbortError } from './fs_helpers.ts';
-import { createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
+import { createFileNotExistsError, createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
 
 /**
  * 递归创建文件夹，相当于`mkdir -p`。
@@ -232,8 +232,15 @@ export async function writeFile(filePath: string, contents: WriteFileContent, op
         if (existsRes.isErr()) return existsRes.asErr();
 
         if (existsRes.unwrap()) {
-            // 文件存在才能使用 appendFile
+            // 文件存在才使用 appendFile
             writeMethod = fs.appendFile;
+        } else {
+            // 文件不存在，根据 create 参数决定
+            if (!create) {
+                return Err(createFileNotExistsError(filePath));
+            }
+            // create=true 时使用 writeFile 创建文件
+            writeMethod = fs.writeFile;
         }
     }
 
@@ -242,7 +249,8 @@ export async function writeFile(filePath: string, contents: WriteFileContent, op
     if (filePathRes.isErr()) return filePathRes.asErr();
     filePath = filePathRes.unwrap();
 
-    if (create) {
+    // 使用 writeFile 时（文件不存在或非 append 模式）需要创建目录
+    if (create && writeMethod === fs.writeFile) {
         const mkdirRes = await mkdir(dirname(filePath));
         if (mkdirRes.isErr()) return mkdirRes;
     }
