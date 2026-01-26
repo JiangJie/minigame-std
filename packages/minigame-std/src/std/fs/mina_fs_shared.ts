@@ -197,6 +197,15 @@ export function createFileNotExistsError(filePath: string): Error {
     return new Error(`Cannot append to non-existent file: ${ filePath }`);
 }
 
+/*
+ * 创建"目录已存在但是文件"的错误。
+ * @param dirPath - 目录路径。
+ * @returns 错误对象。
+ */
+export function createDirIsFileError(dirPath: string): Error {
+    return new Error(`${ dirPath } already exists but is a file`);
+}
+
 /**
  * 获取读取文件的编码。
  * @returns 返回 `'utf8'` 或 `undefined`（读取二进制时不传 encoding）。

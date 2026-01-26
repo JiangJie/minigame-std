@@ -8,7 +8,7 @@ import { zipSync as compressSync, unzipSync as decompressSync, type AsyncZippabl
 import { type AppendOptions, type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
 import { Err, RESULT_VOID, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
-import { createFileNotExistsError, createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
+import { createDirIsFileError, createFileNotExistsError, createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
 
 /**
  * `mkdir` 的同步版本。
@@ -27,7 +27,7 @@ export function mkdirSync(dirPath: string): VoidIOResult {
     if (statRes.isOk()) {
         // 已存在并且是文件
         if (statRes.unwrap().isFile()) {
-            return Err(new Error(`${ dirPath } already exists but is a file`));
+            return Err(createDirIsFileError(dirPath));
         }
 
         // 存在文件夹则不创建
@@ -412,8 +412,8 @@ export function zipSync(sourcePath: string, zipFilePath?: string | ZipOptions, o
  * @param errToResult - 错误处理函数。
  * @returns
  */
-function trySyncOp<T>(op: () => T, errToResult: (err: WechatMinigame.FileError) => IOResult<T> = fileErrorToResult): IOResult<T> {
-    return tryResult<T, WechatMinigame.FileError>(op).orElse(errToResult);
+function trySyncOp<T>(op: () => T, errToResult: (err: Error) => IOResult<T> = fileErrorToResult): IOResult<T> {
+    return tryResult<T, Error>(op).orElse(errToResult);
 }
 
 function copyFileSync(srcPath: string, destPath: string): VoidIOResult {

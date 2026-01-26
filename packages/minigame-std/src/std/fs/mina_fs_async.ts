@@ -14,7 +14,7 @@ import { createFailedFetchTask, miniGameFailureToError, validateSafeUrl } from '
 import { asyncResultify } from '../utils/mod.ts';
 import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
 import { createAbortError } from './fs_helpers.ts';
-import { createFileNotExistsError, createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
+import { createDirIsFileError, createFileNotExistsError, createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
 
 /**
  * 递归创建文件夹，相当于`mkdir -p`。
@@ -36,7 +36,7 @@ export async function mkdir(dirPath: string): AsyncVoidIOResult {
     if (statRes.isOk()) {
         // 已存在并且是文件
         if (statRes.unwrap().isFile()) {
-            return Err(new Error(`${ dirPath } already exists but is a file`));
+            return Err(createDirIsFileError(dirPath));
         }
 
         // 存在文件夹则不创建
