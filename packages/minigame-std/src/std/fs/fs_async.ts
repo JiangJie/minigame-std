@@ -20,6 +20,7 @@ import {
     writeJsonFile as webWriteJsonFile,
     zip as webZip,
     zipFromUrl as webZipFromUrl,
+    type AppendOptions,
     type DownloadFileTempResponse,
     type WriteOptions,
     type ZipOptions,
@@ -187,6 +188,7 @@ export function writeFile(filePath: string, contents: WriteFileContent, options?
  * 向文件追加内容。
  * @param filePath - 文件路径。
  * @param contents - 要追加的内容。
+ * @param options - 可选的追加选项。
  * @returns 追加成功返回的异步操作结果。
  * @since 1.0.0
  * @example
@@ -197,8 +199,8 @@ export function writeFile(filePath: string, contents: WriteFileContent, options?
  * }
  * ```
  */
-export function appendFile(filePath: string, contents: WriteFileContent): AsyncVoidIOResult {
-    return (isMinaEnv() ? minaAppendFile : webAppendFile)(filePath, contents);
+export function appendFile(filePath: string, contents: WriteFileContent, options?: AppendOptions): AsyncVoidIOResult {
+    return (isMinaEnv() ? minaAppendFile : webAppendFile)(filePath, contents, options);
 }
 
 /**

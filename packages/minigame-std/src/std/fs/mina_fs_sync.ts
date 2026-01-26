@@ -5,7 +5,7 @@
 
 import { basename, dirname, SEPARATOR } from '@std/path/posix';
 import { zipSync as compressSync, unzipSync as decompressSync, type AsyncZippable } from 'fflate/browser';
-import { type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
+import { type AppendOptions, type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
 import { Err, RESULT_VOID, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
 import { createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
@@ -159,10 +159,14 @@ export function writeFileSync(filePath: string, contents: WriteFileContent, opti
 
 /**
  * `appendFile` 的同步版本。
+ * @param filePath - 文件路径。
+ * @param contents - 要追加的内容。
+ * @param options - 可选的追加选项。
  */
-export function appendFileSync(filePath: string, contents: WriteFileContent): VoidIOResult {
+export function appendFileSync(filePath: string, contents: WriteFileContent, options?: AppendOptions): VoidIOResult {
     return writeFileSync(filePath, contents, {
         append: true,
+        create: options?.create ?? true,
     });
 }
 

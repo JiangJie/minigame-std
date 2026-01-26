@@ -6,7 +6,7 @@
 import { FetchError, type FetchResult } from '@happy-ts/fetch-t';
 import { basename, dirname, SEPARATOR } from '@std/path/posix';
 import { zip as compress, type AsyncZippable } from 'fflate/browser';
-import { type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
+import { type AppendOptions, type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
 import { Err, Ok, RESULT_VOID, tryResult, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import type { FetchTask } from '../fetch/fetch_defines.ts';
@@ -266,11 +266,13 @@ export async function writeFile(filePath: string, contents: WriteFileContent, op
  * 向文件追加内容。
  * @param filePath - 文件路径。
  * @param contents - 要追加的内容。
+ * @param options - 可选的追加选项。
  * @returns 追加操作的异步结果。
  */
-export function appendFile(filePath: string, contents: WriteFileContent): AsyncVoidIOResult {
+export function appendFile(filePath: string, contents: WriteFileContent, options?: AppendOptions): AsyncVoidIOResult {
     return writeFile(filePath, contents, {
         append: true,
+        create: options?.create ?? true,
     });
 }
 

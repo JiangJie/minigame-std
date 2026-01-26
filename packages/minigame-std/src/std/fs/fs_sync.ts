@@ -15,6 +15,7 @@ import {
     writeFileSync as webWriteFileSync,
     writeJsonFileSync as webWriteJsonFileSync,
     zipSync as webZipSync,
+    type AppendOptions,
     type ZipOptions,
 } from 'happy-opfs';
 import { Ok, type IOResult, type VoidIOResult } from 'happy-rusty';
@@ -196,6 +197,7 @@ export function writeFileSync(filePath: string, contents: WriteFileContent): Voi
  * `appendFile` 的同步版本，向文件追加内容。
  * @param filePath - 文件路径。
  * @param contents - 要追加的内容。
+ * @param options - 可选的追加选项。
  * @returns 追加成功返回的操作结果。
  * @since 1.1.0
  * @example
@@ -206,8 +208,8 @@ export function writeFileSync(filePath: string, contents: WriteFileContent): Voi
  * }
  * ```
  */
-export function appendFileSync(filePath: string, contents: WriteFileContent): VoidIOResult {
-    return (isMinaEnv() ? minaAppendFileSync : webAppendFileSync)(filePath, contents);
+export function appendFileSync(filePath: string, contents: WriteFileContent, options?: AppendOptions): VoidIOResult {
+    return (isMinaEnv() ? minaAppendFileSync : webAppendFileSync)(filePath, contents, options);
 }
 
 /**
