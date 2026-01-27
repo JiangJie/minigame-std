@@ -6,7 +6,7 @@
 import { basename, dirname, SEPARATOR } from '@std/path/posix';
 import { zipSync as compressSync, unzipSync as decompressSync, type AsyncZippable } from 'fflate/browser';
 import { type AppendOptions, type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
-import { RESULT_VOID, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
+import { Ok, RESULT_VOID, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
 import { createDirIsFileError, createFileNotExistsError, createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
 
@@ -399,8 +399,12 @@ export function zipSync(sourcePath: string, zipFilePath?: string | ZipOptions, o
     }
 
     return tryResult(() => compressSync(zippable))
-        .andThen(bytes => {
-            return writeFileSync(zipFilePath as string, bytes as Uint8Array<ArrayBuffer>);
+        .andThen<Uint8Array<ArrayBuffer> | void>(bytesLike => {
+            const bytes = bytesLike as Uint8Array<ArrayBuffer>;
+            // 有文件路径则写入文件
+            return zipFilePath
+                ? writeFileSync(zipFilePath, bytes)
+                : Ok(bytes);
         });
 }
 
