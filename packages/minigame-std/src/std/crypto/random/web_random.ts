@@ -3,6 +3,7 @@
  * Web 平台的随机数生成实现。
  */
 
+import { tryResult, type IOResult } from 'happy-rusty';
 import type { UUID } from './random_defines.ts';
 
 /**
@@ -10,11 +11,10 @@ import type { UUID } from './random_defines.ts';
  * @param length - 要生成的随机字节数。
  * @returns 返回包含随机字节的 Uint8Array。
  */
-export function getRandomValues(length: number): Uint8Array<ArrayBuffer> {
+export function getRandomValues(length: number): IOResult<Uint8Array<ArrayBuffer>> {
     const bytes = new Uint8Array(length);
-    crypto.getRandomValues(bytes);
 
-    return bytes;
+    return tryResult(() => crypto.getRandomValues(bytes));
 }
 
 /**

@@ -28,7 +28,7 @@ export * from './random_defines.ts';
 export function getRandomValues(length: number): AsyncIOResult<Uint8Array> {
     return isMinaEnv()
         ? minaGetRandomValues(length)
-        : Promise.resolve(Ok(webGetRandomValues(length)));
+        : Promise.resolve(webGetRandomValues(length));
 }
 
 /**

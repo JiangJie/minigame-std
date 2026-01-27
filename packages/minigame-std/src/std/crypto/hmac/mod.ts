@@ -75,8 +75,7 @@ export function sha512HMAC(key: DataSource, data: DataSource): AsyncIOResult<str
  * 使用指定 SHA 算法计算 HMAC。
  */
 function shaHMAC(sha: SHA, key: DataSource, data: DataSource): AsyncIOResult<string> {
-    const createHMAC = isMinaEnv() ? pureCreateHMAC : webCreateHMAC;
-    return createHMAC(sha, key, data);
+    return (isMinaEnv() ? pureCreateHMAC : webCreateHMAC)(sha, key, data);
 }
 
 // #endregion
