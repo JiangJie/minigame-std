@@ -61,7 +61,7 @@ export async function getDeviceBenchmarkLevel(): AsyncIOResult<number> {
     }
 
     // 优先使用新 API
-    if (wx.getDeviceBenchmarkInfo) {
+    if (typeof wx.getDeviceBenchmarkInfo === 'function') {
         return await benchmarkLevel.getOrTryInit(async () => {
             const benchmarkInfoRes = await asyncIOResultify(wx.getDeviceBenchmarkInfo)();
 
