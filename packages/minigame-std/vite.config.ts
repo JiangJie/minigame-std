@@ -3,7 +3,9 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig(({ command }) => ({
     define: {
-        // let `__MINIGAME_STD_MINA__` be `unknown` during build time
+        // Set to `false` during test to use web code paths by default
+        // Mina-specific tests should mock wx APIs directly
+        // Let `__MINIGAME_STD_MINA__` be `unknown` during build time
         ...(command === 'build' ? {} : { __MINIGAME_STD_MINA__: false }),
     },
     build: {
@@ -50,23 +52,11 @@ export default defineConfig(({ command }) => ({
             include: ['src/**/*.ts'],
             exclude: [
                 // Mina files that use wx API (cannot be tested in browser)
-                'src/std/clipboard/mina_clipboard.ts',
-                'src/std/crypto/random/mina_random.ts',
-                'src/std/event/mina_event.ts',
-                'src/std/fetch/mina_fetch.ts',
+                // Others can be tested by mocking wx APIs
                 'src/std/fs/fs_async.ts',
                 'src/std/fs/fs_sync.ts',
                 'src/std/fs/mina_fs_async.ts',
-                'src/std/fs/mina_fs_shared.ts',
                 'src/std/fs/mina_fs_sync.ts',
-                'src/std/image/mina_image.ts',
-                'src/std/lbs/mina_lbs.ts',
-                'src/std/network/mina_network.ts',
-                'src/std/platform/device.ts',
-                'src/std/socket/mina_socket.ts',
-                'src/std/storage/mina_storage.ts',
-                // Note: base64.ts, hmac.ts, sha.ts (pure JS implementations)
-                // use rsa-oaep-encryption library and CAN be tested in browser
             ],
         },
         // Test configuration
