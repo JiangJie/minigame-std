@@ -19,9 +19,7 @@ import { decodeUtf8 as webDecodeUtf8, encodeUtf8 as webEncodeUtf8 } from './web_
  * ```
  */
 export function encodeUtf8(data: string): Uint8Array<ArrayBuffer> {
-    return isMinaEnv()
-        ? minaEncodeUtf8(data)
-        : webEncodeUtf8(data);
+    return (isMinaEnv() ? minaEncodeUtf8 : webEncodeUtf8)(data);
 }
 
 /**
@@ -36,7 +34,5 @@ export function encodeUtf8(data: string): Uint8Array<ArrayBuffer> {
  * ```
  */
 export function decodeUtf8(data: BufferSource): string {
-    return isMinaEnv()
-        ? minaDecodeUtf8(data)
-        : webDecodeUtf8(data);
+    return (isMinaEnv() ? minaDecodeUtf8 : webDecodeUtf8)(data);
 }
