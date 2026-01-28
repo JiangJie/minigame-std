@@ -26,8 +26,8 @@
     "disableSWC": true
   },
   "compileType": "game",
-  "libVersion": "2.20.1",
-  "projectname": "quickstart",
+  "libVersion": "3.14.0",
+  "projectname": "minigame-test",
   "condition": {},
   "packOptions": {
     "ignore": [],
@@ -37,7 +37,7 @@
     "tabIndent": "insertSpaces",
     "tabSize": 2
   },
-  "appid": "wx3606ee25c588e1b6",
+  "appid": "wx6ac3f5090a6b99c5",
   "simulatorPluginLibVersion": {},
   "isGameTourist": false
 }
