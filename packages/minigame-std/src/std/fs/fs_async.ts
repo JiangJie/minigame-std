@@ -7,12 +7,10 @@ import {
     exists as webExists,
     mkdir as webMkdir,
     move as webMove,
-    readDir as webReadDir,
     readFile as webReadFile,
     readJsonFile as webReadJsonFile,
     readTextFile as webReadTextFile,
     remove as webRemove,
-    stat as webStat,
     unzip as webUnzip,
     unzipFromUrl as webUnzipFromUrl,
     uploadFile as webUploadFile,
@@ -26,10 +24,9 @@ import {
     type WriteOptions,
     type ZipOptions,
 } from 'happy-opfs';
-import { Ok, tryAsyncResult, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
+import { type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import type { ReadFileContent, ReadOptions, StatOptions, UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent, ZipFromUrlOptions } from './fs_define.ts';
-import { convertFileSystemHandleToStats } from './fs_helpers.ts';
 import {
     appendFile as minaAppendFile,
     copy as minaCopy,
@@ -52,6 +49,7 @@ import {
     zip as minaZip,
     zipFromUrl as minaZipFromUrl,
 } from './mina_fs_async.ts';
+import { webToMinaReadDir, webToMinaStat } from './web_fs_helpers.ts';
 
 /**
  * 递归创建文件夹，相当于 `mkdir -p`。
@@ -543,74 +541,3 @@ export function zipFromUrl(sourceUrl: string, zipFilePath?: string | ZipFromUrlO
             : webZipFromUrl(sourceUrl, zipFilePath);
     }
 }
-
-// #region Internal Functions
-
-/**
- * 将 Web 端的读取目录结果转换为小游戏端的读取目录结果。
- */
-async function webToMinaReadDir(dirPath: string): AsyncIOResult<string[]> {
-    // 小游戏不支持 recursive 选项
-    const readDirRes = await webReadDir(dirPath);
-    return readDirRes.andTryAsync(async entries => {
-        if (typeof Array.fromAsync === 'function') {
-            return Array.fromAsync(entries, ({ path }) => path);
-        }
-
-        const items: string[] = [];
-        for await (const { path } of entries) {
-            items.push(path);
-        }
-        return items;
-    });
-}
-
-/**
- * 将 Web 端的 stat 结果转换为小游戏端的 stat 结果。
- */
-async function webToMinaStat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
-    const statRes = await webStat(path);
-    if (statRes.isErr()) return statRes.asErr();
-
-    const handle = statRes.unwrap();
-
-    const entryStatsRes = await tryAsyncResult(convertFileSystemHandleToStats(handle));
-    if (entryStatsRes.isErr()) return entryStatsRes;
-
-    // 非递归模式直接返回
-    if (!options?.recursive) {
-        return entryStatsRes;
-    }
-
-    const entryStats = entryStatsRes.unwrap();
-    if (entryStats.isFile()) {
-        return Ok([{
-            path: '', // 当前文件本身的相对路径
-            stats: entryStats,
-        }]);
-    }
-
-    // 递归读取目录
-    const readDirRes = await webReadDir(path);
-    return readDirRes.andTryAsync(async entries => {
-        // 只要是 recursive 模式下的目录, 就返回数组(即使空目录)
-        const tasks = [Promise.resolve({
-            path: '', // 当前文件夹本身的相对路径
-            stats: entryStats,
-        })];
-
-        for await (const { path, handle } of entries) {
-            tasks.push((async () => {
-                const stats = await convertFileSystemHandleToStats(handle);
-                return {
-                    path,
-                    stats,
-                };
-            })());
-        }
-
-        return Promise.all(tasks);
-    });
-}
-
-// #endregion

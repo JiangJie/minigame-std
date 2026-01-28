@@ -3,7 +3,7 @@
  * 小游戏平台的异步文件系统操作实现。
  */
 
-import { FetchError, type FetchResult } from '@happy-ts/fetch-t';
+import { ABORT_ERROR, FetchError, type FetchResult } from '@happy-ts/fetch-t';
 import { basename, dirname, SEPARATOR } from '@std/path/posix';
 import { zip as compress, type AsyncZippable } from 'fflate/browser';
 import { type AppendOptions, type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
@@ -13,7 +13,6 @@ import type { FetchTask } from '../fetch/fetch_defines.ts';
 import { createFailedFetchTask, miniGameFailureToError, validateSafeUrl } from '../internal/mod.ts';
 import { asyncResultify } from '../utils/mod.ts';
 import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
-import { createAbortError } from './fs_helpers.ts';
 import { createDirIsFileError, createFileNotExistsError, createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
 
 /**
@@ -774,6 +773,16 @@ type AsyncZipIOResult = Promise<ZipIOResult>;
  */
 function miniGameFailureToResult<T>(error: WechatMinigame.GeneralCallbackResult): IOResult<T> {
     return Err(miniGameFailureToError(error));
+}
+
+/**
+ * 创建一个 `AbortError` 错误。
+ */
+function createAbortError(): Error {
+    const error = new Error();
+    error.name = ABORT_ERROR;
+
+    return error;
 }
 
 /**

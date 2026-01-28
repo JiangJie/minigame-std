@@ -5,12 +5,10 @@ import {
     existsSync as webExistsSync,
     mkdirSync as webMkdirSync,
     moveSync as webMoveSync,
-    readDirSync as webReadDirSync,
     readFileSync as webReadFileSync,
     readJsonFileSync as webReadJsonFileSync,
     readTextFileSync as webReadTextFileSync,
     removeSync as webRemoveSync,
-    statSync as webStatSync,
     unzipSync as webUnzipSync,
     writeFileSync as webWriteFileSync,
     writeJsonFileSync as webWriteJsonFileSync,
@@ -19,10 +17,9 @@ import {
     type ExistsOptions,
     type ZipOptions,
 } from 'happy-opfs';
-import { Ok, type IOResult, type VoidIOResult } from 'happy-rusty';
+import { type IOResult, type VoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
-import { convertFileSystemHandleLikeToStats } from './fs_helpers.ts';
 import {
     appendFileSync as minaAppendFileSync,
     copySync as minaCopySync,
@@ -41,6 +38,7 @@ import {
     writeJsonFileSync as minaWriteJsonFileSync,
     zipSync as minaZipSync,
 } from './mina_fs_sync.ts';
+import { webToMinaReadDirSync, webToMinaStatSync } from './web_fs_helpers.ts';
 
 /**
  * `mkdir` 的同步版本，递归创建文件夹。
@@ -403,59 +401,3 @@ export function zipSync(sourcePath: string, zipFilePath?: string | ZipOptions, o
         return (isMinaEnv() ? minaZipSync : webZipSync)(sourcePath, zipFilePath);
     }
 }
-
-// #region Internal Functions
-
-/**
- * 将 Web 端的读取目录结果转换为小游戏端的读取目录结果。
- */
-function webToMinaReadDirSync(dirPath: string): IOResult<string[]> {
-    // 小游戏不支持 recursive 选项
-    const readDirRes = webReadDirSync(dirPath);
-    return readDirRes.map(entries => {
-        return entries.map(({ path }) => path);
-    });
-}
-
-/**
- * 将 Web 端的 stat 结果转换为小游戏端的 stat 结果。
- */
-function webToMinaStatSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
-    const statRes = webStatSync(path);
-    if (statRes.isErr()) return statRes.asErr();
-
-    const handleLike = statRes.unwrap();
-
-    const entryStats = convertFileSystemHandleLikeToStats(handleLike);
-
-    // 非递归模式直接返回
-    if (!options?.recursive) {
-        return Ok(entryStats);
-    }
-
-    if (entryStats.isFile()) {
-        return Ok([{
-            path: '', // 当前文件本身的相对路径
-            stats: entryStats,
-        }]);
-    }
-
-    // 递归读取目录
-    const readDirRes = webReadDirSync(path);
-    return readDirRes.map(entries => {
-        const statsArr = entries.map(({ path, handle }) => ({
-            path,
-            stats: convertFileSystemHandleLikeToStats(handle),
-        }));
-
-        // 只要是 recursive 模式下的目录, 就返回数组(即使是空目录)
-        statsArr.unshift({
-            path: '', // 当前文件夹本身的相对路径
-            stats: entryStats,
-        });
-
-        return statsArr;
-    });
-}
-
-// #endregion
