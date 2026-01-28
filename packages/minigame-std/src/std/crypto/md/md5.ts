@@ -44,10 +44,27 @@ export class Md5 {
     private n0 = 0;
     private n1 = 0;
 
+    /**
+     * 累加已处理的消息长度。
+     *
+     * n0 和 n1 共同组成一个 64 位计数器，用于记录消息的总字节数。
+     * - n0: 低 32 位
+     * - n1: 高 32 位
+     *
+     * 当 n0 溢出（超过 0xffffffff，即 2^32 - 1）时，需要向 n1 进位。
+     *
+     * @param len - 本次处理的字节数
+     */
     private addLength(len: number): void {
         let n0 = this.n0;
         n0 += len;
+        /*
+         * v8 ignore: 此分支仅在处理超过 4GB（2^32 字节）数据时触发。
+         * 在常规测试环境中无法覆盖此边界条件，故排除在覆盖率统计之外。
+         */
+        /* v8 ignore start */
         if (n0 > 0xffffffff) this.n1 += 1;
+        /* v8 ignore stop */
         this.n0 = n0 >>> 0;
     }
 
