@@ -12,6 +12,8 @@ import { createDirIsFileError, createFileNotExistsError, createNothingToZipError
 
 /**
  * `mkdir` 的同步版本。
+ * @param dirPath - 要创建的目录路径。
+ * @returns 操作结果。
  */
 export function mkdirSync(dirPath: string): VoidIOResult {
     const dirPathRes = validateAbsolutePath(dirPath);
@@ -40,6 +42,9 @@ export function mkdirSync(dirPath: string): VoidIOResult {
 
 /**
  * `move` 的同步版本。
+ * @param srcPath - 源路径。
+ * @param destPath - 目标路径。
+ * @returns 操作结果。
  */
 export function moveSync(srcPath: string, destPath: string): VoidIOResult {
     const srcPathRes = validateAbsolutePath(srcPath);
@@ -55,6 +60,8 @@ export function moveSync(srcPath: string, destPath: string): VoidIOResult {
 
 /**
  * `readDir` 的同步版本。
+ * @param dirPath - 要读取的目录路径。
+ * @returns 目录中的文件和子目录名称数组。
  */
 export function readDirSync(dirPath: string): IOResult<string[]> {
     const dirPathRes = validateAbsolutePath(dirPath);
@@ -66,6 +73,9 @@ export function readDirSync(dirPath: string): IOResult<string[]> {
 
 /**
  * `readFile` 的同步版本。
+ * @param filePath - 要读取的文件路径。
+ * @param options - 读取选项。
+ * @returns 文件内容。
  */
 export function readFileSync(filePath: string, options: ReadOptions & {
     encoding: 'utf8';
@@ -90,6 +100,8 @@ export function readFileSync(filePath: string, options?: ReadOptions): IOResult<
 
 /**
  * `remove` 的同步版本。
+ * @param path - 要删除的文件或目录路径。
+ * @returns 操作结果。
  */
 export function removeSync(path: string): VoidIOResult {
     const statRes = statSync(path);
@@ -114,6 +126,9 @@ export function removeSync(path: string): VoidIOResult {
 
 /**
  * `stat` 的同步版本。
+ * @param path - 文件或目录路径。
+ * @param options - 统计选项。
+ * @returns 文件或目录的统计信息。
  */
 export function statSync(path: string, options?: StatOptions & {
     recursive: false;
@@ -135,6 +150,10 @@ export function statSync(path: string, options?: StatOptions): IOResult<WechatMi
 
 /**
  * `writeFile` 的同步版本。
+ * @param filePath - 要写入的文件路径。
+ * @param contents - 要写入的内容。
+ * @param options - 写入选项。
+ * @returns 操作结果。
  */
 export function writeFileSync(filePath: string, contents: WriteFileContent, options?: WriteOptions): VoidIOResult {
     // 默认创建
@@ -185,6 +204,7 @@ export function writeFileSync(filePath: string, contents: WriteFileContent, opti
  * @param filePath - 文件路径。
  * @param contents - 要追加的内容。
  * @param options - 可选的追加选项。
+ * @returns 操作结果。
  */
 export function appendFileSync(filePath: string, contents: WriteFileContent, options?: AppendOptions): VoidIOResult {
     return writeFileSync(filePath, contents, {
@@ -195,6 +215,9 @@ export function appendFileSync(filePath: string, contents: WriteFileContent, opt
 
 /**
  * `copy` 的同步版本。
+ * @param srcPath - 源路径。
+ * @param destPath - 目标路径。
+ * @returns 操作结果。
  */
 export function copySync(srcPath: string, destPath: string): VoidIOResult {
     const destPathRes = validateAbsolutePath(destPath);
@@ -241,6 +264,9 @@ export function copySync(srcPath: string, destPath: string): VoidIOResult {
 
 /**
  * `exists` 的同步版本。
+ * @param path - 文件或目录路径。
+ * @param options - 检查选项。
+ * @returns 是否存在。
  */
 export function existsSync(path: string, options?: ExistsOptions): IOResult<boolean> {
     const optionsRes = validateExistsOptions(options);
@@ -252,6 +278,8 @@ export function existsSync(path: string, options?: ExistsOptions): IOResult<bool
 
 /**
  * `emptyDir` 的同步版本。
+ * @param dirPath - 要清空的目录路径。
+ * @returns 操作结果。
  */
 export function emptyDirSync(dirPath: string): VoidIOResult {
     const readDirRes = readDirSync(dirPath);
@@ -275,6 +303,8 @@ export function emptyDirSync(dirPath: string): VoidIOResult {
 
 /**
  * `readTextFile` 的同步版本。
+ * @param filePath - 要读取的文件路径。
+ * @returns 文件的文本内容。
  */
 export function readTextFileSync(filePath: string): IOResult<string> {
     return readFileSync(filePath, {
@@ -284,6 +314,8 @@ export function readTextFileSync(filePath: string): IOResult<string> {
 
 /**
  * `readJsonFile` 的同步版本。
+ * @param filePath - 要读取的 JSON 文件路径。
+ * @returns 解析后的 JSON 对象。
  */
 export function readJsonFileSync<T>(filePath: string): IOResult<T> {
     const readFileRes = readTextFileSync(filePath);
@@ -295,6 +327,9 @@ export function readJsonFileSync<T>(filePath: string): IOResult<T> {
 
 /**
  * `writeJsonFile` 的同步版本。
+ * @param filePath - 要写入的文件路径。
+ * @param data - 要序列化并写入的数据。
+ * @returns 操作结果。
  */
 export function writeJsonFileSync<T>(filePath: string, data: T): VoidIOResult {
     const result = tryResult(JSON.stringify, data);
@@ -304,6 +339,9 @@ export function writeJsonFileSync<T>(filePath: string, data: T): VoidIOResult {
 
 /**
  * `unzip` 的同步版本。
+ * @param zipFilePath - 要解压的 ZIP 文件路径。
+ * @param destDir - 解压目标目录。
+ * @returns 操作结果。
  */
 export function unzipSync(zipFilePath: string, destDir: string): VoidIOResult {
     const destDirRes = validateAbsolutePath(destDir);
@@ -333,9 +371,19 @@ export function unzipSync(zipFilePath: string, destDir: string): VoidIOResult {
 }
 
 /**
- * `zip` 的同步版本。
+ * `zip` 的同步版本，返回压缩后的字节数组。
+ * @param sourcePath - 要压缩的源路径。
+ * @param options - 压缩选项。
+ * @returns 压缩后的字节数组。
  */
 export function zipSync(sourcePath: string, options?: ZipOptions): IOResult<Uint8Array<ArrayBuffer>>;
+/**
+ * `zip` 的同步版本，将压缩结果写入指定文件。
+ * @param sourcePath - 要压缩的源路径。
+ * @param zipFilePath - ZIP 文件输出路径。
+ * @param options - 压缩选项。
+ * @returns 操作结果。
+ */
 export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOptions): VoidIOResult;
 export function zipSync(sourcePath: string, zipFilePath?: string | ZipOptions, options?: ZipOptions): ZipIOResult {
     if (typeof zipFilePath === 'string') {
@@ -412,14 +460,14 @@ export function zipSync(sourcePath: string, zipFilePath?: string | ZipOptions, o
 
 /**
  * 安全地调用同步接口。
- * @param op - 同步操作。
- * @param errToResult - 错误处理函数。
- * @returns
  */
 function trySyncOp<T>(op: () => T, errToResult: (err: Error) => IOResult<T> = fileErrorToResult): IOResult<T> {
     return tryResult<T, Error>(op).orElse(errToResult);
 }
 
+/**
+ * 复制单个文件。
+ */
 function copyFileSync(srcPath: string, destPath: string): VoidIOResult {
     return trySyncOp(() => getFs().copyFileSync(srcPath, destPath));
 }

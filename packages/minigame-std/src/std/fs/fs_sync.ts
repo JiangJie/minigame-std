@@ -376,9 +376,21 @@ export function unzipSync(zipFilePath: string, targetPath: string): VoidIOResult
     return (isMinaEnv() ? minaUnzipSync : webUnzipSync)(zipFilePath, targetPath);
 }
 
+/**
+ * 压缩文件或文件夹到内存。
+ * @param sourcePath - 需要压缩的文件（夹）路径。
+ * @param options - 可选的压缩参数。
+ * @returns 压缩后的 Uint8Array。
+ * @since 1.3.0
+ * @example
+ * ```ts
+ * const result = zipSync('/path/to/source');
+ * if (result.isOk()) {
+ *     console.log('压缩成功:', result.unwrap().length, 'bytes');
+ * }
+ * ```
+ */
 export function zipSync(sourcePath: string, options?: ZipOptions): IOResult<Uint8Array<ArrayBuffer>>;
-export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOptions): VoidIOResult;
-
 /**
  * `zip` 的同步版本，压缩文件或文件夹。
  * @param sourcePath - 需要压缩的文件（夹）路径。
@@ -394,6 +406,7 @@ export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOp
  * }
  * ```
  */
+export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOptions): VoidIOResult;
 export function zipSync(sourcePath: string, zipFilePath?: string | ZipOptions, options?: ZipOptions): IOResult<Uint8Array<ArrayBuffer> | void> {
     if (typeof zipFilePath === 'string') {
         return (isMinaEnv() ? minaZipSync : webZipSync)(sourcePath, zipFilePath, options);
