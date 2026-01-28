@@ -67,14 +67,6 @@ export function getUsrPath(): string {
  *
  * @param path - 待验证的路径。
  * @returns 验证成功返回标准化后的绝对路径，失败返回错误信息。
- *
- * @example
- * ```ts
- * validateAbsolutePath('/test/../foo'); // Ok('wxfile://usr/foo')
- * validateAbsolutePath('wxfile://usr/test/'); // Ok('wxfile://usr/test')
- * validateAbsolutePath('wxfile:///usr/a/b'); // Ok('wxfile://usr/a/b')
- * validateAbsolutePath('relative'); // Err(...)
- * ```
  */
 export function validateAbsolutePath(path: string): IOResult<string> {
     if (typeof path !== 'string') {
