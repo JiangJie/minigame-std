@@ -12,9 +12,13 @@ import { importPublicKey as webImportPublicKey } from './web_rsa.ts';
  * @since 1.6.0
  * @example
  * ```ts
- * const publicKey = await importPublicKey(pemString, 'SHA-256');
- * const encrypted = await publicKey.encrypt('Hello, World!');
- * console.log(encrypted); // Base64 编码的加密数据
+ * const publicKey = (await importPublicKey(pemString, 'SHA-256')).unwrap();
+ *
+ * // 加密并返回 ArrayBuffer
+ * const encrypted = (await publicKey.encrypt('Hello, World!')).unwrap();
+ *
+ * // 加密并返回 Base64 字符串
+ * const encryptedStr = (await publicKey.encryptToString('Hello, World!')).unwrap();
  * ```
  */
 export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublicKey> {
@@ -27,7 +31,5 @@ export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublic
         return Promise.resolve(Err(new TypeError(`Unsupported hash algorithm: ${ hash }`)));
     }
 
-    return isMinaEnv()
-        ? minaImportPublicKey(pem, hash)
-        : webImportPublicKey(pem, hash);
+    return (isMinaEnv() ? minaImportPublicKey : webImportPublicKey)(pem, hash);
 }
