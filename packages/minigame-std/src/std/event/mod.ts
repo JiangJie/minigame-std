@@ -32,7 +32,7 @@ export function addErrorListener(listener: (ev: WechatMinigame.ListenerError) =>
 
     const webListener = (ev: ErrorEvent) => {
         listener({
-            message: `${ev.message}${ev.error?.stack ? `\n${ev.error.stack}` : ''}`,
+            message: `${ ev.message }${ ev.error?.stack ? `\n${ ev.error.stack }` : '' }`,
         });
     };
 

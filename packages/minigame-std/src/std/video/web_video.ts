@@ -4,9 +4,9 @@
  */
 
 /**
- * Web平台创建视频播放器
- * @param options - 视频配置选项
- * @returns Video对象，模拟WechatMinigame.Video接口
+ * Web平台创建视频播放器。
+ * @param options - 视频配置选项。
+ * @returns Video对象，模拟WechatMinigame.Video接口。
  */
 export function createVideo(options: WechatMinigame.CreateVideoOption): WechatMinigame.Video {
     const {

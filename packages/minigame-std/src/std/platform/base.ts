@@ -27,7 +27,7 @@ export function getTargetType(): TargetType {
 
 /**
  * 判断当前是否在 Web 环境中。
- * @returns 如果在 Web 现境中返回 true，否则返回 false。
+ * @returns 如果在 Web 环境中返回 true，否则返回 false。
  * @since 1.0.0
  * @example
  * ```ts

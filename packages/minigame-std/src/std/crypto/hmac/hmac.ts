@@ -17,6 +17,9 @@ import type { SHA } from '../crypto_defines.ts';
 /**
  * 创建一个使用指定消息摘要对象的 HMAC 对象。
  *
+ * @param sha - SHA 哈希算法。
+ * @param key - 密钥，可以是字符串或 BufferSource。
+ * @param data - 需要计算 HMAC 的数据，可以是字符串或 BufferSource。
  * @returns HMAC 计算结果的十六进制字符串。
  */
 export function createHMAC(sha: SHA, key: DataSource, data: DataSource): AsyncIOResult<string> {

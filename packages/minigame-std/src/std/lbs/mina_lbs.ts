@@ -7,6 +7,10 @@ import { type AsyncIOResult } from 'happy-rusty';
 import { asyncIOResultify } from '../utils/mod.ts';
 import type { GeoPosition } from './lbs_defines.ts';
 
+/**
+ * 获取当前 geo 坐标。
+ * @returns 异步的经纬度结果。
+ */
 export async function getCurrentPosition(): AsyncIOResult<GeoPosition> {
     const hasFuzzy = typeof wx.getFuzzyLocation === 'function';
 

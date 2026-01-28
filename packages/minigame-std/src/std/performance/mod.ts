@@ -5,8 +5,7 @@ import { isMiniGameDevtools } from '../platform/target.ts';
 // #region Internal Variables
 
 /**
- * 小游戏性能管理器实例。
- *
+ * 小游戏性能管理器实例（延迟初始化）。
  */
 const minaPerformance = Lazy(() => wx.getPerformance());
 

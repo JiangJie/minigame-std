@@ -58,9 +58,6 @@ export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublic
 
 /**
  * 使用公钥加密数据。
- * @param publicKey - 公钥。
- * @param data - 要加密的数据。
- * @returns 加密后的数据。
  */
 function encrypt(publicKey: CryptoKey, data: DataSource): AsyncIOResult<ArrayBuffer> {
     return tryAsyncResult(() => {

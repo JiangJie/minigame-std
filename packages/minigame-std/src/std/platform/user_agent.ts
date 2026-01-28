@@ -1,6 +1,7 @@
 /**
  * 解析 userAgent 获取设备信息。
  * @param ua - 要解析的 userAgent 字符串，默认为 navigator.userAgent。
+ * @returns 解析后的设备信息，包含 model、platform 和 system。
  * @internal
  */
 export function parseUserAgent(ua: string = navigator.userAgent): { model: string; platform: string; system: string; } {

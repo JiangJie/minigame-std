@@ -108,6 +108,9 @@ export function isMiniGameHarmonyOS(): boolean {
 
 // #region Internal Functions
 
+/**
+ * 获取当前平台类型。
+ */
 function getPlatform(): string {
     return getDeviceInfo().platform.toLowerCase();
 }

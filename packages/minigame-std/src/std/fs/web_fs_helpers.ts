@@ -9,8 +9,8 @@ import type { StatOptions } from './fs_define';
 
 /**
  * 将 `FileSystemHandleLike` 转换为小游戏 `Stats`。
- * @param handleLike - FileSystemHandleLike
- * @returns
+ * @param handleLike - 要转换的 `FileSystemHandleLike` 对象。
+ * @returns 小游戏的 `Stats` 对象。
  */
 export function convertFileSystemHandleLikeToStats(handleLike: FileSystemHandleLike): WechatMinigame.Stats {
     const isFile = isFileHandleLike(handleLike);
@@ -26,9 +26,9 @@ export function convertFileSystemHandleLikeToStats(handleLike: FileSystemHandleL
 }
 
 /**
- * 将`FileSystemHandle`转换为小游戏 `Stats`。
- * @param handle - FileSystemHandle
- * @returns
+ * 将 `FileSystemHandle` 转换为小游戏 `Stats`。
+ * @param handle - 要转换的 `FileSystemHandle` 对象。
+ * @returns 小游戏的 `Stats` 对象。
  */
 export async function convertFileSystemHandleToStats(handle: FileSystemHandle): Promise<WechatMinigame.Stats> {
     const isFile = isFileHandle(handle);
@@ -52,6 +52,8 @@ export async function convertFileSystemHandleToStats(handle: FileSystemHandle): 
 
 /**
  * 将 Web 端的读取目录结果转换为小游戏端的读取目录结果。
+ * @param dirPath - 要读取的目录路径。
+ * @returns 目录内容路径数组。
  */
 export async function webToMinaReadDir(dirPath: string): AsyncIOResult<string[]> {
     // 小游戏不支持 recursive 选项
@@ -71,6 +73,9 @@ export async function webToMinaReadDir(dirPath: string): AsyncIOResult<string[]>
 
 /**
  * 将 Web 端的 stat 结果转换为小游戏端的 stat 结果。
+ * @param path - 要获取状态的路径。
+ * @param options - 可选的 stat 选项。
+ * @returns 文件或目录的状态信息。
  */
 export async function webToMinaStat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     const statRes = await stat(path);
@@ -119,6 +124,8 @@ export async function webToMinaStat(path: string, options?: StatOptions): AsyncI
 
 /**
  * 将 Web 端的读取目录结果转换为小游戏端的读取目录结果。
+ * @param dirPath - 要读取的目录路径。
+ * @returns 目录内容路径数组。
  */
 export function webToMinaReadDirSync(dirPath: string): IOResult<string[]> {
     // 小游戏不支持 recursive 选项
@@ -130,6 +137,9 @@ export function webToMinaReadDirSync(dirPath: string): IOResult<string[]> {
 
 /**
  * 将 Web 端的 stat 结果转换为小游戏端的 stat 结果。
+ * @param path - 要获取状态的路径。
+ * @param options - 可选的 stat 选项。
+ * @returns 文件或目录的状态信息。
  */
 export function webToMinaStatSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     const statRes = statSync(path);
