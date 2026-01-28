@@ -108,7 +108,10 @@ export function playWebAudioFromAudioBuffer(buffer: AudioBuffer, options?: PlayO
  * @since 1.5.0
  * @example
  * ```ts
- * const source = await audio.playWebAudioFromBufferSource(buffer);
+ * const result = await audio.playWebAudioFromBufferSource(buffer);
+ * if (result.isOk()) {
+ *     const source = result.unwrap();
+ * }
  * ```
  */
 export async function playWebAudioFromBufferSource(buffer: BufferSource, options?: PlayOptions): AsyncIOResult<AudioBufferSourceNode> {

@@ -13,7 +13,7 @@ import { createHMAC as webCreateHMAC } from './web_hmac.ts';
  * @since 1.8.0
  * @example
  * ```ts
- * const hmac = await sha1HMAC('secret-key', 'Hello, World!');
+ * const hmac = (await sha1HMAC('secret-key', 'Hello, World!')).unwrap();
  * console.log(hmac); // 十六进制 HMAC 字符串
  * ```
  */
@@ -29,7 +29,7 @@ export function sha1HMAC(key: DataSource, data: DataSource): AsyncIOResult<strin
  * @since 1.8.0
  * @example
  * ```ts
- * const hmac = await sha256HMAC('secret-key', 'Hello, World!');
+ * const hmac = (await sha256HMAC('secret-key', 'Hello, World!')).unwrap();
  * console.log(hmac); // 十六进制 HMAC 字符串
  * ```
  */
@@ -45,7 +45,7 @@ export function sha256HMAC(key: DataSource, data: DataSource): AsyncIOResult<str
  * @since 1.8.0
  * @example
  * ```ts
- * const hmac = await sha384HMAC('secret-key', 'Hello, World!');
+ * const hmac = (await sha384HMAC('secret-key', 'Hello, World!')).unwrap();
  * console.log(hmac); // 十六进制 HMAC 字符串
  * ```
  */
@@ -61,7 +61,7 @@ export function sha384HMAC(key: DataSource, data: DataSource): AsyncIOResult<str
  * @since 1.8.0
  * @example
  * ```ts
- * const hmac = await sha512HMAC('secret-key', 'Hello, World!');
+ * const hmac = (await sha512HMAC('secret-key', 'Hello, World!')).unwrap();
  * console.log(hmac); // 十六进制 HMAC 字符串
  * ```
  */
