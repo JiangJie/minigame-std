@@ -28,6 +28,32 @@ test('addErrorListener and remove', () => {
     expect(errorCaught).toBe(false);
 });
 
+test('addErrorListener with error stack', () => {
+    let errorMessage = '';
+
+    const listener = (ev: WechatMinigame.ListenerError) => {
+        errorMessage = ev.message;
+    };
+
+    const removeListener = addErrorListener(listener);
+
+    // 创建带有 stack 的 Error 对象
+    const error = new Error('Test error');
+    error.stack = 'Error: Test error\n    at test.ts:1:1';
+
+    // 触发带有 error.stack 的错误事件
+    const errorEvent = new ErrorEvent('error', {
+        message: 'Test error message',
+        error,
+    });
+    dispatchEvent(errorEvent);
+
+    // 验证 message 包含 stack 信息
+    expect(errorMessage).toBe('Test error message\nError: Test error\n    at test.ts:1:1');
+
+    removeListener();
+});
+
 test('addUnhandledrejectionListener and remove', async () => {
     let rejectionCaught = false;
     let rejectionReason = '';

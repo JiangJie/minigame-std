@@ -1,5 +1,26 @@
 import { expect, test } from 'vitest';
 import { platform } from '../src/mod.ts';
+import { getTargetType, isMiniGame, isWeb } from '../src/std/platform/base.ts';
+
+test('getTargetType returns minigame when wx exists in globalThis', () => {
+    // Mock wx 对象
+    const originalWx = (globalThis as Record<string, unknown>)['wx'];
+    (globalThis as Record<string, unknown>)['wx'] = {};
+
+    try {
+        // 直接调用 base.ts 中的函数，避免缓存
+        expect(getTargetType()).toBe('minigame');
+        expect(isWeb()).toBe(false);
+        expect(isMiniGame()).toBe(true);
+    } finally {
+        // 恢复原始状态
+        if (originalWx === undefined) {
+            delete (globalThis as Record<string, unknown>)['wx'];
+        } else {
+            (globalThis as Record<string, unknown>)['wx'] = originalWx;
+        }
+    }
+});
 
 test('targetType is web', () => {
     expect(platform.isWeb()).toBe(true);

@@ -210,3 +210,65 @@ test('storage getLength and getLengthSync consistency', async () => {
     expect(syncLength.unwrap()).toBe(asyncLength.unwrap());
     expect(syncLength.unwrap()).toBe(2);
 });
+
+// ============ 验证失败的测试用例 ============
+
+test('setItemSync should fail with invalid key', () => {
+    // @ts-expect-error 测试无效参数, 应该返回 Err
+    const result = storage.setItemSync(null, 'value');
+    expect(result.isErr()).toBe(true);
+});
+
+test('setItemSync should fail with invalid data', () => {
+    // @ts-expect-error 测试无效参数, 应该返回 Err
+    const result = storage.setItemSync('key', null);
+    expect(result.isErr()).toBe(true);
+});
+
+test('getItemSync should fail with invalid key', () => {
+    // @ts-expect-error 测试无效参数, 应该返回 Err
+    const result = storage.getItemSync(undefined);
+    expect(result.isErr()).toBe(true);
+});
+
+test('removeItemSync should fail with invalid key', () => {
+    // @ts-expect-error 测试无效参数, 应该返回 Err
+    const result = storage.removeItemSync(123);
+    expect(result.isErr()).toBe(true);
+});
+
+test('hasItemSync should fail with invalid key', () => {
+    // @ts-expect-error 测试无效参数, 应该返回 Err
+    const result = storage.hasItemSync({});
+    expect(result.isErr()).toBe(true);
+});
+
+test('async setItem should fail with invalid key', async () => {
+    // @ts-expect-error 测试无效参数, 应该返回 Err
+    const result = await storage.setItem(null, 'value');
+    expect(result.isErr()).toBe(true);
+});
+
+test('async setItem should fail with invalid data', async () => {
+    // @ts-expect-error 测试无效参数, 应该返回 Err
+    const result = await storage.setItem('key', undefined);
+    expect(result.isErr()).toBe(true);
+});
+
+test('async getItem should fail with invalid key', async () => {
+    // @ts-expect-error 测试无效参数, 应该返回 Err
+    const result = await storage.getItem(12345);
+    expect(result.isErr()).toBe(true);
+});
+
+test('async removeItem should fail with invalid key', async () => {
+    // @ts-expect-error 测试无效参数, 应该返回 Err
+    const result = await storage.removeItem([]);
+    expect(result.isErr()).toBe(true);
+});
+
+test('async hasItem should fail with invalid key', async () => {
+    // @ts-expect-error 测试无效参数, 应该返回 Err
+    const result = await storage.hasItem(false);
+    expect(result.isErr()).toBe(true);
+});
