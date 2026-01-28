@@ -137,7 +137,6 @@ export function hasItemSync(key: string): IOResult<boolean> {
 
 /**
  * 获取所有存储键名。
- * @returns 返回所有存储键名的数组。
  */
 async function getStorageKeys(): AsyncIOResult<string[]> {
     const getRes = await asyncIOResultify(wx.getStorageInfo)();
@@ -147,7 +146,6 @@ async function getStorageKeys(): AsyncIOResult<string[]> {
 
 /**
  * 同步获取所有存储键名。
- * @returns 返回所有存储键名的数组。
  */
 function getStorageKeysSync(): IOResult<string[]> {
     return syncIOResultify(wx.getStorageInfoSync)()
