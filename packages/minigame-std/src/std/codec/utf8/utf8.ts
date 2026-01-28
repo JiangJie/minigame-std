@@ -11,12 +11,6 @@ import { bufferSourceToBytes } from '../../internal/mod.ts';
  * 将字符串编码为 UTF-8 格式的 Uint8Array。
  * @param data - 需要编码的字符串。
  * @returns 编码后的 Uint8Array。
- * @since 1.0.0
- * @example
- * ```ts
- * const bytes = encodeUtf8Buffer('Hello');
- * console.log(bytes); // Uint8Array [72, 101, 108, 108, 111]
- * ```
  */
 export function encodeUtf8Buffer(data: string): Uint8Array<ArrayBuffer> {
     const bytes: number[] = [];
@@ -54,12 +48,6 @@ export function encodeUtf8Buffer(data: string): Uint8Array<ArrayBuffer> {
  * 将 BufferSource 解码为 UTF-8 字符串。
  * @param data - 需要解码的 BufferSource。
  * @returns 解码后的字符串。
- * @since 1.0.0
- * @example
- * ```ts
- * const str = decodeUtf8Buffer(new Uint8Array([72, 101, 108, 108, 111]));
- * console.log(str); // 'Hello'
- * ```
  */
 export function decodeUtf8Buffer(data: BufferSource): string {
     const bytes = bufferSourceToBytes(data);
