@@ -264,7 +264,9 @@ pnpm test
 ```
 
 > [!NOTE]
-> 由于测试环境的局限性，测试用例并不能覆盖所有功能。覆盖率未达 100% 主要是因为部分代码仅运行在小游戏环境，而现有测试工具无法模拟小游戏运行时。
+> Web 平台测试通过 Vite 配置排除小游戏特有文件，实现了 100% 代码覆盖率。被排除的文件包括：
+> - `fs_async.ts` / `fs_sync.ts`：简单的包装层，仅负责委托调用平台特定实现
+> - `mina_fs_async.ts` / `mina_fs_sync.ts`：小游戏特有实现，通过 [minigame-test](https://github.com/JiangJie/minigame-std/tree/main/packages/minigame-test) 单独测试
 
 -   **Web 平台测试**: `tests` 目录下的测试用例基于 web 平台（`__MINIGAME_STD_MINA__: false`），使用 [Vitest](https://vitest.dev/) + [Playwright](https://playwright.dev/) 在真实浏览器环境中运行
 -   **文件系统测试**: Web 平台的 OPFS 文件系统测试请参考 [happy-opfs](https://github.com/JiangJie/happy-opfs)

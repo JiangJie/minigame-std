@@ -269,7 +269,9 @@ pnpm test
 ```
 
 > [!NOTE]
-> Due to testing environment limitations, test cases don't cover all functionality. Coverage is not 100% mainly because some code only runs in the mini-game environment, which cannot be simulated by existing testing tools.
+> Web platform tests achieve 100% code coverage by excluding mini-game specific files via Vite configuration. The excluded files include:
+> - `fs_async.ts` / `fs_sync.ts`: Simple wrapper layers that delegate to platform-specific implementations
+> - `mina_fs_async.ts` / `mina_fs_sync.ts`: Mini-game specific implementations tested separately via [minigame-test](https://github.com/JiangJie/minigame-std/tree/main/packages/minigame-test)
 
 -   **Web Platform Tests**: Test cases in the `tests` directory are based on the web platform (`__MINIGAME_STD_MINA__: false`), using [Vitest](https://vitest.dev/) + [Playwright](https://playwright.dev/) to run in a real browser environment
 -   **File System Tests**: For web platform OPFS file system tests, see [happy-opfs](https://github.com/JiangJie/happy-opfs)

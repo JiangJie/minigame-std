@@ -81,7 +81,9 @@ pnpm --filter minigame-std build
 - Test files are located in `packages/minigame-std/tests/` directory
 - Coverage reports are generated in `packages/minigame-std/coverage/` directory
 - Mini-game platform tests are located in `packages/minigame-test/` (requires WeChat DevTools to run)
-- **Coverage Note**: Coverage is not 100% because some code only runs in the mini-game environment, which cannot be simulated by existing testing tools
+- **Coverage Note**: Web platform tests achieve 100% coverage by excluding mini-game specific files via Vite's `coverage.exclude` configuration:
+  - `fs_async.ts` / `fs_sync.ts`: Simple wrapper layers that delegate to platform-specific implementations
+  - `mina_fs_async.ts` / `mina_fs_sync.ts`: Mini-game specific implementations tested separately via minigame-test
 
 ### Running Individual Tests
 
@@ -210,7 +212,7 @@ export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> {
 
 - **Bundler**: Rollup with esbuild plugin
 - **Configuration**: `packages/minigame-std/rollup.config.ts`
-- **Output**: 
+- **Output**:
   - `packages/minigame-std/dist/main.cjs` - CommonJS bundle
   - `packages/minigame-std/dist/main.mjs` - ES module bundle
   - `packages/minigame-std/dist/types.d.ts` - TypeScript declarations
@@ -266,7 +268,7 @@ The project provides several utilities for wrapping platform-specific APIs:
 - **`asyncResultify(api)`** - Converts callback-based mini-game APIs to Result-based async functions
   - Use for APIs with `success`/`fail` callbacks that return `void` or `Promise`
   - Located in `packages/minigame-std/src/std/utils/resultify.ts`
-  
+
 - **`tryGeneralAsyncOp(fn)`** / **`tryGeneralSyncOp(fn)`** - Wraps operations that may throw
   - Use for APIs that already return Promise but may throw errors
   - Converts exceptions to `IOResult<T>`
