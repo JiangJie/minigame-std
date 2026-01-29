@@ -64,10 +64,10 @@ export function createVideo(options: WechatMinigame.CreateVideoOption): WechatMi
     if (x !== undefined || y !== undefined) {
         video.style.position = 'absolute';
         if (x !== undefined) {
-            video.style.left = `${ x }px`;
+            video.style.left = `${x}px`;
         }
         if (y !== undefined) {
-            video.style.top = `${ y }px`;
+            video.style.top = `${y}px`;
         }
     }
 
@@ -279,7 +279,7 @@ export function createVideo(options: WechatMinigame.CreateVideoOption): WechatMi
         },
         set x(value) {
             video.style.position = 'absolute';
-            video.style.left = `${ value }px`;
+            video.style.left = `${value}px`;
         },
 
         get y() {
@@ -287,7 +287,7 @@ export function createVideo(options: WechatMinigame.CreateVideoOption): WechatMi
         },
         set y(value) {
             video.style.position = 'absolute';
-            video.style.top = `${ value }px`;
+            video.style.top = `${value}px`;
         },
 
         // on* 属性形式的事件回调

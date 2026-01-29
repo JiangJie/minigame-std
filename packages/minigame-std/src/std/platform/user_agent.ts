@@ -12,7 +12,7 @@ export function parseUserAgent(ua: string = navigator.userAgent): { model: strin
     if (iosMatch) {
         const model = iosMatch[1];
         const version = iosMatch[2].replace(/_/g, '.');
-        return { model, platform: 'ios', system: `iOS ${ version }` };
+        return { model, platform: 'ios', system: `iOS ${version}` };
     }
 
     // Android 设备
@@ -25,7 +25,7 @@ export function parseUserAgent(ua: string = navigator.userAgent): { model: strin
     if (androidMatch) {
         const version = androidMatch[1];
         const model = androidMatch[2].trim();
-        return { model, platform: 'android', system: `Android ${ version }` };
+        return { model, platform: 'android', system: `Android ${version}` };
     }
 
     // Mac
@@ -33,14 +33,14 @@ export function parseUserAgent(ua: string = navigator.userAgent): { model: strin
     const macMatch = ua.match(/Mac OS X (\d+[_\d]*)/);
     if (macMatch) {
         const version = macMatch[1].replace(/_/g, '.');
-        return { model: 'Mac', platform: 'mac', system: `macOS ${ version }` };
+        return { model: 'Mac', platform: 'mac', system: `macOS ${version}` };
     }
 
     // Windows
     // 示例: Mozilla/5.0 (Windows NT 10.0; Win64; x64)
     const winMatch = ua.match(/Windows NT ([\d.]+)/);
     if (winMatch) {
-        return { model: 'PC', platform: 'windows', system: `Windows NT ${ winMatch[1] }` };
+        return { model: 'PC', platform: 'windows', system: `Windows NT ${winMatch[1]}` };
     }
 
     // Linux

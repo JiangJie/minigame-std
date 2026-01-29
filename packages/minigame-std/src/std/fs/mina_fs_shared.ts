@@ -30,7 +30,7 @@ const usrPath = Lazy(() => wx.env.USER_DATA_PATH);
 const rootPath = Lazy(() => {
     const path = usrPath.force();
     // 剥离 `usr`
-    return `${ path.split('://')[0] }://`;
+    return `${path.split('://')[0]}://`;
 });
 
 // #endregion
@@ -70,7 +70,7 @@ export function getUsrPath(): string {
  */
 export function validateAbsolutePath(path: string): IOResult<string> {
     if (typeof path !== 'string') {
-        return Err(new TypeError(`Path must be a string but received ${ typeof path }`));
+        return Err(new TypeError(`Path must be a string but received ${typeof path}`));
     }
 
     // 是否已经是完整路径
@@ -107,7 +107,7 @@ export function validateAbsolutePath(path: string): IOResult<string> {
 
     // 相对路径：必须以 `/` 开头
     if (path[0] !== ROOT_DIR) {
-        return Err(new Error(`Path must be absolute (start with '/'): '${ path }'`));
+        return Err(new Error(`Path must be absolute (start with '/'): '${path}'`));
     }
 
     // 拼接用户数据根目录
@@ -186,7 +186,7 @@ export function createNothingToZipError(): IOResult<never> {
  * @returns 错误结果。
  */
 export function createFileNotExistsError(filePath: string): IOResult<never> {
-    return Err(new Error(`Cannot append to non-existent file: ${ filePath }`));
+    return Err(new Error(`Cannot append to non-existent file: ${filePath}`));
 }
 
 /*
@@ -195,7 +195,7 @@ export function createFileNotExistsError(filePath: string): IOResult<never> {
  * @returns 错误结果。
  */
 export function createDirIsFileError(dirPath: string): IOResult<never> {
-    return Err(new Error(`Path already exists but is a file: ${ dirPath }`));
+    return Err(new Error(`Path already exists but is a file: ${dirPath}`));
 }
 
 /**

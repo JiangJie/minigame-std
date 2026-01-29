@@ -71,7 +71,7 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
                     };
                 }
                 default: {
-                    throw new TypeError(`Invalid socket event type: ${ type }`);
+                    throw new TypeError(`Invalid socket event type: ${type}`);
                 }
             }
         },

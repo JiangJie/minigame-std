@@ -28,7 +28,7 @@ export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublic
         && hash !== 'SHA-384'
         && hash !== 'SHA-512'
     ) {
-        return Promise.resolve(Err(new TypeError(`Unsupported hash algorithm: ${ hash }`)));
+        return Promise.resolve(Err(new TypeError(`Unsupported hash algorithm: ${hash}`)));
     }
 
     return (isMinaEnv() ? minaImportPublicKey : webImportPublicKey)(pem, hash);

@@ -485,7 +485,7 @@ export function downloadFile(fileUrl: string, filePath?: string | DownloadFileOp
                 onProgress(typeof totalBytesExpectedToWrite === 'number' && typeof totalBytesWritten === 'number' ? Ok({
                     totalByteLength: totalBytesExpectedToWrite,
                     completedByteLength: totalBytesWritten,
-                }) : Err(new Error(`Unknown download progress ${ totalBytesWritten }/${ totalBytesExpectedToWrite }`)));
+                }) : Err(new Error(`Unknown download progress ${totalBytesWritten}/${totalBytesExpectedToWrite}`)));
             });
         }
     };
@@ -807,7 +807,7 @@ function zipTo(zippable: AsyncZippable, zipFilePath?: string): AsyncZipIOResult 
     return tryResult(() => compressSync(zippable))
         .andThenAsync(bytesLike => {
             const bytes = bytesLike as Uint8Array<ArrayBuffer>;
-    // 有文件路径则写入文件
+            // 有文件路径则写入文件
             return zipFilePath
                 ? writeFile(zipFilePath, bytes)
                 : Promise.resolve(Ok(bytes)) as AsyncZipIOResult;

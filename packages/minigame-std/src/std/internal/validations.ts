@@ -13,7 +13,7 @@ import { Err, RESULT_VOID, type VoidIOResult } from 'happy-rusty';
  */
 export function validateString(str: string, name?: string): VoidIOResult {
     if (typeof str !== 'string') {
-        return Err(new TypeError(`Param '${ name || 'str' }' must be a string but received ${ typeof str }`));
+        return Err(new TypeError(`Param '${name || 'str'}' must be a string but received ${typeof str}`));
     }
     return RESULT_VOID;
 }
@@ -27,7 +27,7 @@ export function validateSafeUrl(url: string): VoidIOResult {
     return validateString(url, 'url')
         .andThen(() => {
             if (!url.startsWith('https://')) {
-                return Err(new Error(`Param url must start with https:// but received ${ url }`));
+                return Err(new Error(`Param url must start with https:// but received ${url}`));
             }
             return RESULT_VOID;
         });
@@ -42,7 +42,7 @@ export function validateSafeSocketUrl(socketUrl: string): VoidIOResult {
     return validateString(socketUrl, 'socketUrl')
         .andThen(() => {
             if (!socketUrl.startsWith('wss://')) {
-                return Err(new Error(`Param socketUrl must start with wss:// but received ${ socketUrl }`));
+                return Err(new Error(`Param socketUrl must start with wss:// but received ${socketUrl}`));
             }
             return RESULT_VOID;
         });
