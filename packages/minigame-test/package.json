@@ -1,11 +1,6 @@
 {
   "name": "minigame-test",
-  "description": "Mini-game platform tests for minigame-std.",
   "private": true,
-  "author": "jiang115jie@gmail.com",
-  "license": "MIT",
-  "version": "1.0.0",
-  "main": "game.js",
   "scripts": {
     "check": "pnpm exec tsc --noEmit",
     "prebuild": "pnpm run check",
