@@ -346,6 +346,7 @@ export function readTextFileSync(filePath: string): IOResult<string> {
  * @param filePath - 文件路径。
  * @param data - 要写入的数据。
  * @returns 写入操作的结果。
+ * @since 2.0.0
  * @example
  * ```ts
  * const result = writeJsonFileSync('/path/to/config.json', { name: 'test' });

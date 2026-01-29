@@ -5,6 +5,7 @@ import { createVideo as webCreateVideo } from './web_video.ts';
  * 创建视频播放器。
  * @param options - 视频配置选项。
  * @returns Video对象。
+ * @since 2.0.0
  * @example
  * ```ts
  * const video = createVideo({

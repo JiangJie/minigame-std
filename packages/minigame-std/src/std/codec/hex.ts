@@ -25,6 +25,7 @@ export function encodeHex(data: DataSource): string {
  * 将十六进制字符串解码为 Uint8Array。
  * @param hex - 十六进制字符串。
  * @returns 解码后的 Uint8Array。
+ * @since 2.0.0
  * @example
  * ```ts
  * const bytes = decodeHex('ff0080');

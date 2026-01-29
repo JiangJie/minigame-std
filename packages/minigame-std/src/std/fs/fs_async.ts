@@ -344,6 +344,7 @@ export function readTextFile(filePath: string): AsyncIOResult<string> {
  * @param filePath - 文件路径。
  * @param data - 要写入的数据。
  * @returns 写入操作的异步结果。
+ * @since 2.0.0
  * @example
  * ```ts
  * const result = await writeJsonFile('/path/to/config.json', { name: 'test' });

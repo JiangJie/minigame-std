@@ -9,7 +9,7 @@ import { miniGameFailureToError } from '../internal/helpers.js';
  *
  * @param api - 小游戏异步 API。
  * @returns 返回一个新的函数，该函数返回 `AsyncResult<T, E>`。
- * @since 1.10.0
+ * @since 2.0.0
  * @example
  * ```ts
  * // 将 wx.setStorage 转换为 AsyncResult 风格
@@ -65,6 +65,7 @@ export function asyncResultify<F extends (...args: any[]) => unknown, T = Result
  *
  * @param api - 小游戏异步 API。
  * @returns 返回一个新的函数，该函数返回 `AsyncIOResult<T>`。
+ * @since 2.0.0
  * @example
  * ```ts
  * // 将 wx.setStorage 转换为 AsyncIOResult 风格
@@ -96,6 +97,7 @@ export function asyncIOResultify<F extends (...args: any[]) => unknown, T = Resu
  *
  * @param api - 小游戏同步 API。
  * @returns 返回一个新的函数，该函数返回 `IOResult<T>`。
+ * @since 2.0.0
  * @example
  * ```ts
  * // 将 wx.getStorageSync 转换为 IOResult 风格
