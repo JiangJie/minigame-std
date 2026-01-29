@@ -6,7 +6,7 @@ const mockServer = 'https://fakestoreapi.com';
 const mockAll = `${ mockServer }/products`;
 const mockSingle = `${ mockAll }/1`;
 
-export const mockZipUrl = 'https://raw.githubusercontent.com/JiangJie/happy-opfs/v1.12.0/tests/test.zip';
+export const mockZipUrl = 'https://hlddz.huanle.qq.com/web/FeaturesPicture/WH_Dialect_Package_MP3.zip';
 
 async function testAsync() {
     // Clear all files and folders
