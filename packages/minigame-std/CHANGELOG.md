@@ -5,6 +5,15 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.0.2] - 2026-01-29
+
+### 文档
+- 为各子模块文件添加 `@module` JSDoc 注释
+- 为 `fs.stat` 方法的所有重载签名添加 JSDoc 注释
+
+### 变更
+- 移除 prepublishOnly 中的文件复制步骤
+
 ## [2.0.1] - 2026-01-29
 
 ### 文档
@@ -385,6 +394,7 @@
   - `socket` - WebSocket
   - `storage` - 本地存储
 
+[2.0.2]: https://github.com/JiangJie/minigame-std/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/JiangJie/minigame-std/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/JiangJie/minigame-std/compare/v1.10.0...v2.0.0
 [1.10.0]: https://github.com/JiangJie/minigame-std/compare/v1.9.7...v1.10.0
