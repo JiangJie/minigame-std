@@ -32,7 +32,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Copy shared files for JSR publish
+      - name: Copy shared files for publish
         run: cp README.md LICENSE packages/minigame-std/
 
       - name: Publish to JSR
