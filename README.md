@@ -146,9 +146,17 @@ jsr add @happy-js/minigame-std
     ```js
     import { cryptos } from 'minigame-std';
     // MD5, SHA-1/256/384/512, HMAC, RSA
-    cryptos.md5('data');
-    await cryptos.sha256('data');
-    await cryptos.sha256HMAC('key', 'data');
+    cryptos.md5('data');  // MD5 返回同步结果
+
+    const sha256Result = await cryptos.sha256('data');
+    if (sha256Result.isOk()) {
+        const hash = sha256Result.unwrap();  // 十六进制哈希字符串
+    }
+
+    const hmacResult = await cryptos.sha256HMAC('key', 'data');
+    if (hmacResult.isOk()) {
+        const hmac = hmacResult.unwrap();  // 十六进制 HMAC 字符串
+    }
     ```
 
 -   **地理位置**
@@ -246,7 +254,7 @@ jsr add @happy-js/minigame-std
 
 设置为 `false` 则裁减掉小游戏平台代码，适合在浏览器上开发阶段或者发布到 web 平台时的构建。
 
-构建流程可参考 [minigame-std-demo](https://github.com/JiangJie/minigame-std-demo)。
+构建流程可参考 [packages/minigame-test](https://github.com/JiangJie/minigame-std/tree/main/packages/minigame-test)。
 
 ## 测试
 
@@ -260,7 +268,7 @@ pnpm test
 
 -   **Web 平台测试**: `tests` 目录下的测试用例基于 web 平台（`__MINIGAME_STD_MINA__: false`），使用 [Vitest](https://vitest.dev/) + [Playwright](https://playwright.dev/) 在真实浏览器环境中运行
 -   **文件系统测试**: Web 平台的 OPFS 文件系统测试请参考 [happy-opfs](https://github.com/JiangJie/happy-opfs)
--   **小游戏平台测试**: 小游戏环境的测试用例请参考 [minigame-std-demo](https://github.com/JiangJie/minigame-std-demo)
+-   **小游戏平台测试**: 小游戏环境的测试用例位于 [packages/minigame-test](https://github.com/JiangJie/minigame-std/tree/main/packages/minigame-test) 目录，需要在 WeChat DevTools 中运行
 
 ## 贡献
 

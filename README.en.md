@@ -146,9 +146,17 @@ jsr add @happy-js/minigame-std
     ```js
     import { cryptos } from 'minigame-std';
     // MD5, SHA-1/256/384/512, HMAC, RSA
-    cryptos.md5('data');
-    await cryptos.sha256('data');
-    await cryptos.sha256HMAC('key', 'data');
+    cryptos.md5('data');  // MD5 returns synchronous result
+
+    const sha256Result = await cryptos.sha256('data');
+    if (sha256Result.isOk()) {
+        const hash = sha256Result.unwrap();  // Hex hash string
+    }
+
+    const hmacResult = await cryptos.sha256HMAC('key', 'data');
+    if (hmacResult.isOk()) {
+        const hmac = hmacResult.unwrap();  // Hex HMAC string
+    }
     ```
 
 -   **Geolocation**
@@ -251,7 +259,7 @@ During code bundling, the `__MINIGAME_STD_MINA__` boolean variable controls whet
 - Set to `true` to prune web platform code, suitable for mini-game builds.
 - Set to `false` to prune mini-game platform code, suitable for browser development or web platform builds.
 
-For build configuration examples, see [minigame-std-demo](https://github.com/JiangJie/minigame-std-demo).
+For build configuration examples, see [packages/minigame-test](https://github.com/JiangJie/minigame-std/tree/main/packages/minigame-test).
 
 ## Testing
 
@@ -265,7 +273,7 @@ pnpm test
 
 -   **Web Platform Tests**: Test cases in the `tests` directory are based on the web platform (`__MINIGAME_STD_MINA__: false`), using [Vitest](https://vitest.dev/) + [Playwright](https://playwright.dev/) to run in a real browser environment
 -   **File System Tests**: For web platform OPFS file system tests, see [happy-opfs](https://github.com/JiangJie/happy-opfs)
--   **Mini-Game Platform Tests**: For mini-game environment test cases, see [minigame-std-demo](https://github.com/JiangJie/minigame-std-demo)
+-   **Mini-Game Platform Tests**: Mini-game environment test cases are located in the [packages/minigame-test](https://github.com/JiangJie/minigame-std/tree/main/packages/minigame-test) directory and require WeChat DevTools to run
 
 ## Contributing
 

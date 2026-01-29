@@ -110,9 +110,8 @@ packages/
 │   │   └── std/                # Standard library modules
 │   │       ├── assert/         # Internal assertion utilities (not public API)
 │   │       ├── audio/          # WebAudio API abstraction
-│   │       ├── base64/         # Base64 encoding/decoding
 │   │       ├── clipboard/      # Clipboard operations
-│   │       ├── codec/          # Text encoding (UTF-8 ↔ ArrayBuffer)
+│   │       ├── codec/          # Text encoding (UTF-8 ↔ ArrayBuffer) and Base64 encoding/decoding
 │   │       ├── crypto/         # Cryptographic functions
 │   │       │   ├── hmac/       # HMAC algorithms
 │   │       │   ├── md/         # MD5 hashing
@@ -150,15 +149,14 @@ Each module follows a consistent pattern with three files:
 
 3. **`web_*.ts`** - Browser platform implementation using standard Web APIs
 
-**Example from `packages/minigame-std/src/std/base64/mod.ts`:**
+**Example from `packages/minigame-std/src/std/codec/mod.ts`:**
 ```typescript
 import { isMinaEnv } from '../../macros/env.ts';
-import { encodeBase64 as minaEncodeBase64 } from './mina_base64.ts';
-import { encodeBase64 as webEncodeBase64 } from './web_base64.ts';
+import { encodeUtf8 } from './utf8/mod.ts';
+import { encodeHex } from './hex.ts';
 
-export function encodeBase64(data: string): string {
-    return (isMinaEnv() ? minaEncodeBase64 : webEncodeBase64)(data);
-}
+// Example: encodeBase64 accepts DataSource (string | BufferSource)
+// Example: decodeHex is now available for hex string decoding
 ```
 
 ### API Wrapping Pattern for Mini-Game APIs
