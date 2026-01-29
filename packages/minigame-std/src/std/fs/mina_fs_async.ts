@@ -5,7 +5,7 @@
 
 import { ABORT_ERROR, FetchError, type FetchResult } from '@happy-ts/fetch-t';
 import { basename, dirname, SEPARATOR } from '@std/path/posix';
-import { zip as compress, type AsyncZippable } from 'fflate/browser';
+import { zipSync as compressSync, type AsyncZippable } from 'fflate/browser';
 import { type AppendOptions, type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
 import { Err, Ok, RESULT_VOID, tryResult, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
@@ -658,7 +658,7 @@ export async function zip(sourcePath: string, zipFilePath?: string | ZipOptions,
     const zippable: AsyncZippable = {};
 
     if (statsArray.length === 1 && statsArray[0].stats.isFile()) {
-    // sourcePath 是文件
+        // sourcePath 是文件
         const readFileRes = await readFile(sourcePath);
         if (readFileRes.isErr()) return readFileRes;
 
@@ -803,26 +803,15 @@ async function copyFile(srcPath: string, destPath: string): AsyncVoidIOResult {
  * 将 zippable 对象压缩为 zip 文件。
  */
 function zipTo(zippable: AsyncZippable, zipFilePath?: string): AsyncZipIOResult {
-    const future = new Future<ZipIOResult>();
-
-    compress(zippable, {
-        consume: true,
-    }, async (err, bytesLike) => {
-        if (err) {
-            future.resolve(Err(err));
-            return;
-        }
-
-        const bytes = bytesLike as Uint8Array<ArrayBuffer>;
-        // 有文件路径则写入文件
-        if (zipFilePath) {
-            future.resolve(writeFile(zipFilePath, bytes));
-        } else {
-            future.resolve(Ok(bytes));
-        }
-    });
-
-    return future.promise;
+    // 小游戏不支持 Web Worker(fflate 异步接口内部使用了), 退化到同步接口
+    return tryResult(() => compressSync(zippable))
+        .andThenAsync(bytesLike => {
+            const bytes = bytesLike as Uint8Array<ArrayBuffer>;
+    // 有文件路径则写入文件
+            return zipFilePath
+                ? writeFile(zipFilePath, bytes)
+                : Promise.resolve(Ok(bytes)) as AsyncZipIOResult;
+        });
 }
 
 // #endregion
