@@ -14,7 +14,7 @@ const minaPerformance = Lazy(() => wx.getPerformance());
 /**
  * 参见`performance.now()`
  * @returns 当前时间以毫秒为单位的时间戳
- * @since 1.0.0
+ * @since 2.0.0
  * @example
  * ```ts
  * const start = getPerformanceNow();
