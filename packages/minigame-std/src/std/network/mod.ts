@@ -1,3 +1,7 @@
+/**
+ * 网络状态模块，提供获取网络类型和监听网络状态变化的功能。
+ * @module network
+ */
 import { isMinaEnv } from '../../macros/env.ts';
 import { addNetworkChangeListener as minaAddNetworkChangeListener, getNetworkType as minaGetNetworkType } from './mina_network.ts';
 import type { NetworkType } from './network_define.ts';

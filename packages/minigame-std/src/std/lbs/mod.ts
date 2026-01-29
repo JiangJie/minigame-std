@@ -1,3 +1,7 @@
+/**
+ * 位置服务模块（Location Based Service），提供获取地理位置坐标的功能。
+ * @module lbs
+ */
 import { type AsyncIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import type { GeoPosition } from './lbs_defines.ts';

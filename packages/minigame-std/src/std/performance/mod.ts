@@ -1,3 +1,7 @@
+/**
+ * 性能模块，提供高精度时间戳获取功能。
+ * @module performance
+ */
 import { Lazy } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import { isMiniGameDevtools } from '../platform/target.ts';

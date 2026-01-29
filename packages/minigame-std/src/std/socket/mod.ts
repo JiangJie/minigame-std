@@ -1,3 +1,7 @@
+/**
+ * WebSocket 模块，提供创建和管理 WebSocket 连接的功能。
+ * @module socket
+ */
 import { Ok, type IOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import { validateSafeSocketUrl } from '../internal/validations.ts';

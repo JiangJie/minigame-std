@@ -1,4 +1,9 @@
 /**
+ * 公共类型定义模块，提供 DataSource 等通用类型。
+ * @module defines
+ */
+
+/**
  * 数据源类型，可以是字符串或者 BufferSource。
  * @since 1.8.0
  * @example

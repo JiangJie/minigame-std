@@ -1,3 +1,7 @@
+/**
+ * 剪贴板操作模块，提供读取和写入剪贴板文本的功能。
+ * @module clipboard
+ */
 import type { AsyncIOResult, AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import { validateString } from '../internal/mod.ts';

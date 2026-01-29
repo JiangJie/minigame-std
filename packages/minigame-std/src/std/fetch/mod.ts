@@ -1,3 +1,7 @@
+/**
+ * 网络请求模块，提供可中断的 fetch 请求功能，支持 text、JSON、ArrayBuffer 等响应类型。
+ * @module fetch
+ */
 import { fetchT as webFetch, type FetchTask } from '@happy-ts/fetch-t';
 import { isMinaEnv } from '../../macros/env.ts';
 import type { UnionFetchInit } from './fetch_defines.ts';

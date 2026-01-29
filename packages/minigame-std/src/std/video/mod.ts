@@ -1,3 +1,7 @@
+/**
+ * 视频播放模块，提供创建和控制视频播放器的功能。
+ * @module video
+ */
 import { isMinaEnv } from '../../macros/env.ts';
 import { createVideo as webCreateVideo } from './web_video.ts';
 

@@ -1,3 +1,7 @@
+/**
+ * 本地存储模块，提供同步和异步的键值对存储功能。
+ * @module storage
+ */
 import type { AsyncIOResult, AsyncVoidIOResult, IOResult, VoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import { validateString } from '../internal/mod.ts';

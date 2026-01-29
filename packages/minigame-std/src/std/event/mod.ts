@@ -1,3 +1,7 @@
+/**
+ * 事件监听模块，提供错误、未处理 Promise 拒绝、窗口大小变化等事件监听功能。
+ * @module event
+ */
 import { isMinaEnv } from '../../macros/env.ts';
 import {
     addErrorListener as minaAddErrorListener,

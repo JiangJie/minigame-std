@@ -1,3 +1,7 @@
+/**
+ * 图片处理模块，提供从 URL 或文件创建图片的功能。
+ * @module image
+ */
 import { Ok, type AsyncIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
 import {
