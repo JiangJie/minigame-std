@@ -3,7 +3,7 @@
   "description": "Cross-platform standard library for WeChat minigame and web browsers with unified APIs for crypto, fs, fetch, storage, and more.",
   "author": "jiang115jie@gmail.com",
   "license": "MIT",
-  "version": "1.10.0",
+  "version": "2.0.0",
   "type": "module",
   "main": "dist/main.cjs",
   "module": "dist/main.mjs",

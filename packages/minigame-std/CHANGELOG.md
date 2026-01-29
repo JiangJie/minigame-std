@@ -5,26 +5,79 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
-## [未发布]
+## [2.0.0] - 2026-01-29
+
+### 破坏性变更
+- `fs.readFile` 返回类型从 `ArrayBuffer` 改为 `Uint8Array<ArrayBuffer>`
+- SHA 系列函数返回类型从 `Promise<string>` 改为 `AsyncIOResult<string>`
+- HMAC 系列函数返回类型改为 `AsyncIOResult`
+- RSA 加密函数返回类型改为 `AsyncIOResult`
+- 重命名 `promisifyWithResult` 为 `asyncResultify`
+- 重命名 codec 模块函数以保持命名一致性
+- 简化 base64 API 为统一的 `encodeBase64`/`decodeBase64` 函数
+- 移除 `tryDOMAsyncOp`/`tryDOMSyncOp`，使用 `tryGeneralAsyncOp`/`tryResult` 代替
+- 移除内部 assert 函数的公开导出
+- 适配 `@happy-ts/fetch-t` 和 `happy-opfs` 的破坏性变更
 
 ### 新增
+- 新增 `video` 模块及跨平台 `createVideo` API
 - 新增 `fs.writeJsonFile` 和 `fs.writeJsonFileSync` 方法
+- 新增 `decodeHex` 函数用于十六进制解码
+- 新增 `asyncResultify`、`asyncIOResultify`、`syncIOResultify` 工具函数
+- 新增 `fs.zipSync` 内存压缩支持（无文件路径时返回 bytes）
+- 新增 `AppendOptions` 支持 `appendFile` 和 `appendFileSync`
+- 新增 `ReadOptions`、`ExistsOptions` 支持相应文件操作
+- 新增内部验证模块 (`internal/validate`)
+- 新增 `encodeHex` 支持字符串输入
+- 新增 `ASYNC_RESULT_VOID` 常量
+- 新增跨平台高精度计时工具 (`performance`)
+- 新增 `video.requestFullScreen` 方法支持屏幕方向锁定
 - 导出 `fs.createAbortError` 辅助函数
 
 ### 变更
 - 许可证从 GPL-3.0 切换到 MIT
+- 迁移到 pnpm monorepo 结构
+- 构建工具从 Rollup 迁移到 Vite
+- 测试框架从 Deno 迁移到 Vitest
+- 文档生成从 Markdown 切换到 HTML 格式
 - 生成的 API 文档不再提交到仓库，改为通过 GitHub Pages 自动部署
+- 使用 `happy-rusty` 的 `Lazy` 和 `Once` 进行延迟初始化
+- 重构 codec 模块，将 base64 整合到 codec 模块
+- 重构 UTF-8 编码模块到专用子目录
+- 重构 SHA/HMAC 实现，提取纯 JS 实现到共享模块
+- 统一 `stat` API 在 `recursive=true` 时始终返回 `FileStats[]`
+- 统一微信和 Web 平台 API 返回类型
+- 简化 `mkdir`：目录已存在时直接返回成功
+- 优化 `readDir`：可用时使用 `Array.fromAsync` 提升性能
+- 错误处理集中化，使用统一的错误转换函数
+- 替换 `tiny-invariant` 为自定义实现
 - 更新依赖到最新版本
 
+### 修复
+- 修复 UTF-8 解码使用 `fromCodePoint` 替代 `fromCharCode` 处理代理对
+- 修复 UTF-8 编码使用 `codePointAt` 正确处理代理对
+- 修复 `TextDecoder` 设置 `fatal` 选项以正确处理错误
+- 修复 `validateAbsolutePath` 处理多斜杠完整路径
+- 修复 `zip` 保留根目录结构
+- 修复 `appendFile` 在文件不存在时的处理
+- 修复 `getDeviceBenchmarkInfo` 调用前的类型检查
+- 修复 `image` 模块加载后撤销 object URL 防止内存泄漏
+- 修复 `storage.getLength` 在非 Mina 环境使用 `webGetLength`
+- 修复 `Uint8Array` 从 `ArrayBufferView` 创建的优化
+- 修复各模块错误类型改进
+
 ### 文档
-- 为 `Md5` 类添加完整的 JSDoc 文档和 `@example` 示例
-- 为 `createAbortError` 添加 `@example` 示例
-- 重写 README，更新许可证信息和文档链接
+- 重写 README，添加双语支持和详细功能说明
+- 新增 CODEBUDDY.md 仓库上下文指南
+- 为所有公开 API 添加 `@since` 版本标签
+- 完善 JSDoc 文档和 `@example` 示例
+- 将 JSDoc 注释从英文翻译为中文
 
 ### 测试
-- 新增 `writeJsonFile`/`writeJsonFileSync` 测试用例
-- 新增 `createAbortError` 测试用例
-- 新增 MD5 多块处理和填充边界情况的测试用例
+- 迁移测试到 Vitest 并大幅扩展测试覆盖率
+- 新增 minigame-test 项目用于小游戏平台测试
+- 新增 mina 平台各模块的综合测试
+- 新增 benchmark 性能测试
 
 ## [1.10.0] - 2025-07-31
 
@@ -138,7 +191,7 @@
 - 新增 `addResizeListener` 方法
 - 新增 `lbs` (位置服务) 模块
 - 新增 `image` 模块
-- 导出 `getWindowInfo` 方法
+- 新增 `getWindowInfo` 方法
 
 ### 变更
 - 删除 `getDeviceInfo` 方法
@@ -324,7 +377,7 @@
   - `socket` - WebSocket
   - `storage` - 本地存储
 
-[未发布]: https://github.com/JiangJie/minigame-std/compare/v1.10.0...HEAD
+[2.0.0]: https://github.com/JiangJie/minigame-std/compare/v1.10.0...v2.0.0
 [1.10.0]: https://github.com/JiangJie/minigame-std/compare/v1.9.7...v1.10.0
 [1.9.7]: https://github.com/JiangJie/minigame-std/compare/v1.9.6...v1.9.7
 [1.9.6]: https://github.com/JiangJie/minigame-std/compare/v1.9.5...v1.9.6
