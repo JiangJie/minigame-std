@@ -5,6 +5,14 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.0.1] - 2026-01-29
+
+### 文档
+- 为所有导出模块添加 JSDoc 文档注释
+
+### 变更
+- CI 发布流程添加复制共享文件的步骤
+
 ## [2.0.0] - 2026-01-29
 
 ### 破坏性变更
@@ -377,6 +385,7 @@
   - `socket` - WebSocket
   - `storage` - 本地存储
 
+[2.0.1]: https://github.com/JiangJie/minigame-std/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/JiangJie/minigame-std/compare/v1.10.0...v2.0.0
 [1.10.0]: https://github.com/JiangJie/minigame-std/compare/v1.9.7...v1.10.0
 [1.9.7]: https://github.com/JiangJie/minigame-std/compare/v1.9.6...v1.9.7
