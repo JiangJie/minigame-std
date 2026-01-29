@@ -186,9 +186,39 @@ export function remove(path: string): AsyncVoidIOResult {
     return (isMinaEnv() ? minaRemove : webRemove)(path);
 }
 
+/**
+ * 获取单个文件或目录的状态信息。
+ * @param path - 文件或目录的路径。
+ * @param options - 可选选项，recursive 设置为 false（默认）获取单个文件状态。
+ * @returns 包含状态信息的异步操作结果。
+ * @since 1.0.0
+ * @example
+ * ```ts
+ * const result = await stat('/path/to/file.txt');
+ * if (result.isOk()) {
+ *     const stats = result.unwrap();
+ *     console.log(stats.isFile()); // true
+ * }
+ * ```
+ */
 export function stat(path: string, options?: StatOptions & {
     recursive: false;
 }): AsyncIOResult<WechatMinigame.Stats>;
+/**
+ * 递归获取目录下所有文件和子目录的状态信息。
+ * @param path - 目录的路径。
+ * @param options - 选项，recursive 设置为 true 以递归获取。
+ * @returns 包含所有文件状态信息数组的异步操作结果。
+ * @since 1.0.0
+ * @example
+ * ```ts
+ * const result = await stat('/path/to/dir', { recursive: true });
+ * if (result.isOk()) {
+ *     const fileStats = result.unwrap();
+ *     fileStats.forEach(file => console.log(file.path));
+ * }
+ * ```
+ */
 export function stat(path: string, options: StatOptions & {
     recursive: true;
 }): AsyncIOResult<WechatMinigame.FileStats[]>;
