@@ -69,9 +69,8 @@ export function getUsrPath(): string {
  * @returns 验证成功返回标准化后的绝对路径，失败返回错误信息。
  */
 export function validateAbsolutePath(path: string): IOResult<string> {
-    if (typeof path !== 'string') {
-        return Err(new TypeError(`Path must be a string but received ${typeof path}`));
-    }
+    const typeError = validatePathType(path);
+    if (typeError) return typeError;
 
     // 是否已经是完整路径
     let isFullPath = false;
@@ -112,6 +111,36 @@ export function validateAbsolutePath(path: string): IOResult<string> {
 
     // 拼接用户数据根目录
     return Ok(usrPath.force() + path);
+}
+
+/**
+ * 验证可读路径（用于只读操作：readFile、stat、readDir）。
+ *
+ * 支持三种输入格式：
+ * 1. 完整路径：以 `wxfile://` 或 `http://` 开头（如 `wxfile://usr/test`）
+ * 2. 用户数据相对路径：以 `/` 开头（如 `/test`），会自动拼接 `wx.env.USER_DATA_PATH`
+ * 3. 代码包路径：不以 `./`、`../` 开头的相对路径（如 `images/logo.png`），直接返回原路径
+ *
+ * @param path - 待验证的路径。
+ * @returns 验证成功返回标准化后的路径，失败返回错误信息。
+ */
+export function validateReadablePath(path: string): IOResult<string> {
+    const typeError = validatePathType(path);
+    if (typeError) return typeError;
+
+    // 对于完整路径和以 / 开头的路径，使用现有的绝对路径验证
+    if (path.startsWith(rootPath.force()) || path.startsWith(ROOT_DIR)) {
+        return validateAbsolutePath(path);
+    }
+
+    // 既不是完整路径，也不以 / 开头，检查是否为代码包路径（不以 ./、../ 开头）
+    if (path.startsWith('./') || path.startsWith('../')) {
+        return Err(new Error(`Invalid path: '${path}'. Code package paths must not start with './' or '../'`));
+    }
+
+    // 代码包路径返回标准化后的结果
+    const normalized = normalize(path);
+    return Ok(normalized);
 }
 
 /**
@@ -323,6 +352,17 @@ function isAlreadyExistsFileError(error: FileError): boolean {
     // 可能没有errCode
     return errCode === 1301005
         || errMsg.includes('already exists');
+}
+
+/**
+ * 验证 path 是否为字符串类型。
+ * @param path - 待验证的路径。
+ * @returns 如果不是字符串返回错误，否则返回 undefined。
+ */
+function validatePathType(path: unknown): IOResult<never> | undefined {
+    if (typeof path !== 'string') {
+        return Err(new TypeError(`Path must be a string but received ${typeof path}`));
+    }
 }
 
 // #endregion

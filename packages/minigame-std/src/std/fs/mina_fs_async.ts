@@ -13,7 +13,7 @@ import type { FetchTask } from '../fetch/fetch_defines.ts';
 import { createFailedFetchTask, miniGameFailureToError, validateSafeUrl } from '../internal/mod.ts';
 import { asyncResultify } from '../utils/mod.ts';
 import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
-import { createDirIsFileError, createFileNotExistsError, createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
+import { createDirIsFileError, createFileNotExistsError, createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, validateReadablePath, type ZipIOResult } from './mina_fs_shared.ts';
 
 /**
  * 递归创建文件夹，相当于`mkdir -p`。
@@ -84,7 +84,7 @@ export async function move(srcPath: string, destPath: string): AsyncVoidIOResult
  * @returns 包含目录内容的字符串数组的异步结果。
  */
 export async function readDir(dirPath: string): AsyncIOResult<string[]> {
-    const dirPathRes = validateAbsolutePath(dirPath);
+    const dirPathRes = validateReadablePath(dirPath);
     if (dirPathRes.isErr()) return dirPathRes.asErr();
     dirPath = dirPathRes.unwrap();
 
@@ -133,7 +133,7 @@ export function readFile(filePath: string, options?: ReadOptions): AsyncIOResult
  * @returns 包含文件内容的异步结果。
  */
 export async function readFile(filePath: string, options?: ReadOptions): AsyncIOResult<ReadFileContent> {
-    const filePathRes = validateAbsolutePath(filePath);
+    const filePathRes = validateReadablePath(filePath);
     if (filePathRes.isErr()) return filePathRes.asErr();
     filePath = filePathRes.unwrap();
 
@@ -196,7 +196,7 @@ export function stat(path: string, options: StatOptions & {
 }): AsyncIOResult<WechatMinigame.FileStats[]>;
 export function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
 export async function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
-    const pathRes = validateAbsolutePath(path);
+    const pathRes = validateReadablePath(path);
     if (pathRes.isErr()) return pathRes.asErr();
     path = pathRes.unwrap();
 

@@ -8,7 +8,7 @@ import { zipSync as compressSync, unzipSync as decompressSync, type AsyncZippabl
 import { type AppendOptions, type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
 import { Ok, RESULT_VOID, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
-import { createDirIsFileError, createFileNotExistsError, createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, type ZipIOResult } from './mina_fs_shared.ts';
+import { createDirIsFileError, createFileNotExistsError, createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, validateReadablePath, type ZipIOResult } from './mina_fs_shared.ts';
 
 /**
  * `mkdir` 的同步版本。
@@ -64,7 +64,7 @@ export function moveSync(srcPath: string, destPath: string): VoidIOResult {
  * @returns 目录中的文件和子目录名称数组。
  */
 export function readDirSync(dirPath: string): IOResult<string[]> {
-    const dirPathRes = validateAbsolutePath(dirPath);
+    const dirPathRes = validateReadablePath(dirPath);
     if (dirPathRes.isErr()) return dirPathRes.asErr();
     dirPath = dirPathRes.unwrap();
 
@@ -85,7 +85,7 @@ export function readFileSync(filePath: string, options?: ReadOptions & {
 }): IOResult<Uint8Array<ArrayBuffer>>;
 export function readFileSync(filePath: string, options?: ReadOptions): IOResult<ReadFileContent>;
 export function readFileSync(filePath: string, options?: ReadOptions): IOResult<ReadFileContent> {
-    const filePathRes = validateAbsolutePath(filePath);
+    const filePathRes = validateReadablePath(filePath);
     if (filePathRes.isErr()) return filePathRes.asErr();
     filePath = filePathRes.unwrap();
 
@@ -138,7 +138,7 @@ export function statSync(path: string, options: StatOptions & {
 }): IOResult<WechatMinigame.FileStats[]>;
 export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
 export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
-    const pathRes = validateAbsolutePath(path);
+    const pathRes = validateReadablePath(path);
     if (pathRes.isErr()) return pathRes.asErr();
     path = pathRes.unwrap();
 

@@ -3,7 +3,7 @@
  * @description 测试 mina_fs_shared.ts 中的公共函数
  */
 import { Err } from 'happy-rusty';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 
 import {
     fileErrorToMkdirResult,
@@ -11,7 +11,16 @@ import {
     fileErrorToResult,
     getExistsResult,
     normalizeStats,
+    validateAbsolutePath,
+    validateReadablePath,
 } from '../src/std/fs/mina_fs_shared.ts';
+
+// Mock wx 对象（validateReadablePath 需要访问 wx.env.USER_DATA_PATH）
+vi.stubGlobal('wx', {
+    env: {
+        USER_DATA_PATH: 'wxfile://usr',
+    },
+});
 
 describe('mina_fs_shared', () => {
     describe('fileErrorToMkdirResult', () => {
@@ -241,6 +250,77 @@ describe('mina_fs_shared', () => {
 
             expect(result.isErr()).toBe(true);
             expect(result.unwrapErr().name).toBe('PermissionError');
+        });
+    });
+
+    describe('validateReadablePath', () => {
+        test('returns error for path starting with "./"', () => {
+            const result = validateReadablePath('./test/file.txt');
+
+            expect(result.isErr()).toBe(true);
+            expect(result.unwrapErr().message).toContain("must not start with './' or '../'");
+        });
+
+        test('returns error for path starting with "../"', () => {
+            const result = validateReadablePath('../test/file.txt');
+
+            expect(result.isErr()).toBe(true);
+            expect(result.unwrapErr().message).toContain("must not start with './' or '../'");
+        });
+
+        test('accepts valid code package path', () => {
+            const result = validateReadablePath('images/logo.png');
+
+            expect(result.isOk()).toBe(true);
+            expect(result.unwrap()).toBe('images/logo.png');
+        });
+
+        test('accepts hidden file path starting with dot', () => {
+            // .test.txt 是合法的代码包路径
+            const result = validateReadablePath('.test.txt');
+
+            expect(result.isOk()).toBe(true);
+            expect(result.unwrap()).toBe('.test.txt');
+        });
+
+        test('accepts path with ... prefix', () => {
+            // .../test 是合法的代码包路径（只是一个名为 ... 的目录）
+            const result = validateReadablePath('.../test');
+
+            expect(result.isOk()).toBe(true);
+            expect(result.unwrap()).toBe('.../test');
+        });
+
+        test('accepts path with ..test prefix', () => {
+            // ..test 是合法的代码包路径
+            const result = validateReadablePath('..test');
+
+            expect(result.isOk()).toBe(true);
+            expect(result.unwrap()).toBe('..test');
+        });
+
+        test('normalizes code package path', () => {
+            // 验证代码包路径会被标准化
+            const result = validateReadablePath('images//logo.png');
+
+            expect(result.isOk()).toBe(true);
+            expect(result.unwrap()).toBe('images/logo.png');
+        });
+
+        test('returns error for non-string path', () => {
+            const result = validateReadablePath(123 as unknown as string);
+
+            expect(result.isErr()).toBe(true);
+            expect(result.unwrapErr()).toBeInstanceOf(TypeError);
+        });
+    });
+
+    describe('validateAbsolutePath', () => {
+        test('returns error for non-string path', () => {
+            const result = validateAbsolutePath(123 as unknown as string);
+
+            expect(result.isErr()).toBe(true);
+            expect(result.unwrapErr()).toBeInstanceOf(TypeError);
         });
     });
 });
