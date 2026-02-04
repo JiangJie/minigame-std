@@ -288,7 +288,7 @@ export function getExistsResult(statResult: IOResult<WechatMinigame.Stats>, opti
 export function normalizeStats(statsOrFileStats: WechatMinigame.Stats | WechatMinigame.FileStats[], recursive: boolean): WechatMinigame.Stats | WechatMinigame.FileStats[] {
     if (Array.isArray(statsOrFileStats)) {
         return statsOrFileStats.map(({ path, stats }) => ({
-            path: path.slice(1), // 返回相对路径, 去掉开头的 `/`
+            path: path.replace(/^\/+/, ''), // 返回相对路径, 去掉开头的 `/`(安卓子项目 path 不以 `/` 开头)
             stats,
         }));
     }
