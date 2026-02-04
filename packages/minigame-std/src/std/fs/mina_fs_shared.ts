@@ -290,7 +290,7 @@ export function normalizeStats(statsOrFileStats: WechatMinigame.Stats | WechatMi
         return statsOrFileStats.map(({ path, stats }) => ({
             path: path.replace(/^\/+/, ''), // 返回相对路径, 去掉开头的 `/`(安卓子项目 path 不以 `/` 开头)
             stats,
-        }));
+        })).sort((a, b) => a.path.localeCompare(b.path)); // 按 path 排序
     }
 
     // 只要是 recursive 就返回数组(即使是文件或者空目录))
