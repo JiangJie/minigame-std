@@ -4,6 +4,7 @@
  */
 
 import { Lazy } from 'happy-rusty';
+import { decodeUtf8Buffer, encodeUtf8Buffer } from './utf8.ts';
 
 // #region Internal Variables
 
@@ -19,7 +20,10 @@ const decoder = Lazy(() => new TextDecoder('utf-8', { fatal: true }));
  * @returns 编码后的 `Uint8Array`
  */
 export function encodeUtf8(data: string): Uint8Array<ArrayBuffer> {
-    return encoder.force().encode(data);
+    // 兼容可能没有 `TextEncoder` 的环境
+    return typeof TextEncoder === 'function'
+        ? encoder.force().encode(data)
+        : encodeUtf8Buffer(data);
 }
 
 /**
@@ -27,6 +31,9 @@ export function encodeUtf8(data: string): Uint8Array<ArrayBuffer> {
  * @param data - 需要解码的二进制数据。
  * @returns 解码后的字符串。
  */
-export function decodeUtf8(data: AllowSharedBufferSource): string {
-    return decoder.force().decode(data);
+export function decodeUtf8(data: BufferSource): string {
+    // 兼容可能没有 `TextDecoder` 的环境
+    return typeof TextDecoder === 'function'
+        ? decoder.force().decode(data)
+        : decodeUtf8Buffer(data);
 }
