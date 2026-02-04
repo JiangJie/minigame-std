@@ -222,6 +222,45 @@ async function testAsync() {
     assert((await fs.exists('/special-chars_文件名.txt')).unwrap() === true);
     assert((await fs.readTextFile('/special-chars_文件名.txt')).unwrap() === 'special content');
 
+    // ==================== 代码包路径测试 ====================
+    // 注意：代码包路径测试需要在小游戏项目中有对应的文件
+
+    // Test readFile with code package path (no ./ or ../ prefix)
+    const testPngRes = await fs.readFile('images/test.png');
+    assert(testPngRes.isOk());
+    console.log('Read code package file images/test.png, size:', testPngRes.unwrap().byteLength);
+    assert(testPngRes.unwrap() instanceof Uint8Array);
+
+    // Test stat with code package path
+    const testPngStatRes = await fs.stat('images/test.png');
+    assert(testPngStatRes.isOk());
+    assert(testPngStatRes.unwrap().isFile());
+    console.log('Stat code package file images/test.png:', testPngStatRes.unwrap());
+
+    // Test readDir with code package path
+    const readDirCodePkgRes = await fs.readDir('images');
+    assert(readDirCodePkgRes.isOk());
+    console.log('Read code package directory images:', readDirCodePkgRes.unwrap());
+    assert(Array.isArray(readDirCodePkgRes.unwrap()));
+
+    // Test invalid code package path (should fail with ./ prefix)
+    const invalidPathRes1 = await fs.readFile('./images/test.png');
+    assert(invalidPathRes1.isErr());
+    console.log('Invalid path ./images/test.png correctly rejected:', invalidPathRes1.unwrapErr().message);
+
+    // Test invalid code package path (should fail with ../ prefix)
+    const invalidPathRes2 = await fs.readFile('../images/test.png');
+    assert(invalidPathRes2.isErr());
+    console.log('Invalid path ../images/test.png correctly rejected:', invalidPathRes2.unwrapErr().message);
+
+    // Test code package path with subdirectory stat
+    const imagesDirRes = await fs.stat('images');
+    assert(imagesDirRes.isOk());
+    assert(imagesDirRes.unwrap().isDirectory());
+    console.log('Stat code package directory images:', imagesDirRes.unwrap());
+
+    // ==================== 代码包路径测试结束 ====================
+
     // ==================== 新增测试用例结束 ====================
 
     await fs.remove(fs.opfs.ROOT_DIR);
@@ -384,6 +423,37 @@ function testSync() {
     fs.writeFileSync('/sync-特殊字符.txt', '同步特殊');
     assert(fs.existsSync('/sync-特殊字符.txt').unwrap() === true);
     assert(fs.readTextFileSync('/sync-特殊字符.txt').unwrap() === '同步特殊');
+
+    // ==================== 代码包路径同步测试 ====================
+
+    // Test readFileSync with code package path
+    const testPngSyncRes = fs.readFileSync('images/test.png');
+    assert(testPngSyncRes.isOk());
+    console.log('ReadSync code package file images/test.png, size:', testPngSyncRes.unwrap().byteLength);
+    assert(testPngSyncRes.unwrap() instanceof Uint8Array);
+
+    // Test statSync with code package path
+    const testPngStatSyncRes = fs.statSync('images/test.png');
+    assert(testPngStatSyncRes.isOk());
+    assert(testPngStatSyncRes.unwrap().isFile());
+
+    // Test readDirSync with code package path
+    const readDirSyncCodePkgRes = fs.readDirSync('images');
+    assert(readDirSyncCodePkgRes.isOk());
+    console.log('ReadDirSync code package directory images:', readDirSyncCodePkgRes.unwrap());
+    assert(Array.isArray(readDirSyncCodePkgRes.unwrap()));
+
+    // Test invalid code package path sync (should fail with ./ prefix)
+    const invalidSyncPathRes1 = fs.readFileSync('./images/test.png');
+    assert(invalidSyncPathRes1.isErr());
+    console.log('Invalid sync path ./images/test.png correctly rejected:', invalidSyncPathRes1.unwrapErr().message);
+
+    // Test invalid code package path sync (should fail with ../ prefix)
+    const invalidSyncPathRes2 = fs.readFileSync('../images/test.png');
+    assert(invalidSyncPathRes2.isErr());
+    console.log('Invalid sync path ../images/test.png correctly rejected:', invalidSyncPathRes2.unwrapErr().message);
+
+    // ==================== 代码包路径同步测试结束 ====================
 
     // ==================== 新增同步测试用例结束 ====================
 
