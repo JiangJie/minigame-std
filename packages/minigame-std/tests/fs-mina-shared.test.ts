@@ -134,8 +134,8 @@ describe('mina_fs_shared', () => {
     });
 
     describe('normalizeStats', () => {
-        test('normalizes FileStats array by removing leading slash from path', () => {
-            // 覆盖 path.slice(1) 分支
+        test('normalizes FileStats array by removing leading slash and sorting by path', () => {
+            // 覆盖 path.replace(/^\/+/, '') 分支和排序逻辑
             const fileStats: WechatMinigame.FileStats[] = [
                 {
                     path: '/subdir',
@@ -165,16 +165,38 @@ describe('mina_fs_shared', () => {
 
             expect(Array.isArray(result)).toBe(true);
             expect(result).toHaveLength(2);
-            // 验证路径去掉了开头的 `/`
-            expect(result[0].path).toBe('subdir');
-            expect(result[1].path).toBe('file.txt');
+            // 验证路径去掉了开头的 `/` 并按 path 排序 ('file.txt' < 'subdir')
+            expect(result[0].path).toBe('file.txt');
+            expect(result[1].path).toBe('subdir');
         });
 
-        test('normalizes FileStats array with recursive=false', () => {
-            // 测试数组输入时 recursive 参数不影响结果（数组始终返回处理后的数组）
+        test('sorts parent directories before children', () => {
+            // 验证父目录排在子目录/文件之前
             const fileStats: WechatMinigame.FileStats[] = [
                 {
-                    path: '/test',
+                    path: '/a/b/c.txt',
+                    stats: {
+                        mode: 0,
+                        size: 100,
+                        lastAccessedTime: 0,
+                        lastModifiedTime: 0,
+                        isDirectory: () => false,
+                        isFile: () => true,
+                    },
+                },
+                {
+                    path: '/a',
+                    stats: {
+                        mode: 0,
+                        size: 0,
+                        lastAccessedTime: 0,
+                        lastModifiedTime: 0,
+                        isDirectory: () => true,
+                        isFile: () => false,
+                    },
+                },
+                {
+                    path: '/a/b',
                     stats: {
                         mode: 0,
                         size: 0,
@@ -186,10 +208,49 @@ describe('mina_fs_shared', () => {
                 },
             ];
 
+            const result = normalizeStats(fileStats, true) as WechatMinigame.FileStats[];
+
+            expect(result).toHaveLength(3);
+            // 父目录总是排在子目录/文件之前
+            expect(result[0].path).toBe('a');
+            expect(result[1].path).toBe('a/b');
+            expect(result[2].path).toBe('a/b/c.txt');
+        });
+
+        test('normalizes FileStats array with recursive=false (array input always returns sorted array)', () => {
+            // 测试数组输入时 recursive 参数不影响结果（数组始终返回处理并排序后的数组）
+            const fileStats: WechatMinigame.FileStats[] = [
+                {
+                    path: '/z.txt',
+                    stats: {
+                        mode: 0,
+                        size: 0,
+                        lastAccessedTime: 0,
+                        lastModifiedTime: 0,
+                        isDirectory: () => false,
+                        isFile: () => true,
+                    },
+                },
+                {
+                    path: '/a.txt',
+                    stats: {
+                        mode: 0,
+                        size: 0,
+                        lastAccessedTime: 0,
+                        lastModifiedTime: 0,
+                        isDirectory: () => false,
+                        isFile: () => true,
+                    },
+                },
+            ];
+
             const result = normalizeStats(fileStats, false) as WechatMinigame.FileStats[];
 
             expect(Array.isArray(result)).toBe(true);
-            expect(result[0].path).toBe('test');
+            expect(result).toHaveLength(2);
+            // 验证排序 ('a.txt' < 'z.txt')
+            expect(result[0].path).toBe('a.txt');
+            expect(result[1].path).toBe('z.txt');
         });
 
         test('normalizes empty FileStats array', () => {
