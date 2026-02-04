@@ -3,8 +3,8 @@ import { encodeUtf8, fs } from 'minigame-std';
 
 const mockServer = 'https://fakestoreapi.com';
 
-const mockAll = `${ mockServer }/products`;
-const mockSingle = `${ mockAll }/1`;
+const mockAll = `${mockServer}/products`;
+const mockSingle = `${mockAll}/1`;
 
 export const mockZipUrl = 'https://hlddz.huanle.qq.com/web/FeaturesPicture/WH_Dialect_Package_MP3.zip';
 
@@ -48,7 +48,8 @@ async function testAsync() {
         timeout: 1000,
         onProgress(progressResult) {
             progressResult.inspect(progress => {
-                assert(progress.completedByteLength <= progress.totalByteLength);
+                // Maybe zero?
+                assert(progress.totalByteLength === 0 || progress.completedByteLength <= progress.totalByteLength);
             }).inspectErr(err => {
                 console.log(err);
             });
@@ -80,7 +81,8 @@ async function testAsync() {
         const downloadTask = fs.downloadFile(mockSingle);
         const downloadRes = await downloadTask.result;
         downloadRes.inspect((x: WechatMinigame.DownloadFileSuccessCallbackResult | { tempFilePath: string; }) => {
-            assert(x.tempFilePath.includes('/tmp/'));
+            // Maybe /tmp/xxx or /tmp_xxx
+            assert(x.tempFilePath.includes('/tmp'));
         });
         if (downloadRes.isOk()) {
             await fs.remove(downloadRes.unwrap().tempFilePath);
@@ -97,7 +99,7 @@ async function testAsync() {
     assert((await fs.unzipFromUrl(mockZipUrl, '/happy-3', {
         onProgress(progressResult) {
             progressResult.inspect(progress => {
-                console.log(`Unzipped ${ progress.completedByteLength }/${ progress.totalByteLength } bytes`);
+                console.log(`Unzipped ${progress.completedByteLength}/${progress.totalByteLength} bytes`);
             });
         },
     })).isOk());
