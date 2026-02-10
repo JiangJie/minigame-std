@@ -1,6 +1,7 @@
 /**
- * @internal
  * Web 平台的剪贴板操作实现。
+ *
+ * @internal
  */
 
 import { tryAsyncResult, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
@@ -18,6 +19,6 @@ export function writeText(data: string): AsyncVoidIOResult {
  * 异步读取剪贴板文本数据。
  * @returns 读取操作的结果。
  */
-export async function readText(): AsyncIOResult<string> {
+export function readText(): AsyncIOResult<string> {
     return tryAsyncResult(navigator.clipboard.readText());
 }
