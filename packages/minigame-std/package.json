@@ -93,7 +93,7 @@
     "happy-codec": "^1.1.0",
     "happy-opfs": "^2.0.2",
     "happy-rusty": "^1.9.1",
-    "minigame-api-typings": "^3.8.15",
+    "minigame-api-typings": "^3.8.16",
     "rsa-oaep-encryption": "^1.1.0",
     "tiny-future": "^1.2.0"
   }
