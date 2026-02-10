@@ -1,11 +1,11 @@
 /**
- * @internal
  * Web 平台的 WebSocket 实现。
+ *
+ * @internal
  */
 
-import { type AsyncVoidIOResult } from 'happy-rusty';
+import { tryAsyncResult, type AsyncVoidIOResult } from 'happy-rusty';
 import type { DataSource } from '../defines.ts';
-import { ASYNC_RESULT_VOID } from '../internal/mod.ts';
 import type { ISocket, SocketListenerMap } from './socket_define.ts';
 
 /**
@@ -75,8 +75,9 @@ export function connectSocket(url: string, protocols?: string | string[]): ISock
         },
 
         send(data: DataSource): AsyncVoidIOResult {
-            socket.send(data);
-            return ASYNC_RESULT_VOID;
+            return tryAsyncResult(() => {
+                socket.send(data);
+            });
         },
 
         close: socket.close.bind(socket),
