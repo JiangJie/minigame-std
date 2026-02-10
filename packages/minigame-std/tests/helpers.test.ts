@@ -145,7 +145,7 @@ test('bufferSourceToBytes handles TypedArray with offset', () => {
 });
 
 test('bufferSourceToBytes throws on invalid input', () => {
-    expect(() => bufferSourceToBytes({} as BufferSource)).toThrow('BufferSource is not ArrayBuffer or ArrayBufferView');
+    expect(() => bufferSourceToBytes({} as BufferSource)).toThrow('Input argument must be an ArrayBuffer or ArrayBufferView');
     expect(() => bufferSourceToBytes(null as unknown as BufferSource)).toThrow();
 });
 

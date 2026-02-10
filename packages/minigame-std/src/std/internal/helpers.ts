@@ -39,7 +39,7 @@ export function bufferSourceToBytes(data: BufferSource): Uint8Array<ArrayBuffer>
         return new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
     }
 
-    throw new TypeError(`BufferSource is not ArrayBuffer or ArrayBufferView`);
+    throw new TypeError('Input argument must be an ArrayBuffer or ArrayBufferView');
 }
 
 /**
