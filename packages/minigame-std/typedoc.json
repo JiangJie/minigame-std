@@ -14,7 +14,6 @@
     "includeGroups": true
   },
   "categorizeByGroup": true,
-  "exclude": ["**/node_modules/**"],
   "navigationLinks": {
     "GitHub": "https://github.com/JiangJie/minigame-std",
     "npm": "https://www.npmjs.com/package/minigame-std",
