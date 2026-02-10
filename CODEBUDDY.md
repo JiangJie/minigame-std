@@ -113,7 +113,7 @@ packages/
 │   │       ├── assert/         # Internal assertion utilities (not public API)
 │   │       ├── audio/          # WebAudio API abstraction
 │   │       ├── clipboard/      # Clipboard operations
-│   │       ├── codec/          # Text encoding (UTF-8 ↔ ArrayBuffer) and Base64 encoding/decoding
+│   │       ├── codec/          # Encoding/decoding (UTF-8, Base64, Hex, ByteString) - delegates to `happy-codec` with mini-game UTF-8 override
 │   │       ├── crypto/         # Cryptographic functions
 │   │       │   ├── hmac/       # HMAC algorithms
 │   │       │   ├── md/         # MD5 hashing
@@ -153,12 +153,15 @@ Each module follows a consistent pattern with three files:
 
 **Example from `packages/minigame-std/src/std/codec/mod.ts`:**
 ```typescript
-import { isMinaEnv } from '../../macros/env.ts';
-import { encodeUtf8 } from './utf8/mod.ts';
-import { encodeHex } from './hex.ts';
+// Most codec functions are re-exported directly from happy-codec
+export { decodeBase64, decodeByteString, decodeHex, encodeBase64, encodeByteString, encodeHex,
+    type DecodeBase64Options, type EncodeBase64Options } from 'happy-codec';
 
-// Example: encodeBase64 accepts DataSource (string | BufferSource)
-// Example: decodeHex is now available for hex string decoding
+// UTF-8 encoding/decoding has platform-specific implementations
+// (mini-game uses wx.encode/wx.decode, web uses happy-codec's implementation)
+export function encodeUtf8(data: string): Uint8Array<ArrayBuffer> {
+    return (isMinaEnv() ? minaEncodeUtf8 : webEncodeUtf8)(data);
+}
 ```
 
 ### API Wrapping Pattern for Mini-Game APIs
@@ -286,6 +289,7 @@ The project provides several utilities for wrapping platform-specific APIs:
 - `@happy-ts/fetch-t` - Enhanced fetch implementation
 - `@std/path` - Path utilities (JSR package)
 - `happy-rusty` - Rust-like Result types for error handling
+- `happy-codec` - Encoding/decoding utilities (Base64, Hex, ByteString, UTF-8)
 - `happy-opfs` - OPFS (Origin Private File System) support
 - `fflate` - Compression/decompression (zip support)
 - `rsa-oaep-encryption` - RSA-OAEP encryption implementation

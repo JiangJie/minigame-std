@@ -86,6 +86,18 @@ jsr add @happy-js/minigame-std
     import { decodeBase64, encodeBase64 } from 'minigame-std';
     ```
 
+-   **Hex 编解码**
+    ```js
+    import { decodeHex, encodeHex } from 'minigame-std';
+    // 十六进制字符串 ↔ Uint8Array
+    ```
+
+-   **ByteString 编解码**
+    ```js
+    import { decodeByteString, encodeByteString } from 'minigame-std';
+    // ByteString (Latin-1) ↔ Uint8Array
+    ```
+
 -   **文件系统操作**
     ```js
     import { fs } from 'minigame-std';

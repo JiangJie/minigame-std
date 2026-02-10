@@ -86,6 +86,18 @@ jsr add @happy-js/minigame-std
     import { decodeBase64, encodeBase64 } from 'minigame-std';
     ```
 
+-   **Hex Encoding/Decoding**
+    ```js
+    import { decodeHex, encodeHex } from 'minigame-std';
+    // Hex string ↔ Uint8Array
+    ```
+
+-   **ByteString Encoding/Decoding**
+    ```js
+    import { decodeByteString, encodeByteString } from 'minigame-std';
+    // ByteString (Latin-1) ↔ Uint8Array
+    ```
+
 -   **File System Operations**
     ```js
     import { fs } from 'minigame-std';
