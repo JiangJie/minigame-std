@@ -5,7 +5,7 @@
 
 import type { DataSource } from '../defines.ts';
 import { bufferSourceToBytes } from '../internal/mod.ts';
-import { encodeUtf8 } from './utf8/mod.ts';
+import { encodeUtf8 } from './mod.ts';
 
 /**
  * 将 DataSource 转换为 Uint8Array。

@@ -12,7 +12,6 @@
     "docs": "pnpm --filter minigame-std docs",
     "build:std": "pnpm --filter minigame-std build",
     "build:test": "pnpm --filter minigame-test build",
-    "bench": "pnpm --filter minigame-std bench",
     "playwright:install": "pnpm exec playwright install chromium-headless-shell"
   },
   "devDependencies": {

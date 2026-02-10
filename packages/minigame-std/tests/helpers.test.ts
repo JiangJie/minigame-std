@@ -210,7 +210,7 @@ test('bufferSourceToAb handles TypedArray with offset', () => {
 });
 
 test('bufferSourceToAb throws on invalid input', () => {
-    expect(() => bufferSourceToAb({} as BufferSource)).toThrow('BufferSource is not ArrayBuffer or ArrayBufferView');
+    expect(() => bufferSourceToAb({} as BufferSource)).toThrow('Input argument must be an ArrayBuffer or ArrayBufferView');
 });
 
 test('bufferSourceToAb handles empty ArrayBuffer', () => {

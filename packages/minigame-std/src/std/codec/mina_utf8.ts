@@ -1,10 +1,11 @@
 /**
+ * 小游戏环境的 UTF-8 编解码
+ *
  * @internal
- * 小游戏环境的编解码
  */
 
-import { bufferSourceToAb } from '../../internal/mod.ts';
-import { decodeUtf8Buffer, encodeUtf8Buffer } from './utf8.ts';
+import { decodeUtf8 as webDecodeUtf8, encodeUtf8 as webEncodeUtf8 } from 'happy-codec';
+import { bufferSourceToAb } from '../internal/mod.ts';
 
 // #region Internal Variables
 
@@ -20,11 +21,13 @@ const FORMAT = 'utf8' as const;
 export function encodeUtf8(data: string): Uint8Array<ArrayBuffer> {
     // 兼容某些平台没有 `encode` 方法
     return typeof wx.encode === 'function'
-        ? new Uint8Array(wx.encode({
-            data,
-            format: FORMAT,
-        }))
-        : encodeUtf8Buffer(data);
+        ? new Uint8Array(
+            wx.encode({
+                data,
+                format: FORMAT,
+            }),
+        )
+        : webEncodeUtf8(data);
 }
 
 /**
@@ -42,5 +45,5 @@ export function decodeUtf8(data: BufferSource): string {
         });
     }
 
-    return decodeUtf8Buffer(data);
+    return webDecodeUtf8(data);
 }

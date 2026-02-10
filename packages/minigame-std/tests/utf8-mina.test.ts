@@ -11,7 +11,7 @@ vi.hoisted(() => {
     (globalThis as Record<string, unknown>)['wx'] = {};
 });
 
-import { decodeUtf8, encodeUtf8 } from '../src/std/codec/utf8/mod.ts';
+import { decodeUtf8, encodeUtf8 } from '../src/std/codec/mod.ts';
 
 test('encodeUtf8 encodes string to Uint8Array in minigame environment', () => {
     const result = encodeUtf8('你好');

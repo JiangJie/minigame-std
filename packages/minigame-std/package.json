@@ -33,8 +33,7 @@
     "prepublishOnly": "pnpm run build",
     "test": "pnpm exec vitest run --coverage",
     "test:watch": "pnpm exec vitest watch",
-    "test:ui": "pnpm exec vitest --ui",
-    "bench": "pnpm exec vitest bench --run"
+    "test:ui": "pnpm exec vitest --ui"
   },
   "repository": {
     "type": "git",
@@ -91,6 +90,7 @@
     "@happy-ts/fetch-t": "^1.9.1",
     "@std/path": "npm:@jsr/std__path@^1.1.4",
     "fflate": "^0.8.2",
+    "happy-codec": "^1.1.0",
     "happy-opfs": "^2.0.2",
     "happy-rusty": "^1.9.1",
     "minigame-api-typings": "^3.8.15",

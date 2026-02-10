@@ -24,7 +24,7 @@ vi.hoisted(() => {
     };
 });
 
-import { decodeUtf8, encodeUtf8 } from '../src/std/codec/utf8/mod.ts';
+import { decodeUtf8, encodeUtf8 } from '../src/std/codec/mod.ts';
 
 test('encodeUtf8 uses wx.encode when available', () => {
     const result = encodeUtf8('你好');
