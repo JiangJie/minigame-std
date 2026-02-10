@@ -28,6 +28,7 @@ export default defineConfig(({ command }) => ({
             ],
             external: [
                 /^@std\/path/,
+                'happy-codec',
                 'happy-rusty',
                 'happy-opfs',
                 '@happy-ts/fetch-t',
