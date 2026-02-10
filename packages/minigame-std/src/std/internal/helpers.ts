@@ -59,7 +59,7 @@ export function bufferSourceToAb(data: BufferSource): ArrayBuffer {
             : data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
     }
 
-    throw new TypeError(`BufferSource is not ArrayBuffer or ArrayBufferView`);
+    throw new TypeError('Input argument must be an ArrayBuffer or ArrayBufferView');
 }
 
 /**
