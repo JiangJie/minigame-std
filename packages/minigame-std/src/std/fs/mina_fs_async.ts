@@ -766,8 +766,6 @@ type AsyncZipIOResult = Promise<ZipIOResult>;
 
 // #region Internal Functions
 
-// #region Internal Functions
-
 /**
  * 将错误对象转换为 IOResult 类型。
  */
