@@ -32,6 +32,7 @@ export function encodeUtf8(data: string): Uint8Array<ArrayBuffer> {
 
 /**
  * 将 BufferSource 数据解码为字符串。
+ * 如果遇到非法的 UTF-8 序列，会插入 U+FFFD 代替。
  * @param data - 需要解码的 BufferSource。
  * @returns 解码后的字符串。
  */

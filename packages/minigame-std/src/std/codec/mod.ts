@@ -1,5 +1,6 @@
 /**
  * Codec 模块：提供各种编码/解码功能。
+ * 除了 UTF-8 编码/解码功能外，其余编码/解码功能直接从 `happy-codec` 包中导出。
  *
  * @module codec
  */
@@ -8,9 +9,6 @@ import { decodeUtf8 as webDecodeUtf8, encodeUtf8 as webEncodeUtf8 } from 'happy-
 import { isMinaEnv } from '../../macros/env.ts';
 import { decodeUtf8 as minaDecodeUtf8, encodeUtf8 as minaEncodeUtf8 } from './mina_utf8.ts';
 
-/**
- * 除了 UTF-8 编码/解码功能外，其余编码/解码功能直接从 `happy-codec` 包中导出。
- */
 export { decodeBase64, decodeByteString, decodeHex, encodeBase64, encodeByteString, encodeHex, type DecodeBase64Options, type EncodeBase64Options } from 'happy-codec';
 
 /**
