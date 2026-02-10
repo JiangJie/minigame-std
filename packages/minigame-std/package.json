@@ -29,7 +29,6 @@
     "check": "pnpm exec tsc --noEmit",
     "prebuild": "pnpm run check",
     "build": "pnpm exec vite build && pnpm exec rollup --config rollup.config.ts",
-    "predocs": "pnpm dlx rimraf docs",
     "docs": "pnpm exec typedoc",
     "prepublishOnly": "pnpm run build",
     "test": "pnpm exec vitest run --coverage",
