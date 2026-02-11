@@ -25,7 +25,7 @@ export function setItem(key: string, data: string): VoidIOResult {
  */
 export function getItem(key: string): IOResult<string> {
     const data = localStorage.getItem(key);
-    return data == null ? Err(new Error(`${ key } not exists`)) : Ok(data);
+    return data == null ? Err(new Error(`Key '${key}' does not exist`)) : Ok(data);
 }
 
 /**
