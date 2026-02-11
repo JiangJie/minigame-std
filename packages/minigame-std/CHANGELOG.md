@@ -5,6 +5,47 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [Unreleased]
+
+### 新增
+- `fs.readFile`、`fs.readFileSync`、`fs.stat`、`fs.statSync`、`fs.readDir`、`fs.readDirSync` 支持读取代码包文件（不以 `./` 或 `../` 开头的相对路径）
+- 新增 `validateReadablePath` 函数用于验证只读操作的路径
+- `fs.stat` 递归结果按路径排序，确保跨平台一致性
+- Web 平台 UTF-8 编解码新增 `TextEncoder`/`TextDecoder` 不可用时的回退实现
+- `getRandomValues` 新增正整数验证
+
+### 变更
+- 重构 codec 模块，将 base64、hex、bytestring、utf8 编解码实现替换为 `happy-codec` 包
+- Web 平台 UTF-8 编解码回退到 `happy-codec` 实现（保留微信小游戏平台适配器）
+- 提取路径类型验证逻辑到 `validatePathType` 辅助函数
+- `decodeUtf8` 参数类型从 `AllowSharedBufferSource` 改为 `BufferSource`
+- 改进 `bufferSourceToBytes` 和 `bufferSourceToAb` 的错误消息，使其更清晰
+- `validateString` 和 `validatePositiveInteger` 的 `name` 参数改为必选，改进错误消息的可区分性
+- `validatePositiveInteger` 细化错误类型：类型错误抛出 `TypeError`，值错误抛出 `Error`
+- 优化 `web_clipboard` 模块代码结构
+- 优化 `web_socket` 模块的 `send` 错误处理
+- 移除 `package.json` 中的 `predocs` 脚本
+- 升级依赖版本
+
+### 修复
+- 修复 Android 子项目中递归 stat 的路径规范化问题
+- 修复 `web_storage` 的 `getItem` 在 key 不存在时的错误消息
+- 修复部分文件中缺少 `.ts` 扩展名的相对导入路径
+- 修复 `web_video` 进度事件中 `video.duration` 为零时的除零问题
+- 移除 `mina_fs_async` 中的重复 region 注释
+
+### 文档
+- 更新 codec 模块文档以反映 `happy-codec` 迁移
+- 修正 README 中 codec 返回类型描述（`ArrayBuffer` → `Uint8Array`）
+- 改进 codec 和 defines 模块的 JSDoc 注释
+- 移除 typedoc.json 中不必要的 exclude 选项
+
+### 测试
+- 新增代码包路径的异步和同步测试用例
+- 新增 `normalizeStats` 排序行为测试用例
+- 新增 UTF-8 codec 基准测试（对比 wx 原生与纯 JS 实现）
+- 修复 fs 测试断言和格式问题
+
 ## [2.0.2] - 2026-01-29
 
 ### 文档
@@ -394,6 +435,7 @@
   - `socket` - WebSocket
   - `storage` - 本地存储
 
+[Unreleased]: https://github.com/JiangJie/minigame-std/compare/v2.0.2...HEAD
 [2.0.2]: https://github.com/JiangJie/minigame-std/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/JiangJie/minigame-std/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/JiangJie/minigame-std/compare/v1.10.0...v2.0.0
