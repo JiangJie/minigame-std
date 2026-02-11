@@ -119,8 +119,9 @@ export function createVideo(options: WechatMinigame.CreateVideoOption): WechatMi
     });
     video.addEventListener('progress', () => {
         const buffered = video.buffered;
-        const bufferedPercent = buffered.length > 0
-            ? (buffered.end(buffered.length - 1) / video.duration) * 100
+        const { duration } = video;
+        const bufferedPercent = buffered.length > 0 && duration > 0
+            ? (buffered.end(buffered.length - 1) / duration) * 100
             : 0;
         listeners.progress.forEach(cb => cb({
             buffered: bufferedPercent,
