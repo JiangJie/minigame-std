@@ -213,13 +213,15 @@ export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> {
 
 ### Build System
 
-- **Bundler**: Rollup with esbuild plugin
-- **Configuration**: `packages/minigame-std/rollup.config.ts`
+- **Bundler**: Vite for bundling, Rollup for TypeScript declarations
+- **Configuration**: 
+  - `packages/minigame-std/vite.config.ts` - Vite bundling configuration
+  - `packages/minigame-std/rollup.config.ts` - TypeScript declaration generation
 - **Output**:
   - `packages/minigame-std/dist/main.cjs` - CommonJS bundle
   - `packages/minigame-std/dist/main.mjs` - ES module bundle
   - `packages/minigame-std/dist/types.d.ts` - TypeScript declarations
-- **Tree-shaking**: Enabled with `treeshake: 'smallest'`
+- **Tree-shaking**: Enabled with `treeshake: 'smallest'` in Rollup configuration
 - **Side effects**: `"sideEffects": false` in package.json for optimal tree-shaking
 
 ### Build Process
@@ -227,8 +229,8 @@ export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> {
 The build runs these steps in order:
 1. Type checking (`pnpm run check`)
 2. Linting (`pnpm run lint`)
-3. Rollup bundling with platform-specific code elimination
-4. TypeScript declaration generation
+3. Vite bundling with platform-specific code elimination
+4. Rollup-based TypeScript declaration generation
 
 The build uses `__MINIGAME_STD_MINA__` macro for compile-time platform detection:
 - Set to `true` for mini-game builds (removes web platform code)
@@ -339,7 +341,7 @@ Scopes frequently used: `deps`, `ci`, `types`, `config`, `tests`
 - `packages/minigame-std/src/macros/env.ts` - Platform detection mechanism
 - `package.json` - Root monorepo scripts
 - `packages/minigame-std/package.json` - Library package config
-- `packages/minigame-std/vitest.config.ts` - Test configuration and import mappings
+- `packages/minigame-std/vite.config.ts` - Test configuration, import mappings, and Vite build settings
 - `packages/minigame-std/rollup.config.ts` - Build configuration
 - `packages/minigame-std/tsconfig.json` - TypeScript compiler options
 - `eslint.config.mjs` - ESLint rules (root level)
