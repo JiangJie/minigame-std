@@ -6,6 +6,19 @@
 import { Err, RESULT_VOID, type VoidIOResult } from 'happy-rusty';
 
 /**
+ * 验证传入的值是否为正整数。
+ * @param input - 需要验证的值。
+ * @returns 验证结果，如果不是正整数则返回包含 TypeError 的 Err。
+ */
+export function validatePositiveInteger(input: number): VoidIOResult {
+    if (typeof input !== 'number' || input <= 0 || !Number.isInteger(input)) {
+        // 必须是个正整数
+        return Err(new TypeError('Input argument must be a positive integer'));
+    }
+    return RESULT_VOID;
+}
+
+/**
  * 验证传入的值是否为字符串。
  * @param str - 需要验证的值。
  * @param name - 参数名称，用于错误信息。

@@ -205,6 +205,23 @@ test('Generate random bytes', async () => {
     });
 });
 
+test('getRandomValues returns Err for invalid length', async () => {
+    // 0
+    expect((await cryptos.getRandomValues(0)).isErr()).toBe(true);
+    // 负数
+    expect((await cryptos.getRandomValues(-1)).isErr()).toBe(true);
+    // 小数
+    expect((await cryptos.getRandomValues(1.5)).isErr()).toBe(true);
+    // NaN
+    expect((await cryptos.getRandomValues(NaN)).isErr()).toBe(true);
+    // Infinity
+    expect((await cryptos.getRandomValues(Infinity)).isErr()).toBe(true);
+
+    // 验证错误类型为 TypeError
+    const result = await cryptos.getRandomValues(0);
+    expect(result.unwrapErr()).toBeInstanceOf(TypeError);
+});
+
 test('Generate random bytes with different sizes', async () => {
     const sizes = [1, 16, 32, 64, 128];
 

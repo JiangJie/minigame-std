@@ -37,6 +37,23 @@ test('getRandomValues returns random bytes in minigame environment', async () =>
     expect(bytes.length).toBe(16);
 });
 
+test('getRandomValues returns Err for invalid length in minigame environment', async () => {
+    // 0
+    expect((await getRandomValues(0)).isErr()).toBe(true);
+    // 负数
+    expect((await getRandomValues(-1)).isErr()).toBe(true);
+    // 小数
+    expect((await getRandomValues(1.5)).isErr()).toBe(true);
+    // NaN
+    expect((await getRandomValues(NaN)).isErr()).toBe(true);
+    // Infinity
+    expect((await getRandomValues(Infinity)).isErr()).toBe(true);
+
+    // 验证错误类型为 TypeError
+    const result = await getRandomValues(0);
+    expect(result.unwrapErr()).toBeInstanceOf(TypeError);
+});
+
 test('randomUUID returns a valid UUID in minigame environment', async () => {
     const result = await randomUUID();
 

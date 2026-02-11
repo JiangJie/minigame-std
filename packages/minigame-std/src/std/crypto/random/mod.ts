@@ -1,5 +1,6 @@
 import { Ok, type AsyncIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../../macros/env.ts';
+import { validatePositiveInteger } from '../../internal/mod.ts';
 import {
     getRandomValues as minaGetRandomValues,
     randomUUID as minaRandomUUID,
@@ -25,7 +26,12 @@ export * from './random_defines.ts';
  * }
  * ```
  */
-export function getRandomValues(length: number): AsyncIOResult<Uint8Array> {
+export function getRandomValues(length: number): AsyncIOResult<Uint8Array<ArrayBuffer>> {
+    const validateResult = validatePositiveInteger(length);
+    if (validateResult.isErr()) {
+        return Promise.resolve(validateResult.asErr());
+    }
+
     return isMinaEnv()
         ? minaGetRandomValues(length)
         : Promise.resolve(webGetRandomValues(length));
