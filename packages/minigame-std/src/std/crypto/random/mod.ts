@@ -27,7 +27,7 @@ export * from './random_defines.ts';
  * ```
  */
 export function getRandomValues(length: number): AsyncIOResult<Uint8Array<ArrayBuffer>> {
-    const validateResult = validatePositiveInteger(length);
+    const validateResult = validatePositiveInteger(length, 'length');
     if (validateResult.isErr()) {
         return Promise.resolve(validateResult.asErr());
     }

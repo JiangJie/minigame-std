@@ -43,10 +43,10 @@ import {
  * ```
  */
 export async function setItem(key: string, data: string): AsyncVoidIOResult {
-    const keyRes = validateString(key);
+    const keyRes = validateString(key, 'key');
     if (keyRes.isErr()) return keyRes;
 
-    const dataRes = validateString(data);
+    const dataRes = validateString(data, 'data');
     if (dataRes.isErr()) return dataRes;
 
     return isMinaEnv()
@@ -68,7 +68,7 @@ export async function setItem(key: string, data: string): AsyncVoidIOResult {
  * ```
  */
 export async function getItem(key: string): AsyncIOResult<string> {
-    const keyRes = validateString(key);
+    const keyRes = validateString(key, 'key');
     if (keyRes.isErr()) return keyRes.asErr();
 
     return isMinaEnv()
@@ -90,7 +90,7 @@ export async function getItem(key: string): AsyncIOResult<string> {
  * ```
  */
 export async function removeItem(key: string): AsyncVoidIOResult {
-    const keyRes = validateString(key);
+    const keyRes = validateString(key, 'key');
     if (keyRes.isErr()) return keyRes;
 
     return isMinaEnv()
@@ -148,7 +148,7 @@ export function getLength(): AsyncIOResult<number> {
  * ```
  */
 export async function hasItem(key: string): AsyncIOResult<boolean> {
-    const keyRes = validateString(key);
+    const keyRes = validateString(key, 'key');
     if (keyRes.isErr()) return keyRes.asErr();
 
     return isMinaEnv()
@@ -171,10 +171,10 @@ export async function hasItem(key: string): AsyncIOResult<boolean> {
  * ```
  */
 export function setItemSync(key: string, data: string): VoidIOResult {
-    const keyRes = validateString(key);
+    const keyRes = validateString(key, 'key');
     if (keyRes.isErr()) return keyRes;
 
-    const dataRes = validateString(data);
+    const dataRes = validateString(data, 'data');
     if (dataRes.isErr()) return dataRes;
 
     return (isMinaEnv() ? minaSetItemSync : webSetItem)(key, data);
@@ -194,7 +194,7 @@ export function setItemSync(key: string, data: string): VoidIOResult {
  * ```
  */
 export function getItemSync(key: string): IOResult<string> {
-    const keyRes = validateString(key);
+    const keyRes = validateString(key, 'key');
     if (keyRes.isErr()) return keyRes.asErr();
 
     return (isMinaEnv() ? minaGetItemSync : webGetItem)(key);
@@ -214,7 +214,7 @@ export function getItemSync(key: string): IOResult<string> {
  * ```
  */
 export function removeItemSync(key: string): VoidIOResult {
-    const keyRes = validateString(key);
+    const keyRes = validateString(key, 'key');
     if (keyRes.isErr()) return keyRes;
 
     return (isMinaEnv() ? minaRemoveItemSync : webRemoveItem)(key);
@@ -266,7 +266,7 @@ export function getLengthSync(): IOResult<number> {
  * ```
  */
 export function hasItemSync(key: string): IOResult<boolean> {
-    const keyRes = validateString(key);
+    const keyRes = validateString(key, 'key');
     if (keyRes.isErr()) return keyRes.asErr();
 
     return (isMinaEnv() ? minaHasItemSync : webHasItem)(key);

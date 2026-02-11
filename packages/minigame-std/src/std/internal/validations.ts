@@ -8,12 +8,15 @@ import { Err, RESULT_VOID, type VoidIOResult } from 'happy-rusty';
 /**
  * 验证传入的值是否为正整数。
  * @param input - 需要验证的值。
- * @returns 验证结果，如果不是正整数则返回包含 TypeError 的 Err。
+ * @param name - 参数名称，用于错误信息。
+ * @returns 验证结果，如果不是数字则返回包含 TypeError 的 Err，如果不是正整数则返回包含 Error 的 Err。
  */
-export function validatePositiveInteger(input: number): VoidIOResult {
-    if (typeof input !== 'number' || input <= 0 || !Number.isInteger(input)) {
-        // 必须是个正整数
-        return Err(new TypeError('Input argument must be a positive integer'));
+export function validatePositiveInteger(input: number, name: string): VoidIOResult {
+    if (typeof input !== 'number') {
+        return Err(new TypeError(`Param '${name}' must be a number but received ${typeof input}`));
+    }
+    if (input <= 0 || !Number.isInteger(input)) {
+        return Err(new Error(`Param '${name}' must be a positive integer but received ${input}`));
     }
     return RESULT_VOID;
 }
@@ -24,9 +27,9 @@ export function validatePositiveInteger(input: number): VoidIOResult {
  * @param name - 参数名称，用于错误信息。
  * @returns 验证结果，如果不是字符串则返回包含 TypeError 的 Err。
  */
-export function validateString(str: string, name?: string): VoidIOResult {
+export function validateString(str: string, name: string): VoidIOResult {
     if (typeof str !== 'string') {
-        return Err(new TypeError(`Param '${name || 'str'}' must be a string but received ${typeof str}`));
+        return Err(new TypeError(`Param '${name}' must be a string but received ${typeof str}`));
     }
     return RESULT_VOID;
 }

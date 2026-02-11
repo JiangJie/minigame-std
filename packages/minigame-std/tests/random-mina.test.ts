@@ -49,9 +49,10 @@ test('getRandomValues returns Err for invalid length in minigame environment', a
     // Infinity
     expect((await getRandomValues(Infinity)).isErr()).toBe(true);
 
-    // 验证错误类型为 TypeError
+    // 验证错误类型为 Error（0 是 number 类型，但不是正整数）
     const result = await getRandomValues(0);
-    expect(result.unwrapErr()).toBeInstanceOf(TypeError);
+    expect(result.unwrapErr()).toBeInstanceOf(Error);
+    expect(result.unwrapErr()).not.toBeInstanceOf(TypeError);
 });
 
 test('randomUUID returns a valid UUID in minigame environment', async () => {
