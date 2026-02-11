@@ -5,7 +5,7 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
-## [Unreleased]
+## [2.1.0] - 2026-02-11
 
 ### 新增
 - `fs.readFile`、`fs.readFileSync`、`fs.stat`、`fs.statSync`、`fs.readDir`、`fs.readDirSync` 支持读取代码包文件（不以 `./` 或 `../` 开头的相对路径）
@@ -435,7 +435,7 @@
   - `socket` - WebSocket
   - `storage` - 本地存储
 
-[Unreleased]: https://github.com/JiangJie/minigame-std/compare/v2.0.2...HEAD
+[2.1.0]: https://github.com/JiangJie/minigame-std/compare/v2.0.2...v2.1.0
 [2.0.2]: https://github.com/JiangJie/minigame-std/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/JiangJie/minigame-std/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/JiangJie/minigame-std/compare/v1.10.0...v2.0.0
