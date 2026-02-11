@@ -5,7 +5,7 @@
 
 import { Err, Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
-import type { GeoPosition } from './lbs_defines';
+import type { GeoPosition } from './lbs_defines.ts';
 
 /**
  * 获取当前 geo 坐标。

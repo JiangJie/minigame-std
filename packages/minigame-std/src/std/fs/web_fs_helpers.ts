@@ -5,7 +5,7 @@
 
 import { isFileHandle, isFileHandleLike, readDir, readDirSync, stat, statSync, type FileSystemHandleLike } from 'happy-opfs';
 import { Ok, tryAsyncResult, type AsyncIOResult, type IOResult } from 'happy-rusty';
-import type { StatOptions } from './fs_define';
+import type { StatOptions } from './fs_define.ts';
 
 /**
  * 将 `FileSystemHandleLike` 转换为小游戏 `Stats`。
