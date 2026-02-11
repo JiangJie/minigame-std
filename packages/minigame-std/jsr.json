@@ -11,7 +11,7 @@
     "happy-codec": "jsr:@happy-js/happy-codec@^1.1.0",
     "happy-opfs": "jsr:@happy-js/happy-opfs@^2.0.2",
     "happy-rusty": "jsr:@happy-js/happy-rusty@^1.9.1",
-    "minigame-api-typings": "npm:minigame-api-typings@^3.8.15",
+    "minigame-api-typings": "npm:minigame-api-typings@^3.8.16",
     "rsa-oaep-encryption": "jsr:@happy-js/rsa-oaep-encryption@^1.1.0",
     "tiny-future": "jsr:@happy-js/tiny-future@^1.2.0"
   },
