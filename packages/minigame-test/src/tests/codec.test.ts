@@ -1,4 +1,4 @@
-import { assert, assertEquals } from '@std/assert';
+import { assert, assertEquals, assertThrows } from '@std/assert';
 import {
     decodeByteString,
     decodeHex,
@@ -59,6 +59,9 @@ export function testCodec(): void {
 
     // ==================== 测试不支持 wx.decode 的情况 ====================
     testUtf8Fallback();
+
+    // ==================== 测试 TextDecoderOptions ====================
+    testDecodeUtf8Options();
 }
 
 /**
@@ -141,4 +144,41 @@ function testUtf8Fallback(): void {
         wx.decode = originalDecode;
         wx.encode = originalEncode;
     }
+}
+
+/**
+ * 测试 decodeUtf8 的 TextDecoderOptions 参数
+ * - 默认行为使用 wx.decode（fatal=false, ignoreBOM=false）
+ * - fatal=true 或 ignoreBOM=true 时回退到 webDecodeUtf8
+ */
+function testDecodeUtf8Options(): void {
+    console.log('Testing decodeUtf8 with TextDecoderOptions...');
+
+    // 默认选项：无效字节使用 U+FFFD 替换（wx.decode 路径）
+    const invalidBytes = new Uint8Array([0xff, 0xfe]);
+    const replaced = decodeUtf8(invalidBytes);
+    assertEquals(replaced, '\uFFFD\uFFFD');
+
+    // fatal=true：遇到无效字节抛出异常（回退到 webDecodeUtf8）
+    assertThrows(
+        () => decodeUtf8(invalidBytes, { fatal: true }),
+        TypeError,
+    );
+
+    // BOM 处理：默认剥离 BOM（wx.decode 路径）
+    // UTF-8 BOM (EF BB BF) + 'Hi'
+    const withBOM = new Uint8Array([0xef, 0xbb, 0xbf, 0x48, 0x69]);
+    assertEquals(decodeUtf8(withBOM), 'Hi');
+
+    // ignoreBOM=true：保留 BOM（回退到 webDecodeUtf8）
+    assertEquals(decodeUtf8(withBOM, { ignoreBOM: true }), '\uFEFFHi');
+
+    // fatal=false 显式传入，仍走 wx.decode 路径
+    assertEquals(decodeUtf8(invalidBytes, { fatal: false }), '\uFFFD\uFFFD');
+
+    // 组合选项：fatal=true + ignoreBOM=true（回退到 webDecodeUtf8）
+    const validWithBOM = new Uint8Array([0xef, 0xbb, 0xbf, 0x48, 0x69]);
+    assertEquals(decodeUtf8(validWithBOM, { fatal: true, ignoreBOM: true }), '\uFEFFHi');
+
+    console.log('TextDecoderOptions tests passed!');
 }
