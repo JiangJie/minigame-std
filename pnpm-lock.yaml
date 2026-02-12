@@ -63,8 +63,8 @@ importers:
         specifier: ^0.8.2
         version: 0.8.2
       happy-codec:
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: ^1.2.0
+        version: 1.2.0
       happy-opfs:
         specifier: ^2.0.2
         version: 2.0.2
@@ -72,8 +72,8 @@ importers:
         specifier: ^1.9.1
         version: 1.9.1
       minigame-api-typings:
-        specifier: ^3.8.16
-        version: 3.8.16
+        specifier: ^3.8.17
+        version: 3.8.17
       rsa-oaep-encryption:
         specifier: ^1.1.0
         version: 1.1.0
@@ -87,8 +87,8 @@ importers:
         specifier: npm:@jsr/std__assert@^1.0.18
         version: '@jsr/std__assert@1.0.18'
       minigame-api-typings:
-        specifier: ^3.8.16
-        version: 3.8.16
+        specifier: ^3.8.17
+        version: 3.8.17
       minigame-std:
         specifier: workspace:*
         version: link:../minigame-std
@@ -847,8 +847,8 @@ packages:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
     engines: {node: '>=18'}
 
-  happy-codec@1.1.0:
-    resolution: {integrity: sha512-n2K1dUUqoXhCtf5rQLFAmxifLyTnTJBxlLLXUf/nylVMEgnDA3ZhNH5UoZJzMbCHL+K1s56PUHzMKeVEcjpAhw==}
+  happy-codec@1.2.0:
+    resolution: {integrity: sha512-9x9gAm94ims4bzPbmhS6PoZrmsxUCk/1STaljWPFyegADWyN5aq76+RfnRoUwY+rpTBRgYP5aYZOxMqVz3MDvw==}
 
   happy-opfs@2.0.2:
     resolution: {integrity: sha512-gKpIqfTbzww7G/xCeNNv0QR+rkibxgCL08Bc9xDqXPxthH4bxlxFoLkHFiei/PU4wm4sNPSw43jlKYXoGnW+pQ==}
@@ -951,15 +951,15 @@ packages:
     resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
     engines: {node: '>=10'}
 
-  markdown-it@14.1.0:
-    resolution: {integrity: sha512-a54IwgWPaeBCAAsv13YgmALOF1elABB08FxO9i+r4VFk5Vl4pKokRPeX8u5TCgSsPi6ec1otfLjdOpVcgbpshg==}
+  markdown-it@14.1.1:
+    resolution: {integrity: sha512-BuU2qnTti9YKgK5N+IeMubp14ZUKUUw7yeJbkjtosvHiP0AZ5c8IAgEMk79D0eC8F23r4Ac/q8cAIFdm2FtyoA==}
     hasBin: true
 
   mdurl@2.0.0:
     resolution: {integrity: sha512-Lf+9+2r+Tdp5wXDXC4PcIBjTDtq4UKjCPMQhKIuzpJNW0b96kVqSwW0bT7FhRSfmAiFYgP+SCRvdrDozfh0U5w==}
 
-  minigame-api-typings@3.8.16:
-    resolution: {integrity: sha512-xSxV1onUDkwBRRqxAQgu+Xct1Ose74Ol2ESefE/hUpxH+7oY/eAFUvEaQB8hKL/2TZNx4RMIduEZv4Z5cAuvYg==}
+  minigame-api-typings@3.8.17:
+    resolution: {integrity: sha512-Lp8FEy0+qn5ZwO5MsBOZKskqOxXB300tySvzgCh31XolQO34FTlzH150oPhSaQAFsgUvmrkSka94F+IE1YzlFw==}
 
   minimatch@3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
@@ -2002,7 +2002,7 @@ snapshots:
 
   globals@14.0.0: {}
 
-  happy-codec@1.1.0: {}
+  happy-codec@1.2.0: {}
 
   happy-opfs@2.0.2:
     dependencies:
@@ -2100,7 +2100,7 @@ snapshots:
     dependencies:
       semver: 7.7.4
 
-  markdown-it@14.1.0:
+  markdown-it@14.1.1:
     dependencies:
       argparse: 2.0.1
       entities: 4.5.0
@@ -2111,7 +2111,7 @@ snapshots:
 
   mdurl@2.0.0: {}
 
-  minigame-api-typings@3.8.16: {}
+  minigame-api-typings@3.8.17: {}
 
   minimatch@3.1.2:
     dependencies:
@@ -2286,7 +2286,7 @@ snapshots:
     dependencies:
       '@gerrit0/mini-shiki': 3.22.0
       lunr: 2.3.9
-      markdown-it: 14.1.0
+      markdown-it: 14.1.1
       minimatch: 9.0.5
       typescript: 5.9.3
       yaml: 2.8.2

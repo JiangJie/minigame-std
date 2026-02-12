@@ -90,10 +90,10 @@
     "@happy-ts/fetch-t": "^1.9.1",
     "@std/path": "npm:@jsr/std__path@^1.1.4",
     "fflate": "^0.8.2",
-    "happy-codec": "^1.1.0",
+    "happy-codec": "^1.2.0",
     "happy-opfs": "^2.0.2",
     "happy-rusty": "^1.9.1",
-    "minigame-api-typings": "^3.8.16",
+    "minigame-api-typings": "^3.8.17",
     "rsa-oaep-encryption": "^1.1.0",
     "tiny-future": "^1.2.0"
   }
