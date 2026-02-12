@@ -38,6 +38,27 @@ test('encodeUtf8 and decodeUtf8 round trip in minigame environment', () => {
     expect(decoded).toBe(original);
 });
 
+test('decodeUtf8 with default options replaces invalid bytes with U+FFFD', () => {
+    const invalidBytes = new Uint8Array([0xff, 0xfe]);
+    const result = decodeUtf8(invalidBytes);
+
+    expect(result).toBe('\uFFFD\uFFFD');
+});
+
+test('decodeUtf8 with fatal=true throws on invalid bytes', () => {
+    const invalidBytes = new Uint8Array([0xff, 0xfe]);
+
+    expect(() => decodeUtf8(invalidBytes, { fatal: true })).toThrow();
+});
+
+test('decodeUtf8 with ignoreBOM=true preserves BOM', () => {
+    // UTF-8 BOM (EF BB BF) + 'Hi'
+    const withBOM = new Uint8Array([0xef, 0xbb, 0xbf, 0x48, 0x69]);
+    const result = decodeUtf8(withBOM, { ignoreBOM: true });
+
+    expect(result).toBe('\uFEFFHi');
+});
+
 test.afterAll(() => {
     delete (globalThis as Record<string, unknown>)['__MINIGAME_STD_MINA__'];
     delete (globalThis as Record<string, unknown>)['wx'];

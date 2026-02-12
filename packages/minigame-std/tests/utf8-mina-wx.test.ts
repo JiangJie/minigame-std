@@ -60,6 +60,29 @@ test('decodeUtf8 handles ArrayBuffer input', () => {
     expect(result).toBe('测试');
 });
 
+test('decodeUtf8 with default options uses wx.decode and replaces invalid bytes', () => {
+    const invalidBytes = new Uint8Array([0xff, 0xfe]);
+    const result = decodeUtf8(invalidBytes);
+
+    // wx.decode mock 使用 TextDecoder 默认行为：替换为 U+FFFD
+    expect(result).toBe('\uFFFD\uFFFD');
+});
+
+test('decodeUtf8 with fatal=true falls back to webDecodeUtf8 and throws', () => {
+    const invalidBytes = new Uint8Array([0xff, 0xfe]);
+
+    // fatal=true 会回退到 webDecodeUtf8，抛出异常
+    expect(() => decodeUtf8(invalidBytes, { fatal: true })).toThrow();
+});
+
+test('decodeUtf8 with ignoreBOM=true falls back to webDecodeUtf8 and preserves BOM', () => {
+    // UTF-8 BOM (EF BB BF) + 'Hi'
+    const withBOM = new Uint8Array([0xef, 0xbb, 0xbf, 0x48, 0x69]);
+    const result = decodeUtf8(withBOM, { ignoreBOM: true });
+
+    expect(result).toBe('\uFEFFHi');
+});
+
 test.afterAll(() => {
     delete (globalThis as Record<string, unknown>)['__MINIGAME_STD_MINA__'];
     delete (globalThis as Record<string, unknown>)['wx'];
