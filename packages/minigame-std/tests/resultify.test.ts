@@ -97,17 +97,23 @@ test('asyncResultify handles API returning rejected Promise', async () => {
     expect(result.unwrapErr()).toBeInstanceOf(Error);
 });
 
-test('asyncResultify throws on invalid API return', () => {
+test('asyncResultify tolerates non-void non-Promise return value', async () => {
     // API that returns something other than void/Promise
+    // Some mini-game platforms may return unexpected values
 
-    const mockApi = (_: { success?: (res: string) => void; }) => {
-        return 'invalid return' as unknown as void; // Trick the type system
+    const mockApi = (params: { success?: (res: string) => void; }) => {
+        setTimeout(() => {
+            params.success?.('result');
+        }, 10);
+        return 'unexpected return' as unknown as void; // Trick the type system
     };
 
     // Use type assertion to bypass the ValidAPI check
     const promisified = asyncResultify(mockApi) as (params: { success?: (res: string) => void; }) => Promise<unknown>;
 
-    expect(() => promisified({})).toThrow('API must return void or Promise');
+    // Should not throw, and should still resolve via callback
+    const result = await promisified({});
+    expect(result).toBeDefined();
 });
 
 test('asyncResultify handles undefined params', async () => {

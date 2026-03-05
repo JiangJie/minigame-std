@@ -47,11 +47,13 @@ export function asyncResultify<F extends (...args: any[]) => unknown, T = Result
         const ret = api(options);
 
         // 也支持其他返回 PromiseLike 的 API（鸭子类型检查）
-        if (ret != null && typeof (ret as PromiseLike<T>).then === 'function') {
+        if (ret != null && typeof ret === 'object' && typeof (ret as PromiseLike<T>).then === 'function') {
             // Convert PromiseLike to AsyncResult
             return tryAsyncResult(ret as PromiseLike<T>);
         } else if (ret !== undefined) {
-            throw new TypeError('API must return void or PromiseLike. Otherwise the return value will be discarded');
+            // 实测发现某些小游戏平台的 API 可能会返回非 void 非 PromiseLike 的值，虽然官方文档通常只描述了 void 或 PromiseLike 的返回类型。
+            // 为了兼容这些实际情况，我们暂时不抛出错误，而是允许这种情况存在。
+            // throw new TypeError('API must return void or PromiseLike. Otherwise the return value will be discarded');
         }
 
         return future.promise;
