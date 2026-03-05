@@ -4,7 +4,7 @@
   "description": "Monorepo for minigame-std library and test projects",
   "scripts": {
     "check": "pnpm -r run check",
-    "lint": "pnpm exec eslint .",
+    "lint": "pnpm -r run lint",
     "build": "pnpm -r run build",
     "test": "pnpm --filter minigame-std test",
     "test:watch": "pnpm --filter minigame-std test:watch",

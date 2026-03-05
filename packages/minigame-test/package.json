@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "check": "pnpm exec tsc --noEmit",
-    "prebuild": "pnpm run check",
+    "lint": "pnpm exec eslint .",
+    "prebuild": "pnpm run check && pnpm run lint",
     "build": "pnpm exec vite build",
     "watch": "pnpm run build --watch"
   },

@@ -27,7 +27,8 @@
   "sideEffects": false,
   "scripts": {
     "check": "pnpm exec tsc --noEmit",
-    "prebuild": "pnpm run check",
+    "lint": "pnpm exec eslint .",
+    "prebuild": "pnpm run check && pnpm run lint",
     "build": "pnpm exec vite build && pnpm exec rollup --config rollup.config.ts",
     "docs": "pnpm exec typedoc",
     "prepublishOnly": "pnpm run build",
