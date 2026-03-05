@@ -5,6 +5,23 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.1.1] - 2026-03-05
+
+### 新增
+- `decodeUtf8` 新增 `TextDecoderOptions` 参数，支持 `fatal` 和 `ignoreBOM` 选项
+
+### 变更
+- 构建前置步骤 (`prebuild`) 增加 lint 检查，确保构建前通过类型检查和代码规范检查
+- 升级依赖版本（eslint v10、rollup、typedoc、typescript-eslint、happy-codec、minigame-api-typings 等）
+
+### 修复
+- 修复 `mina_utf8.ts` 中 `decodeUtf8` 回退到 Web 实现时未传递 `options` 参数的问题
+- 修复 `asyncResultify` 对小游戏平台返回非 void 非 PromiseLike 值的 API 的兼容性
+
+### 测试
+- 新增 `decodeUtf8` 的 `TextDecoderOptions` 测试用例（Web 平台、mina 模拟、mina-wx 模拟）
+- 更新 `asyncResultify` 测试用例以匹配新的容错行为
+
 ## [2.1.0] - 2026-02-11
 
 ### 新增
@@ -435,6 +452,7 @@
   - `socket` - WebSocket
   - `storage` - 本地存储
 
+[2.1.1]: https://github.com/JiangJie/minigame-std/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/JiangJie/minigame-std/compare/v2.0.2...v2.1.0
 [2.0.2]: https://github.com/JiangJie/minigame-std/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/JiangJie/minigame-std/compare/v2.0.0...v2.0.1
