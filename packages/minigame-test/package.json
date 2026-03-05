@@ -8,8 +8,8 @@
     "watch": "pnpm run build --watch"
   },
   "dependencies": {
-    "@std/assert": "npm:@jsr/std__assert@^1.0.18",
-    "minigame-api-typings": "^3.8.17",
+    "@std/assert": "npm:@jsr/std__assert@^1.0.19",
+    "minigame-api-typings": "^3.8.18",
     "minigame-std": "workspace:*"
   }
 }
