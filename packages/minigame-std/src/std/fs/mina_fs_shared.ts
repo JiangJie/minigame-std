@@ -15,19 +15,19 @@ import type { ReadOptions, WriteFileContent } from './fs_define.ts';
  * 小游戏文件系统管理器实例。
  *
  */
-const fs = Lazy(() => wx.getFileSystemManager());
+const fs = /*@__PURE__*/ Lazy(() => wx.getFileSystemManager());
 
 /**
  * 用户数据根目录，`wxfile://usr` 或 `http://usr`。
  *
  */
-const usrPath = Lazy(() => wx.env.USER_DATA_PATH);
+const usrPath = /*@__PURE__*/ Lazy(() => wx.env.USER_DATA_PATH);
 
 /**
  * 根路径，`wxfile://` 或 `http://`。
  *
  */
-const rootPath = Lazy(() => {
+const rootPath = /*@__PURE__*/ Lazy(() => {
     const path = usrPath.force();
     // 剥离 `usr`
     return `${path.split('://')[0]}://`;
@@ -40,7 +40,7 @@ const rootPath = Lazy(() => {
  */
 export type ZipIOResult = IOResult<Uint8Array<ArrayBuffer> | void>;
 
-export const EMPTY_BYTES: Uint8Array<ArrayBuffer> = new Uint8Array(0);
+export const EMPTY_BYTES: Uint8Array<ArrayBuffer> = /*@__PURE__*/ new Uint8Array(0);
 
 /**
  * 获取小游戏文件系统管理器实例。

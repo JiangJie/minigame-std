@@ -13,7 +13,7 @@ import type { PlayOptions } from './audio_defines.ts';
 /**
  * 缓存的 AudioContext。
  */
-const audioContext = Once<AudioContext>();
+const audioContext = /*@__PURE__*/ Once<AudioContext>();
 
 // #endregion
 

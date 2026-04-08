@@ -11,7 +11,7 @@ import { isMiniGameDevtools } from '../platform/target.ts';
 /**
  * 小游戏性能管理器实例（延迟初始化）。
  */
-const minaPerformance = Lazy(() => wx.getPerformance());
+const minaPerformance = /*@__PURE__*/ Lazy(() => wx.getPerformance());
 
 // #endregion
 
