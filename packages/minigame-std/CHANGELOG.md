@@ -5,6 +5,25 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.1.2] - 2026-05-12
+
+### 性能优化
+- 为模块顶层调用全面添加 `/*#__PURE__*/` 注解，配合更激进的 treeshake 配置后，下游 bundler 可按需消除未使用的顶层副作用，进一步缩小产物体积
+
+### 变更
+- 收紧 Rollup treeshake 选项：`moduleSideEffects: false` + `propertyReadSideEffects: false`，并在 cjs/esm 输出中关闭 `topLevelVar`，使 PURE 注解对 `const` 顶层声明持续生效
+- 升级依赖版本（vitest 4.1.5、eslint 10.3.0、rollup 4.60.3、typescript 6.0.3、typescript-eslint 8.59.2、vite 8.0.11、minigame-api-typings 3.8.20、rsa-oaep-encryption 1.2.1 等），并适配 pnpm 11
+
+### 修复
+- 修复 pnpm 11 下 `pnpm run docs` 因新增内置子命令冲突而无法分发到 workspace 的问题（root 脚本显式补 `run` 关键字）
+
+### 风格
+- 将仓库内所有 `/*@__PURE__*/` 统一为 `/*#__PURE__*/` 风格，与 Rollup/Vite/Terser/SWC 社区惯例一致
+
+### 文档
+- `tsconfig.base.json` 的 `$schema` URL 由 `http` 改为 `https`
+- 将 `CODEBUDDY.md` 重命名为 `AGENTS.md`，对所有 AI agent 通用，并刷新 PURE 注解、treeshake 配置、pnpm 11 注意事项、release 流程、单测命令等指引
+
 ## [2.1.1] - 2026-03-05
 
 ### 新增
@@ -452,6 +471,7 @@
   - `socket` - WebSocket
   - `storage` - 本地存储
 
+[2.1.2]: https://github.com/JiangJie/minigame-std/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/JiangJie/minigame-std/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/JiangJie/minigame-std/compare/v2.0.2...v2.1.0
 [2.0.2]: https://github.com/JiangJie/minigame-std/compare/v2.0.1...v2.0.2
