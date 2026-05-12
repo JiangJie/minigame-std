@@ -21,11 +21,17 @@ export default defineConfig(({ command }) => ({
             output: [
                 {
                     format: 'cjs',
+                    topLevelVar: false,
                 },
                 {
                     format: 'esm',
+                    topLevelVar: false,
                 },
             ],
+            treeshake: {
+                moduleSideEffects: false,
+                propertyReadSideEffects: false,
+            },
             external: [
                 /^@std\/path/,
                 'happy-codec',
@@ -36,7 +42,6 @@ export default defineConfig(({ command }) => ({
                 /^fflate\//,
                 'rsa-oaep-encryption',
             ],
-            treeshake: 'smallest',
         },
     },
     test: {
