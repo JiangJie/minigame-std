@@ -1,6 +1,6 @@
-# CODEBUDDY.md
+# AGENTS.md
 
-This file provides guidance to CodeBuddy Code when working with code in this repository.
+This file provides guidance to AI coding agents when working with code in this repository.
 
 ## Project Overview
 
@@ -84,18 +84,22 @@ pnpm --filter minigame-std build
 - **Coverage Note**: Web platform tests achieve 100% coverage by excluding mini-game specific files via Vite's `coverage.exclude` configuration:
   - `fs_async.ts` / `fs_sync.ts`: Simple wrapper layers that delegate to platform-specific implementations
   - `mina_fs_async.ts` / `mina_fs_sync.ts`: Mini-game specific implementations tested separately via minigame-test
+- **Slowest suite**: `socket.test.ts` performs real WebSocket handshakes against a public echo server (~30s). When iterating, exclude it with `--exclude 'tests/socket.test.ts'`.
 
 ### Running Individual Tests
 
 ```bash
-# Run a specific test file
-pnpm exec vitest run packages/minigame-std/tests/base64.test.ts
+# Run a specific test file (vitest config lives in the package, so run from there)
+pnpm --filter minigame-std exec vitest run tests/base64.test.ts
 
 # Run tests matching a pattern
-pnpm exec vitest run --testNamePattern "base64"
+pnpm --filter minigame-std exec vitest run --testNamePattern "base64"
 
 # Run tests in watch mode for a specific file
-pnpm exec vitest watch packages/minigame-std/tests/crypto.test.ts
+pnpm --filter minigame-std exec vitest watch tests/crypto.test.ts
+
+# Skip the slowest suite (socket performs real WebSocket handshakes, ~30s)
+pnpm --filter minigame-std exec vitest run --exclude 'tests/socket.test.ts'
 ```
 
 ## Code Architecture
@@ -214,14 +218,15 @@ export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> {
 ### Build System
 
 - **Bundler**: Vite for bundling, Rollup for TypeScript declarations
-- **Configuration**: 
+- **Configuration**:
   - `packages/minigame-std/vite.config.ts` - Vite bundling configuration
   - `packages/minigame-std/rollup.config.ts` - TypeScript declaration generation
 - **Output**:
   - `packages/minigame-std/dist/main.cjs` - CommonJS bundle
   - `packages/minigame-std/dist/main.mjs` - ES module bundle
   - `packages/minigame-std/dist/types.d.ts` - TypeScript declarations
-- **Tree-shaking**: Enabled with `treeshake: 'smallest'` in Rollup configuration
+- **Tree-shaking**: Configured in `vite.config.ts` with `treeshake.moduleSideEffects: false` and `treeshake.propertyReadSideEffects: false` for aggressive dead-code elimination
+- **Top-level declarations**: Rollup output uses `topLevelVar: false` in both CJS and ESM to preserve `const` declarations — this is what makes `/*#__PURE__*/` annotations on module-level calls effective for downstream bundlers
 - **Side effects**: `"sideEffects": false` in package.json for optimal tree-shaking
 
 ### Build Process
@@ -285,6 +290,20 @@ The project provides several utilities for wrapping platform-specific APIs:
 - Module exports use namespace pattern for some modules: `export * as fs from './std/fs/mod.ts'`
 - This avoids naming conflicts (e.g., `cryptos` instead of `crypto` to avoid global conflict)
 
+### Tree-shaking: PURE Annotations
+
+Module-level function/constructor calls **must** be prefixed with `/*#__PURE__*/` so bundlers can eliminate them when unused by downstream consumers.
+
+- Use the `#` style (Rollup/Vite/Terser/SWC convention), **not** the legacy `@` style.
+- Pattern examples:
+  ```typescript
+  const fs = /*#__PURE__*/ Lazy(() => wx.getFileSystemManager());
+  const audioContext = /*#__PURE__*/ Once<AudioContext>();
+  export const EMPTY_BYTES: Uint8Array<ArrayBuffer> = /*#__PURE__*/ new Uint8Array(0);
+  export const ASYNC_RESULT_VOID = /*#__PURE__*/ Promise.resolve(RESULT_VOID);
+  ```
+- Combined with `topLevelVar: false` in `vite.config.ts`, this enables per-symbol DCE for downstream consumers.
+
 ## Dependencies
 
 ### Runtime Dependencies (minigame-std)
@@ -317,11 +336,24 @@ This project follows **Conventional Commits** specification. Common commit types
 
 Scopes frequently used: `deps`, `ci`, `types`, `config`, `tests`
 
-## Common Pitfalls
+## Release Process
 
-### Memory Leaks
-- Always revoke object URLs after use (e.g., `URL.revokeObjectURL()` for images)
-- Clean up event listeners when no longer needed
+The project is dual-published to **npm** and **JSR**. Releases are coordinated by the `/release` skill which runs:
+
+1. Bump version in `packages/minigame-std/package.json` **and** `packages/minigame-std/jsr.json` (must stay in sync)
+2. Regenerate `CHANGELOG.md` (Keep a Changelog format) via `/changelog` skill
+3. Commit as `release: vx.y.z`
+4. Tag `vx.y.z`
+5. Push (manual confirmation required)
+
+Version bump policy (Semver, based on accumulated commits since last tag):
+- `feat!` / `BREAKING CHANGE` → major
+- `feat` → minor
+- `fix` / `perf` / others → patch
+
+Style-only changes (e.g. `/*@__PURE__*/` ↔ `/*#__PURE__*/`) do not by themselves warrant a release — bundle them with a substantive change.
+
+## Common Pitfalls
 
 ### Type Assertions
 - Use explicit `Uint8Array<ArrayBuffer>` type annotations, not generic `Uint8Array`
@@ -335,16 +367,29 @@ Scopes frequently used: `deps`, `ci`, `types`, `config`, `tests`
 - Use `isMinaEnv()` from `packages/minigame-std/src/macros/env.ts` for runtime platform checks
 - Never use direct checks like `typeof wx !== 'undefined'` in library code
 
+### pnpm 11 Reserved Subcommands
+pnpm 11 introduced built-in subcommands (e.g. `docs`) that shadow workspace scripts. When writing root scripts that delegate to workspace packages, **always include the `run` keyword** to disambiguate:
+```jsonc
+// ❌ Bad — `docs` is parsed as pnpm's built-in command, --filter becomes an unknown option
+"docs": "pnpm --filter minigame-std docs"
+// ✅ Good
+"docs": "pnpm --filter minigame-std run docs"
+```
+
 ## Important Files
 
 - `packages/minigame-std/src/mod.ts` - Main entry point, exports all public APIs
 - `packages/minigame-std/src/macros/env.ts` - Platform detection mechanism
 - `package.json` - Root monorepo scripts
-- `packages/minigame-std/package.json` - Library package config
+- `packages/minigame-std/package.json` - Library package config (npm)
+- `packages/minigame-std/jsr.json` - Library package config (JSR); version must match `package.json`
 - `packages/minigame-std/vite.config.ts` - Test configuration, import mappings, and Vite build settings
 - `packages/minigame-std/rollup.config.ts` - Build configuration
 - `packages/minigame-std/tsconfig.json` - TypeScript compiler options
+- `pnpm-workspace.yaml` - Declares `packages/*` as the workspace
+- `.npmrc` - pnpm install behavior tweaks
 - `eslint.config.mjs` - ESLint rules (root level)
+- `CHANGELOG.md` - Release history (Keep a Changelog format, generated by `/changelog` skill)
 
 ## Documentation
 
