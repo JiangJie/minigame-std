@@ -7,11 +7,11 @@ import { parseUserAgent } from './user_agent.ts';
 
 // 以下变量一旦获取则不会变化
 // 兼容基础库低版本
-const deviceInfo = /*@__PURE__*/ Lazy<DeviceInfo>(() => isMinaEnv()
+const deviceInfo = /*#__PURE__*/ Lazy<DeviceInfo>(() => isMinaEnv()
     ? (wx.getDeviceInfo ? wx.getDeviceInfo() : wx.getSystemInfoSync()) as unknown as DeviceInfo
     : getWebDeviceInfo(),
 );
-const benchmarkLevel = /*@__PURE__*/ OnceAsync<number>();
+const benchmarkLevel = /*#__PURE__*/ OnceAsync<number>();
 
 // #endregion
 

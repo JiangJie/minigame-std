@@ -11,7 +11,7 @@ import type { UUID } from './random_defines.ts';
 /**
  * 缓存加密模块。
  */
-const cryptoManager = /*@__PURE__*/ Lazy(() => wx.getUserCryptoManager());
+const cryptoManager = /*#__PURE__*/ Lazy(() => wx.getUserCryptoManager());
 
 /**
  * 生成指定长度的加密随机字节数组。
