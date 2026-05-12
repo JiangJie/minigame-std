@@ -16,18 +16,19 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@stylistic/eslint-plugin": "^5.9.0",
-    "@vitest/browser-playwright": "^4.0.18",
-    "@vitest/coverage-v8": "^4.0.18",
-    "@vitest/ui": "^4.0.18",
-    "eslint": "^10.0.2",
-    "playwright": "^1.58.2",
-    "rollup": "^4.59.0",
-    "rollup-plugin-dts": "^6.3.0",
-    "typedoc": "^0.28.17",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.56.1",
-    "vite": "^7.3.2",
-    "vitest": "^4.0.18"
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "@types/node": "^25.6.2",
+    "@vitest/browser-playwright": "^4.1.5",
+    "@vitest/coverage-v8": "^4.1.5",
+    "@vitest/ui": "^4.1.5",
+    "eslint": "^10.3.0",
+    "playwright": "^1.59.1",
+    "rollup": "^4.60.3",
+    "rollup-plugin-dts": "^6.4.1",
+    "typedoc": "^0.28.19",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.2",
+    "vite": "^8.0.11",
+    "vitest": "^4.1.5"
   }
 }
