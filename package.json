@@ -9,7 +9,7 @@
     "test": "pnpm --filter minigame-std test",
     "test:watch": "pnpm --filter minigame-std test:watch",
     "test:ui": "pnpm --filter minigame-std test:ui",
-    "docs": "pnpm --filter minigame-std docs",
+    "docs": "pnpm --filter minigame-std run docs",
     "build:std": "pnpm --filter minigame-std build",
     "build:test": "pnpm --filter minigame-test build",
     "playwright:install": "pnpm exec playwright install chromium-headless-shell"
