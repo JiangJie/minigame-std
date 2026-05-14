@@ -4,6 +4,7 @@
 
 import { Once, tryAsyncResult, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../macros/env.ts';
+import { fetchT } from '../fetch/mod.ts';
 import { readFile } from '../fs/mod.ts';
 import { ASYNC_RESULT_VOID, bufferSourceToAb } from '../internal/mod.ts';
 import type { PlayOptions } from './audio_defines.ts';
@@ -139,4 +140,25 @@ export async function playWebAudioFromFile(filePath: string, options?: PlayOptio
     const bufferRes = await readFile(filePath);
 
     return bufferRes.andThenAsync(bytes => playWebAudioFromBufferSource(bytes.buffer, options));
+}
+
+/**
+ * 从远程 URL 下载音频并解码播放。
+ * 会先完整下载音频数据再调用 `decodeAudioData`，适合短音效，不适合长音频或流式播放。
+ * @param url - 音频资源 URL。
+ * @param options - 播放选项。
+ * @returns 正在播放的 AudioBufferSourceNode。
+ * @since unreleased
+ * @example
+ * ```ts
+ * const result = await audio.playWebAudioFromUrl('https://example.com/audio.mp3');
+ * if (result.isOk()) {
+ *     const source = result.unwrap();
+ * }
+ * ```
+ */
+export async function playWebAudioFromUrl(url: string, options?: PlayOptions): AsyncIOResult<AudioBufferSourceNode> {
+    const bufferRes = await fetchT(url, { responseType: 'arraybuffer' }).result;
+
+    return bufferRes.andThenAsync(ab => playWebAudioFromBufferSource(ab, options));
 }

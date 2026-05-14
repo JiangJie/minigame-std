@@ -1,4 +1,4 @@
-import { afterAll, afterEach, beforeAll, expect, test } from 'vitest';
+import { afterAll, afterEach, beforeAll, expect, test, vi } from 'vitest';
 import { audio, fs } from '../src/mod.ts';
 
 // Generate a simple WAV file buffer (100ms of silence)
@@ -61,6 +61,7 @@ afterAll(async () => {
 afterEach(async () => {
     // Close and reset audio context between tests
     await audio.closeGlobalAudioContext();
+    vi.unstubAllGlobals();
 });
 
 test('createWebAudioContext creates an AudioContext', () => {
@@ -294,6 +295,42 @@ test('playWebAudioFromFile with options', async () => {
     expect(source.onended).toBe(null);
 
     source.stop();
+});
+
+test('playWebAudioFromUrl downloads and plays audio from URL', async () => {
+    const wavBuffer = generateSilentWavBuffer();
+    const fetchMock = vi.fn<(input: RequestInfo | URL, init?: RequestInit) => Promise<Response>>(async () => new Response(wavBuffer));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const result = await audio.playWebAudioFromUrl('https://example.com/audio.wav', {
+        loop: true,
+        autoDisconnect: false,
+    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(String(fetchMock.mock.calls[0]?.[0])).toBe('https://example.com/audio.wav');
+    expect(result.isOk()).toBe(true);
+
+    const source = result.unwrap();
+    expect(source).toBeInstanceOf(AudioBufferSourceNode);
+    expect(source.loop).toBe(true);
+    expect(source.onended).toBe(null);
+
+    source.stop();
+});
+
+test('playWebAudioFromUrl returns fetch error for non-ok response', async () => {
+    const fetchMock = vi.fn<(input: RequestInfo | URL, init?: RequestInit) => Promise<Response>>(async () => new Response(null, {
+        status: 404,
+        statusText: 'Not Found',
+    }));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const result = await audio.playWebAudioFromUrl('https://example.com/missing.wav');
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(result.isErr()).toBe(true);
+    expect(result.unwrapErr().name).toBe('FetchError');
 });
 
 test('AudioContext can decode various audio formats', async () => {
