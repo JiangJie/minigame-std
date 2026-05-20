@@ -19,7 +19,7 @@ export default defineConfig({
         rollupOptions: {
             output: {
                 // 保持单文件输出
-                inlineDynamicImports: true,
+                codeSplitting: false,
             },
             treeshake: {
                 unknownGlobalSideEffects: false,
