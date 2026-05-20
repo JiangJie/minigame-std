@@ -74,7 +74,7 @@ export function createVideoFrameSource(options: CreateVideoFrameSourceOptions): 
             return height;
         },
         async play(): AsyncVoidIOResult {
-            const result = await tryAsyncResult(decoder.start({ source: options.src }));
+            const result = await tryAsyncResult(decoder.start({ source: options.source }));
             return result.inspect(() => {
                 state = 'playing';
             });

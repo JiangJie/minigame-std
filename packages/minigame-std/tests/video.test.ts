@@ -871,7 +871,7 @@ test('isVideoFrameSourceSupported returns true on web', () => {
 
 test('createVideoFrameSource creates hidden video element', () => {
     const sourceRes = video.createVideoFrameSource({
-        src: 'https://example.com/video.mp4',
+        source: 'https://example.com/video.mp4',
         loop: true,
         muted: true,
         autoplay: false,
@@ -901,7 +901,7 @@ test('VideoFrameSource play pause stop seek and destroy work on web', async () =
     const playSpy = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue(undefined);
     const pauseSpy = vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(() => {});
     const loadSpy = vi.spyOn(HTMLMediaElement.prototype, 'load').mockImplementation(() => {});
-    const source = video.createVideoFrameSource({ src: 'https://example.com/video.mp4' }).unwrap();
+    const source = video.createVideoFrameSource({ source: 'https://example.com/video.mp4' }).unwrap();
 
     expect(source.duration).toSatisfy(Number.isNaN);
     expect(source.width).toBe(0);
@@ -946,7 +946,7 @@ test('VideoFrameSource getFrame returns element frame on web', () => {
     });
 
     const source = video.createVideoFrameSource({
-        src: 'https://example.com/video.mp4',
+        source: 'https://example.com/video.mp4',
         width: 320,
         height: 180,
     }).unwrap();
@@ -989,7 +989,7 @@ test('VideoFrameSource uses requestAnimationFrame fallback when video frame call
         configurable: true,
     });
 
-    const source = video.createVideoFrameSource({ src: 'https://example.com/video.mp4' }).unwrap();
+    const source = video.createVideoFrameSource({ source: 'https://example.com/video.mp4' }).unwrap();
     const frameListener = vi.fn();
     const videoEl = document.querySelector('video[src="https://example.com/video.mp4"]') as HTMLVideoElement;
     source.onFrame(frameListener);
@@ -1021,7 +1021,7 @@ test('VideoFrameSource uses requestAnimationFrame fallback when video frame call
 test('VideoFrameSource autoplay starts playback on web', () => {
     const playSpy = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue(undefined);
     const source = video.createVideoFrameSource({
-        src: 'https://example.com/video.mp4',
+        source: 'https://example.com/video.mp4',
         autoplay: true,
     }).unwrap();
 
@@ -1031,7 +1031,7 @@ test('VideoFrameSource autoplay starts playback on web', () => {
 });
 
 test('VideoFrameSource frame listener can be added and removed on web', () => {
-    const source = video.createVideoFrameSource({ src: 'https://example.com/video.mp4' }).unwrap();
+    const source = video.createVideoFrameSource({ source: 'https://example.com/video.mp4' }).unwrap();
     const frameListener = vi.fn();
 
     source.onFrame(frameListener);
@@ -1050,7 +1050,7 @@ test('VideoFrameSource frame listener can be added and removed on web', () => {
 });
 
 test('VideoFrameSource ended and error listeners work on web', () => {
-    const source = video.createVideoFrameSource({ src: 'https://example.com/video.mp4' }).unwrap();
+    const source = video.createVideoFrameSource({ source: 'https://example.com/video.mp4' }).unwrap();
     const endedListener = vi.fn();
     const errorListener = vi.fn();
     const videoEl = document.querySelector('video[src="https://example.com/video.mp4"]') as HTMLVideoElement;

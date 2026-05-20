@@ -55,7 +55,7 @@ test('isVideoFrameSourceSupported returns true in minigame environment', () => {
 });
 
 test('createVideoFrameSource creates minigame video decoder', () => {
-    const sourceRes = createVideoFrameSource({ src: 'https://example.com/video.mp4' });
+    const sourceRes = createVideoFrameSource({ source: 'https://example.com/video.mp4' });
 
     expect(sourceRes.isOk()).toBe(true);
     expect(mocks.createVideoDecoder).toHaveBeenCalled();
@@ -64,7 +64,7 @@ test('createVideoFrameSource creates minigame video decoder', () => {
 });
 
 test('VideoFrameSource play calls decoder start with source', async () => {
-    const source = createVideoFrameSource({ src: 'https://example.com/video.mp4' }).unwrap();
+    const source = createVideoFrameSource({ source: 'https://example.com/video.mp4' }).unwrap();
 
     const result = await source.play();
 
@@ -79,7 +79,7 @@ test('createVideoFrameSource returns error when minigame VideoDecoder is unsuppo
     const originalCreateVideoDecoder = wx.createVideoDecoder;
     delete (wx as unknown as { createVideoDecoder?: unknown; }).createVideoDecoder;
 
-    const sourceRes = createVideoFrameSource({ src: 'https://example.com/video.mp4' });
+    const sourceRes = createVideoFrameSource({ source: 'https://example.com/video.mp4' });
 
     expect(isVideoFrameSourceSupported()).toBe(false);
     expect(sourceRes.isErr()).toBe(true);
@@ -89,7 +89,7 @@ test('createVideoFrameSource returns error when minigame VideoDecoder is unsuppo
 });
 
 test('VideoFrameSource getFrame pulls pixel frame from decoder', () => {
-    const source = createVideoFrameSource({ src: 'https://example.com/video.mp4', width: 2, height: 2 }).unwrap();
+    const source = createVideoFrameSource({ source: 'https://example.com/video.mp4', width: 2, height: 2 }).unwrap();
     const frameListener = vi.fn();
     source.onFrame(frameListener);
     mocks.decoder.getFrameData
@@ -125,7 +125,7 @@ test('VideoFrameSource getFrame pulls pixel frame from decoder', () => {
 });
 
 test('VideoFrameSource error listener can be added and removed', () => {
-    const source = createVideoFrameSource({ src: 'https://example.com/video.mp4' }).unwrap();
+    const source = createVideoFrameSource({ source: 'https://example.com/video.mp4' }).unwrap();
     const errorListener = vi.fn();
 
     source.onError(errorListener);
@@ -137,7 +137,7 @@ test('VideoFrameSource error listener can be added and removed', () => {
 });
 
 test('VideoFrameSource seek stop pause and destroy call decoder methods', async () => {
-    const source = createVideoFrameSource({ src: 'https://example.com/video.mp4' }).unwrap();
+    const source = createVideoFrameSource({ source: 'https://example.com/video.mp4' }).unwrap();
 
     const seekRes = await source.seek(2);
     expect(seekRes.isOk()).toBe(true);
@@ -160,7 +160,7 @@ test('VideoFrameSource seek stop pause and destroy call decoder methods', async 
 });
 
 test('VideoFrameSource ended event updates state', () => {
-    const source = createVideoFrameSource({ src: 'https://example.com/video.mp4' }).unwrap();
+    const source = createVideoFrameSource({ source: 'https://example.com/video.mp4' }).unwrap();
     const endedListener = vi.fn();
     source.onEnded(endedListener);
     source.offEnded(endedListener);

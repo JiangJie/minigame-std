@@ -85,7 +85,7 @@ export function createVideoFrameSource(options: CreateVideoFrameSourceOptions): 
         }
     };
 
-    video.src = options.src;
+    video.src = options.source;
     video.loop = options.loop ?? false;
     video.muted = options.muted ?? false;
     video.autoplay = options.autoplay ?? false;

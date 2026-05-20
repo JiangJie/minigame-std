@@ -22,7 +22,7 @@ export * from './defines.ts';
  * @example
  * ```ts
  * if (video.isVideoFrameSourceSupported()) {
- *     const sourceRes = video.createVideoFrameSource({ src: 'https://example.com/video.mp4' });
+ *     const sourceRes = video.createVideoFrameSource({ source: 'https://example.com/video.mp4' });
  * }
  * ```
  */
@@ -39,7 +39,7 @@ export function isVideoFrameSourceSupported(): boolean {
  * @example
  * ```ts
  * const sourceRes = video.createVideoFrameSource({
- *     src: 'https://example.com/video.mp4',
+ *     source: 'https://example.com/video.mp4',
  *     muted: true,
  *     loop: true,
  * });

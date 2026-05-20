@@ -9,7 +9,7 @@ import type { AsyncVoidIOResult, IOResult } from 'happy-rusty';
  * import { video } from 'minigame-std';
  *
  * const source = video.createVideoFrameSource({
- *     src: 'https://example.com/video.mp4',
+ *     source: 'https://example.com/video.mp4',
  *     muted: true,
  *     loop: true,
  * });
@@ -17,9 +17,11 @@ import type { AsyncVoidIOResult, IOResult } from 'happy-rusty';
  */
 export interface CreateVideoFrameSourceOptions {
     /**
-     * 视频资源地址。
+     * 视频资源。
+     *
+     * 小游戏平台支持本地文件路径和 URL；Web 平台只支持 URL，包括通过 `URL.createObjectURL` 创建的 Blob URL。
      */
-    src: string;
+    source: string;
 
     /**
      * 是否循环播放。
@@ -143,7 +145,7 @@ export type VideoFrameSourceFrame = PixelVideoFrame | ElementVideoFrame;
  * @since unreleased
  * @example
  * ```ts
- * const sourceRes = video.createVideoFrameSource({ src: 'https://example.com/video.mp4' });
+ * const sourceRes = video.createVideoFrameSource({ source: 'https://example.com/video.mp4' });
  * if (sourceRes.isOk()) {
  *     const source = sourceRes.unwrap();
  *     await source.play();

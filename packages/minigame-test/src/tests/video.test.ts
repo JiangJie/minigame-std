@@ -31,7 +31,7 @@ async function testVideoFrameSource(): Promise<void> {
     // DevTools 不支持 wx.createVideoDecoder，跳过测试
     if (!platform.isMiniGameDevtools()) {
         const sourceRes = video.createVideoFrameSource({
-            src: videoUrl,
+            source: videoUrl,
         });
 
         assert(sourceRes.isOk(), `createVideoFrameSource 应该成功: ${sourceRes.isErr() ? sourceRes.unwrapErr().message : ''}`);
