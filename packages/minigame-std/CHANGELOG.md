@@ -5,6 +5,25 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.2.0] - 2026-05-20
+
+### 新增
+- `audio.playWebAudioFromUrl`：支持从远程 URL 下载音频并通过 WebAudio 解码播放
+- `video.createVideoFrameSource` / `video.isVideoFrameSourceSupported`：新增视频帧源 API，支持游戏渲染循环获取视频帧并上传到 RenderTexture/WebGL
+- `video.createVideoFrameSourceFromFile`：支持从本地文件创建视频帧源
+- `event.addShowListener` / `event.addHideListener`：新增游戏回到前台、切到后台事件监听；Web 平台 `addShowListener` 会返回当前 URL query
+
+### 变更
+- 重命名视频帧源创建选项字段，使 API 语义更贴近 URL / 文件统一来源
+- 升级依赖版本
+
+### 修复
+- 修复 `minigame-test` 构建中 `inlineDynamicImports` 弃用警告，改用 `codeSplitting: false` 保持单文件输出
+
+### 测试
+- 为 `audio.playWebAudioFromUrl`、`VideoFrameSource`、前后台事件监听补充小游戏侧测试
+- 调整小游戏测试以兼容微信开发者工具中的视频和事件行为差异
+
 ## [2.1.2] - 2026-05-12
 
 ### 性能优化
@@ -471,6 +490,7 @@
   - `socket` - WebSocket
   - `storage` - 本地存储
 
+[2.2.0]: https://github.com/JiangJie/minigame-std/compare/v2.1.2...v2.2.0
 [2.1.2]: https://github.com/JiangJie/minigame-std/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/JiangJie/minigame-std/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/JiangJie/minigame-std/compare/v2.0.2...v2.1.0
