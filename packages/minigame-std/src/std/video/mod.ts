@@ -5,6 +5,8 @@
 import { isMinaEnv } from '../../macros/env.ts';
 import { createVideo as webCreateVideo } from './web_video.ts';
 
+export * from './frame-source/mod.ts';
+
 /**
  * 创建视频播放器。
  * @param options - 视频配置选项。

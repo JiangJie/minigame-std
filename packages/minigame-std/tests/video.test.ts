@@ -4,6 +4,7 @@ import { video } from '../src/mod.ts';
 // Clean up video elements after each test
 afterEach(() => {
     document.querySelectorAll('video').forEach(v => v.remove());
+    vi.restoreAllMocks();
 });
 
 test('createVideo creates a video element with basic options', () => {
@@ -862,4 +863,216 @@ test('video y getter returns 0 when style.top is not set', () => {
     expect(v.y).toBe(0);
 
     v.destroy();
+});
+
+test('isVideoFrameSourceSupported returns true on web', () => {
+    expect(video.isVideoFrameSourceSupported()).toBe(true);
+});
+
+test('createVideoFrameSource creates hidden video element', () => {
+    const sourceRes = video.createVideoFrameSource({
+        src: 'https://example.com/video.mp4',
+        loop: true,
+        muted: true,
+        autoplay: false,
+        crossOrigin: 'anonymous',
+        width: 320,
+        height: 180,
+    });
+
+    expect(sourceRes.isOk()).toBe(true);
+    const source = sourceRes.unwrap();
+    const videoEl = document.querySelector('video[src="https://example.com/video.mp4"]') as HTMLVideoElement;
+
+    expect(videoEl).not.toBeNull();
+    expect(videoEl.loop).toBe(true);
+    expect(videoEl.muted).toBe(true);
+    expect(videoEl.crossOrigin).toBe('anonymous');
+    expect(videoEl.width).toBe(320);
+    expect(videoEl.height).toBe(180);
+    expect(videoEl.style.display).toBe('none');
+    expect(videoEl.getAttribute('playsinline')).toBe('true');
+    expect(videoEl.getAttribute('webkit-playsinline')).toBe('true');
+
+    source.destroy();
+});
+
+test('VideoFrameSource play pause stop seek and destroy work on web', async () => {
+    const playSpy = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue(undefined);
+    const pauseSpy = vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(() => {});
+    const loadSpy = vi.spyOn(HTMLMediaElement.prototype, 'load').mockImplementation(() => {});
+    const source = video.createVideoFrameSource({ src: 'https://example.com/video.mp4' }).unwrap();
+
+    expect(source.duration).toSatisfy(Number.isNaN);
+    expect(source.width).toBe(0);
+    expect(source.height).toBe(0);
+
+    const playRes = await source.play();
+    expect(playRes.isOk()).toBe(true);
+    expect(source.state).toBe('playing');
+    expect(playSpy).toHaveBeenCalled();
+
+    const pauseRes = await source.pause();
+    expect(pauseRes.isOk()).toBe(true);
+    expect(source.state).toBe('paused');
+    expect(pauseSpy).toHaveBeenCalled();
+
+    const seekRes = await source.seek(3);
+    expect(seekRes.isOk()).toBe(true);
+    expect(source.currentTime).toBe(3);
+
+    const stopRes = await source.stop();
+    expect(stopRes.isOk()).toBe(true);
+    expect(source.currentTime).toBe(0);
+
+    source.destroy();
+    source.destroy();
+    expect(source.state).toBe('destroyed');
+    expect(loadSpy).toHaveBeenCalled();
+});
+
+test('VideoFrameSource getFrame returns element frame on web', () => {
+    const frameCallbacks: ((now: number, metadata: { mediaTime: number; }) => void)[] = [];
+    Object.defineProperty(HTMLVideoElement.prototype, 'requestVideoFrameCallback', {
+        value: (callback: (now: number, metadata: { mediaTime: number; }) => void) => {
+            frameCallbacks.push(callback);
+            return frameCallbacks.length;
+        },
+        configurable: true,
+    });
+    Object.defineProperty(HTMLVideoElement.prototype, 'cancelVideoFrameCallback', {
+        value: vi.fn(),
+        configurable: true,
+    });
+
+    const source = video.createVideoFrameSource({
+        src: 'https://example.com/video.mp4',
+        width: 320,
+        height: 180,
+    }).unwrap();
+    const videoEl = document.querySelector('video[src="https://example.com/video.mp4"]') as HTMLVideoElement;
+
+    Object.defineProperty(videoEl, 'videoWidth', { value: 320, configurable: true });
+    Object.defineProperty(videoEl, 'videoHeight', { value: 180, configurable: true });
+    videoEl.dispatchEvent(new Event('loadedmetadata'));
+
+    const beforeFrame = source.getFrame();
+    expect(beforeFrame.isOk()).toBe(true);
+    expect(beforeFrame.unwrap()).toBe(null);
+
+    frameCallbacks[0]?.(0, { mediaTime: 1 });
+
+    const frameRes = source.getFrame();
+    expect(frameRes.isOk()).toBe(true);
+    const frame = frameRes.unwrap();
+    expect(frame?.kind).toBe('element');
+    if (frame?.kind === 'element') {
+        expect(frame.element).toBe(videoEl);
+        expect(frame.width).toBe(320);
+        expect(frame.height).toBe(180);
+        frame.release();
+    }
+
+    source.destroy();
+    frameCallbacks[1]?.(0, { mediaTime: 2 });
+});
+
+test('VideoFrameSource uses requestAnimationFrame fallback when video frame callback is unavailable', () => {
+    const requestVideoFrameCallbackDescriptor = Object.getOwnPropertyDescriptor(HTMLVideoElement.prototype, 'requestVideoFrameCallback');
+    const cancelVideoFrameCallbackDescriptor = Object.getOwnPropertyDescriptor(HTMLVideoElement.prototype, 'cancelVideoFrameCallback');
+    Object.defineProperty(HTMLVideoElement.prototype, 'requestVideoFrameCallback', {
+        value: undefined,
+        configurable: true,
+    });
+    Object.defineProperty(HTMLVideoElement.prototype, 'cancelVideoFrameCallback', {
+        value: undefined,
+        configurable: true,
+    });
+
+    const source = video.createVideoFrameSource({ src: 'https://example.com/video.mp4' }).unwrap();
+    const frameListener = vi.fn();
+    const videoEl = document.querySelector('video[src="https://example.com/video.mp4"]') as HTMLVideoElement;
+    source.onFrame(frameListener);
+    videoEl.currentTime = 1;
+
+    return new Promise<void>((resolve) => {
+        requestAnimationFrame(() => {
+            expect(frameListener).toHaveBeenCalled();
+            requestAnimationFrame(() => {
+                expect(frameListener).toHaveBeenCalledTimes(1);
+                source.offFrame();
+                source.destroy();
+                if (requestVideoFrameCallbackDescriptor) {
+                    Object.defineProperty(HTMLVideoElement.prototype, 'requestVideoFrameCallback', requestVideoFrameCallbackDescriptor);
+                } else {
+                    delete (HTMLVideoElement.prototype as unknown as Record<string, unknown>)['requestVideoFrameCallback'];
+                }
+                if (cancelVideoFrameCallbackDescriptor) {
+                    Object.defineProperty(HTMLVideoElement.prototype, 'cancelVideoFrameCallback', cancelVideoFrameCallbackDescriptor);
+                } else {
+                    delete (HTMLVideoElement.prototype as unknown as Record<string, unknown>)['cancelVideoFrameCallback'];
+                }
+                resolve();
+            });
+        });
+    });
+});
+
+test('VideoFrameSource autoplay starts playback on web', () => {
+    const playSpy = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue(undefined);
+    const source = video.createVideoFrameSource({
+        src: 'https://example.com/video.mp4',
+        autoplay: true,
+    }).unwrap();
+
+    expect(playSpy).toHaveBeenCalled();
+
+    source.destroy();
+});
+
+test('VideoFrameSource frame listener can be added and removed on web', () => {
+    const source = video.createVideoFrameSource({ src: 'https://example.com/video.mp4' }).unwrap();
+    const frameListener = vi.fn();
+
+    source.onFrame(frameListener);
+    source.offFrame(frameListener);
+
+    const videoEl = document.querySelector('video[src="https://example.com/video.mp4"]') as HTMLVideoElement;
+    videoEl.currentTime = 1;
+
+    return new Promise<void>((resolve) => {
+        requestAnimationFrame(() => {
+            expect(frameListener).not.toHaveBeenCalled();
+            source.destroy();
+            resolve();
+        });
+    });
+});
+
+test('VideoFrameSource ended and error listeners work on web', () => {
+    const source = video.createVideoFrameSource({ src: 'https://example.com/video.mp4' }).unwrap();
+    const endedListener = vi.fn();
+    const errorListener = vi.fn();
+    const videoEl = document.querySelector('video[src="https://example.com/video.mp4"]') as HTMLVideoElement;
+
+    source.onEnded(endedListener);
+    source.offEnded(endedListener);
+    source.onEnded(endedListener);
+    source.onError(errorListener);
+    source.offError(errorListener);
+    source.onError(errorListener);
+
+    videoEl.dispatchEvent(new Event('ended'));
+    expect(endedListener).toHaveBeenCalled();
+    expect(source.state).toBe('ended');
+
+    videoEl.dispatchEvent(new Event('error'));
+    expect(errorListener).toHaveBeenCalledWith(expect.any(Error));
+    expect(source.state).toBe('error');
+
+    source.offEnded();
+    source.offError();
+    source.destroy();
+    videoEl.dispatchEvent(new Event('loadedmetadata'));
+    videoEl.dispatchEvent(new Event('ended'));
 });
