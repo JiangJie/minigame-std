@@ -98,7 +98,7 @@ export function addResizeListener(listener: WechatMinigame.OnWindowResizeCallbac
  * 添加游戏回到前台事件监听器。
  * @param listener - 游戏回到前台事件的回调函数。Web 平台无启动参数，回调参数为 `undefined`。
  * @returns 返回一个函数，调用该函数可以移除监听器。
- * @since unreleased
+ * @since 2.2.0
  * @example
  * ```ts
  * const removeListener = addShowListener((options) => {
@@ -119,7 +119,7 @@ export function addShowListener(listener: (ev?: WechatMinigame.OnShowListenerRes
  * 添加游戏切到后台事件监听器。
  * @param listener - 游戏切到后台事件的回调函数。Web 平台无事件参数，回调参数为 `undefined`。
  * @returns 返回一个函数，调用该函数可以移除监听器。
- * @since unreleased
+ * @since 2.2.0
  * @example
  * ```ts
  * const removeListener = addHideListener(() => {

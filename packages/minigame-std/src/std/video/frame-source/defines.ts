@@ -3,7 +3,7 @@ import type { AsyncVoidIOResult, IOResult } from 'happy-rusty';
 /**
  * 视频帧源创建选项。
  *
- * @since unreleased
+ * @since 2.2.0
  * @example
  * ```ts
  * import { video } from 'minigame-std';
@@ -62,21 +62,21 @@ export interface CreateVideoFrameSourceOptions {
 /**
  * 从文件创建视频帧源的选项。
  *
- * @since unreleased
+ * @since 2.2.0
  */
 export type CreateVideoFrameSourceFromFileOptions = Omit<CreateVideoFrameSourceOptions, 'source' | 'crossOrigin'>;
 
 /**
  * 视频帧源状态。
  *
- * @since unreleased
+ * @since 2.2.0
  */
 export type VideoFrameSourceState = 'idle' | 'loading' | 'ready' | 'playing' | 'paused' | 'ended' | 'error' | 'destroyed';
 
 /**
  * 视频帧基础信息。
  *
- * @since unreleased
+ * @since 2.2.0
  */
 export interface BaseVideoFrame {
     /**
@@ -103,7 +103,7 @@ export interface BaseVideoFrame {
 /**
  * 像素数据视频帧。
  *
- * @since unreleased
+ * @since 2.2.0
  */
 export interface PixelVideoFrame extends BaseVideoFrame {
     /**
@@ -125,7 +125,7 @@ export interface PixelVideoFrame extends BaseVideoFrame {
 /**
  * HTMLVideoElement 视频帧。
  *
- * @since unreleased
+ * @since 2.2.0
  */
 export interface ElementVideoFrame extends BaseVideoFrame {
     /**
@@ -142,14 +142,14 @@ export interface ElementVideoFrame extends BaseVideoFrame {
 /**
  * 视频帧源返回的帧类型。
  *
- * @since unreleased
+ * @since 2.2.0
  */
 export type VideoFrameSourceFrame = PixelVideoFrame | ElementVideoFrame;
 
 /**
  * 视频帧源，用于游戏渲染循环主动获取视频帧并上传到 RenderTexture/WebGL。
  *
- * @since unreleased
+ * @since 2.2.0
  * @example
  * ```ts
  * const sourceRes = video.createVideoFrameSource({ source: 'https://example.com/video.mp4' });

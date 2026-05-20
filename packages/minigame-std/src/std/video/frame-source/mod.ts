@@ -20,7 +20,7 @@ export * from './defines.ts';
  * 判断当前平台是否支持视频帧源。
  *
  * @returns 是否支持创建 VideoFrameSource。
- * @since unreleased
+ * @since 2.2.0
  * @example
  * ```ts
  * if (video.isVideoFrameSourceSupported()) {
@@ -37,7 +37,7 @@ export function isVideoFrameSourceSupported(): boolean {
  *
  * @param options - 视频帧源创建选项。
  * @returns 视频帧源创建结果。
- * @since unreleased
+ * @since 2.2.0
  * @example
  * ```ts
  * const sourceRes = video.createVideoFrameSource({
@@ -65,7 +65,7 @@ export function createVideoFrameSource(options: CreateVideoFrameSourceOptions): 
  * @param filePath - 视频文件路径。
  * @param options - 视频帧源创建选项。
  * @returns 视频帧源创建结果。
- * @since unreleased
+ * @since 2.2.0
  * @example
  * ```ts
  * const sourceRes = await video.createVideoFrameSourceFromFile('/videos/demo.mp4', {

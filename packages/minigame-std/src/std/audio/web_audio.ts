@@ -148,7 +148,7 @@ export async function playWebAudioFromFile(filePath: string, options?: PlayOptio
  * @param url - 音频资源 URL。
  * @param options - 播放选项。
  * @returns 正在播放的 AudioBufferSourceNode。
- * @since unreleased
+ * @since 2.2.0
  * @example
  * ```ts
  * const result = await audio.playWebAudioFromUrl('https://example.com/audio.mp3');
