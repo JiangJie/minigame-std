@@ -1,13 +1,15 @@
-import { Ok, type IOResult } from 'happy-rusty';
+import { Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
 import { isMinaEnv } from '../../../macros/env.ts';
-import type { CreateVideoFrameSourceOptions, VideoFrameSource } from './defines.ts';
+import type { CreateVideoFrameSourceFromFileOptions, CreateVideoFrameSourceOptions, VideoFrameSource } from './defines.ts';
 import {
-    createVideoFrameSource as minaCreateVideoFrameSource,
     isVideoFrameSourceSupported as isMinaVideoFrameSourceSupported,
+    createVideoFrameSource as minaCreateVideoFrameSource,
+    createVideoFrameSourceFromFile as minaCreateVideoFrameSourceFromFile,
 } from './mina.ts';
 import {
-    createVideoFrameSource as webCreateVideoFrameSource,
     isVideoFrameSourceSupported as isWebVideoFrameSourceSupported,
+    createVideoFrameSource as webCreateVideoFrameSource,
+    createVideoFrameSourceFromFile as webCreateVideoFrameSourceFromFile,
 } from './web.ts';
 
 export * from './defines.ts';
@@ -53,6 +55,32 @@ export function createVideoFrameSource(options: CreateVideoFrameSourceOptions): 
     return isMinaEnv()
         ? minaCreateVideoFrameSource(options)
         : Ok(webCreateVideoFrameSource(options));
+}
+
+/**
+ * 从本地文件创建视频帧源。
+ *
+ * 小游戏平台会直接使用文件路径；Web 平台会从 OPFS 读取文件并创建 Blob URL。
+ *
+ * @param filePath - 视频文件路径。
+ * @param options - 视频帧源创建选项。
+ * @returns 视频帧源创建结果。
+ * @since unreleased
+ * @example
+ * ```ts
+ * const sourceRes = await video.createVideoFrameSourceFromFile('/videos/demo.mp4', {
+ *     muted: true,
+ * });
+ * if (sourceRes.isOk()) {
+ *     const source = sourceRes.unwrap();
+ *     await source.play();
+ * }
+ * ```
+ */
+export function createVideoFrameSourceFromFile(filePath: string, options?: CreateVideoFrameSourceFromFileOptions): AsyncIOResult<VideoFrameSource> {
+    return isMinaEnv()
+        ? Promise.resolve(minaCreateVideoFrameSourceFromFile(filePath, options))
+        : webCreateVideoFrameSourceFromFile(filePath, options);
 }
 
 // #endregion

@@ -37,6 +37,9 @@ const mocks = vi.hoisted(() => {
 
     (globalThis as Record<string, unknown>)['__MINIGAME_STD_MINA__'] = true;
     (globalThis as Record<string, unknown>)['wx'] = {
+        env: {
+            USER_DATA_PATH: 'wxfile://usr',
+        },
         createVideoDecoder,
     };
 
@@ -48,7 +51,7 @@ const mocks = vi.hoisted(() => {
     };
 });
 
-import { createVideoFrameSource, isVideoFrameSourceSupported } from '../src/std/video/mod.ts';
+import { createVideoFrameSource, createVideoFrameSourceFromFile, isVideoFrameSourceSupported } from '../src/std/video/mod.ts';
 
 test('isVideoFrameSourceSupported returns true in minigame environment', () => {
     expect(isVideoFrameSourceSupported()).toBe(true);
@@ -71,6 +74,20 @@ test('VideoFrameSource play calls decoder start with source', async () => {
     expect(result.isOk()).toBe(true);
     expect(mocks.decoder.start).toHaveBeenCalledWith({ source: 'https://example.com/video.mp4' });
     expect(source.state).toBe('playing');
+
+    source.destroy();
+});
+
+test('createVideoFrameSourceFromFile normalizes user data file path as decoder source', async () => {
+    const sourceRes = await createVideoFrameSourceFromFile('/tmp/video.mp4');
+
+    expect(sourceRes.isOk()).toBe(true);
+    const source = sourceRes.unwrap();
+
+    const result = await source.play();
+
+    expect(result.isOk()).toBe(true);
+    expect(mocks.decoder.start).toHaveBeenCalledWith({ source: 'wxfile://usr/tmp/video.mp4' });
 
     source.destroy();
 });

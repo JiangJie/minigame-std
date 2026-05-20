@@ -1,4 +1,15 @@
+import { Ok } from 'happy-rusty';
 import { afterEach, expect, test, vi } from 'vitest';
+
+const mocks = vi.hoisted(() => ({
+    readBlobFile: vi.fn(),
+}));
+
+vi.mock('happy-opfs', async (importOriginal) => ({
+    ...await importOriginal<typeof import('happy-opfs')>(),
+    readBlobFile: mocks.readBlobFile,
+}));
+
 import { video } from '../src/mod.ts';
 
 // Clean up video elements after each test
@@ -895,6 +906,34 @@ test('createVideoFrameSource creates hidden video element', () => {
     expect(videoEl.getAttribute('webkit-playsinline')).toBe('true');
 
     source.destroy();
+});
+
+test('createVideoFrameSourceFromFile creates blob URL source on web', async () => {
+    const blob = new Blob([new Uint8Array([1, 2, 3])], { type: 'video/mp4' });
+    mocks.readBlobFile.mockResolvedValue(Ok(blob));
+    const createObjectURL = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:video-source');
+    const revokeObjectURL = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+
+    const sourceRes = await video.createVideoFrameSourceFromFile('/videos/demo.mp4', {
+        muted: true,
+        width: 320,
+        height: 180,
+    });
+
+    expect(sourceRes.isOk()).toBe(true);
+    expect(mocks.readBlobFile).toHaveBeenCalledWith('/videos/demo.mp4');
+    expect(createObjectURL).toHaveBeenCalledWith(blob);
+
+    const source = sourceRes.unwrap();
+    const videoEl = document.querySelector('video[src="blob:video-source"]') as HTMLVideoElement;
+
+    expect(videoEl).not.toBeNull();
+    expect(videoEl.muted).toBe(true);
+    expect(videoEl.width).toBe(320);
+    expect(videoEl.height).toBe(180);
+
+    source.destroy();
+    expect(revokeObjectURL).toHaveBeenCalledWith('blob:video-source');
 });
 
 test('VideoFrameSource play pause stop seek and destroy work on web', async () => {

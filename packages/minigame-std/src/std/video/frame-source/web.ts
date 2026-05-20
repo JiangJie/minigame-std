@@ -3,8 +3,9 @@
  * Web 平台的视频帧源实现。
  */
 
-import { Ok, tryAsyncResult, type AsyncVoidIOResult, type IOResult } from 'happy-rusty';
-import type { CreateVideoFrameSourceOptions, ElementVideoFrame, VideoFrameSource, VideoFrameSourceFrame, VideoFrameSourceState } from './defines.ts';
+import { readBlobFile } from 'happy-opfs';
+import { Ok, tryAsyncResult, type AsyncIOResult, type AsyncVoidIOResult, type IOResult } from 'happy-rusty';
+import type { CreateVideoFrameSourceFromFileOptions, CreateVideoFrameSourceOptions, ElementVideoFrame, VideoFrameSource, VideoFrameSourceFrame, VideoFrameSourceState } from './defines.ts';
 
 // #region Exports
 
@@ -209,6 +210,33 @@ export function createVideoFrameSource(options: CreateVideoFrameSourceOptions): 
     }
 
     return source;
+}
+
+/**
+ * 从 Web 本地文件创建视频帧源。
+ *
+ * @param filePath - 视频文件路径。
+ * @param options - 视频帧源创建选项。
+ * @returns 视频帧源创建结果。
+ */
+export async function createVideoFrameSourceFromFile(filePath: string, options?: CreateVideoFrameSourceFromFileOptions): AsyncIOResult<VideoFrameSource> {
+    const readRes = await readBlobFile(filePath);
+
+    return readRes.andThen(blob => {
+        const url = URL.createObjectURL(blob);
+        const source = createVideoFrameSource({
+            ...options,
+            source: url,
+        });
+        const destroy = source.destroy.bind(source);
+
+        source.destroy = () => {
+            destroy();
+            URL.revokeObjectURL(url);
+        };
+
+        return Ok(source);
+    });
 }
 
 // #endregion

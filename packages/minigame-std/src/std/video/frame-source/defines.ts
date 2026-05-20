@@ -60,6 +60,13 @@ export interface CreateVideoFrameSourceOptions {
 }
 
 /**
+ * 从文件创建视频帧源的选项。
+ *
+ * @since unreleased
+ */
+export type CreateVideoFrameSourceFromFileOptions = Omit<CreateVideoFrameSourceOptions, 'source' | 'crossOrigin'>;
+
+/**
  * 视频帧源状态。
  *
  * @since unreleased

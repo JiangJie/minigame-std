@@ -4,7 +4,8 @@
  */
 
 import { Err, Ok, tryAsyncResult, type AsyncVoidIOResult, type IOResult } from 'happy-rusty';
-import type { CreateVideoFrameSourceOptions, PixelVideoFrame, VideoFrameSource, VideoFrameSourceFrame, VideoFrameSourceState } from './defines.ts';
+import { validateReadablePath } from '../../fs/mina_fs_shared.ts';
+import type { CreateVideoFrameSourceFromFileOptions, CreateVideoFrameSourceOptions, PixelVideoFrame, VideoFrameSource, VideoFrameSourceFrame, VideoFrameSourceState } from './defines.ts';
 
 // #region Exports
 
@@ -138,6 +139,21 @@ export function createVideoFrameSource(options: CreateVideoFrameSourceOptions): 
             errorListeners.clear();
         },
     });
+}
+
+/**
+ * 从小游戏本地文件创建视频帧源。
+ *
+ * @param filePath - 视频文件路径。
+ * @param options - 视频帧源创建选项。
+ * @returns 视频帧源创建结果。
+ */
+export function createVideoFrameSourceFromFile(filePath: string, options?: CreateVideoFrameSourceFromFileOptions): IOResult<VideoFrameSource> {
+    return validateReadablePath(filePath)
+        .andThen(source => createVideoFrameSource({
+            ...options,
+            source,
+        }));
 }
 
 // #endregion
