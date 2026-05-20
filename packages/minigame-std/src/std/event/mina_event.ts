@@ -41,3 +41,29 @@ export function addResizeListener(listener: WechatMinigame.OnWindowResizeCallbac
         wx.offWindowResize(listener);
     };
 }
+
+/**
+ * 添加小游戏回到前台事件监听器。
+ * @param listener - 小游戏回到前台事件的回调函数。
+ * @returns 返回一个函数，调用该函数可以移除监听器。
+ */
+export function addShowListener(listener: WechatMinigame.OnShowCallback): () => void {
+    wx.onShow(listener);
+
+    return (): void => {
+        wx.offShow(listener);
+    };
+}
+
+/**
+ * 添加小游戏切到后台事件监听器。
+ * @param listener - 小游戏切到后台事件的回调函数。
+ * @returns 返回一个函数，调用该函数可以移除监听器。
+ */
+export function addHideListener(listener: () => void): () => void {
+    wx.onHide(listener);
+
+    return (): void => {
+        wx.offHide(listener);
+    };
+}

@@ -6,10 +6,14 @@ import { expect, test, vi } from 'vitest';
 type ErrorCallback = (ev: { message: string; }) => void;
 type RejectionCallback = (ev: { reason: unknown; promise: Promise<unknown>; }) => void;
 type ResizeCallback = (ev: { windowWidth: number; windowHeight: number; }) => void;
+type ShowCallback = (ev: WechatMinigame.OnShowListenerResult) => void;
+type HideCallback = (ev: WechatMinigame.GeneralCallbackResult) => void;
 
 let errorListeners: ErrorCallback[] = [];
 let rejectionListeners: RejectionCallback[] = [];
 let resizeListeners: ResizeCallback[] = [];
+let showListeners: ShowCallback[] = [];
+let hideListeners: HideCallback[] = [];
 
 // 使用 vi.hoisted 确保在模块加载之前执行 mock
 vi.hoisted(() => {
@@ -34,10 +38,22 @@ vi.hoisted(() => {
         offWindowResize: (callback: ResizeCallback) => {
             resizeListeners = resizeListeners.filter(cb => cb !== callback);
         },
+        onShow: (callback: ShowCallback) => {
+            showListeners.push(callback);
+        },
+        offShow: (callback: ShowCallback) => {
+            showListeners = showListeners.filter(cb => cb !== callback);
+        },
+        onHide: (callback: HideCallback) => {
+            hideListeners.push(callback);
+        },
+        offHide: (callback: HideCallback) => {
+            hideListeners = hideListeners.filter(cb => cb !== callback);
+        },
     };
 });
 
-import { addErrorListener, addResizeListener, addUnhandledrejectionListener } from '../src/std/event/mod.ts';
+import { addErrorListener, addHideListener, addResizeListener, addShowListener, addUnhandledrejectionListener } from '../src/std/event/mod.ts';
 
 test('addErrorListener adds and removes listener in minigame environment', () => {
     const mockListener = vi.fn();
@@ -68,6 +84,38 @@ test('addUnhandledrejectionListener adds and removes listener in minigame enviro
     // 移除监听器
     removeListener();
     expect(rejectionListeners.length).toBe(0);
+});
+
+test('addShowListener adds and removes listener in minigame environment', () => {
+    const mockListener = vi.fn();
+    const removeListener = addShowListener(mockListener);
+
+    expect(showListeners.length).toBe(1);
+
+    const showOptions: WechatMinigame.OnShowListenerResult = {
+        query: {},
+        referrerInfo: { appId: '', extraData: {} },
+        scene: 1001,
+    };
+    showListeners[0](showOptions);
+    expect(mockListener).toHaveBeenCalledWith(showOptions);
+
+    removeListener();
+    expect(showListeners.length).toBe(0);
+});
+
+test('addHideListener adds and removes listener in minigame environment', () => {
+    const mockListener = vi.fn();
+    const removeListener = addHideListener(mockListener);
+
+    expect(hideListeners.length).toBe(1);
+
+    const hideOptions = { errMsg: 'hide:ok' };
+    hideListeners[0](hideOptions);
+    expect(mockListener).toHaveBeenCalledWith(hideOptions);
+
+    removeListener();
+    expect(hideListeners.length).toBe(0);
 });
 
 test('addResizeListener adds and removes listener in minigame environment', () => {

@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { addErrorListener, addResizeListener, addUnhandledrejectionListener } from '../src/mod.ts';
+import { addErrorListener, addHideListener, addResizeListener, addShowListener, addUnhandledrejectionListener } from '../src/mod.ts';
 
 test('addErrorListener and remove', () => {
     let errorCaught = false;
@@ -104,6 +104,84 @@ test('addUnhandledrejectionListener and remove', async () => {
     expect(rejectionCaught).toBe(false);
 
     window.removeEventListener('unhandledrejection', tempHandler);
+});
+
+test('addShowListener and remove', () => {
+    let showCaught = false;
+    let showOptions: WechatMinigame.OnShowListenerResult | undefined;
+
+    const originalVisibilityState = Object.getOwnPropertyDescriptor(Document.prototype, 'visibilityState')
+        ?? Object.getOwnPropertyDescriptor(document, 'visibilityState');
+    history.pushState(null, '', '?roomId=42&name=%E6%B5%8B%E8%AF%95');
+    const removeListener = addShowListener((options) => {
+        showCaught = true;
+        showOptions = options;
+    });
+
+    Object.defineProperty(document, 'visibilityState', {
+        value: 'hidden',
+        configurable: true,
+    });
+    document.dispatchEvent(new Event('visibilitychange'));
+    expect(showCaught).toBe(false);
+
+    Object.defineProperty(document, 'visibilityState', {
+        value: 'visible',
+        configurable: true,
+    });
+    document.dispatchEvent(new Event('visibilitychange'));
+
+    expect(showCaught).toBe(true);
+    expect(showOptions?.query).toEqual({
+        roomId: '42',
+        name: '测试',
+    });
+    expect(showOptions?.scene).toBe(0);
+    expect(showOptions?.referrerInfo.extraData).toEqual({});
+
+    removeListener();
+    showCaught = false;
+    document.dispatchEvent(new Event('visibilitychange'));
+    expect(showCaught).toBe(false);
+
+    history.pushState(null, '', location.pathname);
+    if (originalVisibilityState) {
+        Object.defineProperty(document, 'visibilityState', originalVisibilityState);
+    }
+});
+
+test('addHideListener and remove', () => {
+    let hideCaught = false;
+
+    const originalVisibilityState = Object.getOwnPropertyDescriptor(Document.prototype, 'visibilityState')
+        ?? Object.getOwnPropertyDescriptor(document, 'visibilityState');
+    const removeListener = addHideListener(() => {
+        hideCaught = true;
+    });
+
+    Object.defineProperty(document, 'visibilityState', {
+        value: 'visible',
+        configurable: true,
+    });
+    document.dispatchEvent(new Event('visibilitychange'));
+    expect(hideCaught).toBe(false);
+
+    Object.defineProperty(document, 'visibilityState', {
+        value: 'hidden',
+        configurable: true,
+    });
+    document.dispatchEvent(new Event('visibilitychange'));
+
+    expect(hideCaught).toBe(true);
+
+    removeListener();
+    hideCaught = false;
+    document.dispatchEvent(new Event('visibilitychange'));
+    expect(hideCaught).toBe(false);
+
+    if (originalVisibilityState) {
+        Object.defineProperty(document, 'visibilityState', originalVisibilityState);
+    }
 });
 
 test('addResizeListener and remove', () => {
