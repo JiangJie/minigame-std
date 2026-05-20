@@ -2,6 +2,7 @@ import { assert } from '@std/assert';
 import { platform, video } from 'minigame-std';
 
 const videoUrl = 'https://www.w3schools.com/html/mov_bbb.mp4';
+const videoPlaybackTimeout = 15000;
 
 async function waitForVideoFrame(source: video.VideoFrameSource, timeout = 5000): Promise<video.VideoFrameSourceFrame | null> {
     const start = Date.now();
@@ -27,26 +28,29 @@ async function testVideoFrameSource(): Promise<void> {
         return;
     }
 
-    const sourceRes = video.createVideoFrameSource({
-        src: videoUrl,
-    });
+    // DevTools 不支持 wx.createVideoDecoder，跳过测试
+    if (!platform.isMiniGameDevtools()) {
+        const sourceRes = video.createVideoFrameSource({
+            src: videoUrl,
+        });
 
-    assert(sourceRes.isOk(), `createVideoFrameSource 应该成功: ${ sourceRes.isErr() ? sourceRes.unwrapErr().message : '' }`);
-    const source = sourceRes.unwrap();
+        assert(sourceRes.isOk(), `createVideoFrameSource 应该成功: ${sourceRes.isErr() ? sourceRes.unwrapErr().message : ''}`);
+        const source = sourceRes.unwrap();
 
-    const playRes = await source.play();
-    assert(playRes.isOk(), `VideoFrameSource.play 应该成功: ${ playRes.isErr() ? playRes.unwrapErr().message : '' }`);
+        const playRes = await source.play();
+        assert(playRes.isOk(), `VideoFrameSource.play 应该成功: ${playRes.isErr() ? playRes.unwrapErr().message : ''}`);
 
-    const frame = await waitForVideoFrame(source);
-    assert(frame != null, 'VideoFrameSource 应该在超时时间内读取到视频帧');
-    assert(frame.kind === 'pixels', '小游戏 VideoFrameSource 应该返回 pixels 帧');
-    assert(frame.width > 0, '视频帧 width 应该大于 0');
-    assert(frame.height > 0, '视频帧 height 应该大于 0');
-    assert(frame.data.byteLength > 0, '视频帧 data 应该非空');
-    frame.release();
+        const frame = await waitForVideoFrame(source);
+        assert(frame != null, 'VideoFrameSource 应该在超时时间内读取到视频帧');
+        assert(frame.kind === 'pixels', '小游戏 VideoFrameSource 应该返回 pixels 帧');
+        assert(frame.width > 0, '视频帧 width 应该大于 0');
+        assert(frame.height > 0, '视频帧 height 应该大于 0');
+        assert(frame.data.byteLength > 0, '视频帧 data 应该非空');
+        frame.release();
 
-    source.destroy();
-    console.log('✅ VideoFrameSource 测试完成', frame.width, 'x', frame.height);
+        source.destroy();
+        console.log('✅ VideoFrameSource 测试完成', frame.width, 'x', frame.height);
+    }
 }
 
 export async function testVideo(): Promise<void> {
@@ -63,12 +67,13 @@ export async function testVideo(): Promise<void> {
     const y = (screenHeight - videoHeight) / 2;
 
     const v = video.createVideo({
-        src: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        src: videoUrl,
         width: videoWidth,
         height: videoHeight,
         x,
         y,
         autoplay: false,
+        controls: false,
     });
 
     // 测试基本属性
@@ -127,9 +132,27 @@ export async function testVideo(): Promise<void> {
         await v.play();
         console.log('✅ 视频开始播放，等待播放完毕...');
 
-        // 等待视频播放完毕
-        await videoEndedPromise;
-        console.log('✅ 视频播放完毕');
+        // DevTools 可能不触发 ended 事件，避免测试一直等待。
+        if (platform.isMiniGameDevtools()) {
+            let videoEndedTimer: ReturnType<typeof setTimeout> | undefined;
+            const waitResult = await Promise.race([
+                videoEndedPromise.then(() => 'ended' as const),
+                new Promise<'timeout'>((resolve) => {
+                    videoEndedTimer = setTimeout(() => resolve('timeout'), videoPlaybackTimeout);
+                }),
+            ]);
+
+            if (videoEndedTimer != null) clearTimeout(videoEndedTimer);
+
+            if (waitResult === 'timeout') {
+                console.log(`视频播放等待超过${ videoPlaybackTimeout }ms，可能是 DevTools 未触发 ended 事件`);
+            } else {
+                console.log('✅ 视频播放完毕');
+            }
+        } else {
+            await videoEndedPromise;
+            console.log('✅ 视频播放完毕');
+        }
     } catch (err) {
         console.log('播放控制测试跳过（可能需要用户交互）:', err);
     }
