@@ -1,6 +1,54 @@
 import { assert } from '@std/assert';
 import { platform, video } from 'minigame-std';
 
+const videoUrl = 'https://www.w3schools.com/html/mov_bbb.mp4';
+
+async function waitForVideoFrame(source: video.VideoFrameSource, timeout = 5000): Promise<video.VideoFrameSourceFrame | null> {
+    const start = Date.now();
+
+    while (Date.now() - start < timeout) {
+        const frameRes = source.getFrame();
+        assert(frameRes.isOk(), `getFrame 应该成功: ${ frameRes.isErr() ? frameRes.unwrapErr().message : '' }`);
+
+        const frame = frameRes.unwrap();
+        if (frame != null) return frame;
+
+        await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
+    return null;
+}
+
+async function testVideoFrameSource(): Promise<void> {
+    console.log('测试 VideoFrameSource...');
+
+    if (!video.isVideoFrameSourceSupported()) {
+        console.log('当前环境不支持 wx.createVideoDecoder，跳过 VideoFrameSource 测试');
+        return;
+    }
+
+    const sourceRes = video.createVideoFrameSource({
+        src: videoUrl,
+    });
+
+    assert(sourceRes.isOk(), `createVideoFrameSource 应该成功: ${ sourceRes.isErr() ? sourceRes.unwrapErr().message : '' }`);
+    const source = sourceRes.unwrap();
+
+    const playRes = await source.play();
+    assert(playRes.isOk(), `VideoFrameSource.play 应该成功: ${ playRes.isErr() ? playRes.unwrapErr().message : '' }`);
+
+    const frame = await waitForVideoFrame(source);
+    assert(frame != null, 'VideoFrameSource 应该在超时时间内读取到视频帧');
+    assert(frame.kind === 'pixels', '小游戏 VideoFrameSource 应该返回 pixels 帧');
+    assert(frame.width > 0, '视频帧 width 应该大于 0');
+    assert(frame.height > 0, '视频帧 height 应该大于 0');
+    assert(frame.data.byteLength > 0, '视频帧 data 应该非空');
+    frame.release();
+
+    source.destroy();
+    console.log('✅ VideoFrameSource 测试完成', frame.width, 'x', frame.height);
+}
+
 export async function testVideo(): Promise<void> {
     // 测试创建视频
     console.log('测试创建视频...');
@@ -99,6 +147,8 @@ export async function testVideo(): Promise<void> {
     // 测试销毁
     v.destroy();
     console.log('✅ 视频销毁成功');
+
+    await testVideoFrameSource();
 
     console.log('🎉 Video测试完成');
 }
