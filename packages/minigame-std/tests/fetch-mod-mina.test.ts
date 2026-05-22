@@ -211,8 +211,8 @@ test('fetchT abort method works', () => {
 test('fetchT with custom headers and method', async () => {
     const fetchTask = fetchT('https://example.com/api', {
         method: 'POST',
-        header: { 'Content-Type': 'application/json' },
-        data: { key: 'value' },
+        headers: { 'Content-Type': 'application/json' },
+        body: { key: 'value' },
         responseType: 'json',
     });
 
@@ -245,6 +245,62 @@ test('fetchT without init parameter uses default text responseType', async () =>
 
     lastRequestOptions?.success?.({
         data: 'response',
+        statusCode: 200,
+        header: {},
+        cookies: [],
+        errMsg: 'request:ok',
+        exception: {
+            reasons: [],
+            retryCount: 0,
+        },
+        profile: {} as WechatMinigame.RequestProfile,
+        useHttpDNS: false,
+    });
+
+    const result = await fetchTask.result;
+    expect(result.isOk()).toBe(true);
+});
+
+test('fetchT maps body to data in mina environment', async () => {
+    const fetchTask = fetchT('https://example.com/api', {
+        method: 'POST',
+        body: { key: 'value' },
+        responseType: 'json',
+    });
+
+    expect(lastRequestOptions?.method).toBe('POST');
+    expect(lastRequestOptions?.data).toEqual({ key: 'value' });
+
+    lastRequestOptions?.success?.({
+        data: { success: true },
+        statusCode: 200,
+        header: {},
+        cookies: [],
+        errMsg: 'request:ok',
+        exception: {
+            reasons: [],
+            retryCount: 0,
+        },
+        profile: {} as WechatMinigame.RequestProfile,
+        useHttpDNS: false,
+    });
+
+    const result = await fetchTask.result;
+    expect(result.isOk()).toBe(true);
+    expect(result.unwrap()).toEqual({ success: true });
+});
+
+test('fetchT maps string body to data in mina environment', async () => {
+    const fetchTask = fetchT('https://example.com/api', {
+        method: 'POST',
+        body: 'raw string data',
+        responseType: 'text',
+    });
+
+    expect(lastRequestOptions?.data).toBe('raw string data');
+
+    lastRequestOptions?.success?.({
+        data: 'ok',
         statusCode: 200,
         header: {},
         cookies: [],

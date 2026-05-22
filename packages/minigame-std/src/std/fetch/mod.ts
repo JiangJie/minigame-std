@@ -2,9 +2,9 @@
  * 网络请求模块，提供可中断的 fetch 请求功能，支持 text、JSON、ArrayBuffer 等响应类型。
  * @module fetch
  */
-import { fetchT as webFetch, type FetchTask } from '@happy-ts/fetch-t';
+import { fetchT as webFetch, type FetchInit, type FetchTask } from '@happy-ts/fetch-t';
 import { isMinaEnv } from '../../macros/env.ts';
-import type { UnionFetchInit } from './fetch_defines.ts';
+import type { MinaFetchInit, UnionFetchInit } from './fetch_defines.ts';
 import { minaFetch } from './mina_fetch.ts';
 
 export * from './fetch_defines.ts';
@@ -117,8 +117,39 @@ export function fetchT<T>(url: string, init?: UnionFetchInit): FetchTask<T> {
     // 默认是 text 类型
     defaultInit.responseType ??= 'text';
 
-    return (isMinaEnv() ? minaFetch(url, defaultInit) : webFetch(url, {
-        ...defaultInit,
-        abortable: true,
-    })) as FetchTask<T>;
+    if (isMinaEnv()) {
+        // Map body → data, headers → header for mini-game
+        const { body, headers, ...rest } = defaultInit;
+        if (body != null) {
+            (rest as MinaFetchInit).data = body;
+        }
+        if (headers !== undefined) {
+            (rest as MinaFetchInit).header = headers;
+        }
+        return minaFetch(url, rest) as FetchTask<T>;
+    }
+
+    // Auto-serialize object body for web
+    const { body, ...rest } = defaultInit;
+    const webInit: FetchInit & { abortable: true; } = { ...rest, body: body as BodyInit | null | undefined, abortable: true };
+
+    if (isPlainObject(body)) {
+        webInit.body = JSON.stringify(body);
+        // Object body is always serialized as JSON
+        const headers = new Headers(webInit.headers);
+        headers.set('Content-Type', 'application/json');
+        webInit.headers = headers;
+    }
+
+    return webFetch(url, webInit) as FetchTask<T>;
+}
+
+/**
+ * 判断值是否为普通对象（非 string、非 BufferSource）。
+ */
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+    return value != null
+        && typeof value === 'object'
+        && !ArrayBuffer.isView(value)
+        && !(value instanceof ArrayBuffer);
 }

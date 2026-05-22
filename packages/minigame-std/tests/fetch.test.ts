@@ -62,3 +62,26 @@ test('fetch without init parameter', async () => {
         expect(err.name).toBe('AbortError');
     });
 });
+
+test('fetch with object body posts JSON successfully', async () => {
+    // httpbin echoes back the request body as JSON
+    const fetchTask = fetchT<{ json: { key: string; }; }>('https://httpbin.org/post', {
+        method: 'POST',
+        body: { key: 'value' },
+        responseType: 'json',
+    });
+
+    const timer = setTimeout(() => {
+        fetchTask.abort();
+    }, 5000);
+
+    const res = await fetchTask.result;
+
+    res.inspect((data) => {
+        clearTimeout(timer);
+        expect(data.json).toEqual({ key: 'value' });
+    }).inspectErr((err: Error) => {
+        // Network issues in CI are acceptable
+        expect(['AbortError', 'TimeoutError', 'TypeError']).toContain(err.name);
+    });
+});
