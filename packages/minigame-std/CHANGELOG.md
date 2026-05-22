@@ -5,6 +5,19 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.3.0] - 2026-05-22
+
+### 新增
+- `fetchT` 的 `body` 参数现在支持直接传入对象（`WechatMinigame.IAnyObject`），Web 平台自动 `JSON.stringify` 并设置 `Content-Type: application/json`，小游戏平台直接作为 `data` 传递
+- `fetchT`、`connectSocket`、`fs.downloadFile`、`fs.uploadFile` 统一使用 `headers`（`Record<string, string>`）传递请求头，小游戏平台自动映射为 `header`
+
+### 变更
+- **⚠️ BREAKING**：`UnionFetchInit` 不再包含 `data` 和 `header` 属性，请迁移到 `body` 和 `headers`
+- **⚠️ BREAKING**：`SocketOptions` 不再包含 `header` 属性，请迁移到 `headers`
+- **⚠️ BREAKING**：`DownloadFileOptions`、`UploadFileOptions` 不再包含 `header` 属性，请迁移到 `headers`
+- **⚠️ BREAKING**：`MinaFetchInit`、`DownloadFileOptions`、`UploadFileOptions` 不再作为公共类型导出
+- 内部平台检测从 `isMinaEnv()` 函数改为 `IS_MINA` 常量，对下游 bundler tree-shaking 更友好
+
 ## [2.2.0] - 2026-05-20
 
 ### 新增
