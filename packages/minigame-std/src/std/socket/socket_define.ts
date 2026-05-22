@@ -125,9 +125,11 @@ export interface ISocket {
  *
  * const options: SocketOptions = {
  *     protocols: ['protocol1', 'protocol2'],
- *     header: { 'Authorization': 'Bearer token' },
+ *     headers: { 'Authorization': 'Bearer token' },
  * };
  * const socket = connectSocket('wss://example.com', options);
  * ```
  */
-export type SocketOptions = Omit<WechatMinigame.ConnectSocketOption, 'url' | 'complete' | 'success' | 'fail'>;
+export interface SocketOptions extends Omit<WechatMinigame.ConnectSocketOption, 'url' | 'header' | 'complete' | 'success' | 'fail'> {
+    headers?: Record<string, string>;
+}

@@ -56,7 +56,7 @@ beforeEach(() => {
 
 test('mina connectSocket creates socket with correct url', () => {
     const url = 'wss://example.com/ws';
-    const socket = connectSocket(url, { header: { 'X-Test': 'value' } });
+    const socket = connectSocket(url, { headers: { 'X-Test': 'value' } });
 
     expect(wx.connectSocket).toHaveBeenCalledWith({
         url,

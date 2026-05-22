@@ -70,7 +70,7 @@ test('connectSocket uses mina implementation when IS_MINA is true', () => {
 
 test('connectSocket with options uses mina implementation', () => {
     const result = connectSocket('wss://example.com/ws', {
-        header: { 'X-Test': 'value' },
+        headers: { 'X-Test': 'value' },
         protocols: ['protocol1'],
     });
 
