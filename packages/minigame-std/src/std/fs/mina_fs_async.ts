@@ -3,13 +3,12 @@
  * 小游戏平台的异步文件系统操作实现。
  */
 
-import { ABORT_ERROR, FetchError, type FetchResult } from '@happy-ts/fetch-t';
+import { ABORT_ERROR, FetchError, type FetchResult, type FetchTask } from '@happy-ts/fetch-t';
 import { basename, dirname, SEPARATOR } from '@std/path/posix';
 import { zipSync as compressSync, type AsyncZippable } from 'fflate/browser';
 import { type AppendOptions, type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
 import { Err, Ok, RESULT_VOID, tryResult, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
-import type { FetchTask } from '../fetch/fetch_defines.ts';
 import { createFailedFetchTask, miniGameFailureToError, validateSafeUrl } from '../internal/mod.ts';
 import { asyncResultify } from '../utils/mod.ts';
 import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';

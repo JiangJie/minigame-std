@@ -7,7 +7,8 @@ import { isMinaEnv } from '../../macros/env.ts';
 import type { MinaFetchInit, UnionFetchInit } from './fetch_defines.ts';
 import { minaFetch } from './mina_fetch.ts';
 
-export * from './fetch_defines.ts';
+export { ABORT_ERROR, FetchError, TIMEOUT_ERROR, type FetchTask } from '@happy-ts/fetch-t';
+export type { UnionFetchInit } from './fetch_defines.ts';
 
 /**
  * 发起一个可中断的文本类型响应的网络请求。

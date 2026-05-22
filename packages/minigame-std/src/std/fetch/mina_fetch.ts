@@ -3,11 +3,11 @@
  * 小游戏平台的 HTTP 请求实现。
  */
 
-import type { FetchResult } from '@happy-ts/fetch-t';
+import { ABORT_ERROR, FetchError, TIMEOUT_ERROR, type FetchResult, type FetchTask } from '@happy-ts/fetch-t';
 import { Err, Ok, type IOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import { createFailedFetchTask, miniGameFailureToError, validateSafeUrl } from '../internal/mod.ts';
-import { ABORT_ERROR, FetchError, TIMEOUT_ERROR, type FetchTask, type MinaFetchInit } from './fetch_defines.ts';
+import type { MinaFetchInit } from './fetch_defines.ts';
 
 /**
  * 发起一个可中断的 ArrayBuffer 类型响应的网络请求。
