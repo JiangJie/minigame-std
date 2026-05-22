@@ -599,7 +599,7 @@ describe('mina fs error handling - uploadFile', () => {
     });
 
     test('uploadFile returns error when file path is invalid', async () => {
-        const task = minaFsAsync.uploadFile('https://example.com/upload', 'relative-path.txt', 'file' as fs.UploadFileOptions);
+        const task = minaFsAsync.uploadFile('https://example.com/upload', 'relative-path.txt', 'file' as fs.UnionUploadFileOptions);
         const result = await task.result;
         expect(result.isErr()).toBe(true);
     });
@@ -622,7 +622,7 @@ describe('mina fs error handling - uploadFile', () => {
             };
         });
 
-        const task = minaFsAsync.uploadFile('https://example.com/upload', '/test-file.txt', 'file' as fs.UploadFileOptions);
+        const task = minaFsAsync.uploadFile('https://example.com/upload', '/test-file.txt', 'file' as fs.UnionUploadFileOptions);
         const result = await task.result;
         expect(result.isErr()).toBe(true);
     });
@@ -650,7 +650,7 @@ describe('mina fs error handling - uploadFile', () => {
             };
         });
 
-        const task = minaFsAsync.uploadFile('https://example.com/upload', '/test-file.txt', 'file' as fs.UploadFileOptions);
+        const task = minaFsAsync.uploadFile('https://example.com/upload', '/test-file.txt', 'file' as fs.UnionUploadFileOptions);
         task.abort();
 
         const result = await task.result;

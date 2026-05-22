@@ -1,6 +1,6 @@
-import type { FetchInit } from '@happy-ts/fetch-t';
 import type { FsRequestInit, UploadRequestInit, ZipFromUrlRequestInit } from 'happy-opfs';
 import type { DataSource } from '../defines.ts';
+import type { DownloadFileOptions, UploadFileOptions } from './mina_fs_define.ts';
 
 /**
  * 异步写入文件的内容类型，支持 `ArrayBuffer` `TypedArray` `string`。
@@ -62,44 +62,6 @@ export interface ReadOptions {
 export type FileEncoding = 'bytes' | 'utf8';
 
 /**
- * 下载文件的选项。
- * @since 1.0.0
- * @example
- * ```ts
- * import { fs, type DownloadFileOptions } from 'minigame-std';
- *
- * const options: DownloadFileOptions = {
- *     onProgress: (progress) => console.log(`下载进度: ${progress.progress}%`),
- * };
- * const task = fs.downloadFile('https://example.com/file.zip', '/path/to/save.zip', options);
- * ```
- */
-export interface DownloadFileOptions extends Omit<WechatMinigame.DownloadFileOption, 'url' | 'filePath' | 'success' | 'fail'> {
-    onProgress?: FetchInit['onProgress'];
-}
-
-/**
- * 上传文件的选项。
- * @since 1.0.0
- * @example
- * ```ts
- * import { fs, type UploadFileOptions } from 'minigame-std';
- *
- * const options: UploadFileOptions = {
- *     name: 'file',
- *     formData: { key: 'value' },
- * };
- * const task = fs.uploadFile('/path/to/file.txt', 'https://example.com/upload', options);
- * ```
- */
-export interface UploadFileOptions extends Omit<WechatMinigame.UploadFileOption, 'url' | 'filePath' | 'name' | 'success' | 'fail'> {
-    /**
-     * 可选的文件名称。
-     */
-    name?: string;
-}
-
-/**
  * 统一下载请求的选项。
  * @since 1.0.0
  * @example
@@ -107,12 +69,15 @@ export interface UploadFileOptions extends Omit<WechatMinigame.UploadFileOption,
  * import type { UnionDownloadFileOptions } from 'minigame-std';
  *
  * const options: UnionDownloadFileOptions = {
+ *     headers: { 'Authorization': 'Bearer token' },
  *     timeout: 30000,
  *     onProgress: (p) => console.log(p.progress),
  * };
  * ```
  */
-export type UnionDownloadFileOptions = FsRequestInit & DownloadFileOptions;
+export interface UnionDownloadFileOptions extends Omit<FsRequestInit & DownloadFileOptions, 'headers'> {
+    headers?: Record<string, string>;
+}
 
 /**
  * 统一上传请求的选项。
@@ -123,11 +88,14 @@ export type UnionDownloadFileOptions = FsRequestInit & DownloadFileOptions;
  *
  * const options: UnionUploadFileOptions = {
  *     name: 'file',
+ *     headers: { 'Authorization': 'Bearer token' },
  *     formData: { key: 'value' },
  * };
  * ```
  */
-export type UnionUploadFileOptions = UploadRequestInit & UploadFileOptions;
+export interface UnionUploadFileOptions extends Omit<UploadRequestInit & UploadFileOptions, 'headers'> {
+    headers?: Record<string, string>;
+}
 
 /**
  * stat 操作的选项。
@@ -155,9 +123,12 @@ export interface StatOptions {
  * import { fs, type ZipFromUrlOptions } from 'minigame-std';
  *
  * const options: ZipFromUrlOptions = {
+ *     headers: { 'Authorization': 'Bearer token' },
  *     onProgress: (p) => console.log(p.progress),
  * };
  * await fs.unzipFromUrl('https://example.com/archive.zip', '/path/to/output', options);
  * ```
  */
-export type ZipFromUrlOptions = DownloadFileOptions & ZipFromUrlRequestInit;
+export interface ZipFromUrlOptions extends Omit<DownloadFileOptions & ZipFromUrlRequestInit, 'headers'> {
+    headers?: Record<string, string>;
+}

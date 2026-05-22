@@ -11,7 +11,8 @@ import { Err, Ok, RESULT_VOID, tryResult, type AsyncIOResult, type AsyncVoidIORe
 import { Future } from 'tiny-future';
 import { createFailedFetchTask, miniGameFailureToError, validateSafeUrl } from '../internal/mod.ts';
 import { asyncResultify } from '../utils/mod.ts';
-import type { DownloadFileOptions, ReadFileContent, ReadOptions, StatOptions, UploadFileOptions, WriteFileContent } from './fs_define.ts';
+import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
+import type { DownloadFileOptions, UploadFileOptions } from './mina_fs_define.ts';
 import { createDirIsFileError, createFileNotExistsError, createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, validateReadablePath, type ZipIOResult } from './mina_fs_shared.ts';
 
 /**
@@ -439,6 +440,7 @@ export function downloadFile(fileUrl: string, filePath?: string | DownloadFileOp
 
     const {
         onProgress,
+        headers,
         ...rest
     } = options ?? {};
 
@@ -453,6 +455,7 @@ export function downloadFile(fileUrl: string, filePath?: string | DownloadFileOp
             ...rest,
             url: fileUrl,
             filePath: filePath as string,
+            header: headers,
             async success(response): Promise<void> {
                 if (aborted) {
                     future.resolve(Err(createAbortError()));
@@ -542,15 +545,18 @@ export function uploadFile(filePath: string, fileUrl: string, options?: UploadFi
     if (filePathRes.isErr()) return createFailedFetchTask(filePathRes);
     filePath = filePathRes.unwrap();
 
+    const { headers, ...rest } = options ?? {};
+
     let aborted = false;
 
     const future = new Future<IOResult<T>>();
 
     const task = wx.uploadFile({
         name: basename(filePath),
-        ...options,
+        ...rest,
         url: fileUrl,
         filePath,
+        header: headers,
         success(res): void {
             future.resolve(Ok(res));
         },

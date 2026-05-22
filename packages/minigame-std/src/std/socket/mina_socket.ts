@@ -16,9 +16,11 @@ import { SocketReadyState, type ISocket, type SocketListenerMap, type SocketOpti
  * @returns 返回一个实现了 ISocket 接口的 WebSocket 对象。
  */
 export function connectSocket(url: string, options?: SocketOptions): ISocket {
+    const { headers, ...rest } = options ?? {};
     const socket = wx.connectSocket({
-        ...options,
+        ...rest,
         url,
+        header: headers,
     });
 
     // mock WebSocket readyState
