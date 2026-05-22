@@ -3,7 +3,7 @@
  * @module clipboard
  */
 import type { AsyncIOResult, AsyncVoidIOResult } from 'happy-rusty';
-import { isMinaEnv } from '../../macros/env.ts';
+import { IS_MINA } from '../../macros/env.ts';
 import { validateString } from '../internal/mod.ts';
 import { readText as minaReadText, writeText as minaWriteText } from './mina_clipboard.ts';
 import { readText as webReadText, writeText as webWriteText } from './web_clipboard.ts';
@@ -27,7 +27,7 @@ export function writeText(data: string): AsyncVoidIOResult {
     const dataRes = validateString(data, 'data');
     if (dataRes.isErr()) return Promise.resolve(dataRes);
 
-    return (isMinaEnv() ? minaWriteText : webWriteText)(data);
+    return (IS_MINA ? minaWriteText : webWriteText)(data);
 }
 
 /**
@@ -45,5 +45,5 @@ export function writeText(data: string): AsyncVoidIOResult {
  * ```
  */
 export function readText(): AsyncIOResult<string> {
-    return (isMinaEnv() ? minaReadText : webReadText)();
+    return (IS_MINA ? minaReadText : webReadText)();
 }

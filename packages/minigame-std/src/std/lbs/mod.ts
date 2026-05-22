@@ -3,7 +3,7 @@
  * @module lbs
  */
 import { type AsyncIOResult } from 'happy-rusty';
-import { isMinaEnv } from '../../macros/env.ts';
+import { IS_MINA } from '../../macros/env.ts';
 import type { GeoPosition } from './lbs_defines.ts';
 import { getCurrentPosition as minaGetCurrentPosition } from './mina_lbs.ts';
 import { getCurrentPosition as webGetCurrentPosition } from './web_lbs.ts';
@@ -27,7 +27,7 @@ export * from './lbs_defines.ts';
  * ```
  */
 export function getCurrentPosition(): AsyncIOResult<GeoPosition> {
-    return isMinaEnv()
+    return IS_MINA
         ? minaGetCurrentPosition()
         : webGetCurrentPosition();
 }

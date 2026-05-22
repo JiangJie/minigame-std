@@ -3,7 +3,7 @@
  * @module storage
  */
 import type { AsyncIOResult, AsyncVoidIOResult, IOResult, VoidIOResult } from 'happy-rusty';
-import { isMinaEnv } from '../../macros/env.ts';
+import { IS_MINA } from '../../macros/env.ts';
 import { validateString } from '../internal/mod.ts';
 import {
     clear as minaClear,
@@ -49,7 +49,7 @@ export async function setItem(key: string, data: string): AsyncVoidIOResult {
     const dataRes = validateString(data, 'data');
     if (dataRes.isErr()) return dataRes;
 
-    return isMinaEnv()
+    return IS_MINA
         ? minaSetItem(key, data)
         : webSetItem(key, data);
 }
@@ -71,7 +71,7 @@ export async function getItem(key: string): AsyncIOResult<string> {
     const keyRes = validateString(key, 'key');
     if (keyRes.isErr()) return keyRes.asErr();
 
-    return isMinaEnv()
+    return IS_MINA
         ? minaGetItem(key)
         : webGetItem(key);
 }
@@ -93,7 +93,7 @@ export async function removeItem(key: string): AsyncVoidIOResult {
     const keyRes = validateString(key, 'key');
     if (keyRes.isErr()) return keyRes;
 
-    return isMinaEnv()
+    return IS_MINA
         ? minaRemoveItem(key)
         : webRemoveItem(key);
 }
@@ -111,7 +111,7 @@ export async function removeItem(key: string): AsyncVoidIOResult {
  * ```
  */
 export function clear(): AsyncVoidIOResult {
-    return isMinaEnv()
+    return IS_MINA
         ? minaClear()
         : Promise.resolve(webClear());
 }
@@ -129,7 +129,7 @@ export function clear(): AsyncVoidIOResult {
  * ```
  */
 export function getLength(): AsyncIOResult<number> {
-    return isMinaEnv()
+    return IS_MINA
         ? minaGetLength()
         : Promise.resolve(webGetLength());
 }
@@ -151,7 +151,7 @@ export async function hasItem(key: string): AsyncIOResult<boolean> {
     const keyRes = validateString(key, 'key');
     if (keyRes.isErr()) return keyRes.asErr();
 
-    return isMinaEnv()
+    return IS_MINA
         ? minaHasItem(key)
         : webHasItem(key);
 }
@@ -177,7 +177,7 @@ export function setItemSync(key: string, data: string): VoidIOResult {
     const dataRes = validateString(data, 'data');
     if (dataRes.isErr()) return dataRes;
 
-    return (isMinaEnv() ? minaSetItemSync : webSetItem)(key, data);
+    return (IS_MINA ? minaSetItemSync : webSetItem)(key, data);
 }
 
 /**
@@ -197,7 +197,7 @@ export function getItemSync(key: string): IOResult<string> {
     const keyRes = validateString(key, 'key');
     if (keyRes.isErr()) return keyRes.asErr();
 
-    return (isMinaEnv() ? minaGetItemSync : webGetItem)(key);
+    return (IS_MINA ? minaGetItemSync : webGetItem)(key);
 }
 
 /**
@@ -217,7 +217,7 @@ export function removeItemSync(key: string): VoidIOResult {
     const keyRes = validateString(key, 'key');
     if (keyRes.isErr()) return keyRes;
 
-    return (isMinaEnv() ? minaRemoveItemSync : webRemoveItem)(key);
+    return (IS_MINA ? minaRemoveItemSync : webRemoveItem)(key);
 }
 
 /**
@@ -233,7 +233,7 @@ export function removeItemSync(key: string): VoidIOResult {
  * ```
  */
 export function clearSync(): VoidIOResult {
-    return (isMinaEnv() ? minaClearSync : webClear)();
+    return (IS_MINA ? minaClearSync : webClear)();
 }
 
 /**
@@ -249,7 +249,7 @@ export function clearSync(): VoidIOResult {
  * ```
  */
 export function getLengthSync(): IOResult<number> {
-    return (isMinaEnv() ? minaGetLengthSync : webGetLength)();
+    return (IS_MINA ? minaGetLengthSync : webGetLength)();
 }
 
 /**
@@ -269,5 +269,5 @@ export function hasItemSync(key: string): IOResult<boolean> {
     const keyRes = validateString(key, 'key');
     if (keyRes.isErr()) return keyRes.asErr();
 
-    return (isMinaEnv() ? minaHasItemSync : webHasItem)(key);
+    return (IS_MINA ? minaHasItemSync : webHasItem)(key);
 }

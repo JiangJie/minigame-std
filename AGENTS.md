@@ -17,7 +17,7 @@ The core architecture uses a compile-time macro `__MINIGAME_STD_MINA__` to deter
 - When `true`: bundles mini-game (Mina) platform code, excludes web code
 - When `false`: bundles web platform code, excludes mini-game code
 
-This is defined in `packages/minigame-std/src/macros/env.ts` and used throughout the codebase via `isMinaEnv()`.
+This is defined in `packages/minigame-std/src/macros/env.ts` and used throughout the codebase via the `IS_MINA` constant.
 
 ## Development Commands
 
@@ -148,7 +148,7 @@ Each module follows a consistent pattern with three files:
 
 1. **`mod.ts`** - Platform-agnostic entry point that:
    - Imports platform-specific implementations (`mina_*.ts` and `web_*.ts`)
-   - Uses `isMinaEnv()` to dispatch to correct implementation
+   - Uses `IS_MINA` constant to dispatch to correct implementation
    - Exports unified API
 
 2. **`mina_*.ts`** - Mini-game platform implementation using `wx.*` APIs
@@ -164,7 +164,7 @@ export { decodeBase64, decodeByteString, decodeHex, encodeBase64, encodeByteStri
 // UTF-8 encoding/decoding has platform-specific implementations
 // (mini-game uses wx.encode/wx.decode, web uses happy-codec's implementation)
 export function encodeUtf8(data: string): Uint8Array<ArrayBuffer> {
-    return (isMinaEnv() ? minaEncodeUtf8 : webEncodeUtf8)(data);
+    return (IS_MINA ? minaEncodeUtf8 : webEncodeUtf8)(data);
 }
 ```
 
@@ -364,7 +364,7 @@ Style-only changes (e.g. `/*@__PURE__*/` ↔ `/*#__PURE__*/`) do not by themselv
 - TypeScript doesn't auto-resolve extensions in this project
 
 ### Platform Detection
-- Use `isMinaEnv()` from `packages/minigame-std/src/macros/env.ts` for runtime platform checks
+- Use `IS_MINA` constant from `packages/minigame-std/src/macros/env.ts` for platform checks
 - Never use direct checks like `typeof wx !== 'undefined'` in library code
 
 ### pnpm 11 Reserved Subcommands

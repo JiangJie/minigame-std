@@ -1,5 +1,5 @@
 /**
- * 测试小游戏环境下的 fetch/mod.ts（isMinaEnv = true 分支）
+ * 测试小游戏环境下的 fetch/mod.ts（IS_MINA = true 分支）
  */
 import { beforeEach, expect, test, vi } from 'vitest';
 
@@ -21,9 +21,9 @@ function createMockRequestTask() {
 let mockTask: ReturnType<typeof createMockRequestTask>;
 let lastRequestOptions: WechatMinigame.RequestOption | null = null;
 
-// Mock isMinaEnv 返回 true
+// Mock IS_MINA 为 true
 vi.mock('../src/macros/env.ts', () => ({
-    isMinaEnv: () => true,
+    IS_MINA: true,
 }));
 
 // Mock wx.request
@@ -35,7 +35,7 @@ vi.stubGlobal('wx', {
     }),
 });
 
-// 动态导入 mod.ts（会使用 mock 的 isMinaEnv）
+// 动态导入 mod.ts（会使用 mock 的 IS_MINA）
 const { fetchT } = await import('../src/std/fetch/mod.ts');
 
 beforeEach(() => {
@@ -43,7 +43,7 @@ beforeEach(() => {
     lastRequestOptions = null;
 });
 
-test('fetchT uses mina implementation when isMinaEnv returns true', async () => {
+test('fetchT uses mina implementation when IS_MINA is true', async () => {
     const url = 'https://example.com/api';
     const fetchTask = fetchT(url);
 

@@ -2,7 +2,7 @@
  * 视频播放模块，提供创建和控制视频播放器的功能。
  * @module video
  */
-import { isMinaEnv } from '../../macros/env.ts';
+import { IS_MINA } from '../../macros/env.ts';
 import { createVideo as webCreateVideo } from './web_video.ts';
 
 export * from './frame-source/mod.ts';
@@ -26,5 +26,5 @@ export * from './frame-source/mod.ts';
  * ```
  */
 export function createVideo(options: WechatMinigame.CreateVideoOption): WechatMinigame.Video {
-    return (isMinaEnv() ? wx.createVideo : webCreateVideo)(options);
+    return (IS_MINA ? wx.createVideo : webCreateVideo)(options);
 }

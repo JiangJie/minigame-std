@@ -1,5 +1,5 @@
 /**
- * 测试小游戏环境下的 socket/mod.ts（isMinaEnv = true 分支）
+ * 测试小游戏环境下的 socket/mod.ts（IS_MINA = true 分支）
  */
 import { beforeEach, expect, test, vi } from 'vitest';
 
@@ -38,9 +38,9 @@ function createMockSocketTask() {
 
 let mockSocketTask: ReturnType<typeof createMockSocketTask>;
 
-// Mock isMinaEnv 返回 true
+// Mock IS_MINA 为 true
 vi.mock('../src/macros/env.ts', () => ({
-    isMinaEnv: () => true,
+    IS_MINA: true,
 }));
 
 // Mock wx.connectSocket
@@ -51,14 +51,14 @@ vi.stubGlobal('wx', {
     }),
 });
 
-// 动态导入 mod.ts（会使用 mock 的 isMinaEnv）
+// 动态导入 mod.ts（会使用 mock 的 IS_MINA）
 const { connectSocket } = await import('../src/std/socket/mod.ts');
 
 beforeEach(() => {
     vi.clearAllMocks();
 });
 
-test('connectSocket uses mina implementation when isMinaEnv returns true', () => {
+test('connectSocket uses mina implementation when IS_MINA is true', () => {
     const result = connectSocket('wss://example.com/ws');
 
     expect(result.isOk()).toBe(true);

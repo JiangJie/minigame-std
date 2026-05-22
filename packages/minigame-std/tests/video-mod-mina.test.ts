@@ -1,5 +1,5 @@
 /**
- * 测试小游戏环境下的 video/mod.ts（isMinaEnv = true 分支）
+ * 测试小游戏环境下的 video/mod.ts（IS_MINA = true 分支）
  */
 import { beforeEach, expect, test, vi } from 'vitest';
 
@@ -83,9 +83,9 @@ function createMockVideo(): WechatMinigame.Video {
 
 let mockVideo: WechatMinigame.Video;
 
-// Mock isMinaEnv 返回 true
+// Mock IS_MINA 为 true
 vi.mock('../src/macros/env.ts', () => ({
-    isMinaEnv: () => true,
+    IS_MINA: true,
 }));
 
 // Mock wx.createVideo
@@ -111,14 +111,14 @@ vi.stubGlobal('wx', {
     }),
 });
 
-// 动态导入 mod.ts（会使用 mock 的 isMinaEnv）
+// 动态导入 mod.ts（会使用 mock 的 IS_MINA）
 const { createVideo } = await import('../src/std/video/mod.ts');
 
 beforeEach(() => {
     vi.clearAllMocks();
 });
 
-test('createVideo uses mina implementation when isMinaEnv returns true', () => {
+test('createVideo uses mina implementation when IS_MINA is true', () => {
     const options: WechatMinigame.CreateVideoOption = {
         src: 'https://example.com/video.mp4',
         width: 640,

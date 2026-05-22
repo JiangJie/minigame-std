@@ -2,7 +2,7 @@
  * 事件监听模块，提供错误、未处理 Promise 拒绝、窗口大小变化等事件监听功能。
  * @module event
  */
-import { isMinaEnv } from '../../macros/env.ts';
+import { IS_MINA } from '../../macros/env.ts';
 import {
     addErrorListener as minaAddErrorListener,
     addHideListener as minaAddHideListener,
@@ -34,7 +34,7 @@ import {
  * ```
  */
 export function addErrorListener(listener: (ev: WechatMinigame.ListenerError) => void): () => void {
-    if (isMinaEnv()) {
+    if (IS_MINA) {
         return minaAddErrorListener(listener);
     }
 
@@ -63,7 +63,7 @@ export function addErrorListener(listener: (ev: WechatMinigame.ListenerError) =>
  * ```
  */
 export function addUnhandledrejectionListener(listener: (ev: Pick<PromiseRejectionEvent, 'reason' | 'promise'>) => void): () => void {
-    return isMinaEnv()
+    return IS_MINA
         ? minaAddUnhandledrejectionListener(listener as unknown as WechatMinigame.OnUnhandledRejectionCallback)
         : webAddUnhandledrejectionListener(listener);
 }
@@ -84,7 +84,7 @@ export function addUnhandledrejectionListener(listener: (ev: Pick<PromiseRejecti
  * ```
  */
 export function addResizeListener(listener: WechatMinigame.OnWindowResizeCallback): () => void {
-    return isMinaEnv()
+    return IS_MINA
         ? minaAddResizeListener(listener)
         : webAddResizeListener(ev => {
             listener({
@@ -110,7 +110,7 @@ export function addResizeListener(listener: WechatMinigame.OnWindowResizeCallbac
  * ```
  */
 export function addShowListener(listener: (ev?: WechatMinigame.OnShowListenerResult) => void): () => void {
-    return isMinaEnv()
+    return IS_MINA
         ? minaAddShowListener(listener)
         : webAddShowListener(listener);
 }
@@ -131,7 +131,7 @@ export function addShowListener(listener: (ev?: WechatMinigame.OnShowListenerRes
  * ```
  */
 export function addHideListener(listener: () => void): () => void {
-    return isMinaEnv()
+    return IS_MINA
         ? minaAddHideListener(listener)
         : webAddHideListener(listener);
 }

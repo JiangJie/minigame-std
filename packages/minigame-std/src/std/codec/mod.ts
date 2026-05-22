@@ -6,7 +6,7 @@
  */
 
 import { decodeUtf8 as webDecodeUtf8, encodeUtf8 as webEncodeUtf8 } from 'happy-codec';
-import { isMinaEnv } from '../../macros/env.ts';
+import { IS_MINA } from '../../macros/env.ts';
 import { decodeUtf8 as minaDecodeUtf8, encodeUtf8 as minaEncodeUtf8 } from './mina_utf8.ts';
 
 export { decodeBase64, decodeByteString, decodeHex, encodeBase64, encodeByteString, encodeHex, type DecodeBase64Options, type EncodeBase64Options } from 'happy-codec';
@@ -23,7 +23,7 @@ export { decodeBase64, decodeByteString, decodeHex, encodeBase64, encodeByteStri
  * ```
  */
 export function encodeUtf8(data: string): Uint8Array<ArrayBuffer> {
-    return (isMinaEnv() ? minaEncodeUtf8 : webEncodeUtf8)(data);
+    return (IS_MINA ? minaEncodeUtf8 : webEncodeUtf8)(data);
 }
 
 /**
@@ -52,5 +52,5 @@ export function encodeUtf8(data: string): Uint8Array<ArrayBuffer> {
  * ```
  */
 export function decodeUtf8(data: BufferSource, options?: TextDecoderOptions): string {
-    return (isMinaEnv() ? minaDecodeUtf8 : webDecodeUtf8)(data, options);
+    return (IS_MINA ? minaDecodeUtf8 : webDecodeUtf8)(data, options);
 }

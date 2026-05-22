@@ -1,5 +1,5 @@
 import { Ok, type AsyncIOResult, type IOResult } from 'happy-rusty';
-import { isMinaEnv } from '../../../macros/env.ts';
+import { IS_MINA } from '../../../macros/env.ts';
 import type { CreateVideoFrameSourceFromFileOptions, CreateVideoFrameSourceOptions, VideoFrameSource } from './defines.ts';
 import {
     isVideoFrameSourceSupported as isMinaVideoFrameSourceSupported,
@@ -29,7 +29,7 @@ export * from './defines.ts';
  * ```
  */
 export function isVideoFrameSourceSupported(): boolean {
-    return isMinaEnv() ? isMinaVideoFrameSourceSupported() : isWebVideoFrameSourceSupported();
+    return IS_MINA ? isMinaVideoFrameSourceSupported() : isWebVideoFrameSourceSupported();
 }
 
 /**
@@ -52,7 +52,7 @@ export function isVideoFrameSourceSupported(): boolean {
  * ```
  */
 export function createVideoFrameSource(options: CreateVideoFrameSourceOptions): IOResult<VideoFrameSource> {
-    return isMinaEnv()
+    return IS_MINA
         ? minaCreateVideoFrameSource(options)
         : Ok(webCreateVideoFrameSource(options));
 }
@@ -78,7 +78,7 @@ export function createVideoFrameSource(options: CreateVideoFrameSourceOptions): 
  * ```
  */
 export function createVideoFrameSourceFromFile(filePath: string, options?: CreateVideoFrameSourceFromFileOptions): AsyncIOResult<VideoFrameSource> {
-    return isMinaEnv()
+    return IS_MINA
         ? Promise.resolve(minaCreateVideoFrameSourceFromFile(filePath, options))
         : webCreateVideoFrameSourceFromFile(filePath, options);
 }

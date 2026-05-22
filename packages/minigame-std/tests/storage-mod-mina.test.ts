@@ -1,14 +1,14 @@
 /**
- * 测试小游戏环境下的 storage/mod.ts（isMinaEnv = true 分支）
+ * 测试小游戏环境下的 storage/mod.ts（IS_MINA = true 分支）
  */
 import { beforeEach, expect, test, vi } from 'vitest';
 
 // 模拟存储数据
 const mockStorage = new Map<string, string>();
 
-// Mock isMinaEnv 返回 true
+// Mock IS_MINA 为 true
 vi.mock('../src/macros/env.ts', () => ({
-    isMinaEnv: () => true,
+    IS_MINA: true,
 }));
 
 // Mock wx storage APIs
@@ -55,7 +55,7 @@ vi.stubGlobal('wx', {
     }),
 });
 
-// 动态导入 mod.ts（会使用 mock 的 isMinaEnv）
+// 动态导入 mod.ts（会使用 mock 的 IS_MINA）
 const {
     setItem,
     getItem,
@@ -78,7 +78,7 @@ beforeEach(() => {
 
 // ============ 异步 API 测试 ============
 
-test('setItem and getItem use mina implementation when isMinaEnv returns true', async () => {
+test('setItem and getItem use mina implementation when IS_MINA is true', async () => {
     const key = 'test-key';
     const value = 'test-value';
 

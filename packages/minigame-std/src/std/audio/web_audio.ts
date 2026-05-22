@@ -3,7 +3,7 @@
  */
 
 import { Once, tryAsyncResult, type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
-import { isMinaEnv } from '../../macros/env.ts';
+import { IS_MINA } from '../../macros/env.ts';
 import { fetchT } from '../fetch/mod.ts';
 import { readFile } from '../fs/mod.ts';
 import { ASYNC_RESULT_VOID, bufferSourceToAb } from '../internal/mod.ts';
@@ -60,7 +60,7 @@ export function closeGlobalAudioContext(): AsyncVoidIOResult {
  * ```
  */
 export function createWebAudioContext(): AudioContext {
-    return isMinaEnv()
+    return IS_MINA
         // 两者 API 基本兼容
         ? (wx.createWebAudioContext() as unknown as AudioContext)
         : new AudioContext();

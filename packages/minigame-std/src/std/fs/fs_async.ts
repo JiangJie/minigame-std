@@ -25,7 +25,7 @@ import {
     type ZipOptions,
 } from 'happy-opfs';
 import { type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
-import { isMinaEnv } from '../../macros/env.ts';
+import { IS_MINA } from '../../macros/env.ts';
 import type { ReadFileContent, ReadOptions, StatOptions, UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent, ZipFromUrlOptions } from './fs_define.ts';
 import {
     appendFile as minaAppendFile,
@@ -65,7 +65,7 @@ import { webToMinaReadDir, webToMinaStat } from './web_fs_helpers.ts';
  * ```
  */
 export function mkdir(dirPath: string): AsyncVoidIOResult {
-    return (isMinaEnv() ? minaMkdir : webMkdir)(dirPath);
+    return (IS_MINA ? minaMkdir : webMkdir)(dirPath);
 }
 
 /**
@@ -83,7 +83,7 @@ export function mkdir(dirPath: string): AsyncVoidIOResult {
  * ```
  */
 export function move(srcPath: string, destPath: string): AsyncVoidIOResult {
-    return (isMinaEnv() ? minaMove : webMove)(srcPath, destPath);
+    return (IS_MINA ? minaMove : webMove)(srcPath, destPath);
 }
 
 /**
@@ -100,7 +100,7 @@ export function move(srcPath: string, destPath: string): AsyncVoidIOResult {
  * ```
  */
 export async function readDir(dirPath: string): AsyncIOResult<string[]> {
-    return (isMinaEnv() ? minaReadDir : webToMinaReadDir)(dirPath);
+    return (IS_MINA ? minaReadDir : webToMinaReadDir)(dirPath);
 }
 
 /**
@@ -164,7 +164,7 @@ export function readFile(filePath: string, options?: ReadOptions): AsyncIOResult
  * @returns 包含文件内容的异步操作结果。
  */
 export function readFile(filePath: string, options?: ReadOptions): AsyncIOResult<ReadFileContent> {
-    return isMinaEnv()
+    return IS_MINA
         ? minaReadFile(filePath, options)
         : webReadFile(filePath, options) as AsyncIOResult<ReadFileContent>;
 }
@@ -183,7 +183,7 @@ export function readFile(filePath: string, options?: ReadOptions): AsyncIOResult
  * ```
  */
 export function remove(path: string): AsyncVoidIOResult {
-    return (isMinaEnv() ? minaRemove : webRemove)(path);
+    return (IS_MINA ? minaRemove : webRemove)(path);
 }
 
 /**
@@ -239,7 +239,7 @@ export function stat(path: string, options?: StatOptions): AsyncIOResult<WechatM
  * ```
  */
 export async function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
-    return (isMinaEnv() ? minaStat : webToMinaStat)(path, options);
+    return (IS_MINA ? minaStat : webToMinaStat)(path, options);
 }
 
 /**
@@ -258,7 +258,7 @@ export async function stat(path: string, options?: StatOptions): AsyncIOResult<W
  * ```
  */
 export function writeFile(filePath: string, contents: WriteFileContent, options?: WriteOptions): AsyncVoidIOResult {
-    return (isMinaEnv() ? minaWriteFile : webWriteFile)(filePath, contents, options);
+    return (IS_MINA ? minaWriteFile : webWriteFile)(filePath, contents, options);
 }
 
 /**
@@ -277,7 +277,7 @@ export function writeFile(filePath: string, contents: WriteFileContent, options?
  * ```
  */
 export function appendFile(filePath: string, contents: WriteFileContent, options?: AppendOptions): AsyncVoidIOResult {
-    return (isMinaEnv() ? minaAppendFile : webAppendFile)(filePath, contents, options);
+    return (IS_MINA ? minaAppendFile : webAppendFile)(filePath, contents, options);
 }
 
 /**
@@ -295,7 +295,7 @@ export function appendFile(filePath: string, contents: WriteFileContent, options
  * ```
  */
 export function copy(srcPath: string, destPath: string): AsyncVoidIOResult {
-    return (isMinaEnv() ? minaCopy : webCopy)(srcPath, destPath);
+    return (IS_MINA ? minaCopy : webCopy)(srcPath, destPath);
 }
 
 /**
@@ -313,7 +313,7 @@ export function copy(srcPath: string, destPath: string): AsyncVoidIOResult {
  * ```
  */
 export function exists(path: string, options?: ExistsOptions): AsyncIOResult<boolean> {
-    return (isMinaEnv() ? minaExists : webExists)(path, options);
+    return (IS_MINA ? minaExists : webExists)(path, options);
 }
 
 /**
@@ -330,7 +330,7 @@ export function exists(path: string, options?: ExistsOptions): AsyncIOResult<boo
  * ```
  */
 export function emptyDir(dirPath: string): AsyncVoidIOResult {
-    return (isMinaEnv() ? minaEmptyDir : webEmptyDir)(dirPath);
+    return (IS_MINA ? minaEmptyDir : webEmptyDir)(dirPath);
 }
 
 /**
@@ -348,7 +348,7 @@ export function emptyDir(dirPath: string): AsyncVoidIOResult {
  * ```
  */
 export function readJsonFile<T>(filePath: string): AsyncIOResult<T> {
-    return (isMinaEnv() ? minaReadJsonFile : webReadJsonFile)(filePath);
+    return (IS_MINA ? minaReadJsonFile : webReadJsonFile)(filePath);
 }
 
 /**
@@ -365,7 +365,7 @@ export function readJsonFile<T>(filePath: string): AsyncIOResult<T> {
  * ```
  */
 export function readTextFile(filePath: string): AsyncIOResult<string> {
-    return (isMinaEnv() ? minaReadTextFile : webReadTextFile)(filePath);
+    return (IS_MINA ? minaReadTextFile : webReadTextFile)(filePath);
 }
 
 /**
@@ -384,7 +384,7 @@ export function readTextFile(filePath: string): AsyncIOResult<string> {
  * ```
  */
 export function writeJsonFile<T>(filePath: string, data: T): AsyncVoidIOResult {
-    return (isMinaEnv() ? minaWriteJsonFile : webWriteJsonFile)(filePath, data);
+    return (IS_MINA ? minaWriteJsonFile : webWriteJsonFile)(filePath, data);
 }
 
 /**
@@ -422,11 +422,11 @@ export function downloadFile(fileUrl: string, options?: UnionDownloadFileOptions
 export function downloadFile(fileUrl: string, filePath: string, options?: UnionDownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | Response>;
 export function downloadFile(fileUrl: string, filePath?: string | UnionDownloadFileOptions, options?: UnionDownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | DownloadFileTempResponse | Response> {
     if (typeof filePath === 'string') {
-        return isMinaEnv()
+        return IS_MINA
             ? minaDownloadFile(fileUrl, filePath, options)
             : webDownloadFile(fileUrl, filePath, options);
     } else {
-        return isMinaEnv()
+        return IS_MINA
             ? minaDownloadFile(fileUrl, filePath)
             : webDownloadFile(fileUrl, filePath);
     }
@@ -449,7 +449,7 @@ export function downloadFile(fileUrl: string, filePath?: string | UnionDownloadF
  * ```
  */
 export function uploadFile(filePath: string, fileUrl: string, options?: UnionUploadFileOptions): FetchTask<WechatMinigame.UploadFileSuccessCallbackResult | Response> {
-    return isMinaEnv()
+    return IS_MINA
         ? minaUploadFile(filePath, fileUrl, options)
         : webUploadFile(filePath, fileUrl, options);
 }
@@ -469,7 +469,7 @@ export function uploadFile(filePath: string, fileUrl: string, options?: UnionUpl
  * ```
  */
 export function unzip(zipFilePath: string, targetPath: string): AsyncVoidIOResult {
-    return (isMinaEnv() ? minaUnzip : webUnzip)(zipFilePath, targetPath);
+    return (IS_MINA ? minaUnzip : webUnzip)(zipFilePath, targetPath);
 }
 
 /**
@@ -488,7 +488,7 @@ export function unzip(zipFilePath: string, targetPath: string): AsyncVoidIOResul
  * ```
  */
 export function unzipFromUrl(zipFileUrl: string, targetPath: string, options?: UnionDownloadFileOptions): AsyncVoidIOResult {
-    return (isMinaEnv() ? minaUnzipFromUrl : webUnzipFromUrl)(zipFileUrl, targetPath, options);
+    return (IS_MINA ? minaUnzipFromUrl : webUnzipFromUrl)(zipFileUrl, targetPath, options);
 }
 
 /**
@@ -524,9 +524,9 @@ export function zip(sourcePath: string, options?: ZipOptions): AsyncIOResult<Uin
 export function zip(sourcePath: string, zipFilePath: string, options?: ZipOptions): AsyncVoidIOResult;
 export function zip(sourcePath: string, zipFilePath?: string | ZipOptions, options?: ZipOptions): AsyncIOResult<Uint8Array<ArrayBuffer> | void> {
     if (typeof zipFilePath === 'string') {
-        return (isMinaEnv() ? minaZip : webZip)(sourcePath, zipFilePath, options);
+        return (IS_MINA ? minaZip : webZip)(sourcePath, zipFilePath, options);
     } else {
-        return (isMinaEnv() ? minaZip : webZip)(sourcePath, zipFilePath);
+        return (IS_MINA ? minaZip : webZip)(sourcePath, zipFilePath);
     }
 }
 
@@ -563,11 +563,11 @@ export function zipFromUrl(sourceUrl: string, options?: ZipFromUrlOptions): Asyn
 export function zipFromUrl(sourceUrl: string, zipFilePath: string, options?: ZipFromUrlOptions): AsyncVoidIOResult;
 export function zipFromUrl(sourceUrl: string, zipFilePath?: string | ZipFromUrlOptions, options?: ZipFromUrlOptions): AsyncIOResult<Uint8Array<ArrayBuffer> | void> {
     if (typeof zipFilePath === 'string') {
-        return isMinaEnv()
+        return IS_MINA
             ? minaZipFromUrl(sourceUrl, zipFilePath, options)
             : webZipFromUrl(sourceUrl, zipFilePath, options);
     } else {
-        return isMinaEnv()
+        return IS_MINA
             ? minaZipFromUrl(sourceUrl, zipFilePath)
             : webZipFromUrl(sourceUrl, zipFilePath);
     }

@@ -3,7 +3,7 @@
  * @module fetch
  */
 import { fetchT as webFetch, type FetchInit, type FetchTask } from '@happy-ts/fetch-t';
-import { isMinaEnv } from '../../macros/env.ts';
+import { IS_MINA } from '../../macros/env.ts';
 import type { MinaFetchInit, UnionFetchInit } from './fetch_defines.ts';
 import { minaFetch } from './mina_fetch.ts';
 
@@ -118,7 +118,7 @@ export function fetchT<T>(url: string, init?: UnionFetchInit): FetchTask<T> {
     // 默认是 text 类型
     defaultInit.responseType ??= 'text';
 
-    if (isMinaEnv()) {
+    if (IS_MINA) {
         // Map body → data, headers → header for mini-game
         const { body, headers, ...rest } = defaultInit;
         if (body != null) {

@@ -1,5 +1,5 @@
 import { Err, type AsyncIOResult } from 'happy-rusty';
-import { isMinaEnv } from '../../../macros/env.ts';
+import { IS_MINA } from '../../../macros/env.ts';
 import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
 import { importPublicKey as minaImportPublicKey } from './mina_rsa.ts';
 import { importPublicKey as webImportPublicKey } from './web_rsa.ts';
@@ -31,5 +31,5 @@ export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublic
         return Promise.resolve(Err(new TypeError(`Unsupported hash algorithm: ${hash}`)));
     }
 
-    return (isMinaEnv() ? minaImportPublicKey : webImportPublicKey)(pem, hash);
+    return (IS_MINA ? minaImportPublicKey : webImportPublicKey)(pem, hash);
 }

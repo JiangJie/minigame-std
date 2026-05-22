@@ -1,5 +1,5 @@
 import { Lazy, Ok, OnceAsync, type AsyncIOResult } from 'happy-rusty';
-import { isMinaEnv } from '../../macros/env.ts';
+import { IS_MINA } from '../../macros/env.ts';
 import { asyncIOResultify } from '../utils/mod.ts';
 import { parseUserAgent } from './user_agent.ts';
 
@@ -7,7 +7,7 @@ import { parseUserAgent } from './user_agent.ts';
 
 // 以下变量一旦获取则不会变化
 // 兼容基础库低版本
-const deviceInfo = /*#__PURE__*/ Lazy<DeviceInfo>(() => isMinaEnv()
+const deviceInfo = /*#__PURE__*/ Lazy<DeviceInfo>(() => IS_MINA
     ? (wx.getDeviceInfo ? wx.getDeviceInfo() : wx.getSystemInfoSync()) as unknown as DeviceInfo
     : getWebDeviceInfo(),
 );
@@ -52,7 +52,7 @@ export function getDeviceInfo(): DeviceInfo {
  */
 export async function getDeviceBenchmarkLevel(): AsyncIOResult<number> {
     // 小游戏从-1开始，-2表示web环境
-    if (!isMinaEnv()) {
+    if (!IS_MINA) {
         return Ok(-2);
     }
 
@@ -89,7 +89,7 @@ export async function getDeviceBenchmarkLevel(): AsyncIOResult<number> {
  * ```
  */
 export function getWindowInfo(): WechatMinigame.WindowInfo {
-    return isMinaEnv() ? wx.getWindowInfo() : getWebWindowInfo();
+    return IS_MINA ? wx.getWindowInfo() : getWebWindowInfo();
 }
 
 /**

@@ -2,7 +2,7 @@
  * 网络状态模块，提供获取网络类型和监听网络状态变化的功能。
  * @module network
  */
-import { isMinaEnv } from '../../macros/env.ts';
+import { IS_MINA } from '../../macros/env.ts';
 import { addNetworkChangeListener as minaAddNetworkChangeListener, getNetworkType as minaGetNetworkType } from './mina_network.ts';
 import type { NetworkType } from './network_define.ts';
 import { addNetworkChangeListener as webAddNetworkChangeListener, getNetworkType as webGetNetworkType } from './web_network.ts';
@@ -23,7 +23,7 @@ export * from './network_define.ts';
  * ```
  */
 export function getNetworkType(): Promise<NetworkType> {
-    return isMinaEnv()
+    return IS_MINA
         ? minaGetNetworkType()
         : Promise.resolve(webGetNetworkType());
 }
@@ -47,5 +47,5 @@ export function getNetworkType(): Promise<NetworkType> {
  * ```
  */
 export function addNetworkChangeListener(listener: (type: NetworkType) => void): () => void {
-    return (isMinaEnv() ? minaAddNetworkChangeListener : webAddNetworkChangeListener)(listener);
+    return (IS_MINA ? minaAddNetworkChangeListener : webAddNetworkChangeListener)(listener);
 }

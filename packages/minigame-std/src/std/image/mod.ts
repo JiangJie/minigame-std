@@ -3,7 +3,7 @@
  * @module image
  */
 import { Ok, type AsyncIOResult } from 'happy-rusty';
-import { isMinaEnv } from '../../macros/env.ts';
+import { IS_MINA } from '../../macros/env.ts';
 import {
     createImageFromFile as minaCreateImageFromFile,
     createImageFromUrl as minaCreateImageFromUrl,
@@ -27,7 +27,7 @@ import {
  * ```
  */
 export function createImageFromUrl(url: string): HTMLImageElement | WechatMinigame.Image {
-    return (isMinaEnv() ? minaCreateImageFromUrl : webCreateImageFromUrl)(url);
+    return (IS_MINA ? minaCreateImageFromUrl : webCreateImageFromUrl)(url);
 }
 
 /**
@@ -45,7 +45,7 @@ export function createImageFromUrl(url: string): HTMLImageElement | WechatMiniga
  * ```
  */
 export function createImageFromFile(filePath: string): AsyncIOResult<HTMLImageElement | WechatMinigame.Image> {
-    return isMinaEnv()
+    return IS_MINA
         ? Promise.resolve(Ok(minaCreateImageFromFile(filePath)))
         : webCreateImageFromFile(filePath);
 }

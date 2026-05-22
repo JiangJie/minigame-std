@@ -18,7 +18,7 @@ import {
     type ZipOptions,
 } from 'happy-opfs';
 import { type IOResult, type VoidIOResult } from 'happy-rusty';
-import { isMinaEnv } from '../../macros/env.ts';
+import { IS_MINA } from '../../macros/env.ts';
 import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
 import {
     appendFileSync as minaAppendFileSync,
@@ -54,7 +54,7 @@ import { webToMinaReadDirSync, webToMinaStatSync } from './web_fs_helpers.ts';
  * ```
  */
 export function mkdirSync(dirPath: string): VoidIOResult {
-    return (isMinaEnv() ? minaMkdirSync : webMkdirSync)(dirPath);
+    return (IS_MINA ? minaMkdirSync : webMkdirSync)(dirPath);
 }
 
 /**
@@ -72,7 +72,7 @@ export function mkdirSync(dirPath: string): VoidIOResult {
  * ```
  */
 export function moveSync(srcPath: string, destPath: string): VoidIOResult {
-    return (isMinaEnv() ? minaMoveSync : webMoveSync)(srcPath, destPath);
+    return (IS_MINA ? minaMoveSync : webMoveSync)(srcPath, destPath);
 }
 
 /**
@@ -89,7 +89,7 @@ export function moveSync(srcPath: string, destPath: string): VoidIOResult {
  * ```
  */
 export function readDirSync(dirPath: string): IOResult<string[]> {
-    return (isMinaEnv() ? minaReadDirSync : webToMinaReadDirSync)(dirPath);
+    return (IS_MINA ? minaReadDirSync : webToMinaReadDirSync)(dirPath);
 }
 
 /**
@@ -146,7 +146,7 @@ export function readFileSync(filePath: string, options?: ReadOptions & {
  */
 export function readFileSync(filePath: string, options?: ReadOptions): IOResult<ReadFileContent>;
 export function readFileSync(filePath: string, options?: ReadOptions): IOResult<ReadFileContent> {
-    return isMinaEnv()
+    return IS_MINA
         ? minaReadFileSync(filePath, options)
         : webReadFileSync(filePath, options) as IOResult<ReadFileContent>;
 }
@@ -165,7 +165,7 @@ export function readFileSync(filePath: string, options?: ReadOptions): IOResult<
  * ```
  */
 export function removeSync(path: string): VoidIOResult {
-    return (isMinaEnv() ? minaRemoveSync : webRemoveSync)(path);
+    return (IS_MINA ? minaRemoveSync : webRemoveSync)(path);
 }
 
 /**
@@ -212,7 +212,7 @@ export function statSync(path: string, options: StatOptions & {
  */
 export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
 export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
-    return (isMinaEnv() ? minaStatSync : webToMinaStatSync)(path, options);
+    return (IS_MINA ? minaStatSync : webToMinaStatSync)(path, options);
 }
 
 /**
@@ -230,7 +230,7 @@ export function statSync(path: string, options?: StatOptions): IOResult<WechatMi
  * ```
  */
 export function writeFileSync(filePath: string, contents: WriteFileContent): VoidIOResult {
-    return (isMinaEnv() ? minaWriteFileSync : webWriteFileSync)(filePath, contents);
+    return (IS_MINA ? minaWriteFileSync : webWriteFileSync)(filePath, contents);
 }
 
 /**
@@ -249,7 +249,7 @@ export function writeFileSync(filePath: string, contents: WriteFileContent): Voi
  * ```
  */
 export function appendFileSync(filePath: string, contents: WriteFileContent, options?: AppendOptions): VoidIOResult {
-    return (isMinaEnv() ? minaAppendFileSync : webAppendFileSync)(filePath, contents, options);
+    return (IS_MINA ? minaAppendFileSync : webAppendFileSync)(filePath, contents, options);
 }
 
 /**
@@ -267,7 +267,7 @@ export function appendFileSync(filePath: string, contents: WriteFileContent, opt
  * ```
  */
 export function copySync(srcPath: string, destPath: string): VoidIOResult {
-    return (isMinaEnv() ? minaCopySync : webCopySync)(srcPath, destPath);
+    return (IS_MINA ? minaCopySync : webCopySync)(srcPath, destPath);
 }
 
 /**
@@ -285,7 +285,7 @@ export function copySync(srcPath: string, destPath: string): VoidIOResult {
  * ```
  */
 export function existsSync(path: string, options?: ExistsOptions): IOResult<boolean> {
-    return (isMinaEnv() ? minaExistsSync : webExistsSync)(path, options);
+    return (IS_MINA ? minaExistsSync : webExistsSync)(path, options);
 }
 
 /**
@@ -302,7 +302,7 @@ export function existsSync(path: string, options?: ExistsOptions): IOResult<bool
  * ```
  */
 export function emptyDirSync(dirPath: string): VoidIOResult {
-    return (isMinaEnv() ? minaEmptyDirSync : webEmptyDirSync)(dirPath);
+    return (IS_MINA ? minaEmptyDirSync : webEmptyDirSync)(dirPath);
 }
 
 /**
@@ -320,7 +320,7 @@ export function emptyDirSync(dirPath: string): VoidIOResult {
  * ```
  */
 export function readJsonFileSync<T>(filePath: string): IOResult<T> {
-    return (isMinaEnv() ? minaReadJsonFileSync : webReadJsonFileSync)(filePath);
+    return (IS_MINA ? minaReadJsonFileSync : webReadJsonFileSync)(filePath);
 }
 
 /**
@@ -337,7 +337,7 @@ export function readJsonFileSync<T>(filePath: string): IOResult<T> {
  * ```
  */
 export function readTextFileSync(filePath: string): IOResult<string> {
-    return (isMinaEnv() ? minaReadTextFileSync : webReadTextFileSync)(filePath);
+    return (IS_MINA ? minaReadTextFileSync : webReadTextFileSync)(filePath);
 }
 
 /**
@@ -356,7 +356,7 @@ export function readTextFileSync(filePath: string): IOResult<string> {
  * ```
  */
 export function writeJsonFileSync<T>(filePath: string, data: T): VoidIOResult {
-    return (isMinaEnv() ? minaWriteJsonFileSync : webWriteJsonFileSync)(filePath, data);
+    return (IS_MINA ? minaWriteJsonFileSync : webWriteJsonFileSync)(filePath, data);
 }
 
 /**
@@ -374,7 +374,7 @@ export function writeJsonFileSync<T>(filePath: string, data: T): VoidIOResult {
  * ```
  */
 export function unzipSync(zipFilePath: string, targetPath: string): VoidIOResult {
-    return (isMinaEnv() ? minaUnzipSync : webUnzipSync)(zipFilePath, targetPath);
+    return (IS_MINA ? minaUnzipSync : webUnzipSync)(zipFilePath, targetPath);
 }
 
 /**
@@ -410,8 +410,8 @@ export function zipSync(sourcePath: string, options?: ZipOptions): IOResult<Uint
 export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOptions): VoidIOResult;
 export function zipSync(sourcePath: string, zipFilePath?: string | ZipOptions, options?: ZipOptions): IOResult<Uint8Array<ArrayBuffer> | void> {
     if (typeof zipFilePath === 'string') {
-        return (isMinaEnv() ? minaZipSync : webZipSync)(sourcePath, zipFilePath, options);
+        return (IS_MINA ? minaZipSync : webZipSync)(sourcePath, zipFilePath, options);
     } else {
-        return (isMinaEnv() ? minaZipSync : webZipSync)(sourcePath, zipFilePath);
+        return (IS_MINA ? minaZipSync : webZipSync)(sourcePath, zipFilePath);
     }
 }
