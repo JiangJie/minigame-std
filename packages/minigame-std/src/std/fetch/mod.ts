@@ -4,6 +4,7 @@
  */
 import { fetchT as webFetch, type FetchInit, type FetchTask } from '@happy-ts/fetch-t';
 import { IS_MINA } from '../../macros/env.ts';
+import { bufferSourceToAb } from '../internal/mod.ts';
 import type { MinaFetchInit, UnionFetchInit } from './fetch_defines.ts';
 import { minaFetch } from './mina_fetch.ts';
 
@@ -122,7 +123,11 @@ export function fetchT<T>(url: string, init?: UnionFetchInit): FetchTask<T> {
         // Map body → data, headers → header for mini-game
         const { body, headers, ...rest } = defaultInit;
         if (body != null) {
-            (rest as MinaFetchInit).data = body;
+            // wx.request data only accepts string | IAnyObject | ArrayBuffer
+            // BufferSource needs conversion to handle potential byteOffset
+            (rest as MinaFetchInit).data = typeof body === 'string' || isPlainObject(body)
+                ? body
+                : bufferSourceToAb(body as BufferSource);
         }
         if (headers !== undefined) {
             (rest as MinaFetchInit).header = headers;

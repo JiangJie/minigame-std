@@ -317,6 +317,102 @@ test('fetchT maps string body to data in mina environment', async () => {
     expect(result.isOk()).toBe(true);
 });
 
+test('fetchT converts ArrayBuffer body to data in mina environment', async () => {
+    const buffer = new ArrayBuffer(8);
+    const fetchTask = fetchT('https://example.com/api', {
+        method: 'POST',
+        body: buffer,
+        responseType: 'arraybuffer',
+    });
+
+    // ArrayBuffer passes through directly
+    expect(lastRequestOptions?.data).toBe(buffer);
+
+    lastRequestOptions?.success?.({
+        data: buffer,
+        statusCode: 200,
+        header: {},
+        cookies: [],
+        errMsg: 'request:ok',
+        exception: {
+            reasons: [],
+            retryCount: 0,
+        },
+        profile: {} as WechatMinigame.RequestProfile,
+        useHttpDNS: false,
+    });
+
+    const result = await fetchTask.result;
+    expect(result.isOk()).toBe(true);
+});
+
+test('fetchT converts Uint8Array body to ArrayBuffer data in mina environment', async () => {
+    const uint8 = new Uint8Array([1, 2, 3, 4]);
+    const fetchTask = fetchT('https://example.com/api', {
+        method: 'POST',
+        body: uint8,
+        responseType: 'arraybuffer',
+    });
+
+    // Uint8Array with no offset → data should be its underlying buffer
+    const data = lastRequestOptions?.data as ArrayBuffer;
+    expect(data).toBeInstanceOf(ArrayBuffer);
+    expect(data.byteLength).toBe(4);
+
+    lastRequestOptions?.success?.({
+        data,
+        statusCode: 200,
+        header: {},
+        cookies: [],
+        errMsg: 'request:ok',
+        exception: {
+            reasons: [],
+            retryCount: 0,
+        },
+        profile: {} as WechatMinigame.RequestProfile,
+        useHttpDNS: false,
+    });
+
+    const result = await fetchTask.result;
+    expect(result.isOk()).toBe(true);
+});
+
+test('fetchT converts Uint8Array with offset body to sliced ArrayBuffer in mina environment', async () => {
+    const buffer = new ArrayBuffer(16);
+    // Create a view with offset=4, length=8
+    const view = new Uint8Array(buffer, 4, 8);
+    view.set([10, 20, 30, 40, 50, 60, 70, 80]);
+
+    const fetchTask = fetchT('https://example.com/api', {
+        method: 'POST',
+        body: view,
+        responseType: 'arraybuffer',
+    });
+
+    // Should be a sliced copy, not the original 16-byte buffer
+    const data = lastRequestOptions?.data as ArrayBuffer;
+    expect(data).toBeInstanceOf(ArrayBuffer);
+    expect(data.byteLength).toBe(8);
+    expect(new Uint8Array(data)).toEqual(new Uint8Array([10, 20, 30, 40, 50, 60, 70, 80]));
+
+    lastRequestOptions?.success?.({
+        data,
+        statusCode: 200,
+        header: {},
+        cookies: [],
+        errMsg: 'request:ok',
+        exception: {
+            reasons: [],
+            retryCount: 0,
+        },
+        profile: {} as WechatMinigame.RequestProfile,
+        useHttpDNS: false,
+    });
+
+    const result = await fetchTask.result;
+    expect(result.isOk()).toBe(true);
+});
+
 test.afterAll(() => {
     vi.unstubAllGlobals();
 });
