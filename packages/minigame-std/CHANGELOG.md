@@ -5,6 +5,11 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.3.1] - 2026-05-24
+
+### 修复
+- 修复 `fetchT` 在小游戏平台传入带 `byteOffset` 的 `BufferSource`（如 `Uint8Array` 子视图）作为 `body` 时，数据未正确截取的问题
+
 ## [2.3.0] - 2026-05-22
 
 ### 新增
