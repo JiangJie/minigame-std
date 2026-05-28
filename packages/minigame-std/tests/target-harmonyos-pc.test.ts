@@ -1,5 +1,5 @@
 /**
- * 测试小游戏环境下的 target.ts - HarmonyOS 平台
+ * 测试小游戏环境下的 target.ts - HarmonyOS PC 平台
  */
 import { expect, test, vi } from 'vitest';
 
@@ -7,8 +7,8 @@ vi.hoisted(() => {
     (globalThis as Record<string, unknown>)['__MINIGAME_STD_MINA__'] = true;
     (globalThis as Record<string, unknown>)['wx'] = {
         getDeviceInfo: () => ({
-            platform: 'ohos',
-            model: 'Mate 60',
+            platform: 'ohos_pc',
+            model: 'MateStation',
             brand: 'Huawei',
             system: 'HarmonyOS 4.0',
         }),
@@ -26,11 +26,11 @@ import {
     isMiniGameWin,
 } from '../src/std/platform/target.ts';
 
-test('should detect HarmonyOS platform', () => {
-    expect(isMiniGameHarmonyOS()).toBe(true);
-    expect(isMiniGameHarmonyPC()).toBe(false);
+test('should detect HarmonyOS PC platform', () => {
+    expect(isMiniGameHarmonyPC()).toBe(true);
     expect(isMiniGameRuntime()).toBe(true);
     expect(isMiniGameDevtools()).toBe(false);
+    expect(isMiniGameHarmonyOS()).toBe(false);
     expect(isMiniGameIOS()).toBe(false);
     expect(isMiniGameAndroid()).toBe(false);
     expect(isMiniGameWin()).toBe(false);

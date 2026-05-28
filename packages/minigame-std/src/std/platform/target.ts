@@ -106,6 +106,21 @@ export function isMiniGameHarmonyOS(): boolean {
     return isMiniGame() && getPlatform() === 'ohos';
 }
 
+/**
+ * 判断当前是否在小游戏的 HarmonyOS PC 环境中。
+ * @returns 如果在小游戏的 HarmonyOS PC 环境中返回 true，否则返回 false。
+ * @since 2.4.0
+ * @example
+ * ```ts
+ * if (isMiniGameHarmonyPC()) {
+ *     console.log('在 HarmonyOS PC 设备上运行');
+ * }
+ * ```
+ */
+export function isMiniGameHarmonyPC(): boolean {
+    return isMiniGame() && getPlatform() === 'ohos_pc';
+}
+
 // #region Internal Functions
 
 /**
