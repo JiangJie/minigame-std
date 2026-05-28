@@ -6,7 +6,6 @@
   "exports": "./src/mod.ts",
   "imports": {
     "@happy-ts/fetch-t": "jsr:@happy-ts/fetch-t@^1.9.1",
-    "@std/path": "jsr:@std/path@^1.1.4",
     "fflate": "npm:fflate@^0.8.3",
     "happy-codec": "jsr:@happy-js/happy-codec@^1.2.2",
     "happy-opfs": "jsr:@happy-js/happy-opfs@^2.0.3",

@@ -130,6 +130,7 @@ packages/
 │   │       ├── image/          # Image processing
 │   │       ├── lbs/            # Location-based services
 │   │       ├── network/        # Network status/type detection
+│   │       ├── path/           # POSIX path utilities (basename, dirname, normalize)
 │   │       ├── performance/    # Performance timing utilities
 │   │       ├── platform/       # Platform detection (device, target)
 │   │       ├── socket/         # WebSocket abstraction
@@ -308,7 +309,6 @@ Module-level function/constructor calls **must** be prefixed with `/*#__PURE__*/
 
 ### Runtime Dependencies (minigame-std)
 - `@happy-ts/fetch-t` - Enhanced fetch implementation
-- `@std/path` - Path utilities (JSR package)
 - `happy-rusty` - Rust-like Result types for error handling
 - `happy-codec` - Encoding/decoding utilities (Base64, Hex, ByteString, UTF-8)
 - `happy-opfs` - OPFS (Origin Private File System) support

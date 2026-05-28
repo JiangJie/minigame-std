@@ -89,7 +89,6 @@
   ],
   "dependencies": {
     "@happy-ts/fetch-t": "^1.9.1",
-    "@std/path": "npm:@jsr/std__path@^1.1.4",
     "fflate": "^0.8.3",
     "happy-codec": "^1.2.2",
     "happy-opfs": "^2.0.3",

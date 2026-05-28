@@ -59,9 +59,6 @@ importers:
       '@happy-ts/fetch-t':
         specifier: ^1.9.1
         version: 1.9.1
-      '@std/path':
-        specifier: npm:@jsr/std__path@^1.1.4
-        version: '@jsr/std__path@1.1.4'
       fflate:
         specifier: ^0.8.3
         version: 0.8.3

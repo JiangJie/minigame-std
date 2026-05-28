@@ -3,7 +3,7 @@
  * 小游戏平台的同步文件系统操作实现。
  */
 
-import { basename, dirname, SEPARATOR } from '@std/path/posix';
+import { basename, dirname, SEPARATOR } from '../path/mod.ts';
 import { zipSync as compressSync, unzipSync as decompressSync, type AsyncZippable } from 'fflate/browser';
 import { type AppendOptions, type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
 import { Ok, RESULT_VOID, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';

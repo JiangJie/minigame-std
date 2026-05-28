@@ -9,6 +9,7 @@ export * as fs from './std/fs/mod.ts';
 export * as image from './std/image/mod.ts';
 export * as lbs from './std/lbs/mod.ts';
 export * from './std/network/mod.ts';
+export * as path from './std/path/mod.ts';
 export * from './std/performance/mod.ts';
 export * as platform from './std/platform/mod.ts';
 export * from './std/socket/mod.ts';

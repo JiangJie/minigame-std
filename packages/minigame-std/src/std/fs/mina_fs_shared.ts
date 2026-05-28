@@ -3,7 +3,7 @@
  * 同步/异步的公共代码。
  */
 
-import { normalize } from '@std/path/posix';
+import { normalize } from '../path/mod.ts';
 import { NOT_FOUND_ERROR, NOTHING_TO_ZIP_ERROR, ROOT_DIR, type ExistsOptions } from 'happy-opfs';
 import { Err, Lazy, Ok, RESULT_FALSE, RESULT_VOID, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { bufferSourceToAb, miniGameFailureToError } from '../internal/mod.ts';

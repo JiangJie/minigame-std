@@ -33,7 +33,6 @@ export default defineConfig(({ command }) => ({
                 propertyReadSideEffects: false,
             },
             external: [
-                /^@std\/path/,
                 'happy-codec',
                 'happy-rusty',
                 'happy-opfs',

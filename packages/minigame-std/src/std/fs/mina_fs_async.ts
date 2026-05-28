@@ -4,7 +4,7 @@
  */
 
 import { ABORT_ERROR, FetchError, type FetchResult, type FetchTask } from '@happy-ts/fetch-t';
-import { basename, dirname, SEPARATOR } from '@std/path/posix';
+import { basename, dirname, SEPARATOR } from '../path/mod.ts';
 import { zipSync as compressSync, type AsyncZippable } from 'fflate/browser';
 import { type AppendOptions, type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
 import { Err, Ok, RESULT_VOID, tryResult, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';

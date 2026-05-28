@@ -183,6 +183,14 @@ jsr add @happy-js/minigame-std
     const timestamp = getPerformanceNow();
     ```
 
+-   **路径操作**
+    ```js
+    import { path } from 'minigame-std';
+    path.basename('/usr/local/file.txt');         // 'file.txt'
+    path.dirname('/usr/local/file.txt');          // '/usr/local'
+    path.normalize('/foo/bar//baz/../quux');      // '/foo/bar/quux'
+    ```
+
 -   **图像处理**
     ```js
     import { image } from 'minigame-std';
