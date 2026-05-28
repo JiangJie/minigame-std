@@ -5,6 +5,16 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.4.0] - 2026-05-24
+
+### 新增
+- 新增 `path` 模块，提供小游戏平台兼容的 POSIX 路径工具（`basename`、`dirname`、`normalize`、`SEPARATOR`），不依赖 `URL`，可安全在小游戏环境使用
+- `platform.isMiniGameHarmonyPC`：新增鸿蒙 PC 平台检测
+
+### 变更
+- 移除 `@std/path` 运行时依赖，改用内置 `path` 模块实现，解决小游戏平台 `URL` 未定义导致的兼容问题
+- 升级 `@happy-ts/fetch-t` 至 `^1.10.0`
+
 ## [2.3.1] - 2026-05-24
 
 ### 修复
