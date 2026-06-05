@@ -21,9 +21,9 @@ export function getNetworkType(): NetworkType {
         return nav.connection.type === 'wifi'
             ? 'wifi'
             : nav.connection.effectiveType;
-    } else {
-        return 'unknown';
     }
+
+    return 'unknown';
 }
 
 /**
@@ -38,10 +38,21 @@ export function addNetworkChangeListener(listener: (type: NetworkType) => void):
 
     const nav = (navigator as Navigator);
 
-    nav.connection?.addEventListener('change', networkListener);
+    if (nav.connection) {
+        nav.connection.addEventListener('change', networkListener);
+
+        return () => {
+            nav.connection?.removeEventListener('change', networkListener);
+        };
+    }
+
+    // fallback：不支持 Network Information API 时，监听 online/offline 事件
+    addEventListener('online', networkListener);
+    addEventListener('offline', networkListener);
 
     return () => {
-        nav.connection?.removeEventListener('change', networkListener);
+        removeEventListener('online', networkListener);
+        removeEventListener('offline', networkListener);
     };
 }
 
