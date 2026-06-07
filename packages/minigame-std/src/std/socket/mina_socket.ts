@@ -7,7 +7,7 @@ import { RESULT_VOID, tryResult, type AsyncVoidIOResult } from 'happy-rusty';
 import type { DataSource } from '../defines.ts';
 import { bufferSourceToAb, miniGameFailureToError } from '../internal/mod.ts';
 import { asyncIOResultify } from '../utils/mod.ts';
-import { SocketReadyState, type ISocket, type SocketListenerMap, type SocketOptions } from './socket_define.ts';
+import { type ISocket, type SocketListenerMap, type SocketOptions } from './socket_define.ts';
 
 /**
  * 创建并返回一个 WebSocket 连接。
@@ -23,35 +23,31 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
         header: headers,
     });
 
-    // mock WebSocket readyState
-    let readyState: number = SocketReadyState.CONNECTING;
-
     return {
         get readyState(): number {
-            return readyState;
+            // 小游戏 SocketTask 实际已支持 readyState，但 api typings 尚未更新
+            return (socket as typeof socket & { readyState: number; })['readyState'];
         },
 
         addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: SocketListenerMap[K]): () => void {
             switch (type) {
                 case 'open': {
                     socket.onOpen(() => {
-                        readyState = SocketReadyState.OPEN;
                         (listener as SocketListenerMap['open'])();
                     });
 
                     return (): void => {
-                        // 小游戏没有实现
+                        // 小游戏没有实现移除监听
                     };
                 }
                 case 'close': {
                     socket.onClose((res) => {
-                        readyState = SocketReadyState.CLOSED;
                         (listener as SocketListenerMap['close'])(res.code, res.reason);
                     });
 
 
                     return (): void => {
-                        // 小游戏没有实现
+                        // 小游戏没有实现移除监听
                     };
                 }
                 case 'message': {
@@ -60,7 +56,7 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
                     });
 
                     return (): void => {
-                        // 小游戏没有实现
+                        // 小游戏没有实现移除监听
                     };
                 }
                 case 'error': {
@@ -69,7 +65,7 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
                     });
 
                     return (): void => {
-                        // 小游戏没有实现
+                        // 小游戏没有实现移除监听
                     };
                 }
                 default: {
@@ -92,7 +88,6 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
         },
 
         close(code?: number, reason?: string): void {
-            readyState = SocketReadyState.CLOSING;
             socket.close({
                 code,
                 reason,
