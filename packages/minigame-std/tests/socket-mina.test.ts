@@ -9,7 +9,8 @@ function createMockSocketTask() {
         onError?: (err: { errMsg: string; }) => void;
     } = {};
 
-    return {
+    const task = {
+        readyState: 0, // CONNECTING
         onOpen: vi.fn((callback: () => void) => {
             listeners.onOpen = callback;
         }),
@@ -27,14 +28,22 @@ function createMockSocketTask() {
             success?.();
         }),
         close: vi.fn(({ code: _code, reason: _reason }: { code?: number; reason?: string; }) => {
-            // 模拟关闭
+            task.readyState = 2; // CLOSING
         }),
         // 触发事件的辅助方法
-        _triggerOpen: () => listeners.onOpen?.(),
-        _triggerClose: (code: number, reason: string) => listeners.onClose?.({ code, reason }),
+        _triggerOpen: () => {
+            task.readyState = 1; // OPEN
+            listeners.onOpen?.();
+        },
+        _triggerClose: (code: number, reason: string) => {
+            task.readyState = 3; // CLOSED
+            listeners.onClose?.({ code, reason });
+        },
         _triggerMessage: (data: string | ArrayBuffer) => listeners.onMessage?.({ data }),
         _triggerError: (errMsg: string) => listeners.onError?.({ errMsg }),
     };
+
+    return task;
 }
 
 let mockSocketTask: ReturnType<typeof createMockSocketTask>;

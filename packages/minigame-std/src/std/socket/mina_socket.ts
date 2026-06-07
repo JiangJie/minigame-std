@@ -26,7 +26,7 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
     return {
         get readyState(): number {
             // 小游戏 SocketTask 实际已支持 readyState，但 api typings 尚未更新
-            return (socket as typeof socket & { readyState: number; })['readyState'];
+            return (socket as typeof socket & { readyState: number; }).readyState;
         },
 
         addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: SocketListenerMap[K]): () => void {
