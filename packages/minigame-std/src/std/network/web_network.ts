@@ -32,8 +32,14 @@ export function getNetworkType(): NetworkType {
  * @returns 返回一个函数，调用该函数可以移除监听器。
  */
 export function addNetworkChangeListener(listener: (type: NetworkType) => void): () => void {
+    let prevType = getNetworkType();
+
     const networkListener = (): void => {
-        listener(getNetworkType());
+        const currentType = getNetworkType();
+        if (currentType !== prevType) {
+            prevType = currentType;
+            listener(currentType);
+        }
     };
 
     const nav = (navigator as Navigator);

@@ -5,6 +5,11 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [Unreleased]
+
+### 修复
+- `addNetworkChangeListener`：修复 Chrome 挂机/休眠唤醒时 RTT 波动导致重复触发相同网络类型回调的问题，现在仅在网络类型实际变化时才调用 listener
+
 ## [2.4.0] - 2026-05-24
 
 ### 新增

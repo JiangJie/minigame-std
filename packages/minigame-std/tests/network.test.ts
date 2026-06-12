@@ -143,7 +143,66 @@ test('addNetworkChangeListener adds and removes listener', () => {
     }
 });
 
-test('addNetworkChangeListener calls callback with network type on change', () => {
+test('addNetworkChangeListener calls callback when network type actually changes', () => {
+    const originalOnLine = navigator.onLine;
+    const originalConnection = (navigator as { connection?: unknown; }).connection;
+
+    let capturedCallback: (() => void) | undefined;
+    const mockAddEventListener = vi.fn().mockImplementation((_, callback) => {
+        capturedCallback = callback;
+    });
+
+    // 初始状态：wifi → getNetworkType() 返回 'wifi'
+    Object.defineProperty(navigator, 'onLine', {
+        value: true,
+        configurable: true,
+    });
+    Object.defineProperty(navigator, 'connection', {
+        value: {
+            type: 'wifi',
+            effectiveType: '4g',
+            addEventListener: mockAddEventListener,
+            removeEventListener: vi.fn(),
+        },
+        configurable: true,
+    });
+
+    try {
+        const listener = vi.fn();
+        addNetworkChangeListener(listener);
+
+        // 注册后 prevType = 'wifi'，第一次触发不应调用 listener（类型未变）
+        capturedCallback?.();
+        expect(listener).not.toHaveBeenCalled();
+
+        // 修改 mock：切换到 cellular → getNetworkType() 返回 effectiveType '4g'
+        Object.defineProperty(navigator, 'connection', {
+            value: {
+                type: 'cellular',
+                effectiveType: '4g',
+                addEventListener: mockAddEventListener,
+                removeEventListener: vi.fn(),
+            },
+            configurable: true,
+        });
+
+        // 模拟网络变化，类型从 'wifi' → '4g'，应触发 listener
+        capturedCallback?.();
+        expect(listener).toHaveBeenCalledWith('4g');
+        expect(listener).toHaveBeenCalledTimes(1);
+    } finally {
+        Object.defineProperty(navigator, 'onLine', {
+            value: originalOnLine,
+            configurable: true,
+        });
+        Object.defineProperty(navigator, 'connection', {
+            value: originalConnection,
+            configurable: true,
+        });
+    }
+});
+
+test('addNetworkChangeListener does not call callback when type stays the same', () => {
     const originalOnLine = navigator.onLine;
     const originalConnection = (navigator as { connection?: unknown; }).connection;
 
@@ -170,10 +229,13 @@ test('addNetworkChangeListener calls callback with network type on change', () =
         const listener = vi.fn();
         addNetworkChangeListener(listener);
 
-        // Simulate network change
+        // 多次触发 change 事件，但网络类型未变
+        capturedCallback?.();
+        capturedCallback?.();
         capturedCallback?.();
 
-        expect(listener).toHaveBeenCalledWith('wifi');
+        // 回调不应被调用
+        expect(listener).not.toHaveBeenCalled();
     } finally {
         Object.defineProperty(navigator, 'onLine', {
             value: originalOnLine,
