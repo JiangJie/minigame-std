@@ -50,10 +50,26 @@ vi.hoisted(() => {
         offHide: (callback: HideCallback) => {
             hideListeners = hideListeners.filter(cb => cb !== callback);
         },
+        getLaunchOptionsSync: () => ({
+            query: { from: 'launch' },
+            scene: 1001,
+            referrerInfo: { appId: 'wx123', extraData: { key: 'value' } },
+            chatType: 1,
+            shareTicket: 'share_launch',
+            hostExtraData: { host_scene: 10 },
+        }),
+        getEnterOptionsSync: () => ({
+            query: { from: 'enter' },
+            scene: 2002,
+            referrerInfo: { appId: 'wx456', extraData: { key2: 'value2' } },
+            chatType: 3,
+            shareTicket: 'share_enter',
+            apiCategory: 'default',
+        }),
     };
 });
 
-import { addErrorListener, addHideListener, addResizeListener, addShowListener, addUnhandledrejectionListener } from '../src/std/event/mod.ts';
+import { addErrorListener, addHideListener, addResizeListener, addShowListener, addUnhandledrejectionListener, getEnterOptionsSync, getLaunchOptionsSync } from '../src/std/event/mod.ts';
 
 test('addErrorListener adds and removes listener in minigame environment', () => {
     const mockListener = vi.fn();
@@ -90,6 +106,9 @@ test('addShowListener adds and removes listener in minigame environment', () => 
     const mockListener = vi.fn();
     const removeListener = addShowListener(mockListener);
 
+    // 默认不立即回调
+    expect(mockListener).not.toHaveBeenCalled();
+
     expect(showListeners.length).toBe(1);
 
     const showOptions: WechatMinigame.OnShowListenerResult = {
@@ -102,6 +121,53 @@ test('addShowListener adds and removes listener in minigame environment', () => 
 
     removeListener();
     expect(showListeners.length).toBe(0);
+});
+
+test('addShowListener with fireImmediately=true fires immediately', () => {
+    const mockListener = vi.fn();
+    const removeListener = addShowListener(mockListener, { fireImmediately: true });
+
+    // 注册时立即回调一次
+    expect(mockListener).toHaveBeenCalledTimes(1);
+    expect(mockListener).toHaveBeenCalledWith(expect.objectContaining({
+        query: { from: 'enter' },
+        scene: 2002,
+    }));
+
+    expect(showListeners.length).toBe(1);
+
+    // 后续 wx.onShow 事件仍正常触发
+    const showOptions: WechatMinigame.OnShowListenerResult = {
+        query: { from: 'new_enter' },
+        referrerInfo: { appId: '', extraData: {} },
+        scene: 3003,
+    };
+    showListeners[0](showOptions);
+    expect(mockListener).toHaveBeenCalledTimes(2);
+    expect(mockListener).toHaveBeenLastCalledWith(showOptions);
+
+    removeListener();
+    expect(showListeners.length).toBe(0);
+});
+
+test('getLaunchOptionsSync returns launch options with hostExtraData', () => {
+    const options = getLaunchOptionsSync();
+    expect(options.query).toEqual({ from: 'launch' });
+    expect(options.scene).toBe(1001);
+    expect(options.referrerInfo).toEqual({ appId: 'wx123', extraData: { key: 'value' } });
+    expect(options.chatType).toBe(1);
+    expect(options.shareTicket).toBe('share_launch');
+    expect(options.hostExtraData).toEqual({ host_scene: 10 });
+});
+
+test('getEnterOptionsSync returns enter options with apiCategory', () => {
+    const options = getEnterOptionsSync();
+    expect(options.query).toEqual({ from: 'enter' });
+    expect(options.scene).toBe(2002);
+    expect(options.referrerInfo).toEqual({ appId: 'wx456', extraData: { key2: 'value2' } });
+    expect(options.chatType).toBe(3);
+    expect(options.shareTicket).toBe('share_enter');
+    expect(options.apiCategory).toBe('default');
 });
 
 test('addHideListener adds and removes listener in minigame environment', () => {

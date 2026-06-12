@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { addErrorListener, addHideListener, addResizeListener, addShowListener, addUnhandledrejectionListener } from '../src/mod.ts';
+import { addErrorListener, addHideListener, addResizeListener, addShowListener, addUnhandledrejectionListener, getEnterOptionsSync, getLaunchOptionsSync } from '../src/mod.ts';
 
 test('addErrorListener and remove', () => {
     let errorCaught = false;
@@ -226,4 +226,107 @@ test('multiple error listeners', () => {
     // Remove both
     remove1();
     remove2();
+});
+
+test('getLaunchOptionsSync returns cached launch options unchanged after URL change', () => {
+    // launchOptions 在模块加载时已缓存，不会随 URL 变化而改变
+    const first = getLaunchOptionsSync();
+    expect(first.scene).toBe(0);
+    expect(first.referrerInfo.extraData).toEqual({});
+    expect(first.hostExtraData).toBeUndefined();
+
+    // 改变 URL 后再次调用，应返回同一缓存值
+    history.pushState(null, '', '?c=3&d=4');
+    const second = getLaunchOptionsSync();
+    expect(second).toBe(first); // 同一对象引用，证明是缓存
+    expect(second.query).toEqual(first.query);
+
+    history.pushState(null, '', location.pathname);
+});
+
+test('getEnterOptionsSync returns current URL query parameters', () => {
+    history.pushState(null, '', '?roomId=42&name=%E6%B5%8B%E8%AF%95');
+
+    const options = getEnterOptionsSync();
+    expect(options.query).toEqual({
+        roomId: '42',
+        name: '测试',
+    });
+    expect(options.scene).toBe(0);
+    expect(options.referrerInfo.extraData).toEqual({});
+    // Web 环境下 apiCategory 无实际值
+    expect(options.apiCategory).toBeUndefined();
+
+    history.pushState(null, '', location.pathname);
+});
+
+test('getEnterOptionsSync updates after URL change', () => {
+    history.pushState(null, '', '?a=1&b=2');
+    const first = getEnterOptionsSync();
+    expect(first.query).toEqual({ a: '1', b: '2' });
+
+    // 改变 URL 后再次调用，应返回最新值
+    history.pushState(null, '', '?c=3&d=4');
+    const second = getEnterOptionsSync();
+    expect(second.query).toEqual({ c: '3', d: '4' });
+
+    history.pushState(null, '', location.pathname);
+});
+
+test('addShowListener with default fireImmediately=false does not fire immediately', () => {
+    let fireCount = 0;
+
+    const removeListener = addShowListener(() => {
+        fireCount++;
+    });
+
+    // 默认不立即回调
+    expect(fireCount).toBe(0);
+
+    removeListener();
+});
+
+test('addShowListener with fireImmediately=true fires immediately and on visibilitychange', () => {
+    let fireCount = 0;
+    let lastOptions: WechatMinigame.OnShowListenerResult | undefined;
+
+    const originalVisibilityState = Object.getOwnPropertyDescriptor(Document.prototype, 'visibilityState')
+        ?? Object.getOwnPropertyDescriptor(document, 'visibilityState');
+    history.pushState(null, '', '?roomId=42&name=%E6%B5%8B%E8%AF%95');
+
+    const removeListener = addShowListener((options) => {
+        fireCount++;
+        lastOptions = options;
+    }, { fireImmediately: true });
+
+    // 注册时立即回调一次
+    expect(fireCount).toBe(1);
+    expect(lastOptions?.query).toEqual({
+        roomId: '42',
+        name: '测试',
+    });
+    expect(lastOptions?.scene).toBe(0);
+
+    // 模拟切到隐藏再切回可见，应再次回调
+    Object.defineProperty(document, 'visibilityState', {
+        value: 'hidden',
+        configurable: true,
+    });
+    document.dispatchEvent(new Event('visibilitychange'));
+    expect(fireCount).toBe(1); // 隐藏时不触发
+
+    Object.defineProperty(document, 'visibilityState', {
+        value: 'visible',
+        configurable: true,
+    });
+    document.dispatchEvent(new Event('visibilitychange'));
+    expect(fireCount).toBe(2); // 切回可见时触发
+
+    removeListener();
+
+    // 恢复
+    history.pushState(null, '', location.pathname);
+    if (originalVisibilityState) {
+        Object.defineProperty(document, 'visibilityState', originalVisibilityState);
+    }
 });
