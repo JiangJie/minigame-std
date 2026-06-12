@@ -8,7 +8,11 @@
 ## [Unreleased]
 
 ### 修复
+- `addNetworkChangeListener`：修复不支持 `navigator.connection` 的环境中缺少 online/offline 事件回退的问题，此前在无 Network Information API 支持的浏览器中无法监听网络状态变化
 - `addNetworkChangeListener`：修复 Chrome 挂机/休眠唤醒时 RTT 波动导致重复触发相同网络类型回调的问题，现在仅在网络类型实际变化时才调用 listener
+
+### 变更
+- socket：小游戏平台 `connectSocket` 使用原生 `SocketTask.readyState` 替代手动 mock 跟踪，状态与底层实际一致
 
 ## [2.4.0] - 2026-05-24
 
