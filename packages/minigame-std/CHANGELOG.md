@@ -5,19 +5,19 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
-## [Unreleased]
+## [2.5.0] - 2026-06-15
 
 ### 新增
-- `getLaunchOptionsSync`：新增同步获取冷启动参数 API，小游戏对应 `wx.getLaunchOptionsSync()`，Web 首次调用时缓存页面 URL 参数
+- `getLaunchOptionsSync`：新增同步获取冷启动参数 API，小游戏对应 `wx.getLaunchOptionsSync()`，Web 模块加载时缓存页面 URL 参数
 - `getEnterOptionsSync`：新增同步获取当前进入参数 API，小游戏对应 `wx.getEnterOptionsSync()`，Web 每次实时解析当前 URL 参数
 - `addShowListener`：新增 `fireImmediately` 选项，设为 `true` 时注册即回调当前进入参数，覆盖首次启动和后续切前台场景
 
 ### 修复
-- `addNetworkChangeListener`：修复不支持 `navigator.connection` 的环境中缺少 online/offline 事件回退的问题，此前在无 Network Information API 支持的浏览器中无法监听网络状态变化
-- `addNetworkChangeListener`：修复 Chrome 挂机/休眠唤醒时 RTT 波动导致重复触发相同网络类型回调的问题，现在仅在网络类型实际变化时才调用 listener
+- `addNetworkChangeListener`：修复不支持 `navigator.connection` 的环境中缺少 online/offline 事件回退的问题
+- `addNetworkChangeListener`：修复 Chrome 挂机/休眠唤醒时 RTT 波动导致重复触发相同网络类型回调的问题
 
 ### 变更
-- socket：小游戏平台 `connectSocket` 使用原生 `SocketTask.readyState` 替代手动 mock 跟踪，状态与底层实际一致
+- socket：小游戏平台 `connectSocket` 使用原生 `SocketTask.readyState` 替代手动 mock 跟踪
 
 ## [2.4.0] - 2026-05-24
 

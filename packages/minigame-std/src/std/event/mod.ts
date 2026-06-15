@@ -161,7 +161,7 @@ export function addHideListener(listener: () => void): () => void {
  *   `hostExtraData` 无实际值。
  *
  * @returns 返回冷启动参数。
- * @since unreleased
+ * @since 2.5.0
  * @example
  * ```ts
  * const launchOptions = getLaunchOptionsSync();
@@ -184,7 +184,7 @@ export function getLaunchOptionsSync(): WechatMinigame.LaunchOptionsGame {
  * - Web：每次调用实时解析当前页面 URL 参数，`apiCategory` 无实际值。
  *
  * @returns 返回当前进入参数。
- * @since unreleased
+ * @since 2.5.0
  * @example
  * ```ts
  * const enterOptions = getEnterOptionsSync();
