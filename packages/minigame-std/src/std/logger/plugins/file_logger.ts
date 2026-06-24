@@ -193,6 +193,10 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
     // 同步累加：writeEntry 时即计入，appendFile 失败会导致 size 偏大但不回滚
     let currentFileSize = 0;
     let currentFileStartTime = Date.now();
+    // 定时 flush 定时器，onDestroy 时清理
+    let flushTimer: ReturnType<typeof setInterval> | null = null;
+    // 切后台监听移除器，onDestroy 时清理
+    let hideListenerRemover: (() => void) | null = null;
 
     // init 异步过程中暂存日志（带原始 timestamp），完成后回放
     const pending: [LogLevel, unknown[], number][] = [];
@@ -356,10 +360,10 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
     }
 
     // 启动定时 flush，flushInterval 为 0 时仅靠 buffer 阈值触发
-    // 只调用一次（工厂内），timer 生命周期等同于插件
+    // timer 存储到 flushTimer，onDestroy 时 clearInterval
     function startAutoFlush(): void {
         if (flushInterval > 0) {
-            setInterval(flushCurrent, flushInterval);
+            flushTimer = setInterval(flushCurrent, flushInterval);
         }
     }
 
@@ -396,7 +400,7 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
     initPromise = resumeOrCreate()
         .finally(() => {
             startAutoFlush();
-            addHideListener(flushCurrent);
+            hideListenerRemover = addHideListener(flushCurrent);
             // 回放 init 期间暂存的日志
             for (const [lvl, args, ts] of pending) {
                 writeEntry(lvl, args, ts);
@@ -432,6 +436,16 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
             }
 
             writeEntry(lvl, args);
+        },
+
+        onDestroy(): void {
+            // 清理定时器和事件监听，防止 re-init 后资源泄漏
+            if (flushTimer != null) {
+                clearInterval(flushTimer);
+                flushTimer = null;
+            }
+            hideListenerRemover?.();
+            hideListenerRemover = null;
         },
 
         async flush(): Promise<void> {

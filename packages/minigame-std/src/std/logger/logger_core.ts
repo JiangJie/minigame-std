@@ -45,6 +45,13 @@ let lazyState = /*#__PURE__*/ Lazy(() => createDefaultState());
  * ```
  */
 export function init(config: LoggerConfig = {}): void {
+    // 清理旧插件资源（不触发默认 state 创建）
+    lazyState.get().inspect(state => {
+        for (const plugin of state.plugins) {
+            plugin.onDestroy?.();
+        }
+    });
+
     const level = config.level ?? 'info';
     const plugins = config.plugins ?? [];
 

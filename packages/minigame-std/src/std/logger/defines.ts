@@ -67,6 +67,13 @@ export interface LoggerPlugin {
     readonly name: string;
     onInit?: (ctx: PluginContext) => void;
     onLog?: (level: LogLevel, ...args: unknown[]) => void;
+    /**
+     * 插件销毁回调。
+     *
+     * 由 logger 核心在 `init` 重新初始化时对旧插件调用，用于清理资源
+     *（如 `clearInterval`、移除事件监听等）。
+     */
+    onDestroy?: () => void;
 }
 
 // ── Console Config ──────────────────────────────────────────────
