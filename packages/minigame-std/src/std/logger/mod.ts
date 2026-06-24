@@ -22,4 +22,5 @@
 export * from './defines.ts';
 export * from './logger_core.ts';
 export * from './plugins/defines.ts';
+export * from './plugins/file_logger.ts';
 export * from './plugins/mina_logger.ts';
