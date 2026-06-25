@@ -106,6 +106,51 @@ export function error(...args: unknown[]): void {
     dispatchLog('error', ...args);
 }
 
+/**
+ * 拦截全局 `console` 方法，将其重定向到 logger。
+ *
+ * 调用后，`console.debug`/`info`/`warn`/`error`（以及 `console.log`）会经过
+ * logger 的 `dispatchLog`，触发插件 pipeline（如 `fileLog`）。
+ *
+ * logger 自身的 console 输出使用模块加载时捕获的原始方法（`CONSOLE_FN`），
+ * 不会递归。
+ *
+ * @returns restore 函数，调用后恢复原始 `console` 方法。
+ * @since unreleased
+ * @example
+ * ```ts
+ * logger.init({ plugins: [fileLog()] });
+ * const restore = injectConsole();
+ * // 之后所有 console.info(...) 会走 logger pipeline
+ * console.info('App started'); // → file 写入 + console 输出
+ * restore(); // 需要时恢复
+ * ```
+ */
+export function injectConsole(): () => void {
+    const original = {
+        log: console.log,
+        debug: console.debug,
+        info: console.info,
+        warn: console.warn,
+        error: console.error,
+    };
+
+    // console.log 映射到 info 级别（console.log ≈ console.info）
+    console.log = (...args: unknown[]) => info(...args);
+    console.debug = (...args: unknown[]) => debug(...args);
+    console.info = (...args: unknown[]) => info(...args);
+    console.warn = (...args: unknown[]) => warn(...args);
+    console.error = (...args: unknown[]) => error(...args);
+
+    return () => {
+        console.log = original.log;
+        console.debug = original.debug;
+        console.info = original.info;
+        console.warn = original.warn;
+        console.error = original.error;
+    };
+}
+
 // #region Internal Types
 
 /**
