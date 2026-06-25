@@ -2,14 +2,17 @@
  * 文件日志插件：fileLog 工厂，提供缓冲写入、日志分割（period + size）、旧文件清理。
  */
 
+import { gzipSync } from 'fflate/browser';
 import type { AsyncIOResult } from 'happy-rusty';
 import { encodeUtf8 } from '../../codec/mod.ts';
 import { addHideListener } from '../../event/mod.ts';
 import {
     appendFile,
     readDir,
+    readFile,
     remove,
     stat,
+    writeFile,
 } from '../../fs/mod.ts';
 import type {
     LogEntry,
@@ -71,6 +74,15 @@ export interface FileSplitConfig {
      * @defaultValue `false`
      */
     accurateSize?: boolean;
+    /**
+     * 是否在切分时压缩旧日志文件（`.log` → `.log.gz`）。
+     *
+     * 压缩后原始 `.log` 被删除，压缩是 fire-and-forget，不阻塞日志写入。
+     * 注意：压缩后文件变为 `.log.gz`，读取/合并时需先解压。
+     *
+     * @defaultValue `false`
+     */
+    compress?: boolean;
 }
 
 /**
@@ -178,6 +190,7 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
         maxCount: config.split?.maxCount ?? 24,
         maxAge: config.split?.maxAge,
         accurateSize: config.split?.accurateSize ?? false,
+        compress: config.split?.compress ?? false,
     };
     const maxBufferSize = config.maxBufferSize ?? 100;
     const flushInterval = config.flushInterval ?? 5000;
@@ -231,6 +244,15 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
 
     // 同步切文件：重置文件路径、period 起点、size
     function newFile(): void {
+        if (split.compress && currentFileSize > 0) {
+            // 快照旧文件的 in-flight append（新文件 append 还没推入）
+            const pending = inFlight.slice();
+            // currentFile 是 string，传参时值已复制，后续 reassign 不影响
+            void compressOldFile(currentFile, pending)
+                .catch(() => {
+                    // 压缩失败——原始 .log 仍存在，下次 prune 清理
+                });
+        }
         currentFile = newLogPath();
         currentFileStartTime = Date.now();
         currentFileSize = 0;
@@ -286,10 +308,13 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
             });
     }
 
-    // 读取目录下排序后的 .log 文件名列表（保留 readDir 错误）
+    // 读取目录下排序后的日志文件名列表（含 .log 和 .log.gz）
     async function readLogFiles(): AsyncIOResult<string[]> {
         const dirResult = await readDir(rootDir);
-        return dirResult.map(files => files.filter(n => n.endsWith('.log')).sort());
+        return dirResult.map(files => files
+            .filter(n => n.endsWith('.log') || n.endsWith('.log.gz'))
+            .sort(),
+        );
     }
 
     // readLogFiles 的便利包装：错误时返回空数组（调用方按"无文件"处理）
@@ -372,11 +397,14 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
     // 用 mtime 而非文件名时间戳：防篡改；同一 period 内创建时间和 mtime 必定同 period
     async function resumeOrCreate(): Promise<void> {
         const logFiles = await tryReadLogFiles();
-        if (logFiles.length === 0) {
+        // 只考虑未压缩的 .log 文件用于续写（不能 append 到 .log.gz）
+        const resumable = logFiles.filter(n => n.endsWith('.log'));
+
+        if (resumable.length === 0) {
             newFile();
         } else {
             // 检查最新文件的 mtime 是否在当前 period 内
-            const latestPath = `${rootDir}/${logFiles[logFiles.length - 1]}`;
+            const latestPath = `${rootDir}/${resumable[resumable.length - 1]}`;
             const statResult = await stat(latestPath);
             if (statResult.isOkAnd(x => inCurrentPeriod(x.lastModifiedTime))) {
                 const s = statResult.unwrap();
@@ -388,7 +416,7 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
             }
         }
 
-        // 清理超量文件（复用 logFiles，避免二次 readDir）
+        // 清理超量文件（复用 logFiles 含 .log.gz，避免二次 readDir）
         await pruneOldFiles(logFiles);
     }
 
@@ -563,7 +591,7 @@ function toLogName(): string {
  * `new Date(string)` 在不同运行时对无时区字符串的解析差异。
  */
 function parseTimestamp(name: string): number | null {
-    const match = name.match(/^(\d{4})-(\d{2})-(\d{2})-(\d{2})-(\d{2})-(\d{2})\.(\d{3})\.log$/);
+    const match = name.match(/^(\d{4})-(\d{2})-(\d{2})-(\d{2})-(\d{2})-(\d{2})\.(\d{3})\.log(?:\.gz)?$/);
     if (!match) return null;
 
     const [, y, mo, d, h, mi, s, ms] = match.map(Number);
@@ -580,6 +608,25 @@ function pad3(n: number): string {
 
 function pad(n: number, maxLength: number): string {
     return n.toString().padStart(maxLength, '0');
+}
+
+/**
+ * 压缩旧日志文件：等待 in-flight append 完成 → 读 → gzipSync → 写 .log.gz → 删 .log
+ */
+async function compressOldFile(filePath: string, pending: Promise<void>[]): Promise<void> {
+    await Promise.all(pending);
+
+    const readResult = await readFile(filePath);
+    if (readResult.isErr()) return;
+
+    const compressed = gzipSync(readResult.unwrap());
+
+    const gzPath = `${filePath}.gz`;
+    const writeResult = await writeFile(gzPath, compressed);
+    if (writeResult.isErr()) return;
+
+    // 压缩成功后才删原始文件，保证不丢数据
+    await remove(filePath);
 }
 
 // #endregion
