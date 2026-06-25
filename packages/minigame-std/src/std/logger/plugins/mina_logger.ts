@@ -4,7 +4,7 @@
 
 import { Lazy } from 'happy-rusty';
 import type { LogFilter, LoggerPlugin, LogLevel, PluginContext } from '../defines.ts';
-import { shouldLog } from '../helpers.ts';
+import { buildMessage, shouldLog } from '../helpers.ts';
 import type { PluginConfigBase } from './defines.ts';
 
 // ── Plugin Types ─────────────────────────────────────────────────
@@ -57,20 +57,23 @@ export function wxLog(config: WxLogPluginConfig = {}): LoggerPlugin {
             if (filter && !filter(lvl, ...args)) return;
 
             const manager = logManager.force();
+            // 微信小游戏会将参数逐一进行 JSON.stringify 序列化, 遇到 bigint 类型会报错 `TypeError: Do not know how to serialize a BigInt`
+            // 预序列化参数为单条消息字符串（处理 BigInt 等平台无法序列化的类型）
+            const message = buildMessage(args);
 
             switch (lvl) {
                 case 'debug':
-                    manager.debug(...args);
+                    manager.debug(message);
                     break;
                 case 'info':
-                    manager.info(...args);
+                    manager.info(message);
                     break;
                 case 'warn':
-                    manager.warn(...args);
+                    manager.warn(message);
                     break;
                 case 'error':
                     // wx.getLogManager 没有 error 方法，故降级为 warn
-                    manager.warn('[ERROR]', ...args);
+                    manager.warn(`[ERROR] ${message}`);
                     break;
             }
         },

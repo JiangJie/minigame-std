@@ -19,7 +19,7 @@ import type {
     LogLevel,
     PluginContext,
 } from '../defines.ts';
-import { shouldLog } from '../helpers.ts';
+import { buildMessage, shouldLog } from '../helpers.ts';
 import type { PluginConfigBase } from './defines.ts';
 
 // #region Internal Variables
@@ -340,8 +340,8 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
     }
 
     // 将过滤后的日志条目加入缓冲，同步决策切分 + 累加 size
-    function writeEntry(lvl: LogLevel, args: unknown[], timestamp: number = Date.now()): void {
-        const entry = buildEntry(timestamp, lvl, args);
+    function writeEntry(level: LogLevel, args: unknown[], timestamp: number = Date.now()): void {
+        const entry: LogEntry = { timestamp, level, message: buildMessage(args) };
         const formatted = formatter(entry);
         const entryLen = split.accurateSize ? encodeUtf8(formatted).length : formatted.length;
 
@@ -568,36 +568,6 @@ function parseTimestamp(name: string): number | null {
 
     const [, y, mo, d, h, mi, s, ms] = match.map(Number);
     return new Date(y, mo - 1, d, h, mi, s, ms).getTime();
-}
-
-/**
- * 将原始参数构造为 LogEntry。
- *
- * timestamp 由调用方传入，保证 init 期间暂存的日志时间不失真。
- *
- * 单参数直接转换，多参数用空格拼接，避免不必要的 map/join 开销。
- */
-function buildEntry(timestamp: number, level: LogLevel, args: unknown[]): LogEntry {
-    const message = args.length === 1
-        ? stringifyArg(args[0])
-        : args.map(stringifyArg).join(' ');
-    return { timestamp, level, message };
-}
-
-/**
- * 将单个参数转为字符串。
- *
- * object 尝试 JSON 序列化以保留结构，循环引用等降级为 String。
- */
-function stringifyArg(arg: unknown): string {
-    if (typeof arg === 'object' && arg !== null) {
-        try {
-            return JSON.stringify(arg);
-        } catch {
-            return String(arg);
-        }
-    }
-    return String(arg);
 }
 
 function pad2(n: number): string {
