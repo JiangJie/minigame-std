@@ -2,8 +2,8 @@
  * 文件日志插件：fileLog 工厂，提供缓冲写入、日志分割（period + size）、旧文件清理。
  */
 
-import { encodeUtf8 } from 'happy-codec';
 import type { AsyncIOResult } from 'happy-rusty';
+import { encodeUtf8 } from '../../codec/mod.ts';
 import { addHideListener } from '../../event/mod.ts';
 import {
     appendFile,
