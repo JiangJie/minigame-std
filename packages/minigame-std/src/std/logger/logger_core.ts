@@ -72,6 +72,11 @@ export function init(config: LoggerConfig = {}): void {
     };
 
     lazyState = Lazy(() => newState);
+
+    // 拦截全局 console（不提供 restore，如需 restore 请用独立 injectConsole 函数）
+    if (config.injectConsole) {
+        injectConsole();
+    }
 }
 
 /**

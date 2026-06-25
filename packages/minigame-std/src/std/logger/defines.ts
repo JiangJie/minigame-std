@@ -126,4 +126,16 @@ export interface LoggerConfig {
      * @defaultValue `[]`
      */
     plugins?: LoggerPlugin[];
+    /**
+     * 是否拦截全局 `console` 方法并重定向到 logger。
+     *
+     * 设为 `true` 后，`console.debug`/`info`/`warn`/`error`/`log` 会经过
+     * logger 的 `dispatchLog`，触发插件 pipeline。
+     *
+     * **注意**：此方式不提供 restore 功能。如需恢复原始 `console`，
+     * 请使用独立的 {@link injectConsole} 函数（返回 restore 函数）。
+     *
+     * @defaultValue `false`
+     */
+    injectConsole?: boolean;
 }
