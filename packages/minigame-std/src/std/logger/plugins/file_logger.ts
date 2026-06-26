@@ -227,10 +227,9 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
 
     // fire-and-forget 的在途 append，flush() 等待它们完成
     const inFlight = new Set<Promise<void>>();
-    // 防重入 prune：fire-and-forget，幂等
-    let pruneInFlight = false;
-    // 若 prune 期间又有新的切文件请求，标记 dirty，当前 prune 完成后重试一次
-    let pruneDirty = false;
+    // 当前 prune 链的 Promise，null 表示无 prune 在跑
+    // 多次 schedulePrune 调用串行链接（chain），避免并发 prune 的重复 IO
+    let prunePromise: Promise<void> | null = null;
 
     // 时间戳对应的 period 序号
     function periodIndex(ts: number): number {
@@ -255,10 +254,9 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
     // 同步切文件：重置文件路径、period 起点、size
     function newFile(): void {
         if (split.compress && currentFileSize > 0) {
-            // 快照旧文件的 in-flight append（新文件 append 还没推入）
-            const pending = [...inFlight];
             // currentFile 是 string，传参时值已复制，后续 reassign 不影响
-            void compressOldFile(currentFile, pending)
+            // Promise.all 调用时同步迭代 inFlight，调用后的新增 append 不影响
+            void compressOldFile(currentFile, inFlight)
                 .catch(() => {
                     // 压缩失败——原始 .log 仍存在，下次 prune 清理
                 });
@@ -266,7 +264,7 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
         currentFile = newLogPath();
         currentFileStartTime = Date.now();
         currentFileSize = 0;
-        schedulePrune();
+        void schedulePrune();
     }
 
     // 触发当前 buffer 的 flush（fire-and-forget）
@@ -292,27 +290,25 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
         inFlight.add(p);
     }
 
-    function schedulePrune(): void {
-        if (pruneInFlight) {
-            // 已有 prune 在执行，标记完成后需要再 prune 一次
-            pruneDirty = true;
-            return;
-        }
-
-        pruneInFlight = true;
-        tryReadLogFiles()
+    // 调度 prune：串行链接（chain），避免并发 prune 的重复 IO
+    // 每次调用链接到前一个 prune 之后，先等在途 append 完成再读目录
+    function schedulePrune(): Promise<void> {
+        const prev = prunePromise;
+        const p = (prev ?? Promise.resolve())
+            .then(() => Promise.all(inFlight))
+            .then(tryReadLogFiles)
             .then(pruneOldFiles)
-            .finally(() => {
-                pruneInFlight = false;
-                // 若 prune 期间又有新的切文件请求，再 prune 一次
-                if (pruneDirty) {
-                    pruneDirty = false;
-                    schedulePrune();
-                }
-            })
             .catch(() => {
                 // 吞掉意外 rejection，防止 unhandled rejection
+            })
+            .finally(() => {
+                // 只有最后一个链才清除，中间链不清除（已被新链覆盖）
+                if (prunePromise === p) {
+                    prunePromise = null;
+                }
             });
+        prunePromise = p;
+        return p;
     }
 
     // 读取目录下排序后的日志文件名列表（含 .log 和 .log.gz）
@@ -491,9 +487,10 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
 
             // 触发当前 buffer flush
             flushCurrent();
-            // 等所有在途 append 完成
-            // Promise.all 调用时同步迭代 inFlight 并内部快照，后续 .finally 的 delete 不影响
-            await Promise.all(inFlight);
+            // 等待在途 append 完成 + 触发 prune 并等待
+            // schedulePrune 内部 Promise.all(inFlight) 等所有 append，
+            // 链式确保串行 prune，flush 返回时文件数已不超过 maxCount
+            await schedulePrune();
         },
 
         async getFiles(query?: LogFileQuery): AsyncIOResult<string[]> {
@@ -614,7 +611,7 @@ function pad(n: number, maxLength: number): string {
 /**
  * 压缩旧日志文件：等待 in-flight append 完成 → 读 → gzipSync → 写 .log.gz → 删 .log
  */
-async function compressOldFile(filePath: string, pending: Promise<void>[]): Promise<void> {
+async function compressOldFile(filePath: string, pending: Set<Promise<void>>): Promise<void> {
     await Promise.all(pending);
 
     const readResult = await readFile(filePath);
