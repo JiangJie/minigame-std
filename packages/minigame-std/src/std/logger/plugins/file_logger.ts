@@ -334,8 +334,14 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
 
         const { maxAge, maxCount } = split;
 
-        // 无 maxAge 且未超 maxCount，直接返回
-        if (maxAge == null && logFiles.length <= maxCount) return;
+        // currentFile 可能还没落盘（newFile 刚创建），不在 logFiles 中
+        // 但它即将写入磁盘，需要为其预留一个 maxCount 名额
+        const currentFileName = currentFile.substring(rootDir.length + 1);
+        const reserveActive = !logFiles.includes(currentFileName);
+        const effectiveMaxCount = reserveActive ? maxCount - 1 : maxCount;
+
+        // 无 maxAge 且未超 effectiveMaxCount，直接返回
+        if (maxAge == null && logFiles.length <= effectiveMaxCount) return;
 
         const now = Date.now();
         const toDelete: string[] = [];
@@ -356,9 +362,9 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
             remaining = logFiles;
         }
 
-        // 2. 剩余文件若仍超 maxCount，删最旧的（remaining 保持有序）
-        if (remaining.length > maxCount) {
-            const excess = remaining.slice(0, remaining.length - maxCount);
+        // 2. 剩余文件若仍超 effectiveMaxCount，删最旧的（remaining 保持有序）
+        if (remaining.length > effectiveMaxCount) {
+            const excess = remaining.slice(0, remaining.length - effectiveMaxCount);
             toDelete.push(...excess);
         }
 
