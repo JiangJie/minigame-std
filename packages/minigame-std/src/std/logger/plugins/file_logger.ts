@@ -501,6 +501,10 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
         },
 
         async getFiles(query?: LogFileQuery): AsyncIOResult<string[]> {
+            // 确保缓冲区已落盘，使文件列表包含当前活跃文件
+            flushCurrent();
+            await Promise.all(inFlight);
+
             return (await readLogFiles()).map(logFiles => {
                 const from = query?.from;
                 const to = query?.to;
