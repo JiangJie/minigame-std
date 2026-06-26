@@ -32,6 +32,16 @@ import type { PluginConfigBase } from './defines.ts';
  */
 const DEFAULT_ROOT_DIR = '/.minigame-std-logs';
 
+/**
+ * 日志级别标签。
+ */
+const LEVEL_LABELS: Record<LogLevel, string> = {
+    debug: 'DEBUG',
+    info: 'INFO ',
+    warn: 'WARN ',
+    error: 'ERROR',
+};
+
 // #endregion
 
 /**
@@ -216,7 +226,7 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
     let initPromise: Promise<void> | null = null;
 
     // fire-and-forget 的在途 append，flush() 等待它们完成
-    const inFlight: Promise<void>[] = [];
+    const inFlight = new Set<Promise<void>>();
     // 防重入 prune：fire-and-forget，幂等
     let pruneInFlight = false;
     // 若 prune 期间又有新的切文件请求，标记 dirty，当前 prune 完成后重试一次
@@ -246,7 +256,7 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
     function newFile(): void {
         if (split.compress && currentFileSize > 0) {
             // 快照旧文件的 in-flight append（新文件 append 还没推入）
-            const pending = inFlight.slice();
+            const pending = [...inFlight];
             // currentFile 是 string，传参时值已复制，后续 reassign 不影响
             void compressOldFile(currentFile, pending)
                 .catch(() => {
@@ -273,16 +283,13 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
             })
             .finally(() => {
                 // 无论成功失败，都从 inFlight 移除自己
-                const idx = inFlight.indexOf(p);
-                if (idx >= 0) {
-                    inFlight.splice(idx, 1);
-                }
+                inFlight.delete(p);
             })
             .catch(() => {
                 // 吞掉意外 rejection，保证 flush() 的 Promise.all 不被 reject
             });
 
-        inFlight.push(p);
+        inFlight.add(p);
     }
 
     function schedulePrune(): void {
@@ -485,7 +492,7 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
             // 触发当前 buffer flush
             flushCurrent();
             // 等所有在途 append 完成
-            // Promise.all 调用时同步迭代 inFlight 并内部快照，后续 .finally 的 splice 不影响
+            // Promise.all 调用时同步迭代 inFlight 并内部快照，后续 .finally 的 delete 不影响
             await Promise.all(inFlight);
         },
 
@@ -543,13 +550,7 @@ interface BufferedEntry {
  */
 function defaultFormatter(entry: LogEntry): string {
     const time = formatTimestamp(entry.timestamp, 'yyyy-MM-dd HH:mm:ss.SSS');
-    const level = ({
-        debug: 'DEBUG',
-        info: 'INFO ',
-        warn: 'WARN ',
-        error: 'ERROR',
-    } as const)[entry.level] ?? 'UNKNOWN';
-    return `[${time}] [${level}] ${entry.message}\n`;
+    return `[${time}] [${LEVEL_LABELS[entry.level]}] ${entry.message}\n`;
 }
 
 /**
