@@ -89,6 +89,7 @@ export interface FileSplitConfig {
      *
      * 压缩后原始 `.log` 被删除，压缩是 fire-and-forget，不阻塞日志写入。
      * 注意：压缩后文件变为 `.log.gz`，读取/合并时需先解压。
+     * `maxCount` 为 1 时压缩产物 `.log.gz` 会临时占用额外名额，建议 `maxCount >= 2`。
      *
      * @defaultValue `false`
      */
