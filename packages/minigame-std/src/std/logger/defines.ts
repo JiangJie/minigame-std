@@ -22,7 +22,13 @@ export interface LogEntry {
      * 使用 `number` 而非 `Date` 以减少 GC 开销，并保证 JSON 序列化无歧义。
      */
     timestamp: number;
+    /**
+     * 日志级别。
+     */
     level: LogLevel;
+    /**
+     * 已格式化的日志消息。
+     */
     message: string;
 }
 
@@ -49,6 +55,9 @@ export type LogFormatter = (entry: LogEntry) => string;
  * @since unreleased
  */
 export interface PluginContext {
+    /**
+     * 全局最低日志级别（来自 `LoggerConfig.level`）。
+     */
     globalLevel: LogLevel;
     /**
      * 全局日志过滤函数。
@@ -64,8 +73,22 @@ export interface PluginContext {
  * @since unreleased
  */
 export interface LoggerPlugin {
+    /**
+     * 插件名称，用于标识和调试。
+     */
     readonly name: string;
+    /**
+     * 插件初始化回调。
+     *
+     * logger 核心在 `init` 时调用，传入全局上下文，插件可据此继承全局配置。
+     */
     onInit?: (ctx: PluginContext) => void;
+    /**
+     * 日志分发回调。
+     *
+     * logger 核心在每条日志通过级别与 filter 后调用，接收原始参数
+     *（`level, ...args`），由插件自行决定格式化与落盘策略。
+     */
     onLog?: (level: LogLevel, ...args: unknown[]) => void;
     /**
      * 插件销毁回调。
