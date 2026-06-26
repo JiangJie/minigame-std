@@ -289,6 +289,12 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
             });
 
         inFlight.add(p);
+
+        // 重置定时器，避免刚 flush 后短时间内又触发低效写入
+        if (flushTimer != null) {
+            clearInterval(flushTimer);
+            flushTimer = setInterval(flushCurrent, flushInterval);
+        }
     }
 
     // 调度 prune：串行链接（chain），避免并发 prune 的重复 IO
