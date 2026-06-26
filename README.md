@@ -205,6 +205,30 @@ jsr add @happy-js/minigame-std
     v.requestFullScreen(0); // 0: 竖屏, 90/-90: 横屏
     ```
 
+-   **日志系统**
+    ```js
+    import { logger } from 'minigame-std';
+    // 可插拔日志，支持级别过滤、控制台输出、文件持久化
+    logger.init({
+        level: 'debug',
+        plugins: [logger.fileLog({ split: { maxSize: 10 * 1024 * 1024 } })],
+    });
+    logger.info('App started');
+    logger.error('Something went wrong', new Error('test'));
+
+    // 拦截全局 console 方法
+    logger.init({
+        plugins: [logger.fileLog()],
+        injectConsole: true,
+    });
+    console.info('Redirected to logger pipeline'); // → file 写入 + console 输出
+
+    // 微信小游戏日志（仅小游戏平台生效）
+    logger.init({
+        plugins: [logger.wxLog({ level: 'warn' })],
+    });
+    ```
+
 更多功能请查看 [API 文档](https://jiangjie.github.io/minigame-std/)。
 
 ## 和 Adapter 是什么关系

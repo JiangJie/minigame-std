@@ -129,6 +129,7 @@ packages/
 │   │       ├── fs/             # File system operations (with zip support)
 │   │       ├── image/          # Image processing
 │   │       ├── lbs/            # Location-based services
+│   │       ├── logger/         # Pluggable logging system (core + fileLog + wxLog plugins)
 │   │       ├── network/        # Network status/type detection
 │   │       ├── path/           # POSIX path utilities (basename, dirname, normalize)
 │   │       ├── performance/    # Performance timing utilities

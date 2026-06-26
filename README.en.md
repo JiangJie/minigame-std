@@ -197,6 +197,30 @@ jsr add @happy-js/minigame-std
     v.requestFullScreen(0); // 0: portrait, 90/-90: landscape
     ```
 
+-   **Logging**
+    ```js
+    import { logger } from 'minigame-std';
+    // Pluggable logging with level filtering, console output, and file persistence
+    logger.init({
+        level: 'debug',
+        plugins: [logger.fileLog({ split: { maxSize: 10 * 1024 * 1024 } })],
+    });
+    logger.info('App started');
+    logger.error('Something went wrong', new Error('test'));
+
+    // Intercept global console methods
+    logger.init({
+        plugins: [logger.fileLog()],
+        injectConsole: true,
+    });
+    console.info('Redirected to logger pipeline'); // → file write + console output
+
+    // WeChat Mini-Game logging (mini-game platform only)
+    logger.init({
+        plugins: [logger.wxLog({ level: 'warn' })],
+    });
+    ```
+
 For more features, see the [API Documentation](https://jiangjie.github.io/minigame-std/).
 
 ## Comparison with Adapter
