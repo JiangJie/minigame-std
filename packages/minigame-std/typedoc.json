@@ -18,5 +18,10 @@
     "GitHub": "https://github.com/JiangJie/minigame-std",
     "npm": "https://www.npmjs.com/package/minigame-std",
     "JSR": "https://jsr.io/@happy-js/minigame-std"
+  },
+  "externalSymbolLinkMappings": {
+    "minigame-api-typings": {
+      "WechatMinigame.GetLogManagerOption.level": "#"
+    }
   }
 }
