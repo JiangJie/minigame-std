@@ -83,7 +83,7 @@ export interface FileSplitConfig {
      *
      * @defaultValue `false`
      */
-    accurateSize?: boolean;
+    useByteSize?: boolean;
     /**
      * 是否在切分时压缩旧日志文件（`.log` → `.log.gz`）。
      *
@@ -199,7 +199,7 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
         maxSize: config.split?.maxSize ?? 10 * 1024 * 1024,
         maxCount: config.split?.maxCount ?? 24,
         maxAge: config.split?.maxAge,
-        accurateSize: config.split?.accurateSize ?? false,
+        useByteSize: config.split?.useByteSize ?? false,
         compress: config.split?.compress ?? false,
     };
     const maxBufferSize = config.maxBufferSize ?? 100;
@@ -375,7 +375,7 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
     function writeEntry(level: LogLevel, args: unknown[], timestamp: number = Date.now()): void {
         const entry: LogEntry = { timestamp, level, message: buildMessage(args) };
         const formatted = formatter(entry);
-        const entryLen = split.accurateSize ? encodeUtf8(formatted).length : formatted.length;
+        const entryLen = split.useByteSize ? encodeUtf8(formatted).length : formatted.length;
 
         // 写入前决策：period 过期或超限 → 先 flush 旧 buffer 到旧文件，再切新文件
         if (isFileExpired() || currentFileSize + entryLen > split.maxSize) {

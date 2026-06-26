@@ -403,12 +403,12 @@ describe('fileLog', () => {
         expect(file.getRootDir()).toBe('/.minigame-std-logs');
     });
 
-    test('accurateSize uses UTF-8 byte count', async () => {
-        // accurateSize: true uses encodeUtf8(formatted).length instead of formatted.length
+    test('useByteSize uses UTF-8 byte count', async () => {
+        // useByteSize: true uses encodeUtf8(formatted).length instead of formatted.length
         // Chinese chars: .length=1 but UTF-8 bytes=3, set small maxSize to trigger rotation
         const file = fileLog({
             rootDir: testRootDir,
-            split: { maxSize: 30, accurateSize: true },
+            split: { maxSize: 30, useByteSize: true },
             flushInterval: 0,
         });
         logger.init({
