@@ -12,7 +12,7 @@ import type { PluginConfigBase } from './defines.ts';
 /**
  * wx.getLogManager 插件配置（仅小游戏生效）。
  *
- * @since unreleased
+ * @since 2.6.0
  */
 export interface WxLogPluginConfig extends PluginConfigBase {
     /**
@@ -32,7 +32,7 @@ export interface WxLogPluginConfig extends PluginConfigBase {
  *
  * @param config - 插件配置。
  * @returns LoggerPlugin 实例。
- * @since unreleased
+ * @since 2.6.0
  * @example
  * ```ts
  * logger.init({ plugins: [wxLog({ level: 'warn' })] });

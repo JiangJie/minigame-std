@@ -7,7 +7,7 @@ import type { LogFilter, LogLevel } from '../defines.ts';
 /**
  * Plugin 可覆盖的基础配置，所有 plugin 配置应继承此接口。
  *
- * @since unreleased
+ * @since 2.6.0
  */
 export interface PluginConfigBase {
     /**

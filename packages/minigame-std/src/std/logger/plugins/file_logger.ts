@@ -47,7 +47,7 @@ const LEVEL_LABELS: Record<LogLevel, string> = {
 /**
  * 日志分割（split）配置。
  *
- * @since unreleased
+ * @since 2.6.0
  */
 export interface FileSplitConfig {
     /**
@@ -99,7 +99,7 @@ export interface FileSplitConfig {
 /**
  * 文件插件配置。
  *
- * @since unreleased
+ * @since 2.6.0
  */
 export interface FilePluginConfig extends PluginConfigBase {
     /**
@@ -135,7 +135,7 @@ export interface FilePluginConfig extends PluginConfigBase {
 /**
  * 日志文件查询条件。
  *
- * @since unreleased
+ * @since 2.6.0
  */
 export interface LogFileQuery {
     /**
@@ -151,7 +151,7 @@ export interface LogFileQuery {
 /**
  * 文件插件 API 接口。
  *
- * @since unreleased
+ * @since 2.6.0
  */
 export interface FilePluginAPI extends LoggerPlugin {
     /**
@@ -184,7 +184,7 @@ export interface FilePluginAPI extends LoggerPlugin {
  *
  * @param config - 文件插件配置。
  * @returns 支持 LoggerPlugin 和文件管理 API 的插件实例。
- * @since unreleased
+ * @since 2.6.0
  * @example
  * ```ts
  * const file = fileLog({ level: 'debug' });

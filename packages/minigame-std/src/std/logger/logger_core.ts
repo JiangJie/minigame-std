@@ -37,7 +37,7 @@ let lazyState = /*#__PURE__*/ Lazy(() => createDefaultState());
  * 初始化日志系统。
  *
  * @param config - 日志系统配置。
- * @since unreleased
+ * @since 2.6.0
  * @example
  * ```ts
  * const file = fileLog({ level: 'debug' });
@@ -81,7 +81,7 @@ export function init(config: LoggerConfig = {}): void {
 
 /**
  * 输出 debug 级别日志。
- * @since unreleased
+ * @since 2.6.0
  */
 export function debug(...args: unknown[]): void {
     dispatchLog('debug', ...args);
@@ -89,7 +89,7 @@ export function debug(...args: unknown[]): void {
 
 /**
  * 输出 info 级别日志。
- * @since unreleased
+ * @since 2.6.0
  */
 export function info(...args: unknown[]): void {
     dispatchLog('info', ...args);
@@ -97,7 +97,7 @@ export function info(...args: unknown[]): void {
 
 /**
  * 输出 warn 级别日志。
- * @since unreleased
+ * @since 2.6.0
  */
 export function warn(...args: unknown[]): void {
     dispatchLog('warn', ...args);
@@ -105,7 +105,7 @@ export function warn(...args: unknown[]): void {
 
 /**
  * 输出 error 级别日志。
- * @since unreleased
+ * @since 2.6.0
  */
 export function error(...args: unknown[]): void {
     dispatchLog('error', ...args);
@@ -121,7 +121,7 @@ export function error(...args: unknown[]): void {
  * 不会递归。
  *
  * @returns restore 函数，调用后恢复原始 `console` 方法。
- * @since unreleased
+ * @since 2.6.0
  * @example
  * ```ts
  * logger.init({ plugins: [fileLog()] });

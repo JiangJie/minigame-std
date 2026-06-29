@@ -5,6 +5,14 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.6.0] - 2026-06-29
+
+### 新增
+- `logger` 模块：跨平台统一的日志系统，提供贴近 `console` 的 API（`debug`/`info`/`warn`/`error`），支持插件化扩展、全局 `console` 拦截（`injectConsole`）、日志过滤与级别控制
+- `logger.fileLog`：文件日志插件，支持缓冲写入、按时间/大小分割、旧文件清理（`maxCount`/`maxAge`）、可选 gzip 压缩
+- `logger.wxLog`：微信小游戏 `wx.getLogManager` 插件，预序列化处理 BigInt 等平台无法序列化的类型
+- `LoggerPlugin` 接口：`onInit`/`onLog`/`onDestroy` 生命周期钩子，支持自定义插件开发
+
 ## [2.5.0] - 2026-06-15
 
 ### 新增
@@ -532,6 +540,7 @@
   - `socket` - WebSocket
   - `storage` - 本地存储
 
+[2.6.0]: https://github.com/JiangJie/minigame-std/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/JiangJie/minigame-std/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/JiangJie/minigame-std/compare/v2.3.1...v2.4.0
 [2.3.1]: https://github.com/JiangJie/minigame-std/compare/v2.3.0...v2.3.1

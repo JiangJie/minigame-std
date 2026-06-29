@@ -5,7 +5,7 @@
 /**
  * 日志级别，从低到高排列。
  *
- * @since unreleased
+ * @since 2.6.0
  */
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
@@ -13,7 +13,7 @@ export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 /**
  * 单条日志记录。
  *
- * @since unreleased
+ * @since 2.6.0
  */
 export interface LogEntry {
     /**
@@ -35,14 +35,14 @@ export interface LogEntry {
 /**
  * 日志过滤函数。
  *
- * @since unreleased
+ * @since 2.6.0
  */
 export type LogFilter = (level: LogLevel, ...args: unknown[]) => boolean;
 
 /**
  * 日志格式化函数。
  *
- * @since unreleased
+ * @since 2.6.0
  */
 export type LogFormatter = (entry: LogEntry) => string;
 
@@ -52,7 +52,7 @@ export type LogFormatter = (entry: LogEntry) => string;
 /**
  * Plugin 初始化上下文。
  *
- * @since unreleased
+ * @since 2.6.0
  */
 export interface PluginContext {
     /**
@@ -70,7 +70,7 @@ export interface PluginContext {
 /**
  * 日志插件接口。
  *
- * @since unreleased
+ * @since 2.6.0
  */
 export interface LoggerPlugin {
     /**
@@ -104,7 +104,7 @@ export interface LoggerPlugin {
 /**
  * 控制台输出配置。
  *
- * @since unreleased
+ * @since 2.6.0
  */
 export interface ConsolePluginConfig {
     /**
@@ -126,7 +126,7 @@ export interface ConsolePluginConfig {
 /**
  * 日志系统配置。
  *
- * @since unreleased
+ * @since 2.6.0
  */
 export interface LoggerConfig {
     /**
