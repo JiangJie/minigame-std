@@ -350,6 +350,41 @@ describe('mina_fs_shared', () => {
             expect(result.isErr()).toBe(true);
             expect(result.unwrapErr().name).toBe('PermissionError');
         });
+
+        test('returns false when stats.size < 0 (Windows/Mac code package bug)', () => {
+            // 覆盖 Windows/Mac 平台 stat 代码包不存在文件时的误报分支
+            // 平台返回 stats.size = -1, 应视为不存在
+            const stats: WechatMinigame.Stats = {
+                mode: 511,
+                size: -1,
+                lastAccessedTime: null as unknown as number,
+                lastModifiedTime: 0,
+                isDirectory: () => false,
+                isFile: () => true,
+            };
+
+            const result = getExistsResult(Ok(stats));
+
+            expect(result.isOk()).toBe(true);
+            expect(result.unwrap()).toBe(false);
+        });
+
+        test('returns true for existing file with size 0 when no options', () => {
+            // 确保正常空文件 (size=0) 不被误判为不存在
+            const stats: WechatMinigame.Stats = {
+                mode: 0,
+                size: 0,
+                lastAccessedTime: 0,
+                lastModifiedTime: 0,
+                isDirectory: () => false,
+                isFile: () => true,
+            };
+
+            const result = getExistsResult(Ok(stats));
+
+            expect(result.isOk()).toBe(true);
+            expect(result.unwrap()).toBe(true);
+        });
     });
 
     describe('accessExists', () => {

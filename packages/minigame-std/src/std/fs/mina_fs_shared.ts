@@ -265,13 +265,20 @@ export function getWriteFileContents(contents: WriteFileContent): IOResult<GetWr
 
 /**
  * 获取 `exists` 的结果。
+ *
+ * 注意：Windows 和 Mac 平台 `stat` 代码包内不存在的文件时, 平台会误报成功并返回 `stats.size = -1`。
+ * 此处通过 `stats.size < 0` 判断并视为不存在, 以兼容该平台 bug。
+ *
+ * TODO(platform-wx): 待微信 Windows/Mac 平台修复该 stat 误报 bug 后, 移除 `stats.size < 0` 判断。
+ * 跟踪点: `mina_fs_shared.ts` getExistsResult。
  */
 export function getExistsResult(statResult: IOResult<WechatMinigame.Stats>, options?: ExistsOptions): IOResult<boolean> {
     return statResult.map(stats => {
         const { isDirectory = false, isFile = false } = options ?? {};
 
         const notExist =
-            (isDirectory && stats.isFile())
+            stats.size < 0 // TODO(platform-wx): Windows/Mac 平台 stat 代码包不存在文件时的误报, 待平台修复后移除
+            || (isDirectory && stats.isFile())
             || (isFile && stats.isDirectory());
 
         return !notExist;
