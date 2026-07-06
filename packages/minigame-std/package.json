@@ -91,8 +91,8 @@
     "@happy-ts/fetch-t": "^1.10.0",
     "fflate": "^0.8.3",
     "happy-codec": "^1.2.2",
-    "happy-opfs": "^2.0.3",
-    "happy-rusty": "^1.9.2",
+    "happy-opfs": "^2.1.0",
+    "happy-rusty": "^1.10.0",
     "minigame-api-typings": "^3.8.20",
     "rsa-oaep-encryption": "^1.2.1",
     "tiny-future": "^1.2.0"
