@@ -6,6 +6,7 @@
 
 import { decodeUtf8 as webDecodeUtf8, encodeUtf8 as webEncodeUtf8 } from 'happy-codec';
 import { bufferSourceToAb } from '../internal/mod.ts';
+import { isMiniGameHarmonyOS, isMiniGameHarmonyPC } from '../platform/mod.ts';
 
 // #region Internal Variables
 
@@ -20,7 +21,11 @@ const FORMAT = 'utf8' as const;
  */
 export function encodeUtf8(data: string): Uint8Array<ArrayBuffer> {
     // 兼容某些平台没有 `encode` 方法
-    return typeof wx.encode === 'function'
+    // TODO(platform-wx): 鸿蒙微信小游戏的 `wx.encode` 实现存在 bug, 返回错误的编码结果。
+    // 其中 HarmonyOS(`ohos`) 已确认存在 bug; HarmonyOS PC(`ohos_pc`) 未经验证, 但一并跳过是最保险的做法
+    // (即便 `wx.encode` 在 HarmonyPC 上正确, 走 `webEncodeUtf8` 兜底也只是性能略降, 不影响正确性)。
+    // 待平台修复后可移除 `isMiniGameHarmonyOS() && isMiniGameHarmonyPC()` 判断恢复使用 `wx.encode`。
+    return typeof wx.encode === 'function' && !isMiniGameHarmonyOS() && !isMiniGameHarmonyPC()
         ? new Uint8Array(
             wx.encode({
                 data,

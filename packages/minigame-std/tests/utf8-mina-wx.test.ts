@@ -10,6 +10,8 @@ vi.hoisted(() => {
 
     // Mock wx.encode 和 wx.decode 方法
     (globalThis as Record<string, unknown>)['wx'] = {
+        // 返回 windows 平台，确保 isMiniGameHarmonyOS()/isMiniGameHarmonyPC() 为 false，走 wx.encode 路径
+        getDeviceInfo: () => ({ platform: 'windows' }),
         encode: (options: { data: string; format: string; }): ArrayBuffer => {
             // 模拟 UTF-8 编码
             const encoder = new TextEncoder();
