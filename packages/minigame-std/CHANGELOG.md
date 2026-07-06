@@ -5,6 +5,15 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.6.1] - 2026-07-06
+
+### 修复
+- `fs.exists`/`fs.existsSync`：修复 Windows 和 Mac 平台 `stat` 代码包内不存在的文件时误报成功的问题（平台返回 `stats.size = -1`，现通过 `stats.size < 0` 判断视为不存在）
+- `codec.encodeUtf8`：修复鸿蒙微信小游戏（HarmonyOS / HarmonyOS PC）`wx.encode` 实现存在 bug 导致 UTF-8 编码结果错误的问题，现跳过 `wx.encode` 直接走 `happy-codec` 兜底
+
+### 优化
+- `fs.exists`/`fs.existsSync`：当 `ExistsOptions` 不要求检查 `isDirectory`/`isFile` 时，改用 `access`/`accessSync` 替代 `stat`，避免构造 `Stats` 对象，开销更小
+
 ## [2.6.0] - 2026-06-29
 
 ### 新增
@@ -540,6 +549,7 @@
   - `socket` - WebSocket
   - `storage` - 本地存储
 
+[2.6.1]: https://github.com/JiangJie/minigame-std/compare/v2.6.0...v2.6.1
 [2.6.0]: https://github.com/JiangJie/minigame-std/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/JiangJie/minigame-std/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/JiangJie/minigame-std/compare/v2.3.1...v2.4.0
