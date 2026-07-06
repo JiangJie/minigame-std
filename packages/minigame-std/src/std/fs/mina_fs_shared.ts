@@ -3,10 +3,11 @@
  * 同步/异步的公共代码。
  */
 
-import { normalize } from '../path/mod.ts';
 import { NOT_FOUND_ERROR, NOTHING_TO_ZIP_ERROR, ROOT_DIR, type ExistsOptions } from 'happy-opfs';
-import { Err, Lazy, Ok, RESULT_FALSE, RESULT_VOID, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
+import { Err, Lazy, Ok, RESULT_FALSE, RESULT_VOID, tryResult, type AsyncIOResult, type IOResult, type Result, type VoidIOResult } from 'happy-rusty';
 import { bufferSourceToAb, miniGameFailureToError } from '../internal/mod.ts';
+import { normalize } from '../path/mod.ts';
+import { asyncResultify } from '../utils/mod.ts';
 import type { ReadOptions, WriteFileContent } from './fs_define.ts';
 
 // #region Internal Variables
@@ -280,6 +281,40 @@ export function getExistsResult(statResult: IOResult<WechatMinigame.Stats>, opti
 }
 
 /**
+ * 判断文件/目录是否存在（不区分类型）。
+ *
+ * 相比 `stat` + `getExistsResult`，使用底层 `access` 接口开销更小，不会构造 `Stats` 对象。
+ * 当 `ExistsOptions` 不需要检查 `isDirectory`/`isFile` 时使用此实现。
+ *
+ * @param path - 文件或目录路径。
+ * @returns 存在返回 `true`，不存在返回 `false`，其他错误透传。
+ */
+export async function accessExists(path: string): AsyncIOResult<boolean> {
+    const pathRes = validateReadablePath(path);
+    if (pathRes.isErr()) return pathRes.asErr();
+    path = pathRes.unwrap();
+
+    const accessRes = await asyncResultify(getFs().access)({ path });
+    return accessResultToExists(accessRes);
+}
+
+/**
+ * `accessExists` 的同步版本。
+ *
+ * @param path - 文件或目录路径。
+ * @returns 存在返回 `true`，不存在返回 `false`，其他错误透传。
+ */
+export function accessExistsSync(path: string): IOResult<boolean> {
+    const pathRes = validateReadablePath(path);
+    if (pathRes.isErr()) return pathRes.asErr();
+    path = pathRes.unwrap();
+
+    const accessRes = tryResult(() => getFs().accessSync(path));
+    return accessResultToExists(accessRes);
+}
+
+
+/**
  * 根据 `recursive` 不同标准化 `stat` 的结果(recursive=true 的时候开发者工具对于文件和空文件夹会返回单个 Stats)。
  * - `recursive=false`: 返回单个 `Stats` 或 `FileStats[]`
  * - `recursive=true`: 始终返回 `FileStats[]`，即使是单个文件或空目录
@@ -363,6 +398,22 @@ function validatePathType(path: unknown): IOResult<never> | undefined {
     if (typeof path !== 'string') {
         return Err(new TypeError(`Path must be a string but received ${typeof path}`));
     }
+}
+
+/**
+ * 将 `access`/`accessSync` 调用的结果转换为存在性结果。
+ * - 成功 → `true`
+ * - NotFound → `false`
+ * - 其他错误 → 透传
+ */
+function accessResultToExists<T, E>(accessRes: Result<T, E>): IOResult<boolean> {
+    return accessRes
+        .map(() => true)
+        .orElse(err => {
+            // 归一化错误（识别 not found 并设置 name），再判断是否为不存在
+            const normalized = fileErrorToResult<boolean>(err as FileError).unwrapErr();
+            return isNotFoundError(normalized) ? RESULT_FALSE : Err(normalized);
+        });
 }
 
 // #endregion

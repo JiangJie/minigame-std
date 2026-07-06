@@ -3,12 +3,12 @@
  * 小游戏平台的同步文件系统操作实现。
  */
 
-import { basename, dirname, SEPARATOR } from '../path/mod.ts';
 import { zipSync as compressSync, unzipSync as decompressSync, type AsyncZippable } from 'fflate/browser';
 import { type AppendOptions, type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
 import { Ok, RESULT_VOID, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
+import { basename, dirname, SEPARATOR } from '../path/mod.ts';
 import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
-import { createDirIsFileError, createFileNotExistsError, createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, validateReadablePath, type ZipIOResult } from './mina_fs_shared.ts';
+import { accessExistsSync, createDirIsFileError, createFileNotExistsError, createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, validateReadablePath, type ZipIOResult } from './mina_fs_shared.ts';
 
 /**
  * `mkdir` 的同步版本。
@@ -271,6 +271,13 @@ export function copySync(srcPath: string, destPath: string): VoidIOResult {
 export function existsSync(path: string, options?: ExistsOptions): IOResult<boolean> {
     const optionsRes = validateExistsOptions(options);
     if (optionsRes.isErr()) return optionsRes.asErr();
+
+    const { isDirectory = false, isFile = false } = options ?? {};
+
+    // 不需要区分类型时，使用 access 比 stat 更轻量（不构造 Stats 对象）
+    if (!isDirectory && !isFile) {
+        return accessExistsSync(path);
+    }
 
     const statRes = statSync(path);
     return getExistsResult(statRes, options);

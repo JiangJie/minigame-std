@@ -4,16 +4,16 @@
  */
 
 import { ABORT_ERROR, FetchError, type FetchResult, type FetchTask } from '@happy-ts/fetch-t';
-import { basename, dirname, SEPARATOR } from '../path/mod.ts';
 import { zipSync as compressSync, type AsyncZippable } from 'fflate/browser';
 import { type AppendOptions, type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
 import { Err, Ok, RESULT_VOID, tryResult, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import { createFailedFetchTask, miniGameFailureToError, validateSafeUrl } from '../internal/mod.ts';
+import { basename, dirname, SEPARATOR } from '../path/mod.ts';
 import { asyncResultify } from '../utils/mod.ts';
 import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
 import type { DownloadFileOptions, UploadFileOptions } from './mina_fs_define.ts';
-import { createDirIsFileError, createFileNotExistsError, createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, validateReadablePath, type ZipIOResult } from './mina_fs_shared.ts';
+import { accessExists, createDirIsFileError, createFileNotExistsError, createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, validateReadablePath, type ZipIOResult } from './mina_fs_shared.ts';
 
 /**
  * 递归创建文件夹，相当于`mkdir -p`。
@@ -342,6 +342,13 @@ export async function copy(srcPath: string, destPath: string): AsyncVoidIOResult
 export async function exists(path: string, options?: ExistsOptions): AsyncIOResult<boolean> {
     const optionsRes = validateExistsOptions(options);
     if (optionsRes.isErr()) return optionsRes.asErr();
+
+    const { isDirectory = false, isFile = false } = options ?? {};
+
+    // 不需要区分类型时，使用 access 比 stat 更轻量（不构造 Stats 对象）
+    if (!isDirectory && !isFile) {
+        return accessExists(path);
+    }
 
     const statRes = await stat(path);
     return getExistsResult(statRes, options);
