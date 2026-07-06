@@ -186,6 +186,20 @@ function createMockFileSystemManager(): WechatMinigame.FileSystemManager {
                 }
             }
         }),
+        access: vi.fn(({ path, success, fail }) => {
+            if (!mockFileSystem.has(path)) {
+                fail?.({ errMsg: 'access:fail no such file or directory', errCode: 1300002 });
+                return;
+            }
+            success?.({});
+        }),
+        accessSync: vi.fn((path: string) => {
+            if (!mockFileSystem.has(path)) {
+                const err = new Error('accessSync:fail no such file or directory') as Error & { errno: number; };
+                err.errno = 1300002;
+                throw err;
+            }
+        }),
         stat: vi.fn(({ path, recursive, success, fail }) => {
             if (!mockFileSystem.has(path)) {
                 fail?.({ errMsg: 'no such file or directory', errCode: 1300002 });
@@ -629,6 +643,12 @@ describe('mina fs sync', () => {
         const result = minaFsSync.existsSync('/sync-exists');
         expect(result.isOk()).toBe(true);
         expect(result.unwrap()).toBe(true);
+    });
+
+    test('existsSync returns false for non-existing file', () => {
+        const result = minaFsSync.existsSync('/sync-non-existent');
+        expect(result.isOk()).toBe(true);
+        expect(result.unwrap()).toBe(false);
     });
 
     test('copySync copies file', () => {

@@ -2,10 +2,12 @@
  * @file fs-mina-shared.test.ts
  * @description 测试 mina_fs_shared.ts 中的公共函数
  */
-import { Err } from 'happy-rusty';
-import { describe, expect, test, vi } from 'vitest';
+import { Err, Ok } from 'happy-rusty';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import {
+    accessExists,
+    accessExistsSync,
     fileErrorToMkdirResult,
     fileErrorToRemoveResult,
     fileErrorToResult,
@@ -15,11 +17,19 @@ import {
     validateReadablePath,
 } from '../src/std/fs/mina_fs_shared.ts';
 
-// Mock wx 对象（validateReadablePath 需要访问 wx.env.USER_DATA_PATH）
+// Mock access/accessSync 函数（getFileSystemManager 返回的对象中引用）
+const mockAccess = vi.fn();
+const mockAccessSync = vi.fn();
+
+// Mock wx 对象（validateReadablePath 需要访问 wx.env.USER_DATA_PATH；accessExists/accessExistsSync 需要 getFileSystemManager）
 vi.stubGlobal('wx', {
     env: {
         USER_DATA_PATH: 'wxfile://usr',
     },
+    getFileSystemManager: () => ({
+        access: mockAccess,
+        accessSync: mockAccessSync,
+    }),
 });
 
 describe('mina_fs_shared', () => {
@@ -301,6 +311,34 @@ describe('mina_fs_shared', () => {
     });
 
     describe('getExistsResult', () => {
+        test('returns true when stat succeeds and no options provided', () => {
+            // 覆盖 options=undefined 时的 default value 分支（isDirectory/isFile 均默认 false）
+            const stats: WechatMinigame.Stats = {
+                mode: 0,
+                size: 100,
+                lastAccessedTime: 0,
+                lastModifiedTime: 0,
+                isDirectory: () => false,
+                isFile: () => true,
+            };
+
+            const result = getExistsResult(Ok(stats));
+
+            expect(result.isOk()).toBe(true);
+            expect(result.unwrap()).toBe(true);
+        });
+
+        test('returns false when stat fails with NotFoundError', () => {
+            // 覆盖 orElse 中 isNotFoundError 为 true 的分支（返回 RESULT_FALSE）
+            const error = new Error('no such file or directory /test');
+            error.name = 'NotFoundError';
+
+            const result = getExistsResult(Err<WechatMinigame.Stats, Error>(error));
+
+            expect(result.isOk()).toBe(true);
+            expect(result.unwrap()).toBe(false);
+        });
+
         test('returns error when stat fails with non-NotFoundError', () => {
             // 覆盖 getExistsResult 中 orElse 返回错误的分支
             const error = new Error('permission denied');
@@ -311,6 +349,110 @@ describe('mina_fs_shared', () => {
 
             expect(result.isErr()).toBe(true);
             expect(result.unwrapErr().name).toBe('PermissionError');
+        });
+    });
+
+    describe('accessExists', () => {
+        beforeEach(() => {
+            mockAccess.mockReset();
+        });
+
+        test('returns error when path validation fails', async () => {
+            // 覆盖 pathRes.isErr() 为 true 的分支（路径以 './' 开头不合法）
+            const result = await accessExists('./invalid-path');
+
+            expect(result.isErr()).toBe(true);
+            expect(result.unwrapErr().message).toContain("must not start with './' or '../'");
+        });
+
+        test('returns true when access succeeds', async () => {
+            // 覆盖 access 成功的分支
+            mockAccess.mockImplementation(({ success }) => {
+                success?.({});
+            });
+
+            const result = await accessExists('/test');
+
+            expect(result.isOk()).toBe(true);
+            expect(result.unwrap()).toBe(true);
+        });
+
+        test('returns false when access fails with NotFoundError', async () => {
+            // 覆盖 accessResultToExists 中 isNotFoundError 为 true 的分支
+            mockAccess.mockImplementation(({ fail }) => {
+                fail?.({ errMsg: 'no such file or directory /test', errCode: 1300002 });
+            });
+
+            const result = await accessExists('/test');
+
+            expect(result.isOk()).toBe(true);
+            expect(result.unwrap()).toBe(false);
+        });
+
+        test('returns error when access fails with non-NotFoundError', async () => {
+            // 覆盖 accessResultToExists 中 isNotFoundError 为 false 的 Err 透传分支
+            mockAccess.mockImplementation(({ fail }) => {
+                fail?.({ errMsg: 'permission denied', errCode: 1300001 });
+            });
+
+            const result = await accessExists('/test');
+
+            expect(result.isErr()).toBe(true);
+            expect(result.unwrapErr().message).toContain('permission denied');
+        });
+    });
+
+    describe('accessExistsSync', () => {
+        beforeEach(() => {
+            mockAccessSync.mockReset();
+        });
+
+        test('returns error when path validation fails', () => {
+            // 覆盖 pathRes.isErr() 为 true 的分支（路径以 './' 开头不合法）
+            const result = accessExistsSync('./invalid-path');
+
+            expect(result.isErr()).toBe(true);
+            expect(result.unwrapErr().message).toContain("must not start with './' or '../'");
+        });
+
+        test('returns true when accessSync succeeds', () => {
+            // 覆盖 accessSync 成功的分支
+            mockAccessSync.mockImplementation(() => {
+                // 不抛异常即表示成功
+            });
+
+            const result = accessExistsSync('/test');
+
+            expect(result.isOk()).toBe(true);
+            expect(result.unwrap()).toBe(true);
+        });
+
+        test('returns false when accessSync fails with NotFoundError', () => {
+            // 覆盖 accessResultToExists 中 isNotFoundError 为 true 的分支
+            mockAccessSync.mockImplementation(() => {
+                const err = new Error('no such file or directory /test') as Error & { errno: number; };
+                err.errno = 1300002;
+                throw err;
+            });
+
+            const result = accessExistsSync('/test');
+
+            expect(result.isOk()).toBe(true);
+            expect(result.unwrap()).toBe(false);
+        });
+
+        test('returns error when accessSync fails with non-NotFoundError', () => {
+            // 覆盖 accessResultToExists 中 isNotFoundError 为 false 的 Err 透传分支
+            mockAccessSync.mockImplementation(() => {
+                const err = new Error('permission denied') as Error & { errno: number; };
+                err.errno = 1300001;
+                throw err;
+            });
+
+            const result = accessExistsSync('/test');
+
+            expect(result.isErr()).toBe(true);
+            expect(result.unwrapErr().message).toContain('permission denied');
         });
     });
 
