@@ -70,6 +70,22 @@ export function initTestRunner(): void {
 }
 
 /**
+ * 获取主屏画布（上屏 canvas）。
+ *
+ * 首次 `wx.createCanvas()` 返回的画布会显示在屏幕上，测试函数可向其绘制内容以实现可视化效果。
+ */
+export function getMainCanvas(): HTMLCanvasElement {
+    return canvas;
+}
+
+/**
+ * 获取主屏画布的 2D 渲染上下文。
+ */
+export function getMainCtx(): CanvasRenderingContext2D {
+    return ctx;
+}
+
+/**
  * 获取按钮的位置
  */
 function getButtonRect(index: number): { x: number; y: number; width: number; height: number; } {

@@ -1,6 +1,8 @@
 import { assert } from '@std/assert';
 import { platform, video } from 'minigame-std';
 
+import { getMainCanvas, getMainCtx } from '../test-runner.ts';
+
 const videoUrl = 'https://www.w3schools.com/html/mov_bbb.mp4';
 const videoPlaybackTimeout = 15000;
 
@@ -31,7 +33,7 @@ async function testVideoFrameSource(): Promise<void> {
     // DevTools 不支持 wx.createVideoDecoder，跳过测试
     if (!platform.isMiniGameDevtools()) {
         const sourceRes = video.createVideoFrameSource({
-            source: videoUrl,
+            source: 'videos/mov_bbb.mp4',
         });
 
         assert(sourceRes.isOk(), `createVideoFrameSource 应该成功: ${sourceRes.isErr() ? sourceRes.unwrapErr().message : ''}`);
@@ -51,6 +53,126 @@ async function testVideoFrameSource(): Promise<void> {
         source.destroy();
         console.log('✅ VideoFrameSource 测试完成', frame.width, 'x', frame.height);
     }
+}
+
+/**
+ * 解码视频帧并渲染到主屏画布播放。
+ *
+ * 流程：VideoFrameSource 解码出 RGBA 像素帧 → 写入离屏画布 → drawImage 居中等比缩放绘制到主屏。
+ * 通过 requestAnimationFrame 驱动循环，直到播放结束或超时。
+ */
+async function testVideoFrameRender(): Promise<void> {
+    console.log('测试解码视频帧并渲染到画布播放...');
+
+    if (!video.isVideoFrameSourceSupported()) {
+        console.log('当前环境不支持 wx.createVideoDecoder，跳过渲染测试');
+        return;
+    }
+
+    // DevTools 不支持 wx.createVideoDecoder，跳过测试
+    if (platform.isMiniGameDevtools()) {
+        console.log('DevTools 不支持 wx.createVideoDecoder，跳过渲染测试');
+        return;
+    }
+
+    const sourceRes = video.createVideoFrameSource({
+        source: 'videos/mov_bbb.mp4',
+        muted: true,
+        loop: false,
+    });
+    assert(sourceRes.isOk(), `createVideoFrameSource 应该成功: ${ sourceRes.isErr() ? sourceRes.unwrapErr().message : '' }`);
+    const source = sourceRes.unwrap();
+
+    const mainCanvas = getMainCanvas();
+    const mainCtx = getMainCtx();
+
+    // 离屏画布：接收 putImageData，再 drawImage 到主屏以支持缩放
+    const offCanvas = wx.createCanvas() as unknown as HTMLCanvasElement;
+    const offCtx = offCanvas.getContext('2d') as CanvasRenderingContext2D;
+
+    let imageData: ImageData | null = null;
+    let rafId = 0;
+    let stopped = false;
+
+    const cleanup = (): void => {
+        if (stopped) return;
+        stopped = true;
+        if (rafId !== 0) {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+        }
+        source.destroy();
+    };
+
+    const playRes = await source.play();
+    assert(playRes.isOk(), `VideoFrameSource.play 应该成功: ${ playRes.isErr() ? playRes.unwrapErr().message : '' }`);
+    console.log('开始渲染视频帧...');
+
+    const renderTimeout = 15000;
+
+    await new Promise<void>((resolve) => {
+        const timeoutTimer = setTimeout(() => {
+            console.log(`渲染播放达到超时 ${ renderTimeout }ms，停止`);
+            cleanup();
+            resolve();
+        }, renderTimeout);
+
+        source.onEnded(() => {
+            console.log('视频播放结束');
+            clearTimeout(timeoutTimer);
+            cleanup();
+            resolve();
+        });
+
+        source.onError((err) => {
+            console.error('视频帧源错误:', err.message);
+            clearTimeout(timeoutTimer);
+            cleanup();
+            resolve();
+        });
+
+        const renderFrame = (): void => {
+            if (stopped) return;
+
+            const frameRes = source.getFrame();
+            assert(frameRes.isOk(), `getFrame 应该成功: ${ frameRes.isErr() ? frameRes.unwrapErr().message : '' }`);
+
+            const frame = frameRes.unwrap();
+            if (frame != null && frame.kind === 'pixels') {
+                // 首帧初始化离屏画布尺寸和 ImageData
+                if (offCanvas.width !== frame.width || offCanvas.height !== frame.height) {
+                    offCanvas.width = frame.width;
+                    offCanvas.height = frame.height;
+                    imageData = offCtx.createImageData(frame.width, frame.height);
+                }
+
+                if (imageData != null) {
+                    // 写入 RGBA 像素数据到离屏画布
+                    imageData.data.set(frame.data);
+                    offCtx.putImageData(imageData, 0, 0);
+
+                    // 居中等比缩放绘制到主屏
+                    mainCtx.fillStyle = '#000000';
+                    mainCtx.fillRect(0, 0, mainCanvas.width, mainCanvas.height);
+
+                    const scale = Math.min(mainCanvas.width / frame.width, mainCanvas.height / frame.height);
+                    const drawWidth = frame.width * scale;
+                    const drawHeight = frame.height * scale;
+                    const drawX = (mainCanvas.width - drawWidth) / 2;
+                    const drawY = (mainCanvas.height - drawHeight) / 2;
+                    mainCtx.drawImage(offCanvas, drawX, drawY, drawWidth, drawHeight);
+                }
+
+                frame.release();
+            }
+
+            rafId = requestAnimationFrame(renderFrame);
+        };
+
+        rafId = requestAnimationFrame(renderFrame);
+    });
+
+    console.log('✅ 视频帧渲染播放测试完成');
 }
 
 export async function testVideo(): Promise<void> {
@@ -172,6 +294,7 @@ export async function testVideo(): Promise<void> {
     console.log('✅ 视频销毁成功');
 
     await testVideoFrameSource();
+    await testVideoFrameRender();
 
     console.log('🎉 Video测试完成');
 }
