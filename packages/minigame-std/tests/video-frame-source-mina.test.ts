@@ -158,7 +158,8 @@ test('VideoFrameSource seek stop pause and destroy call decoder methods', async 
 
     const seekRes = await source.seek(2);
     expect(seekRes.isOk()).toBe(true);
-    expect(mocks.decoder.seek).toHaveBeenCalledWith(2);
+    // 公开 API 单位为秒，底层 wx.VideoDecoder.seek 单位为 ms，需 * 1000
+    expect(mocks.decoder.seek).toHaveBeenCalledWith(2000);
     expect(source.currentTime).toBe(2);
 
     const pauseRes = await source.pause();

@@ -94,7 +94,8 @@ export function createVideoFrameSource(options: CreateVideoFrameSourceOptions): 
             });
         },
         async seek(time: number): AsyncVoidIOResult {
-            const result = await tryAsyncResult(() => decoder.seek(time));
+            // wx.VideoDecoder.seek 的 position 单位为 ms，公开 API 单位为秒，需转换
+            const result = await tryAsyncResult(() => decoder.seek(time * 1000));
             return result.inspect(() => {
                 currentTime = time;
             });

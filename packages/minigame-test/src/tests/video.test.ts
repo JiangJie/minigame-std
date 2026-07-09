@@ -50,6 +50,20 @@ async function testVideoFrameSource(): Promise<void> {
         assert(frame.data.byteLength > 0, '视频帧 data 应该非空');
         frame.release();
 
+        // 测试 seek（公开 API 单位为秒，底层转换为 ms）
+        const seekTarget = 5;
+        const seekRes = await source.seek(seekTarget);
+        assert(seekRes.isOk(), `VideoFrameSource.seek 应该成功: ${ seekRes.isErr() ? seekRes.unwrapErr().message : '' }`);
+
+        const seekFrame = await waitForVideoFrame(source, 3000);
+        if (seekFrame != null) {
+            assert(Math.abs(seekFrame.timestamp - seekTarget) < 1.5, `seek 后帧 timestamp 应接近 ${ seekTarget }s，实际 ${ seekFrame.timestamp }s`);
+            console.log('✅ seek 验证通过，timestamp:', seekFrame.timestamp, 's');
+            seekFrame.release();
+        } else {
+            console.log('seek 后未在超时时间内取到帧，跳过 timestamp 验证');
+        }
+
         source.destroy();
         console.log('✅ VideoFrameSource 测试完成', frame.width, 'x', frame.height);
     }
