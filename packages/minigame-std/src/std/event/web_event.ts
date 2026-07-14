@@ -8,6 +8,18 @@
 // 模块加载时立即计算并缓存，而非 Lazy 延迟到首次调用：
 // 若延迟计算，期间 SPA 路由可能已改变 location.search，缓存的就不是真正的冷启动参数。
 const launchOptions: WechatMinigame.LaunchOptionsGame = /*#__PURE__*/ (() => {
+    // Web Worker / SSR 等非 DOM 环境下无法获取页面级启动参数
+    if (typeof document === 'undefined') {
+        return {
+            query: {},
+            scene: 0,
+            referrerInfo: {
+                appId: '',
+                extraData: {},
+            },
+        } as WechatMinigame.LaunchOptionsGame;
+    }
+
     const web = getWebShowOptions();
     return {
         query: web.query,
@@ -73,6 +85,14 @@ export function addShowListener(
     listener: (ev: WechatMinigame.OnShowListenerResult) => void,
     options?: { fireImmediately?: boolean; },
 ): () => void {
+    // Web Worker / SSR 等非 DOM 环境无前台/后台概念，fireImmediately 仍可回调一次
+    if (typeof document === 'undefined') {
+        if (options?.fireImmediately) {
+            listener(getWebShowOptions());
+        }
+        return (): void => { /* noop */ };
+    }
+
     if (options?.fireImmediately) {
         listener(getWebShowOptions());
     }
@@ -94,6 +114,11 @@ export function addShowListener(
  * @returns 返回一个函数，调用该函数可以移除监听器。
  */
 export function addHideListener(listener: () => void): () => void {
+    // Web Worker / SSR 等非 DOM 环境无前台/后台概念
+    if (typeof document === 'undefined') {
+        return (): void => { /* noop */ };
+    }
+
     const webListener = () => {
         if (document.visibilityState === 'hidden') listener();
     };
@@ -130,16 +155,20 @@ export function getEnterOptionsSync(): WechatMinigame.EnterOptionsGame {
 // #region Internal Functions
 
 function getWebShowOptions(): WechatMinigame.OnShowListenerResult {
+    const hasDocument = typeof document !== 'undefined';
     const query: Record<string, string> = {};
 
-    new URLSearchParams(location.search).forEach((value, key) => {
-        query[key] = value;
-    });
+    // Web Worker / SSR 等非 DOM 环境下 location 指向 worker 脚本，不是页面 URL
+    if (hasDocument) {
+        new URLSearchParams(location.search).forEach((value, key) => {
+            query[key] = value;
+        });
+    }
 
     return {
         query,
         referrerInfo: {
-            appId: document.referrer,
+            appId: hasDocument ? document.referrer : '',
             extraData: {},
         },
         scene: 0,
