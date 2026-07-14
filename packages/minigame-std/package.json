@@ -33,7 +33,7 @@
     "docs": "pnpm exec typedoc",
     "prepublishOnly": "pnpm run build",
     "test": "pnpm exec vitest run --coverage",
-    "test:node": "pnpm exec vitest run --config vitest.node.config.ts",
+    "test:node": "pnpm exec vitest run --project node",
     "test:watch": "pnpm exec vitest watch",
     "test:ui": "pnpm exec vitest --ui"
   },

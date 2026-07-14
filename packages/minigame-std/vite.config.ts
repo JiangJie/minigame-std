@@ -44,12 +44,6 @@ export default defineConfig(({ command }) => ({
         },
     },
     test: {
-        browser: {
-            enabled: true,
-            provider: playwright(),
-            instances: [{ browser: 'chromium' }],
-            headless: true,
-        },
         // Coverage configuration
         coverage: {
             provider: 'v8',
@@ -64,8 +58,6 @@ export default defineConfig(({ command }) => ({
                 'src/std/fs/mina_fs_sync.ts',
             ],
         },
-        // Test configuration
-        include: ['**/*.test.ts'],
         globals: true,
         testTimeout: 30000,
         hookTimeout: 30000,
@@ -74,5 +66,29 @@ export default defineConfig(({ command }) => ({
         },
         // Retry failed tests in CI
         retry: process.env['CI'] ? 2 : 0,
+        projects: [
+            {
+                define: { __MINIGAME_STD_MINA__: false },
+                test: {
+                    name: 'browser',
+                    browser: {
+                        enabled: true,
+                        provider: playwright(),
+                        instances: [{ browser: 'chromium' }],
+                        headless: true,
+                    },
+                    include: ['**/*.test.ts'],
+                    exclude: ['tests/event-non-dom.test.ts'],
+                },
+            },
+            {
+                define: { __MINIGAME_STD_MINA__: false },
+                test: {
+                    name: 'node',
+                    environment: 'node',
+                    include: ['tests/event-non-dom.test.ts'],
+                },
+            },
+        ],
     },
 }));
