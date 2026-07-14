@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import { addErrorListener, addHideListener, addResizeListener, addShowListener, addUnhandledrejectionListener, getEnterOptionsSync, getLaunchOptionsSync } from '../src/mod.ts';
 
 test('addErrorListener and remove', () => {
@@ -329,4 +329,38 @@ test('addShowListener with fireImmediately=true fires immediately and on visibil
     if (originalVisibilityState) {
         Object.defineProperty(document, 'visibilityState', originalVisibilityState);
     }
+});
+
+describe('non-DOM environment guards', () => {
+    // document and location are non-configurable in browser (configurable=false),
+    // cannot be stubbed via vi.stubGlobal. Only URLSearchParams is configurable.
+    // The document/location guards (in IIFE, addShowListener, addHideListener) cannot
+    // be tested in browser environment. The URLSearchParams guard below exercises the
+    // "skip query parsing" path with hasDocument=true but URLSearchParams missing.
+
+    test('getEnterOptionsSync returns empty query when URLSearchParams is undefined', () => {
+        vi.stubGlobal('URLSearchParams', undefined);
+
+        const options = getEnterOptionsSync();
+        expect(options.query).toEqual({});
+        // appId still comes from document.referrer (document exists in browser)
+        expect(options.referrerInfo.appId).toBe(document.referrer);
+
+        vi.unstubAllGlobals();
+    });
+
+    test('addShowListener fireImmediately returns degraded options when URLSearchParams is undefined', () => {
+        vi.stubGlobal('URLSearchParams', undefined);
+
+        let lastOptions: WechatMinigame.OnShowListenerResult | undefined;
+        const removeListener = addShowListener((options) => {
+            lastOptions = options;
+        }, { fireImmediately: true });
+
+        // fireImmediately callback receives empty query from degraded getWebShowOptions
+        expect(lastOptions?.query).toEqual({});
+
+        removeListener();
+        vi.unstubAllGlobals();
+    });
 });
