@@ -158,8 +158,8 @@ function getWebShowOptions(): WechatMinigame.OnShowListenerResult {
     const hasDocument = typeof document !== 'undefined';
     const query: Record<string, string> = {};
 
-    // Web Worker / SSR 等非 DOM 环境下 location 指向 worker 脚本，不是页面 URL
-    if (hasDocument) {
+    // Web Worker / SSR 等非 DOM 环境，或小游戏无 tree-shaking 时 URLSearchParams 可能不可用
+    if (hasDocument && typeof URLSearchParams !== 'undefined') {
         new URLSearchParams(location.search).forEach((value, key) => {
             query[key] = value;
         });
