@@ -5,6 +5,12 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.6.2] - 2026-07-14
+
+### 修复
+- `video.VideoFrameSource.seek`：修复单位转换 bug，秒参数未转换为毫秒传给 `wx.VideoDecoder.seek`，导致跳转位置偏差 1000 倍
+- `event`：修复 Web Worker/SSR 等非 DOM 环境中加载 minigame-std 因 `launchOptions` IIFE 访问 `document.referrer` 而崩溃的问题，对 `document`/`location`/`URLSearchParams` 加 `typeof` guard 优雅降级
+
 ## [2.6.1] - 2026-07-06
 
 ### 修复
@@ -549,6 +555,7 @@
   - `socket` - WebSocket
   - `storage` - 本地存储
 
+[2.6.2]: https://github.com/JiangJie/minigame-std/compare/v2.6.1...v2.6.2
 [2.6.1]: https://github.com/JiangJie/minigame-std/compare/v2.6.0...v2.6.1
 [2.6.0]: https://github.com/JiangJie/minigame-std/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/JiangJie/minigame-std/compare/v2.4.0...v2.5.0
