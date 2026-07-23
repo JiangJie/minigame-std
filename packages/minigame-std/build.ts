@@ -3,6 +3,22 @@ import { build } from 'vite';
 
 import { PUBLIC_ENTRIES, type EntryConfig } from './build_entries.ts';
 
+//#region Terminal colors
+
+// Only this script's own status lines are colored; vite/rolldown has its own
+// TTY-aware logger for warnings/errors. Plain output when piped or NO_COLOR set.
+const useColor = process.stdout.isTTY === true && process.env['NO_COLOR'] === undefined;
+
+function colorize(code: number, s: string): string {
+    return useColor ? `\u001b[${code}m${s}\u001b[0m` : s;
+}
+
+const bold = (s: string): string => colorize(1, s);
+const dim = (s: string): string => colorize(2, s);
+const green = (s: string): string => colorize(32, s);
+
+//#endregion
+
 //#region Entry definitions
 
 // Internal shared entry, NOT declared in package.json exports.
@@ -215,7 +231,7 @@ for (const { name, file } of entries) {
             },
         },
     });
-    console.log(`✓ built ${name}`);
+    console.log(dim(`✓ built ${name}`));
 }
 
-console.log(`\n✓ All ${entries.length} entries built successfully`);
+console.log(green(bold(`\n✓ All ${entries.length} entries built successfully`)));
