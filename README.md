@@ -298,6 +298,23 @@ jsr add @happy-js/minigame-std
 
 设置为 `false` 则裁减掉小游戏平台代码，适合在浏览器上开发阶段或者发布到 web 平台时的构建。
 
+### 子路径导入
+
+除了根入口，每个功能模块也提供独立的子路径入口，两种方式导入的 API 完全一致：
+
+```ts
+// 根入口导入
+import { fs, encodeBase64 } from 'minigame-std';
+
+// 等价的子路径导入
+import * as fs from 'minigame-std/fs';
+import { encodeBase64 } from 'minigame-std/codec';
+```
+
+可用子路径：`audio`、`clipboard`、`codec`、`cryptos`、`event`、`fetch`、`fs`、`image`、`lbs`、`logger`、`network`、`path`、`performance`、`platform`、`socket`、`storage`、`utils`、`video`。JSR 用户对应 `@happy-js/minigame-std/<subpath>`，如 `@happy-js/minigame-std/fs`。
+
+子路径导入同样依赖 `__MINIGAME_STD_MINA__` 裁剪平台代码；对于 tree-shaking 支持较弱的构建工具，子路径导入可以更明确地控制打入包内的模块。
+
 构建流程可参考 [packages/minigame-test](https://github.com/JiangJie/minigame-std/tree/main/packages/minigame-test)。
 
 ## 测试
