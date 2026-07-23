@@ -4,9 +4,6 @@ export default defineConfig({
     define: {
         __MINIGAME_STD_MINA__: 'true',
     },
-    resolve: {
-        conditions: ['source'],
-    },
     build: {
         target: 'es2019',
         lib: {
