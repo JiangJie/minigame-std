@@ -38,6 +38,4 @@ jobs:
 
       - name: Publish to npm
         working-directory: packages/minigame-std
-        run: |
-          npm pkg delete exports['.'].source
-          npm publish
+        run: npm publish

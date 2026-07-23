@@ -11,10 +11,117 @@
   "exports": {
     ".": {
       "types": "./dist/types/main.d.ts",
-      "source": "./src/mod.ts",
       "import": "./dist/main.mjs",
       "require": "./dist/main.cjs",
       "default": "./dist/main.mjs"
+    },
+    "./audio": {
+      "types": "./dist/types/audio.d.ts",
+      "import": "./dist/audio.mjs",
+      "require": "./dist/audio.cjs",
+      "default": "./dist/audio.mjs"
+    },
+    "./clipboard": {
+      "types": "./dist/types/clipboard.d.ts",
+      "import": "./dist/clipboard.mjs",
+      "require": "./dist/clipboard.cjs",
+      "default": "./dist/clipboard.mjs"
+    },
+    "./codec": {
+      "types": "./dist/types/codec.d.ts",
+      "import": "./dist/codec.mjs",
+      "require": "./dist/codec.cjs",
+      "default": "./dist/codec.mjs"
+    },
+    "./cryptos": {
+      "types": "./dist/types/cryptos.d.ts",
+      "import": "./dist/cryptos.mjs",
+      "require": "./dist/cryptos.cjs",
+      "default": "./dist/cryptos.mjs"
+    },
+    "./event": {
+      "types": "./dist/types/event.d.ts",
+      "import": "./dist/event.mjs",
+      "require": "./dist/event.cjs",
+      "default": "./dist/event.mjs"
+    },
+    "./fetch": {
+      "types": "./dist/types/fetch.d.ts",
+      "import": "./dist/fetch.mjs",
+      "require": "./dist/fetch.cjs",
+      "default": "./dist/fetch.mjs"
+    },
+    "./fs": {
+      "types": "./dist/types/fs.d.ts",
+      "import": "./dist/fs.mjs",
+      "require": "./dist/fs.cjs",
+      "default": "./dist/fs.mjs"
+    },
+    "./image": {
+      "types": "./dist/types/image.d.ts",
+      "import": "./dist/image.mjs",
+      "require": "./dist/image.cjs",
+      "default": "./dist/image.mjs"
+    },
+    "./lbs": {
+      "types": "./dist/types/lbs.d.ts",
+      "import": "./dist/lbs.mjs",
+      "require": "./dist/lbs.cjs",
+      "default": "./dist/lbs.mjs"
+    },
+    "./logger": {
+      "types": "./dist/types/logger.d.ts",
+      "import": "./dist/logger.mjs",
+      "require": "./dist/logger.cjs",
+      "default": "./dist/logger.mjs"
+    },
+    "./network": {
+      "types": "./dist/types/network.d.ts",
+      "import": "./dist/network.mjs",
+      "require": "./dist/network.cjs",
+      "default": "./dist/network.mjs"
+    },
+    "./path": {
+      "types": "./dist/types/path.d.ts",
+      "import": "./dist/path.mjs",
+      "require": "./dist/path.cjs",
+      "default": "./dist/path.mjs"
+    },
+    "./performance": {
+      "types": "./dist/types/performance.d.ts",
+      "import": "./dist/performance.mjs",
+      "require": "./dist/performance.cjs",
+      "default": "./dist/performance.mjs"
+    },
+    "./platform": {
+      "types": "./dist/types/platform.d.ts",
+      "import": "./dist/platform.mjs",
+      "require": "./dist/platform.cjs",
+      "default": "./dist/platform.mjs"
+    },
+    "./socket": {
+      "types": "./dist/types/socket.d.ts",
+      "import": "./dist/socket.mjs",
+      "require": "./dist/socket.cjs",
+      "default": "./dist/socket.mjs"
+    },
+    "./storage": {
+      "types": "./dist/types/storage.d.ts",
+      "import": "./dist/storage.mjs",
+      "require": "./dist/storage.cjs",
+      "default": "./dist/storage.mjs"
+    },
+    "./utils": {
+      "types": "./dist/types/utils.d.ts",
+      "import": "./dist/utils.mjs",
+      "require": "./dist/utils.cjs",
+      "default": "./dist/utils.mjs"
+    },
+    "./video": {
+      "types": "./dist/types/video.d.ts",
+      "import": "./dist/video.mjs",
+      "require": "./dist/video.cjs",
+      "default": "./dist/video.mjs"
     },
     "./package.json": "./package.json"
   },
