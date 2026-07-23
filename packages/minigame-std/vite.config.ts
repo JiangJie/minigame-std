@@ -1,47 +1,14 @@
 import { playwright } from '@vitest/browser-playwright';
 import { defineConfig } from 'vitest/config';
 
+// Note: Build configuration lives in `build.ts` (multi-entry bundles with shared internal modules).
+// This config is used only for testing.
 export default defineConfig(({ command }) => ({
     define: {
         // Set to `false` during test to use web code paths by default
         // Mina-specific tests should mock wx APIs directly
         // Let `__MINIGAME_STD_MINA__` be `unknown` during build time
         ...(command === 'build' ? {} : { __MINIGAME_STD_MINA__: false }),
-    },
-    build: {
-        target: 'esnext',
-        minify: false,
-        sourcemap: true,
-        outDir: 'dist',
-        lib: {
-            entry: 'src/mod.ts',
-            fileName: format => `main.${ format === 'esm' ? 'mjs' : 'cjs' }`,
-        },
-        rollupOptions: {
-            output: [
-                {
-                    format: 'cjs',
-                    topLevelVar: false,
-                },
-                {
-                    format: 'esm',
-                    topLevelVar: false,
-                },
-            ],
-            treeshake: {
-                moduleSideEffects: false,
-                propertyReadSideEffects: false,
-            },
-            external: [
-                'happy-codec',
-                'happy-rusty',
-                'happy-opfs',
-                '@happy-ts/fetch-t',
-                'tiny-future',
-                /^fflate\//,
-                'rsa-oaep-encryption',
-            ],
-        },
     },
     test: {
         // Coverage configuration

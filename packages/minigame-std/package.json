@@ -7,10 +7,10 @@
   "type": "module",
   "main": "dist/main.cjs",
   "module": "dist/main.mjs",
-  "types": "dist/types.d.ts",
+  "types": "dist/types/main.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/types.d.ts",
+      "types": "./dist/types/main.d.ts",
       "source": "./src/mod.ts",
       "import": "./dist/main.mjs",
       "require": "./dist/main.cjs",
@@ -29,7 +29,7 @@
     "check": "pnpm exec tsc --noEmit",
     "lint": "pnpm exec eslint .",
     "prebuild": "pnpm run check && pnpm run lint",
-    "build": "pnpm exec vite build && pnpm exec rollup --config rollup.config.ts",
+    "build": "node build.ts && pnpm exec rollup --config rollup.config.ts",
     "docs": "pnpm exec typedoc",
     "prepublishOnly": "pnpm run build",
     "test": "pnpm exec vitest run --coverage",
