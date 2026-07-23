@@ -5,6 +5,14 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.7.0] - 2026-07-23
+
+### 新增
+- 新增子路径导出：每个功能模块可独立导入（如 `minigame-std/fs`、`minigame-std/codec`），与根入口导入的 API 完全一致；共 18 个子路径，npm 与 JSR 均可使用；对 tree-shaking 支持较弱的构建工具，子路径导入可更明确地控制打入包内的模块
+
+### 变更
+- 包构建改为多入口架构：每个公共入口独立打包（`dist/<name>.mjs` / `dist/<name>.cjs` + `dist/types/<name>.d.ts`），共享内部助手抽取为 `_internal` chunk，跨入口无重复代码
+
 ## [2.6.2] - 2026-07-14
 
 ### 修复
@@ -555,6 +563,7 @@
   - `socket` - WebSocket
   - `storage` - 本地存储
 
+[2.7.0]: https://github.com/JiangJie/minigame-std/compare/v2.6.2...v2.7.0
 [2.6.2]: https://github.com/JiangJie/minigame-std/compare/v2.6.1...v2.6.2
 [2.6.1]: https://github.com/JiangJie/minigame-std/compare/v2.6.0...v2.6.1
 [2.6.0]: https://github.com/JiangJie/minigame-std/compare/v2.5.0...v2.6.0
