@@ -71,11 +71,14 @@ pnpm --filter minigame-test <command>
 # Examples:
 pnpm --filter minigame-std test
 pnpm --filter minigame-std build
+pnpm --filter minigame-std verify:package   # release gate: build + tarball consumer verification
 ```
 
 ### Testing Notes
 
-- Tests run in **Vitest** with **Playwright** browser provider (Chromium)
+- Tests run in **Vitest** with two projects (configured via `test.projects` in `packages/minigame-std/vite.config.ts`):
+  - `browser`: **Playwright** provider (Chromium), runs all tests except `tests/event-non-dom.test.ts`
+  - `node`: Node environment, runs only `tests/event-non-dom.test.ts` (non-DOM code paths that cannot be stubbed in a real browser); run it alone via `pnpm --filter minigame-std test:node`
 - First-time setup requires: `pnpm run playwright:install`
 - Web platform configuration (`__MINIGAME_STD_MINA__: false`)
 - Test files are located in `packages/minigame-std/tests/` directory
@@ -114,7 +117,7 @@ packages/
 │   │   │   └── env.ts          # Platform detection macro (__MINIGAME_STD_MINA__)
 │   │   ├── mod.ts              # Main entry point (exports all modules)
 │   │   └── std/                # Standard library modules
-│   │       ├── assert/         # Internal assertion utilities (not public API)
+│   │       ├── internal/       # Shared internal helpers - bundled as the `_internal` chunk, not public API
 │   │       ├── audio/          # WebAudio API abstraction
 │   │       ├── clipboard/      # Clipboard operations
 │   │       ├── codec/          # Encoding/decoding (UTF-8, Base64, Hex, ByteString) - delegates to `happy-codec` with mini-game UTF-8 override
@@ -124,6 +127,7 @@ packages/
 │   │       │   ├── random/     # Random number generation
 │   │       │   ├── rsa/        # RSA encryption
 │   │       │   └── sha/        # SHA algorithms
+│   │       ├── defines.ts      # Shared type definitions (re-exported by the root entry)
 │   │       ├── event/          # Global error/unhandledrejection handlers
 │   │       ├── fetch/          # HTTP requests (fetch API)
 │   │       ├── fs/             # File system operations (with zip support)
@@ -138,8 +142,13 @@ packages/
 │   │       ├── storage/        # Storage (localStorage equivalent)
 │   │       ├── utils/          # Common utilities
 │   │       └── video/          # Video playback
+│   ├── build_entries.ts        # Public entry list (single source of truth for subpath exports)
+│   ├── build.ts                # Multi-entry bundle script (one vite.build call per entry)
+│   ├── rollup.config.ts        # Declaration generation (one .d.ts per entry)
+│   ├── verify_package.ts       # Release gate: verifies the packed tarball in a temp consumer
+│   ├── vite.config.ts          # Test-only configuration (build config lives in build.ts)
 │   ├── tests/                  # Web platform tests (Vitest + Playwright)
-│   └── dist/                   # Build output
+│   └── dist/                   # Build output: <name>.mjs/.cjs per entry + _internal chunk + types/<name>.d.ts
 └── minigame-test/              # Mini-game platform tests
     └── src/                    # Test code for WeChat DevTools
 ```
@@ -219,27 +228,30 @@ export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> {
 
 ### Build System
 
-- **Bundler**: Vite for bundling, Rollup for TypeScript declarations
+- **Bundler**: Vite (rolldown-vite) for bundling, Rollup + `rollup-plugin-dts` for TypeScript declarations
 - **Configuration**:
-  - `packages/minigame-std/vite.config.ts` - Vite bundling configuration
-  - `packages/minigame-std/rollup.config.ts` - TypeScript declaration generation
-- **Output**:
-  - `packages/minigame-std/dist/main.cjs` - CommonJS bundle
-  - `packages/minigame-std/dist/main.mjs` - ES module bundle
-  - `packages/minigame-std/dist/types.d.ts` - TypeScript declarations
-- **Tree-shaking**: Configured in `vite.config.ts` with `treeshake.moduleSideEffects: false` and `treeshake.propertyReadSideEffects: false` for aggressive dead-code elimination
-- **Top-level declarations**: Rollup output uses `topLevelVar: false` in both CJS and ESM to preserve `const` declarations — this is what makes `/*#__PURE__*/` annotations on module-level calls effective for downstream bundlers
+  - `packages/minigame-std/build_entries.ts` - Single source of truth for public entries (`PUBLIC_ENTRIES`)
+  - `packages/minigame-std/build.ts` - Multi-entry bundling (one `vite.build` call per entry)
+  - `packages/minigame-std/rollup.config.ts` - Declaration generation (one `.d.ts` per entry)
+  - `packages/minigame-std/vite.config.ts` - **Test-only** configuration (build config lives in `build.ts`)
+- **Multi-entry layout**: Each public entry in `build_entries.ts` is bundled independently to `dist/<name>.mjs` + `dist/<name>.cjs`, with declarations at `dist/types/<name>.d.ts`. Cross-entry imports are externalized and rewritten via `output.paths` (e.g. `fs.mjs` imports `./path.mjs`), so no code is duplicated between entries.
+- **Shared internal chunk**: `src/std/internal/` helpers are bundled once as `dist/_internal.mjs/.cjs`; all entries reference it via relative import. It is NOT declared in `package.json` exports (relative paths bypass exports resolution).
+- **`_env` must stay inlined**: `src/macros/env.ts` (the `IS_MINA` macro) is deliberately NOT externalized — externalizing it prevents rolldown from constant-folding `IS_MINA` inside each entry, which breaks DCE and retains the entire happy-rusty module as dead code.
+- **CJS export-star fixup**: `build.ts` ships a `renderChunk` plugin rewriting CJS `require("./std/xxx/mod.ts")` source paths to entry paths (workaround for rolldown#10402 — ESM honors `output.paths`, CJS does not).
+- **Tree-shaking**: `treeshake.moduleSideEffects: false` and `treeshake.propertyReadSideEffects: false` in `build.ts` for aggressive dead-code elimination
+- **Top-level declarations**: Bundles use `topLevelVar: false` in both CJS and ESM to preserve `const` declarations — this is what makes `/*#__PURE__*/` annotations on module-level calls effective for downstream bundlers
 - **Side effects**: `"sideEffects": false` in package.json for optimal tree-shaking
 
 ### Build Process
 
-The build runs these steps in order:
-1. Type checking (`pnpm run check`)
-2. Linting (`pnpm run lint`)
-3. Vite bundling with platform-specific code elimination
-4. Rollup-based TypeScript declaration generation
+`pnpm --filter minigame-std build` runs these steps in order:
+1. Type checking and linting (`prebuild`: `pnpm run check && pnpm run lint`)
+2. Multi-entry Vite bundling (`node build.ts`)
+3. Rollup-based TypeScript declaration generation (`rollup --config rollup.config.ts`)
 
-The build uses `__MINIGAME_STD_MINA__` macro for compile-time platform detection:
+`pnpm --filter minigame-std verify:package` is the release gate (also wired to `prepublishOnly`): it rebuilds, packs a tarball, installs it into a temp consumer fixture, and validates every subpath export across TS/ESM/CJS resolution matrices plus publint/attw checks. Fixture dependency versions are read from workspace `package.json` files at runtime (never hardcoded).
+
+The published bundles keep `__MINIGAME_STD_MINA__` as an **unresolved global** — downstream builds must define it as a **boolean literal** so `IS_MINA` constant-folds and the other platform's code is eliminated:
 - Set to `true` for mini-game builds (removes web platform code)
 - Set to `false` for web builds (removes mini-game platform code)
 
@@ -291,6 +303,7 @@ The project provides several utilities for wrapping platform-specific APIs:
 ### Exports
 - Module exports use namespace pattern for some modules: `export * as fs from './std/fs/mod.ts'`
 - This avoids naming conflicts (e.g., `cryptos` instead of `crypto` to avoid global conflict)
+- Every public module is also importable as a subpath (e.g. `minigame-std/fs`, `minigame-std/codec`). Adding a new public module requires syncing THREE places: `build_entries.ts` (`PUBLIC_ENTRIES`), `package.json` (`exports`), and `jsr.json` (`exports`).
 
 ### Tree-shaking: PURE Annotations
 
@@ -384,8 +397,11 @@ pnpm 11 introduced built-in subcommands (e.g. `docs`) that shadow workspace scri
 - `package.json` - Root monorepo scripts
 - `packages/minigame-std/package.json` - Library package config (npm)
 - `packages/minigame-std/jsr.json` - Library package config (JSR); version must match `package.json`
-- `packages/minigame-std/vite.config.ts` - Test configuration, import mappings, and Vite build settings
-- `packages/minigame-std/rollup.config.ts` - Build configuration
+- `packages/minigame-std/build_entries.ts` - Public entry list (single source of truth for subpath exports)
+- `packages/minigame-std/build.ts` - Multi-entry bundle script
+- `packages/minigame-std/rollup.config.ts` - Declaration generation (one `.d.ts` per entry)
+- `packages/minigame-std/verify_package.ts` - Release gate: tarball consumer verification (run via `verify:package`)
+- `packages/minigame-std/vite.config.ts` - Test-only configuration (browser + node projects, coverage)
 - `packages/minigame-std/tsconfig.json` - TypeScript compiler options
 - `pnpm-workspace.yaml` - Declares `packages/*` as the workspace
 - `.npmrc` - pnpm install behavior tweaks
