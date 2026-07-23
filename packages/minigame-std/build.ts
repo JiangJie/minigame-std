@@ -35,10 +35,43 @@ for (const { name, file } of entries) {
 function resolveInternalEntry(id: string): string | undefined {
     const normalized = id.replace(/\\/g, '/');
 
-    // Exact match for entry source files (including .ts and extensionless)
+    // Exact match for entry source files.
+    // Rolldown may pass the id in different forms:
+    //   'src/std/codec/mod.ts'  — resolved path with src/ prefix
+    //   './std/codec/mod.ts'    — relative path without src/ prefix (CJS export * from)
+    // Both must match. For entries with a path prefix (e.g. 'std/codec/mod.ts'),
+    // check endsWith('/std/codec/mod.ts'). For top-level entries (e.g. 'mod.ts'),
+    // only match exact relative forms to avoid false positives on other mod.ts files.
     for (const [src, name] of sourceToName) {
-        if (normalized.endsWith(src) || normalized.endsWith(src.replace(/\.ts$/, ''))) {
+        const withoutSrcPrefix = src.startsWith('src/') ? src.slice(4) : src;
+        const withoutExt = withoutSrcPrefix.replace(/\.ts$/, '');
+
+        if (
+            normalized.endsWith(src)
+            || normalized.endsWith(src.replace(/\.ts$/, ''))
+        ) {
             return name;
+        }
+
+        if (withoutSrcPrefix.includes('/')) {
+            // Subpath entry: e.g. 'std/codec/mod.ts' → match './std/codec/mod.ts'
+            if (
+                normalized.endsWith(`/${withoutSrcPrefix}`)
+                || normalized.endsWith(`/${withoutExt}`)
+            ) {
+                return name;
+            }
+        }
+        else {
+            // Top-level entry: e.g. 'mod.ts' → only match exact './mod.ts' or 'mod.ts'
+            if (
+                normalized === `./${withoutSrcPrefix}`
+                || normalized === withoutSrcPrefix
+                || normalized === `./${withoutExt}`
+                || normalized === withoutExt
+            ) {
+                return name;
+            }
         }
     }
 
@@ -76,6 +109,43 @@ function isExternalDep(id: string): boolean {
 
 //#endregion
 
+//#region CJS export-star path fixup
+
+// Rolldown's CJS `export *` implementation generates `require("./std/codec/mod.ts")`
+// using the original source path instead of the `output.paths` return value.
+// ESM `export *` correctly uses `output.paths`, but CJS does not.
+// This plugin post-processes CJS chunks to replace source paths with entry paths.
+// See: https://github.com/rolldown/rolldown/issues/10402 — remove this plugin once fixed
+const cjsExportStarFixup = {
+    name: 'cjs-export-star-path-fixup',
+    renderChunk(code: string, chunk: { fileName: string; }): { code: string; map: null; } | null {
+        if (!chunk.fileName.endsWith('.cjs')) return null;
+
+        // Build replacement map: ./std/codec/mod.ts → ./codec.cjs
+        let fixed = code;
+        for (const [src, entryName] of sourceToName) {
+            const withoutSrcPrefix = src.startsWith('src/') ? src.slice(4) : src;
+            if (!withoutSrcPrefix.includes('/')) continue;
+
+            // Match require("./std/codec/mod.ts") or require('./std/codec/mod.ts')
+            const sourcePath = `./${withoutSrcPrefix}`;
+            const targetPath = `./${entryName}.cjs`;
+            fixed = fixed.replaceAll(`require("${sourcePath}")`, `require("${targetPath}")`);
+            fixed = fixed.replaceAll(`require('${sourcePath}')`, `require('${targetPath}')`);
+        }
+
+        // No replacement applied — leave the chunk untouched.
+        if (fixed === code) return null;
+
+        // `map: null` suppresses SOURCEMAP_BROKEN: a bare string return tells
+        // rolldown the transform has no map. Replacements only shrink content
+        // within a line (no lines added/removed), so line mappings stay valid.
+        return { code: fixed, map: null };
+    },
+};
+
+//#endregion
+
 // Clean dist directory before build
 await rm('dist', { recursive: true, force: true });
 
@@ -103,6 +173,7 @@ for (const { name, file } of entries) {
                 fileName: format => `${name}.${format === 'cjs' ? 'cjs' : 'mjs'}`,
             },
             rollupOptions: {
+                plugins: [cjsExportStarFixup],
                 external: (id) => {
                     // External npm deps
                     if (isExternalDep(id)) return true;
