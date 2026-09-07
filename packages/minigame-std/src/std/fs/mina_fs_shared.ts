@@ -381,7 +381,7 @@ function isNotFoundFileError(error: FileError): boolean {
     const { errCode, errMsg } = normalizeFileError(error);
     // 可能没有errCode
     return errCode === 1300002
-        || errMsg.includes('no such file or directory');
+        || errMsg.toLowerCase().includes('no such file or directory');
 }
 
 /**

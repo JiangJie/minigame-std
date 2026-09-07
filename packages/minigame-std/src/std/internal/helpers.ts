@@ -15,10 +15,20 @@ import { type IOResult } from 'happy-rusty';
  * @returns 转换后的 `Error` 对象。
  */
 export function miniGameFailureToError(error: WechatMinigame.GeneralCallbackResult | Error): Error {
-    return error instanceof Error
-        ? error
-        // NOTE: 有可能 error 是一个长得像 Error 但不是 Error 实例的对象, 例如: "statSync:fail no such file or directory"
-        : new Error(error.errMsg ?? (error as unknown as { message: string; }).message);
+    if (error instanceof Error) return error;
+
+    // NOTE: 有可能 error 是一个长得像 Error 但不是 Error 实例的对象, 例如: "statSync:fail no such file or directory"
+    const errorLike = error as unknown as {
+        message: string;
+        errno?: unknown;
+    };
+    const result = new Error(error.errMsg ?? errorLike.message);
+
+    if (typeof errorLike.errno === 'number') {
+        (result as Error & { errno?: number; }).errno = errorLike.errno;
+    }
+
+    return result;
 }
 
 /**

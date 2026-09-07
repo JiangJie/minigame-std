@@ -187,6 +187,29 @@ vi.stubGlobal('__MINIGAME_STD_MINA__', true);
 const minaFsAsync = await import('../src/std/fs/mina_fs_async');
 const minaFsSync = await import('../src/std/fs/mina_fs_sync');
 
+describe('mina fs error handling - statSync', () => {
+    beforeEach(() => {
+        mockFileSystem.clear();
+        vi.clearAllMocks();
+    });
+
+    test('converts non-Error not-found exception with errno to NotFoundError', () => {
+        vi.mocked(mockFsManager.statSync).mockImplementationOnce(() => {
+            throw {
+                errno: 1300002,
+                message: 'statSync:fail:No such file or directory',
+            };
+        });
+
+        const result = minaFsSync.statSync('/not-found');
+
+        expect(result.isErr()).toBe(true);
+        const error = result.unwrapErr() as Error & { errno?: number; };
+        expect(error.name).toBe('NotFoundError');
+        expect(error.errno).toBe(1300002);
+    });
+});
+
 describe('mina fs error handling - getWriteFileContents', () => {
     beforeEach(() => {
         mockFileSystem.clear();

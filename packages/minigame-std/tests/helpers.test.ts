@@ -79,6 +79,18 @@ test('miniGameFailureToError converts Error-like object with message to Error', 
     expect(result.message).toBe('statSync:fail no such file or directory');
 });
 
+test('miniGameFailureToError preserves errno from Error-like object', () => {
+    const errorLike = {
+        errno: 1300002,
+        message: 'statSync:fail:No such file or directory',
+    } as unknown as WechatMinigame.GeneralCallbackResult;
+
+    const result = miniGameFailureToError(errorLike) as Error & { errno?: number; };
+
+    expect(result.message).toBe('statSync:fail:No such file or directory');
+    expect(result.errno).toBe(1300002);
+});
+
 test('miniGameFailureToError prioritizes errMsg over message', () => {
     const mixedError = {
         errMsg: 'primary error message',

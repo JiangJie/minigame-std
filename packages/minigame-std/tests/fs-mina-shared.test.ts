@@ -106,6 +106,14 @@ describe('mina_fs_shared', () => {
             expect(result.isErr()).toBe(true);
             expect(result.unwrapErr().name).toBe('NotFoundError');
         });
+
+        test('converts case-insensitive "no such file" message to NotFoundError', () => {
+            const error = new Error('statSync:fail:No such file or directory /path/to/file');
+
+            const result = fileErrorToResult(error);
+            expect(result.isErr()).toBe(true);
+            expect(result.unwrapErr().name).toBe('NotFoundError');
+        });
     });
 
     describe('fileErrorToRemoveResult', () => {
