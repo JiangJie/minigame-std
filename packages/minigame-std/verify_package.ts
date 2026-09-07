@@ -81,6 +81,7 @@ try {
     step('Installing tarball into temp consumer');
     const consumerDir = join(tmpDir, 'consumer');
     mkdirSync(consumerDir, { recursive: true });
+    writeFileSync(join(consumerDir, '.npmrc'), readFileSync(join(ROOT_DIR, '.npmrc')));
     writeFileSync(join(consumerDir, 'package.json'), `${JSON.stringify({
         name: 'verify-consumer',
         private: true,
