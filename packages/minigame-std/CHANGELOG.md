@@ -5,6 +5,11 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.7.1] - 2026-09-07
+
+### 修复
+- `fs.statSync`：修复微信小游戏同步文件系统 API 抛出非 `Error` 错误对象时丢失 `errno`，并正确识别大小写不同的不存在文件错误
+
 ## [2.7.0] - 2026-07-23
 
 ### 新增
@@ -563,6 +568,7 @@
   - `socket` - WebSocket
   - `storage` - 本地存储
 
+[2.7.1]: https://github.com/JiangJie/minigame-std/compare/v2.7.0...v2.7.1
 [2.7.0]: https://github.com/JiangJie/minigame-std/compare/v2.6.2...v2.7.0
 [2.6.2]: https://github.com/JiangJie/minigame-std/compare/v2.6.1...v2.6.2
 [2.6.1]: https://github.com/JiangJie/minigame-std/compare/v2.6.0...v2.6.1
