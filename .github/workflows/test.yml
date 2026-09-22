@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+  pull_request:
   workflow_call:
 
 jobs:
@@ -33,8 +34,33 @@ jobs:
       - name: Run tests
         run: pnpm test
 
+      # Only the direct push-to-main run uploads: reusable-workflow calls report a
+      # different github.workflow, and pull requests (forks especially) have no
+      # CODECOV_TOKEN.
       - name: Upload coverage reports to Codecov
-        if: github.workflow == 'Run Tests'
+        if: github.event_name == 'push' && github.workflow == 'Run Tests'
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+
+  verify-package:
+    name: Verify Package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: latest
+
+      - name: Install pnpm
+        run: npm install pnpm -g
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify the published package
+        run: pnpm --filter minigame-std run verify:package
