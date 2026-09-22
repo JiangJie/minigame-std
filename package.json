@@ -5,14 +5,14 @@
   "scripts": {
     "check": "pnpm -r run check",
     "typecheck": "pnpm -r run typecheck",
-    "lint": "pnpm -r run lint",
+    "lint": "pnpm exec vp lint",
+    "fmt": "pnpm exec vp fmt",
     "build": "pnpm -r run build",
     "test": "pnpm --filter minigame-std test",
     "docs": "pnpm --filter minigame-std run docs",
     "build:std": "pnpm --filter minigame-std build",
     "build:test": "pnpm --filter minigame-test build",
-    "playwright:install": "pnpm exec playwright install chromium-headless-shell",
-    "fmt": "pnpm -r run fmt"
+    "playwright:install": "pnpm exec playwright install chromium-headless-shell"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",

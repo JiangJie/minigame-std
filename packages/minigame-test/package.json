@@ -4,8 +4,6 @@
   "scripts": {
     "check": "pnpm exec vp check",
     "typecheck": "pnpm exec tsc --noEmit",
-    "lint": "pnpm exec vp lint",
-    "fmt": "pnpm exec vp fmt",
     "prebuild": "pnpm run check",
     "build": "pnpm exec vp build",
     "watch": "pnpm run build --watch"
