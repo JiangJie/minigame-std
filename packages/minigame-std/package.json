@@ -238,9 +238,7 @@
     "docs": "pnpm exec typedoc",
     "prepublishOnly": "pnpm run verify:package",
     "test": "pnpm exec vp test run --coverage",
-    "test:node": "pnpm exec vp test run --project node",
-    "test:watch": "pnpm exec vp test watch",
-    "test:ui": "pnpm exec vp test --ui"
+    "test:node": "pnpm exec vp test run --project node"
   },
   "repository": {
     "type": "git",
