@@ -88,7 +88,7 @@ export function getMainCtx(): CanvasRenderingContext2D {
 /**
  * 获取按钮的位置
  */
-function getButtonRect(index: number): { x: number; y: number; width: number; height: number; } {
+function getButtonRect(index: number): { x: number; y: number; width: number; height: number } {
     const col = index % BUTTON_CONFIG.columns;
     const row = Math.floor(index / BUTTON_CONFIG.columns);
 
@@ -114,7 +114,7 @@ function handleTouch(e: WechatMinigame.OnTouchStartListenerResult): void {
     for (let i = 0; i < testStates.length; i++) {
         const rect = getButtonRect(i);
         if (x >= rect.x && x <= rect.x + rect.width && y >= rect.y && y <= rect.y + rect.height) {
-            runTest(i);
+            void runTest(i);
             break;
         }
     }
@@ -224,6 +224,13 @@ function render(): void {
 
     ctx.fillStyle = COLORS.title;
     ctx.font = '16px sans-serif';
-    const statsY = BUTTON_CONFIG.startY + Math.ceil(total / BUTTON_CONFIG.columns) * (BUTTON_CONFIG.height + BUTTON_CONFIG.gap) + 20;
-    ctx.fillText(`总计: ${total} | 通过: ${passed} | 失败: ${failed}`, BUTTON_CONFIG.startX, statsY);
+    const statsY =
+        BUTTON_CONFIG.startY +
+        Math.ceil(total / BUTTON_CONFIG.columns) * (BUTTON_CONFIG.height + BUTTON_CONFIG.gap) +
+        20;
+    ctx.fillText(
+        `总计: ${total} | 通过: ${passed} | 失败: ${failed}`,
+        BUTTON_CONFIG.startX,
+        statsY,
+    );
 }

@@ -1,7 +1,7 @@
 /**
  * 测试小游戏环境下的 VideoFrameSource。
  */
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 
 type DecoderEvent = 'start' | 'stop' | 'seek' | 'bufferchange' | 'ended';
 type DecoderListener = (event?: unknown) => void;
@@ -51,7 +51,11 @@ const mocks = vi.hoisted(() => {
     };
 });
 
-import { createVideoFrameSource, createVideoFrameSourceFromFile, isVideoFrameSourceSupported } from '../src/std/video/mod.ts';
+import {
+    createVideoFrameSource,
+    createVideoFrameSourceFromFile,
+    isVideoFrameSourceSupported,
+} from '../src/std/video/mod.ts';
 
 test('isVideoFrameSourceSupported returns true in minigame environment', () => {
     expect(isVideoFrameSourceSupported()).toBe(true);
@@ -94,7 +98,7 @@ test('createVideoFrameSourceFromFile normalizes user data file path as decoder s
 
 test('createVideoFrameSource returns error when minigame VideoDecoder is unsupported', () => {
     const originalCreateVideoDecoder = wx.createVideoDecoder;
-    delete (wx as unknown as { createVideoDecoder?: unknown; }).createVideoDecoder;
+    delete (wx as unknown as { createVideoDecoder?: unknown }).createVideoDecoder;
 
     const sourceRes = createVideoFrameSource({ source: 'https://example.com/video.mp4' });
 
@@ -102,16 +106,20 @@ test('createVideoFrameSource returns error when minigame VideoDecoder is unsuppo
     expect(sourceRes.isErr()).toBe(true);
     expect(sourceRes.unwrapErr().message).toContain('VideoFrameSource is not supported');
 
-    (wx as unknown as { createVideoDecoder: typeof originalCreateVideoDecoder; }).createVideoDecoder = originalCreateVideoDecoder;
+    (
+        wx as unknown as { createVideoDecoder: typeof originalCreateVideoDecoder }
+    ).createVideoDecoder = originalCreateVideoDecoder;
 });
 
 test('VideoFrameSource getFrame pulls pixel frame from decoder', () => {
-    const source = createVideoFrameSource({ source: 'https://example.com/video.mp4', width: 2, height: 2 }).unwrap();
+    const source = createVideoFrameSource({
+        source: 'https://example.com/video.mp4',
+        width: 2,
+        height: 2,
+    }).unwrap();
     const frameListener = vi.fn();
     source.onFrame(frameListener);
-    mocks.decoder.getFrameData
-        .mockReturnValueOnce(mocks.frameData)
-        .mockReturnValueOnce(null);
+    mocks.decoder.getFrameData.mockReturnValueOnce(mocks.frameData).mockReturnValueOnce(null);
 
     const frameRes = source.getFrame();
     expect(frameRes.isOk()).toBe(true);
@@ -128,13 +136,15 @@ test('VideoFrameSource getFrame pulls pixel frame from decoder', () => {
         frame.release();
     }
 
-    expect(frameListener).toHaveBeenCalledWith(expect.objectContaining({
-        kind: 'pixels',
-        format: 'rgba',
-        width: 1,
-        height: 1,
-        timestamp: 1,
-    }));
+    expect(frameListener).toHaveBeenCalledWith(
+        expect.objectContaining({
+            kind: 'pixels',
+            format: 'rgba',
+            width: 1,
+            height: 1,
+            timestamp: 1,
+        }),
+    );
     expect(source.getFrame().unwrap()).toBe(null);
     source.offFrame(frameListener);
     source.offFrame();

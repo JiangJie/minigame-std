@@ -1,4 +1,4 @@
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 import { addNetworkChangeListener, getNetworkType } from '../src/mod.ts';
 
 test('getNetworkType returns none when offline', async () => {
@@ -22,7 +22,7 @@ test('getNetworkType returns none when offline', async () => {
 
 test('getNetworkType returns unknown when online without connection API', async () => {
     const originalOnLine = navigator.onLine;
-    const originalConnection = (navigator as { connection?: unknown; }).connection;
+    const originalConnection = (navigator as { connection?: unknown }).connection;
 
     Object.defineProperty(navigator, 'onLine', {
         value: true,
@@ -50,7 +50,7 @@ test('getNetworkType returns unknown when online without connection API', async 
 
 test('getNetworkType returns wifi when connected via wifi', async () => {
     const originalOnLine = navigator.onLine;
-    const originalConnection = (navigator as { connection?: unknown; }).connection;
+    const originalConnection = (navigator as { connection?: unknown }).connection;
 
     Object.defineProperty(navigator, 'onLine', {
         value: true,
@@ -81,7 +81,7 @@ test('getNetworkType returns wifi when connected via wifi', async () => {
 
 test('getNetworkType returns effectiveType for non-wifi connections', async () => {
     const originalOnLine = navigator.onLine;
-    const originalConnection = (navigator as { connection?: unknown; }).connection;
+    const originalConnection = (navigator as { connection?: unknown }).connection;
 
     Object.defineProperty(navigator, 'onLine', {
         value: true,
@@ -111,7 +111,7 @@ test('getNetworkType returns effectiveType for non-wifi connections', async () =
 });
 
 test('addNetworkChangeListener adds and removes listener', () => {
-    const originalConnection = (navigator as { connection?: unknown; }).connection;
+    const originalConnection = (navigator as { connection?: unknown }).connection;
 
     const mockAddEventListener = vi.fn();
     const mockRemoveEventListener = vi.fn();
@@ -145,7 +145,7 @@ test('addNetworkChangeListener adds and removes listener', () => {
 
 test('addNetworkChangeListener calls callback when network type actually changes', () => {
     const originalOnLine = navigator.onLine;
-    const originalConnection = (navigator as { connection?: unknown; }).connection;
+    const originalConnection = (navigator as { connection?: unknown }).connection;
 
     let capturedCallback: (() => void) | undefined;
     const mockAddEventListener = vi.fn().mockImplementation((_, callback) => {
@@ -204,7 +204,7 @@ test('addNetworkChangeListener calls callback when network type actually changes
 
 test('addNetworkChangeListener does not call callback when type stays the same', () => {
     const originalOnLine = navigator.onLine;
-    const originalConnection = (navigator as { connection?: unknown; }).connection;
+    const originalConnection = (navigator as { connection?: unknown }).connection;
 
     let capturedCallback: (() => void) | undefined;
     const mockAddEventListener = vi.fn().mockImplementation((_, callback) => {
@@ -249,7 +249,7 @@ test('addNetworkChangeListener does not call callback when type stays the same',
 });
 
 test('addNetworkChangeListener handles missing connection API gracefully', () => {
-    const originalConnection = (navigator as { connection?: unknown; }).connection;
+    const originalConnection = (navigator as { connection?: unknown }).connection;
 
     Object.defineProperty(navigator, 'connection', {
         value: undefined,

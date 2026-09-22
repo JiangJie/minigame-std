@@ -3,7 +3,7 @@
  * @description 测试 mina_fs_shared.ts 中的公共函数
  */
 import { Err, Ok } from 'happy-rusty';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 
 import {
     accessExists,
@@ -82,7 +82,9 @@ describe('mina_fs_shared', () => {
     describe('fileErrorToResult', () => {
         test('converts Error instance with errno to result', () => {
             // 覆盖 normalizeFileError 中处理 Error 实例的分支
-            const error = new Error('no such file or directory /test') as Error & { errno?: number; };
+            const error = new Error('no such file or directory /test') as Error & {
+                errno?: number;
+            };
             error.errno = 1300002;
 
             const result = fileErrorToResult(error);
@@ -473,7 +475,9 @@ describe('mina_fs_shared', () => {
         test('returns false when accessSync fails with NotFoundError', () => {
             // 覆盖 accessResultToExists 中 isNotFoundError 为 true 的分支
             mockAccessSync.mockImplementation(() => {
-                const err = new Error('no such file or directory /test') as Error & { errno: number; };
+                const err = new Error('no such file or directory /test') as Error & {
+                    errno: number;
+                };
                 err.errno = 1300002;
                 throw err;
             });
@@ -487,7 +491,7 @@ describe('mina_fs_shared', () => {
         test('returns error when accessSync fails with non-NotFoundError', () => {
             // 覆盖 accessResultToExists 中 isNotFoundError 为 false 的 Err 透传分支
             mockAccessSync.mockImplementation(() => {
-                const err = new Error('permission denied') as Error & { errno: number; };
+                const err = new Error('permission denied') as Error & { errno: number };
                 err.errno = 1300001;
                 throw err;
             });

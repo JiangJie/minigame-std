@@ -1,9 +1,9 @@
 /**
  * 测试小游戏环境下的 network/mod.ts
  */
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 
-type NetworkCallback = (res: { networkType: string; isConnected: boolean; }) => void;
+type NetworkCallback = (res: { networkType: string; isConnected: boolean }) => void;
 let networkListeners: NetworkCallback[] = [];
 
 // 使用 vi.hoisted 确保在模块加载之前执行 mock
@@ -12,7 +12,7 @@ vi.hoisted(() => {
 
     (globalThis as Record<string, unknown>)['wx'] = {
         getNetworkType: (options: {
-            success: (res: { networkType: string; }) => void;
+            success: (res: { networkType: string }) => void;
             fail: (err: Error) => void;
         }) => {
             options.success({ networkType: 'wifi' });

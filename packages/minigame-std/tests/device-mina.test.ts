@@ -3,7 +3,7 @@
  *
  * 注意：由于模块缓存的存在，这个测试文件需要在模块加载之前就设置好 mock
  */
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 
 // Mock 小游戏的设备信息
 const mockMinaDeviceInfo = {
@@ -45,14 +45,22 @@ vi.hoisted(() => {
         getDeviceInfo: () => mockMinaDeviceInfo,
         getSystemInfoSync: () => mockMinaDeviceInfo,
         getWindowInfo: () => mockMinaWindowInfo,
-        getDeviceBenchmarkInfo: ({ success }: { success: (res: { benchmarkLevel: number; }) => void; }) => {
+        getDeviceBenchmarkInfo: ({
+            success,
+        }: {
+            success: (res: { benchmarkLevel: number }) => void;
+        }) => {
             success({ benchmarkLevel: 35 });
         },
     };
 });
 
 // 现在导入模块，它会使用我们设置的小游戏环境
-import { getDeviceBenchmarkLevel, getDeviceInfo, getWindowInfo } from '../src/std/platform/device.ts';
+import {
+    getDeviceBenchmarkLevel,
+    getDeviceInfo,
+    getWindowInfo,
+} from '../src/std/platform/device.ts';
 
 test('getDeviceInfo uses wx.getDeviceInfo in minigame environment', () => {
     const deviceInfo = getDeviceInfo();

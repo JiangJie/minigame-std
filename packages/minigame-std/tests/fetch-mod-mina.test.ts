@@ -1,15 +1,15 @@
 /**
  * 测试小游戏环境下的 fetch/mod.ts（IS_MINA = true 分支）
  */
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 
 // 创建 mock 的 request task
 function createMockRequestTask() {
-    let chunkCallback: ((res: { data: ArrayBuffer; }) => void) | null = null;
+    let chunkCallback: ((res: { data: ArrayBuffer }) => void) | null = null;
 
     return {
         abort: vi.fn(),
-        onChunkReceived: vi.fn((callback: (res: { data: ArrayBuffer; }) => void) => {
+        onChunkReceived: vi.fn((callback: (res: { data: ArrayBuffer }) => void) => {
             chunkCallback = callback;
         }),
         _triggerChunk: (data: ArrayBuffer) => {
@@ -117,7 +117,7 @@ test('fetchT returns arraybuffer response in minigame environment', async () => 
 });
 
 test('fetchT returns json response in minigame environment', async () => {
-    const fetchTask = fetchT<{ name: string; }>('https://example.com/api', { responseType: 'json' });
+    const fetchTask = fetchT<{ name: string }>('https://example.com/api', { responseType: 'json' });
 
     const jsonData = { name: 'test' };
     lastRequestOptions?.success?.({

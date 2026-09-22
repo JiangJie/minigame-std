@@ -2,7 +2,7 @@
  * 测试鸿蒙微信小游戏环境下的 encodeUtf8 行为
  * 鸿蒙平台的 wx.encode 实现存在 bug, 应回退到 happy-codec 的 webEncodeUtf8
  */
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 
 // 使用 vi.hoisted 确保在模块加载之前执行 mock
 vi.hoisted(() => {
@@ -16,7 +16,7 @@ vi.hoisted(() => {
             // 模拟鸿蒙平台的 bug: 返回错误的编码结果（空 ArrayBuffer）
             return new ArrayBuffer(0);
         },
-        decode: (options: { data: ArrayBuffer; format: string; }): string => {
+        decode: (options: { data: ArrayBuffer; format: string }): string => {
             // 模拟 UTF-8 解码（decode 不受影响）
             const decoder = new TextDecoder();
             return decoder.decode(options.data);

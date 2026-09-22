@@ -1,7 +1,7 @@
 /**
  * 测试小游戏环境下的 target.ts - Mac 平台
  */
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 
 vi.hoisted(() => {
     (globalThis as Record<string, unknown>)['__MINIGAME_STD_MINA__'] = true;

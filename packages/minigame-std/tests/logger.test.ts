@@ -1,5 +1,14 @@
 import { Err } from 'happy-rusty';
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
+import {
+    afterAll,
+    afterEach,
+    beforeAll,
+    beforeEach,
+    describe,
+    expect,
+    test,
+    vi,
+} from 'vite-plus/test';
 import { logger } from '../src/mod.ts';
 import { readTextFile, remove, writeFile } from '../src/std/fs/fs_async.ts';
 import type { LoggerPlugin } from '../src/std/logger/defines.ts';
@@ -14,8 +23,8 @@ const fsMock = vi.hoisted(() => ({
     removeReject: false,
 }));
 
-vi.mock('../src/std/fs/mod.ts', async (importOriginal) => {
-    const original = await importOriginal() as typeof import('../src/std/fs/mod.ts');
+vi.mock('../src/std/fs/mod.ts', async importOriginal => {
+    const original = (await importOriginal()) as typeof import('../src/std/fs/mod.ts');
     return {
         ...original,
         readFile: vi.fn(async (...args: Parameters<typeof original.readFile>) => {
@@ -89,7 +98,7 @@ describe('logger core', () => {
         const spyPlugin = createSpyPlugin(onLog);
 
         logger.init({
-            filter: (level) => level !== 'debug',
+            filter: level => level !== 'debug',
             console: { enabled: false },
             plugins: [spyPlugin],
         });
@@ -132,7 +141,7 @@ describe('logger core', () => {
         // console.enabled = true + filter set, covers state.console.filter branch
         logger.init({
             level: 'debug',
-            filter: (level) => level !== 'debug',
+            filter: level => level !== 'debug',
             console: { enabled: true },
             plugins: [],
         });
@@ -356,7 +365,10 @@ describe('fileLog', () => {
         expect(filesResult.isOk()).toBe(true);
 
         const files = filesResult.unwrap();
-        const activeFile = files.filter(f => f.endsWith('.log')).sort().pop();
+        const activeFile = files
+            .filter(f => f.endsWith('.log'))
+            .sort()
+            .pop();
 
         expect(activeFile).toBeTruthy();
 
@@ -537,11 +549,14 @@ describe('fileLog', () => {
         await file.flush();
 
         // Wait for compression to complete (fire-and-forget, needs polling)
-        await vi.waitFor(async () => {
-            const filesResult = await file.getFiles();
-            const files = filesResult.unwrap();
-            expect(files.some(f => f.endsWith('.log.gz'))).toBe(true);
-        }, { timeout: 5000 });
+        await vi.waitFor(
+            async () => {
+                const filesResult = await file.getFiles();
+                const files = filesResult.unwrap();
+                expect(files.some(f => f.endsWith('.log.gz'))).toBe(true);
+            },
+            { timeout: 5000 },
+        );
     });
 
     test('compressOldFile readFile failure skips compression', async () => {
@@ -711,7 +726,7 @@ describe('fileLog', () => {
     test('custom formatter', async () => {
         const file = fileLog({
             rootDir: testRootDir,
-            formatter: (entry) => `${entry.level.toUpperCase()}: ${entry.message}\n`,
+            formatter: entry => `${entry.level.toUpperCase()}: ${entry.message}\n`,
         });
 
         logger.init({
@@ -724,7 +739,10 @@ describe('fileLog', () => {
 
         const filesResult = await file.getFiles();
         const files = filesResult.unwrap();
-        const activeFile = files.filter(f => f.endsWith('.log')).sort().pop();
+        const activeFile = files
+            .filter(f => f.endsWith('.log'))
+            .sort()
+            .pop();
 
         if (activeFile) {
             const contentResult = await readTextFile(activeFile);
@@ -898,7 +916,7 @@ describe('fileLog', () => {
         const file = fileLog({
             rootDir: testRootDir,
             level: 'debug',
-            filter: (level) => level !== 'debug',
+            filter: level => level !== 'debug',
             flushInterval: 0,
         });
 
@@ -913,7 +931,10 @@ describe('fileLog', () => {
 
         const filesResult = await file.getFiles();
         const files = filesResult.unwrap();
-        const activeFile = files.filter(f => f.endsWith('.log')).sort().pop();
+        const activeFile = files
+            .filter(f => f.endsWith('.log'))
+            .sort()
+            .pop();
 
         if (activeFile) {
             const contentResult = await readTextFile(activeFile);
@@ -961,7 +982,10 @@ describe('fileLog', () => {
 
         const filesResult = await file.getFiles();
         const files = filesResult.unwrap();
-        const activeFile = files.filter(f => f.endsWith('.log')).sort().pop();
+        const activeFile = files
+            .filter(f => f.endsWith('.log'))
+            .sort()
+            .pop();
 
         if (activeFile) {
             const contentResult = await readTextFile(activeFile);
@@ -1113,7 +1137,7 @@ describe('wxLog', () => {
     test('custom filter', () => {
         const plugin = wxLog({
             level: 'debug',
-            filter: (level) => level !== 'debug',
+            filter: level => level !== 'debug',
         });
 
         logger.init({

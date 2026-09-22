@@ -1,5 +1,5 @@
-globalThis.URL = class { };
-globalThis.URLSearchParams = class { };
-globalThis.Intl = class { };
+globalThis.URL = class {};
+globalThis.URLSearchParams = class {};
+globalThis.Intl = class {};
 
-require('./dist/index');
+require('./dist/index.js');

@@ -1,7 +1,7 @@
 /**
  * 测试小游戏环境下的 lbs/mod.ts
  */
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 
 // 使用 vi.hoisted 确保在模块加载之前执行 mock
 vi.hoisted(() => {
@@ -17,7 +17,12 @@ vi.hoisted(() => {
         },
         getLocation: (options: {
             type?: string;
-            success: (res: { latitude: number; longitude: number; altitude: number; accuracy: number; }) => void;
+            success: (res: {
+                latitude: number;
+                longitude: number;
+                altitude: number;
+                accuracy: number;
+            }) => void;
             fail: (err: Error) => void;
         }) => {
             options.success({
@@ -44,7 +49,10 @@ test('getCurrentPosition returns geo position in minigame environment', async ()
 
 test('getCurrentPosition returns error when wx.authorize fails', async () => {
     // 临时替换 wx.authorize 为失败的实现
-    const originalAuthorize = (globalThis as Record<string, unknown>)['wx'] as Record<string, unknown>;
+    const originalAuthorize = (globalThis as Record<string, unknown>)['wx'] as Record<
+        string,
+        unknown
+    >;
     const originalAuthorizeFn = originalAuthorize['authorize'];
 
     originalAuthorize['authorize'] = (options: {
@@ -70,7 +78,7 @@ test('getCurrentPosition uses getFuzzyLocation when available', async () => {
 
     wxObj['getFuzzyLocation'] = (options: {
         type?: string;
-        success: (res: { latitude: number; longitude: number; }) => void;
+        success: (res: { latitude: number; longitude: number }) => void;
         fail: (err: Error) => void;
     }) => {
         options.success({

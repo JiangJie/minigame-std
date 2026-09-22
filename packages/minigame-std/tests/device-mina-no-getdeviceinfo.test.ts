@@ -3,7 +3,7 @@
  *
  * 这个场景测试当 wx.getDeviceInfo 不存在时，fallback 到 wx.getSystemInfoSync
  */
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 
 // Mock 小游戏的设备信息
 const mockMinaDeviceInfo = {

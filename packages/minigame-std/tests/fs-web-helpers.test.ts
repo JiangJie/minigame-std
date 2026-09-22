@@ -4,7 +4,7 @@
  */
 import type { FileSystemFileHandleLike, FileSystemHandleLike } from 'happy-opfs';
 import { Err, Ok, type IOResult } from 'happy-rusty';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import {
     convertFileSystemHandleLikeToStats,
     convertFileSystemHandleToStats,
@@ -15,7 +15,7 @@ import {
 } from '../src/std/fs/web_fs_helpers.ts';
 
 // Mock happy-opfs 模块
-vi.mock('happy-opfs', async (importOriginal) => {
+vi.mock('happy-opfs', async importOriginal => {
     const original = await importOriginal<typeof import('happy-opfs')>();
     return {
         ...original,
@@ -35,7 +35,11 @@ const mockedStat = vi.mocked(stat);
 const mockedStatSync = vi.mocked(statSync);
 
 // 创建 mock 的 FileSystemFileHandle
-function createMockFileHandle(name: string, size: number, lastModified: number): FileSystemFileHandle {
+function createMockFileHandle(
+    name: string,
+    size: number,
+    lastModified: number,
+): FileSystemFileHandle {
     return {
         kind: 'file',
         name,
@@ -64,7 +68,11 @@ function createMockDirectoryHandle(name: string): FileSystemDirectoryHandle {
 }
 
 // 创建 mock 的 FileSystemHandleLike (文件)
-function createMockFileHandleLike(name: string, size: number, lastModified: number): FileSystemFileHandleLike {
+function createMockFileHandleLike(
+    name: string,
+    size: number,
+    lastModified: number,
+): FileSystemFileHandleLike {
     return {
         kind: 'file',
         name,
@@ -292,7 +300,7 @@ describe('webToMinaStat', () => {
             name: 'broken.txt',
             getFile: vi.fn().mockRejectedValue(new Error('getFile failed')),
         } as unknown as FileSystemFileHandle;
-        mockedStat.mockResolvedValue(Ok(brokenFileHandle) );
+        mockedStat.mockResolvedValue(Ok(brokenFileHandle));
 
         const result = await webToMinaStat('/broken.txt');
 
@@ -427,7 +435,9 @@ describe('webToMinaStatSync', () => {
             { path: 'child1.txt', handle: createMockFileHandleLike('child1.txt', 100, 1000) },
             { path: 'sub-dir', handle: createMockDirectoryHandleLike('sub-dir') },
         ];
-        mockedReadDirSync.mockReturnValue(Ok(entries) as IOResult<{ path: string; handle: FileSystemHandleLike; }[]>);
+        mockedReadDirSync.mockReturnValue(
+            Ok(entries) as IOResult<{ path: string; handle: FileSystemHandleLike }[]>,
+        );
 
         const result = webToMinaStatSync('/my-dir', { recursive: true });
 
@@ -447,7 +457,9 @@ describe('webToMinaStatSync', () => {
     test('returns FileStats array for empty directory with recursive option', () => {
         const handleLike = createMockDirectoryHandleLike('empty-dir');
         mockedStatSync.mockReturnValue(Ok(handleLike) as IOResult<FileSystemHandleLike>);
-        mockedReadDirSync.mockReturnValue(Ok([]) as IOResult<{ path: string; handle: FileSystemHandleLike; }[]>);
+        mockedReadDirSync.mockReturnValue(
+            Ok([]) as IOResult<{ path: string; handle: FileSystemHandleLike }[]>,
+        );
 
         const result = webToMinaStatSync('/empty-dir', { recursive: true });
 
@@ -464,7 +476,9 @@ describe('webToMinaStatSync', () => {
         mockedStatSync.mockReturnValue(Ok(handleLike) as IOResult<FileSystemHandleLike>);
 
         const error = new Error('Read dir failed');
-        mockedReadDirSync.mockReturnValue(Err(error) as IOResult<{ path: string; handle: FileSystemHandleLike; }[]>);
+        mockedReadDirSync.mockReturnValue(
+            Err(error) as IOResult<{ path: string; handle: FileSystemHandleLike }[]>,
+        );
 
         const result = webToMinaStatSync('/my-dir', { recursive: true });
 

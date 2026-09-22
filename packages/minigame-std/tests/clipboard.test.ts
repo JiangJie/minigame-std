@@ -1,4 +1,4 @@
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 import { clipboard } from '../src/mod.ts';
 
 test('writeText writes to clipboard', async () => {

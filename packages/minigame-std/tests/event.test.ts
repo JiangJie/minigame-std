@@ -1,5 +1,13 @@
-import { describe, expect, test, vi } from 'vitest';
-import { addErrorListener, addHideListener, addResizeListener, addShowListener, addUnhandledrejectionListener, getEnterOptionsSync, getLaunchOptionsSync } from '../src/mod.ts';
+import { describe, expect, test, vi } from 'vite-plus/test';
+import {
+    addErrorListener,
+    addHideListener,
+    addResizeListener,
+    addShowListener,
+    addUnhandledrejectionListener,
+    getEnterOptionsSync,
+    getLaunchOptionsSync,
+} from '../src/mod.ts';
 
 test('addErrorListener and remove', () => {
     let errorCaught = false;
@@ -110,10 +118,11 @@ test('addShowListener and remove', () => {
     let showCaught = false;
     let showOptions: WechatMinigame.OnShowListenerResult | undefined;
 
-    const originalVisibilityState = Object.getOwnPropertyDescriptor(Document.prototype, 'visibilityState')
-        ?? Object.getOwnPropertyDescriptor(document, 'visibilityState');
+    const originalVisibilityState =
+        Object.getOwnPropertyDescriptor(Document.prototype, 'visibilityState') ??
+        Object.getOwnPropertyDescriptor(document, 'visibilityState');
     history.pushState(null, '', '?roomId=42&name=%E6%B5%8B%E8%AF%95');
-    const removeListener = addShowListener((options) => {
+    const removeListener = addShowListener(options => {
         showCaught = true;
         showOptions = options;
     });
@@ -153,8 +162,9 @@ test('addShowListener and remove', () => {
 test('addHideListener and remove', () => {
     let hideCaught = false;
 
-    const originalVisibilityState = Object.getOwnPropertyDescriptor(Document.prototype, 'visibilityState')
-        ?? Object.getOwnPropertyDescriptor(document, 'visibilityState');
+    const originalVisibilityState =
+        Object.getOwnPropertyDescriptor(Document.prototype, 'visibilityState') ??
+        Object.getOwnPropertyDescriptor(document, 'visibilityState');
     const removeListener = addHideListener(() => {
         hideCaught = true;
     });
@@ -187,7 +197,6 @@ test('addHideListener and remove', () => {
 test('addResizeListener and remove', () => {
     let resizeCaught = false;
 
-
     const listener = (_: Event) => {
         resizeCaught = true;
     };
@@ -212,8 +221,12 @@ test('multiple error listeners', () => {
     let listener1Called = false;
     let listener2Called = false;
 
-    const listener1 = () => { listener1Called = true; };
-    const listener2 = () => { listener2Called = true; };
+    const listener1 = () => {
+        listener1Called = true;
+    };
+    const listener2 = () => {
+        listener2Called = true;
+    };
 
     const remove1 = addErrorListener(listener1);
     const remove2 = addErrorListener(listener2);
@@ -290,14 +303,18 @@ test('addShowListener with fireImmediately=true fires immediately and on visibil
     let fireCount = 0;
     let lastOptions: WechatMinigame.OnShowListenerResult | undefined;
 
-    const originalVisibilityState = Object.getOwnPropertyDescriptor(Document.prototype, 'visibilityState')
-        ?? Object.getOwnPropertyDescriptor(document, 'visibilityState');
+    const originalVisibilityState =
+        Object.getOwnPropertyDescriptor(Document.prototype, 'visibilityState') ??
+        Object.getOwnPropertyDescriptor(document, 'visibilityState');
     history.pushState(null, '', '?roomId=42&name=%E6%B5%8B%E8%AF%95');
 
-    const removeListener = addShowListener((options) => {
-        fireCount++;
-        lastOptions = options;
-    }, { fireImmediately: true });
+    const removeListener = addShowListener(
+        options => {
+            fireCount++;
+            lastOptions = options;
+        },
+        { fireImmediately: true },
+    );
 
     // 注册时立即回调一次
     expect(fireCount).toBe(1);
@@ -353,9 +370,12 @@ describe('non-DOM environment guards', () => {
         vi.stubGlobal('URLSearchParams', undefined);
 
         let lastOptions: WechatMinigame.OnShowListenerResult | undefined;
-        const removeListener = addShowListener((options) => {
-            lastOptions = options;
-        }, { fireImmediately: true });
+        const removeListener = addShowListener(
+            options => {
+                lastOptions = options;
+            },
+            { fireImmediately: true },
+        );
 
         // fireImmediately callback receives empty query from degraded getWebShowOptions
         expect(lastOptions?.query).toEqual({});

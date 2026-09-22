@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { fetchT } from '../src/mod.ts';
 
 test('fetch json', async () => {
@@ -15,7 +15,7 @@ test('fetch json', async () => {
 
     const res = await fetchTask.result;
 
-    res.inspect((data: { name: string; }) => {
+    res.inspect((data: { name: string }) => {
         clearTimeout(timer);
         expect(data.name).toBe('minigame-std');
     }).inspectErr((err: Error) => {
@@ -65,7 +65,7 @@ test('fetch without init parameter', async () => {
 
 test('fetch with object body posts JSON successfully', async () => {
     // httpbin echoes back the request body as JSON
-    const fetchTask = fetchT<{ json: { key: string; }; }>('https://httpbin.org/post', {
+    const fetchTask = fetchT<{ json: { key: string } }>('https://httpbin.org/post', {
         method: 'POST',
         body: { key: 'value' },
         responseType: 'json',
@@ -77,7 +77,7 @@ test('fetch with object body posts JSON successfully', async () => {
 
     const res = await fetchTask.result;
 
-    res.inspect((data) => {
+    res.inspect(data => {
         clearTimeout(timer);
         expect(data.json).toEqual({ key: 'value' });
     }).inspectErr((err: Error) => {

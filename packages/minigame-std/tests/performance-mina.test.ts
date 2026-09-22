@@ -1,7 +1,7 @@
 /**
  * 测试小游戏环境下的 performance/mod.ts
  */
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 
 // 使用 vi.hoisted 确保在模块加载之前执行 mock
 vi.hoisted(() => {

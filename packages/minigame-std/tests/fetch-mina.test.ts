@@ -1,15 +1,15 @@
 /**
  * 测试小游戏环境下的 fetch/mod.ts
  */
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 
 // 创建 mock 的 request task
 function createMockRequestTask() {
-    let chunkCallback: ((res: { data: ArrayBuffer; }) => void) | null = null;
+    let chunkCallback: ((res: { data: ArrayBuffer }) => void) | null = null;
 
     return {
         abort: vi.fn(),
-        onChunkReceived: vi.fn((callback: (res: { data: ArrayBuffer; }) => void) => {
+        onChunkReceived: vi.fn((callback: (res: { data: ArrayBuffer }) => void) => {
             chunkCallback = callback;
         }),
         // 辅助方法：触发 chunk 事件

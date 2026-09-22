@@ -2,7 +2,7 @@
  * 测试小游戏环境下的 codec/utf8/mod.ts
  * 使用 wx.encode 和 wx.decode 方法
  */
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 
 // 使用 vi.hoisted 确保在模块加载之前执行 mock
 vi.hoisted(() => {
@@ -12,13 +12,13 @@ vi.hoisted(() => {
     (globalThis as Record<string, unknown>)['wx'] = {
         // 返回 windows 平台，确保 isMiniGameHarmonyOS()/isMiniGameHarmonyPC() 为 false，走 wx.encode 路径
         getDeviceInfo: () => ({ platform: 'windows' }),
-        encode: (options: { data: string; format: string; }): ArrayBuffer => {
+        encode: (options: { data: string; format: string }): ArrayBuffer => {
             // 模拟 UTF-8 编码
             const encoder = new TextEncoder();
             const uint8 = encoder.encode(options.data);
             return uint8.buffer as ArrayBuffer;
         },
-        decode: (options: { data: ArrayBuffer; format: string; }): string => {
+        decode: (options: { data: ArrayBuffer; format: string }): string => {
             // 模拟 UTF-8 解码
             const decoder = new TextDecoder();
             return decoder.decode(options.data);

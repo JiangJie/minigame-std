@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { asyncIOResultify, asyncResultify, syncIOResultify } from '../src/mod.ts';
 
 interface CallbackParams<S, E> {
@@ -8,7 +8,7 @@ interface CallbackParams<S, E> {
 
 test('asyncResultify converts callback API to async result - success', async () => {
     // Mock a callback-style API
-    const mockApi = (params: CallbackParams<{ data: string; }, { code: number; }>) => {
+    const mockApi = (params: CallbackParams<{ data: string }, { code: number }>) => {
         setTimeout(() => {
             params.success?.({ data: 'success data' });
         }, 10);
@@ -22,7 +22,7 @@ test('asyncResultify converts callback API to async result - success', async () 
 });
 
 test('asyncResultify converts callback API to async result - failure', async () => {
-    const mockApi = (params: CallbackParams<{ data: string; }, { code: number; }>) => {
+    const mockApi = (params: CallbackParams<{ data: string }, { code: number }>) => {
         setTimeout(() => {
             params.fail?.({ code: 500 });
         }, 10);
@@ -38,7 +38,7 @@ test('asyncResultify converts callback API to async result - failure', async () 
 test('asyncResultify preserves original success callback', async () => {
     let originalSuccessCalled = false;
 
-    const mockApi = (params: CallbackParams<{ data: string; }, { code: number; }>) => {
+    const mockApi = (params: CallbackParams<{ data: string }, { code: number }>) => {
         setTimeout(() => {
             params.success?.({ data: 'test' });
         }, 10);
@@ -46,7 +46,9 @@ test('asyncResultify preserves original success callback', async () => {
 
     const promisified = asyncResultify(mockApi);
     const result = await promisified({
-        success: () => { originalSuccessCalled = true; },
+        success: () => {
+            originalSuccessCalled = true;
+        },
     });
 
     expect(result.isOk()).toBe(true);
@@ -56,7 +58,7 @@ test('asyncResultify preserves original success callback', async () => {
 test('asyncResultify preserves original fail callback', async () => {
     let originalFailCalled = false;
 
-    const mockApi = (params: CallbackParams<{ data: string; }, { code: number; }>) => {
+    const mockApi = (params: CallbackParams<{ data: string }, { code: number }>) => {
         setTimeout(() => {
             params.fail?.({ code: 500 });
         }, 10);
@@ -64,7 +66,9 @@ test('asyncResultify preserves original fail callback', async () => {
 
     const promisified = asyncResultify(mockApi);
     const result = await promisified({
-        fail: () => { originalFailCalled = true; },
+        fail: () => {
+            originalFailCalled = true;
+        },
     });
 
     expect(result.isErr()).toBe(true);
@@ -72,7 +76,6 @@ test('asyncResultify preserves original fail callback', async () => {
 });
 
 test('asyncResultify handles API returning Promise', async () => {
-
     const mockApi = async (_: CallbackParams<string, Error>) => {
         return 'async result';
     };
@@ -85,7 +88,6 @@ test('asyncResultify handles API returning Promise', async () => {
 });
 
 test('asyncResultify handles API returning rejected Promise', async () => {
-
     const mockApi = async (_: CallbackParams<string, Error>) => {
         throw new Error('async error');
     };
@@ -101,7 +103,7 @@ test('asyncResultify tolerates non-void non-Promise return value', async () => {
     // API that returns something other than void/Promise
     // Some mini-game platforms may return unexpected values
 
-    const mockApi = (params: { success?: (res: string) => void; }) => {
+    const mockApi = (params: { success?: (res: string) => void }) => {
         setTimeout(() => {
             params.success?.('result');
         }, 10);
@@ -109,7 +111,9 @@ test('asyncResultify tolerates non-void non-Promise return value', async () => {
     };
 
     // Use type assertion to bypass the ValidAPI check
-    const promisified = asyncResultify(mockApi) as (params: { success?: (res: string) => void; }) => Promise<unknown>;
+    const promisified = asyncResultify(mockApi) as (params: {
+        success?: (res: string) => void;
+    }) => Promise<unknown>;
 
     // Should not throw, and should still resolve via callback
     const result = await promisified({});
@@ -117,7 +121,7 @@ test('asyncResultify tolerates non-void non-Promise return value', async () => {
 });
 
 test('asyncResultify handles undefined params', async () => {
-    const mockApi = (params?: CallbackParams<{ data: string; }, { code: number; }>) => {
+    const mockApi = (params?: CallbackParams<{ data: string }, { code: number }>) => {
         setTimeout(() => {
             params?.success?.({ data: 'success' });
         }, 10);
@@ -132,7 +136,9 @@ test('asyncResultify handles undefined params', async () => {
 // asyncIOResultify 测试
 
 test('asyncIOResultify converts callback API to async IO result - success', async () => {
-    const mockApi = (params: CallbackParams<{ data: string; }, WechatMinigame.GeneralCallbackResult>) => {
+    const mockApi = (
+        params: CallbackParams<{ data: string }, WechatMinigame.GeneralCallbackResult>,
+    ) => {
         setTimeout(() => {
             params.success?.({ data: 'success data' });
         }, 10);
@@ -146,7 +152,9 @@ test('asyncIOResultify converts callback API to async IO result - success', asyn
 });
 
 test('asyncIOResultify converts GeneralCallbackResult to Error', async () => {
-    const mockApi = (params: CallbackParams<{ data: string; }, WechatMinigame.GeneralCallbackResult>) => {
+    const mockApi = (
+        params: CallbackParams<{ data: string }, WechatMinigame.GeneralCallbackResult>,
+    ) => {
         setTimeout(() => {
             params.fail?.({ errMsg: 'test error message' });
         }, 10);
@@ -165,13 +173,17 @@ test('asyncIOResultify preserves original callbacks', async () => {
     let originalSuccessCalled = false;
     let originalFailCalled = false;
 
-    const successApi = (params: CallbackParams<{ data: string; }, WechatMinigame.GeneralCallbackResult>) => {
+    const successApi = (
+        params: CallbackParams<{ data: string }, WechatMinigame.GeneralCallbackResult>,
+    ) => {
         setTimeout(() => {
             params.success?.({ data: 'test' });
         }, 10);
     };
 
-    const failApi = (params: CallbackParams<{ data: string; }, WechatMinigame.GeneralCallbackResult>) => {
+    const failApi = (
+        params: CallbackParams<{ data: string }, WechatMinigame.GeneralCallbackResult>,
+    ) => {
         setTimeout(() => {
             params.fail?.({ errMsg: 'error' });
         }, 10);
@@ -179,12 +191,16 @@ test('asyncIOResultify preserves original callbacks', async () => {
 
     const promisifiedSuccess = asyncIOResultify(successApi);
     await promisifiedSuccess({
-        success: () => { originalSuccessCalled = true; },
+        success: () => {
+            originalSuccessCalled = true;
+        },
     });
 
     const promisifiedFail = asyncIOResultify(failApi);
     await promisifiedFail({
-        fail: () => { originalFailCalled = true; },
+        fail: () => {
+            originalFailCalled = true;
+        },
     });
 
     expect(originalSuccessCalled).toBe(true);
@@ -195,7 +211,7 @@ test('asyncIOResultify preserves original callbacks', async () => {
 
 test('syncIOResultify converts sync API to IOResult - success', () => {
     const mockSyncApi = (key: string) => {
-        return `value for ${ key }`;
+        return `value for ${key}`;
     };
 
     const wrapped = syncIOResultify(mockSyncApi);
@@ -207,7 +223,9 @@ test('syncIOResultify converts sync API to IOResult - success', () => {
 
 test('syncIOResultify converts sync API to IOResult - failure', () => {
     const mockSyncApi = (_key: string): string => {
-        throw { errMsg: 'getStorageSync:fail data not found' } as WechatMinigame.GeneralCallbackResult;
+        throw {
+            errMsg: 'getStorageSync:fail data not found',
+        } as WechatMinigame.GeneralCallbackResult;
     };
 
     const wrapped = syncIOResultify(mockSyncApi);

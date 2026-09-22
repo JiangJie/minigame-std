@@ -58,9 +58,10 @@ function formatResult(result: BenchmarkResult): string {
 function compareResults(baseline: BenchmarkResult, target: BenchmarkResult): string {
     const speedup = baseline.avgTime / target.avgTime;
     const percentFaster = ((speedup - 1) * 100).toFixed(2);
-    const comparison = speedup > 1
-        ? `${target.name} 比 ${baseline.name} 快 ${percentFaster}%`
-        : `${target.name} 比 ${baseline.name} 慢 ${Math.abs(parseFloat(percentFaster)).toFixed(2)}%`;
+    const comparison =
+        speedup > 1
+            ? `${target.name} 比 ${baseline.name} 快 ${percentFaster}%`
+            : `${target.name} 比 ${baseline.name} 慢 ${Math.abs(Number.parseFloat(percentFaster)).toFixed(2)}%`;
 
     return `📊 对比结果: ${comparison} (${speedup.toFixed(2)}x)`;
 }
@@ -91,11 +92,7 @@ export function testCodecBenchmark(): void {
         console.log('\n【编码测试 Encode】');
 
         // wx.encode (通过 encodeUtf8)
-        const wxEncodeResult = runBenchmark(
-            'wx.encode',
-            () => encodeUtf8(testData),
-            ITERATIONS,
-        );
+        const wxEncodeResult = runBenchmark('wx.encode', () => encodeUtf8(testData), ITERATIONS);
         console.log(formatResult(wxEncodeResult));
 
         const wxEncode = wx.encode;
@@ -121,11 +118,7 @@ export function testCodecBenchmark(): void {
         const encodedData = encodeUtf8(testData);
 
         // wx.decode (通过 decodeUtf8)
-        const wxDecodeResult = runBenchmark(
-            'wx.decode',
-            () => decodeUtf8(encodedData),
-            ITERATIONS,
-        );
+        const wxDecodeResult = runBenchmark('wx.decode', () => decodeUtf8(encodedData), ITERATIONS);
         console.log(formatResult(wxDecodeResult));
 
         const wxDecode = wx.decode;

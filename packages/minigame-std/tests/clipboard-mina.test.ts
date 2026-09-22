@@ -1,7 +1,7 @@
 /**
  * 测试小游戏环境下的 clipboard/mod.ts
  */
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 
 let clipboardData = '';
 
@@ -10,11 +10,18 @@ vi.hoisted(() => {
     (globalThis as Record<string, unknown>)['__MINIGAME_STD_MINA__'] = true;
 
     (globalThis as Record<string, unknown>)['wx'] = {
-        setClipboardData: (options: { data: string; success: () => void; fail: (err: Error) => void; }) => {
+        setClipboardData: (options: {
+            data: string;
+            success: () => void;
+            fail: (err: Error) => void;
+        }) => {
             clipboardData = options.data;
             options.success();
         },
-        getClipboardData: (options: { success: (res: { data: string; }) => void; fail: (err: Error) => void; }) => {
+        getClipboardData: (options: {
+            success: (res: { data: string }) => void;
+            fail: (err: Error) => void;
+        }) => {
             options.success({ data: clipboardData });
         },
     };

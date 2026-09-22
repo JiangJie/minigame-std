@@ -1,12 +1,12 @@
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 
 // 创建一个模拟的 SocketTask 对象
 function createMockSocketTask() {
     const listeners: {
         onOpen?: () => void;
-        onClose?: (res: { code: number; reason: string; }) => void;
-        onMessage?: (res: { data: string | ArrayBuffer; }) => void;
-        onError?: (err: { errMsg: string; }) => void;
+        onClose?: (res: { code: number; reason: string }) => void;
+        onMessage?: (res: { data: string | ArrayBuffer }) => void;
+        onError?: (err: { errMsg: string }) => void;
     } = {};
 
     const task = {
@@ -14,20 +14,30 @@ function createMockSocketTask() {
         onOpen: vi.fn((callback: () => void) => {
             listeners.onOpen = callback;
         }),
-        onClose: vi.fn((callback: (res: { code: number; reason: string; }) => void) => {
+        onClose: vi.fn((callback: (res: { code: number; reason: string }) => void) => {
             listeners.onClose = callback;
         }),
-        onMessage: vi.fn((callback: (res: { data: string | ArrayBuffer; }) => void) => {
+        onMessage: vi.fn((callback: (res: { data: string | ArrayBuffer }) => void) => {
             listeners.onMessage = callback;
         }),
-        onError: vi.fn((callback: (err: { errMsg: string; }) => void) => {
+        onError: vi.fn((callback: (err: { errMsg: string }) => void) => {
             listeners.onError = callback;
         }),
-        send: vi.fn(({ data: _data, success, fail: _fail }: { data: string | ArrayBuffer; success?: () => void; fail?: (err: { errMsg: string; }) => void; }) => {
-            // 模拟发送成功
-            success?.();
-        }),
-        close: vi.fn(({ code: _code, reason: _reason }: { code?: number; reason?: string; }) => {
+        send: vi.fn(
+            ({
+                data: _data,
+                success,
+                fail: _fail,
+            }: {
+                data: string | ArrayBuffer;
+                success?: () => void;
+                fail?: (err: { errMsg: string }) => void;
+            }) => {
+                // 模拟发送成功
+                success?.();
+            },
+        ),
+        close: vi.fn(({ code: _code, reason: _reason }: { code?: number; reason?: string }) => {
             task.readyState = 2; // CLOSING
         }),
         // 触发事件的辅助方法
@@ -50,7 +60,7 @@ let mockSocketTask: ReturnType<typeof createMockSocketTask>;
 
 // Mock wx.connectSocket
 vi.stubGlobal('wx', {
-    connectSocket: vi.fn((_options: { url: string; }) => {
+    connectSocket: vi.fn((_options: { url: string }) => {
         mockSocketTask = createMockSocketTask();
         return mockSocketTask;
     }),
@@ -182,7 +192,7 @@ test('mina socket send fail', async () => {
     const socket = connectSocket('wss://example.com/ws');
 
     // 在创建 socket 之后修改 mock 行为使其失败
-    mockSocketTask.send = vi.fn(({ fail }: { fail?: (err: { errMsg: string; }) => void; }) => {
+    mockSocketTask.send = vi.fn(({ fail }: { fail?: (err: { errMsg: string }) => void }) => {
         fail?.({ errMsg: 'Send failed' });
     });
 

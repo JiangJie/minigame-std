@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { storage } from '../src/mod.ts';
 
 test('storage setItemSync and getItemSync', () => {

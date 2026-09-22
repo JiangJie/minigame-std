@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vite-plus/test';
 import { lbs } from '../src/mod.ts';
 
 // Store original geolocation
@@ -35,7 +35,7 @@ test('getCurrentPosition returns position on success', async () => {
         },
     };
 
-    const mockGetCurrentPosition = vi.fn().mockImplementation((success) => {
+    const mockGetCurrentPosition = vi.fn().mockImplementation(success => {
         success(mockPosition);
     });
 
@@ -155,7 +155,7 @@ test('getCurrentPosition returns correct coordinates for different locations', a
         },
     };
 
-    const mockGetCurrentPosition = vi.fn().mockImplementation((success) => {
+    const mockGetCurrentPosition = vi.fn().mockImplementation(success => {
         success(tokyoPosition);
     });
 

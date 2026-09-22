@@ -1,4 +1,12 @@
-import { Err, Ok, tryAsyncResult, type AsyncIOResult, type AsyncResult, type IOResult, type Result } from 'happy-rusty';
+import {
+    Err,
+    Ok,
+    tryAsyncResult,
+    type AsyncIOResult,
+    type AsyncResult,
+    type IOResult,
+    type Result,
+} from 'happy-rusty';
 import { Future } from 'tiny-future';
 import { miniGameFailureToError } from '../internal/helpers.js';
 
@@ -22,10 +30,14 @@ import { miniGameFailureToError } from '../internal/helpers.js';
  * }
  * ```
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 函数泛型约束需要 any 以兼容所有函数签名
-export function asyncResultify<F extends (...args: any[]) => unknown, T = ResultifySuccessType<F>, E = ResultifyFailType<F>>(api: F): ResultifyValidAPI<F> extends true
-    ? (...args: Parameters<F>) => AsyncResult<T, E>
-    : never {
+export function asyncResultify<
+    // oxlint-disable-next-line typescript/no-explicit-any -- 函数泛型约束需要 any 以兼容所有函数签名
+    F extends (...args: any[]) => unknown,
+    T = ResultifySuccessType<F>,
+    E = ResultifyFailType<F>,
+>(
+    api: F,
+): ResultifyValidAPI<F> extends true ? (...args: Parameters<F>) => AsyncResult<T, E> : never {
     return ((...args: Parameters<F>): AsyncResult<T, E> => {
         const future = new Future<Result<T, E>>();
 
@@ -47,7 +59,11 @@ export function asyncResultify<F extends (...args: any[]) => unknown, T = Result
         const ret = api(options);
 
         // 也支持其他返回 PromiseLike 的 API（鸭子类型检查）
-        if (ret != null && typeof ret === 'object' && typeof (ret as PromiseLike<T>).then === 'function') {
+        if (
+            ret != null &&
+            typeof ret === 'object' &&
+            typeof (ret as PromiseLike<T>).then === 'function'
+        ) {
             // Convert PromiseLike to AsyncResult
             return tryAsyncResult(ret as PromiseLike<T>);
         } else if (ret !== undefined) {
@@ -80,16 +96,21 @@ export function asyncResultify<F extends (...args: any[]) => unknown, T = Result
  * }
  * ```
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 函数泛型约束需要 any 以兼容所有函数签名
-export function asyncIOResultify<F extends (...args: any[]) => unknown, T = ResultifySuccessType<F>>(api: F): IOResultifyValidAPI<F> extends true
-    ? (...args: Parameters<F>) => AsyncIOResult<T>
-    : never {
+export function asyncIOResultify<
+    // oxlint-disable-next-line typescript/no-explicit-any -- 函数泛型约束需要 any 以兼容所有函数签名
+    F extends (...args: any[]) => unknown,
+    T = ResultifySuccessType<F>,
+>(
+    api: F,
+): IOResultifyValidAPI<F> extends true ? (...args: Parameters<F>) => AsyncIOResult<T> : never {
     const wrapped = asyncResultify<F, T, WechatMinigame.GeneralCallbackResult>(api);
 
     return (async (...args: Parameters<F>): AsyncIOResult<T> => {
         const result = await wrapped(...args);
         return result.mapErr(miniGameFailureToError);
-    }) as IOResultifyValidAPI<F> extends true ? (...args: Parameters<F>) => AsyncIOResult<T> : never;
+    }) as IOResultifyValidAPI<F> extends true
+        ? (...args: Parameters<F>) => AsyncIOResult<T>
+        : never;
 }
 
 /**
@@ -112,8 +133,10 @@ export function asyncIOResultify<F extends (...args: any[]) => unknown, T = Resu
  * }
  * ```
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 函数泛型约束需要 any 以兼容所有函数签名
-export function syncIOResultify<F extends (...args: any[]) => unknown>(api: F): (...args: Parameters<F>) => IOResult<ReturnType<F>> {
+// oxlint-disable-next-line typescript/no-explicit-any -- 函数泛型约束需要 any 以兼容所有函数签名
+export function syncIOResultify<F extends (...args: any[]) => unknown>(
+    api: F,
+): (...args: Parameters<F>) => IOResult<ReturnType<F>> {
     return (...args: Parameters<F>): IOResult<ReturnType<F>> => {
         try {
             return Ok(api(...args) as ReturnType<F>);
@@ -138,12 +161,12 @@ type AnyCallback = (...args: never[]) => unknown;
  */
 type ResultifyValidAPI<T> = T extends (params: infer P) => infer R
     ? R extends void | PromiseLike<unknown>
-    ? P extends { success?: AnyCallback; } | undefined
-    ? true
-    : P extends { fail?: AnyCallback; } | undefined
-    ? true
-    : false
-    : false
+        ? P extends { success?: AnyCallback } | undefined
+            ? true
+            : P extends { fail?: AnyCallback } | undefined
+              ? true
+              : false
+        : false
     : false;
 
 /**
@@ -152,13 +175,14 @@ type ResultifyValidAPI<T> = T extends (params: infer P) => infer R
  * 在 `ResultifyValidAPI` 基础上，额外要求 `fail` 回调参数类型必须精确为 `GeneralCallbackResult`。
  * @typeParam T - 待检查的 API 函数类型。
  */
-type IOResultifyValidAPI<T> = ResultifyValidAPI<T> extends true
-    ? ResultifyFailType<T> extends WechatMinigame.GeneralCallbackResult
-    ? WechatMinigame.GeneralCallbackResult extends ResultifyFailType<T>
-    ? true
-    : false
-    : false
-    : false;
+type IOResultifyValidAPI<T> =
+    ResultifyValidAPI<T> extends true
+        ? ResultifyFailType<T> extends WechatMinigame.GeneralCallbackResult
+            ? WechatMinigame.GeneralCallbackResult extends ResultifyFailType<T>
+                ? true
+                : false
+            : false
+        : false;
 
 /**
  * 类型工具：提取成功回调参数类型。
@@ -167,9 +191,9 @@ type IOResultifyValidAPI<T> = ResultifyValidAPI<T> extends true
  * @typeParam T - API 函数类型。
  */
 type ResultifySuccessType<T> = T extends (params: infer P) => unknown
-    ? P extends { success?: (res: infer S) => unknown; }
-    ? S
-    : never
+    ? P extends { success?: (res: infer S) => unknown }
+        ? S
+        : never
     : never;
 
 /**
@@ -179,9 +203,9 @@ type ResultifySuccessType<T> = T extends (params: infer P) => unknown
  * @typeParam T - API 函数类型。
  */
 type ResultifyFailType<T> = T extends (params: infer P) => unknown
-    ? P extends { fail?: (err: infer E) => unknown; }
-    ? E
-    : never
+    ? P extends { fail?: (err: infer E) => unknown }
+        ? E
+        : never
     : never;
 
 // #endregion

@@ -1,11 +1,11 @@
 /**
  * 测试小游戏环境下的 event/mod.ts
  */
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 
-type ErrorCallback = (ev: { message: string; }) => void;
-type RejectionCallback = (ev: { reason: unknown; promise: Promise<unknown>; }) => void;
-type ResizeCallback = (ev: { windowWidth: number; windowHeight: number; }) => void;
+type ErrorCallback = (ev: { message: string }) => void;
+type RejectionCallback = (ev: { reason: unknown; promise: Promise<unknown> }) => void;
+type ResizeCallback = (ev: { windowWidth: number; windowHeight: number }) => void;
 type ShowCallback = (ev: WechatMinigame.OnShowListenerResult) => void;
 type HideCallback = (ev: WechatMinigame.GeneralCallbackResult) => void;
 
@@ -69,7 +69,15 @@ vi.hoisted(() => {
     };
 });
 
-import { addErrorListener, addHideListener, addResizeListener, addShowListener, addUnhandledrejectionListener, getEnterOptionsSync, getLaunchOptionsSync } from '../src/std/event/mod.ts';
+import {
+    addErrorListener,
+    addHideListener,
+    addResizeListener,
+    addShowListener,
+    addUnhandledrejectionListener,
+    getEnterOptionsSync,
+    getLaunchOptionsSync,
+} from '../src/std/event/mod.ts';
 
 test('addErrorListener adds and removes listener in minigame environment', () => {
     const mockListener = vi.fn();
@@ -129,10 +137,12 @@ test('addShowListener with fireImmediately=true fires immediately', () => {
 
     // 注册时立即回调一次
     expect(mockListener).toHaveBeenCalledTimes(1);
-    expect(mockListener).toHaveBeenCalledWith(expect.objectContaining({
-        query: { from: 'enter' },
-        scene: 2002,
-    }));
+    expect(mockListener).toHaveBeenCalledWith(
+        expect.objectContaining({
+            query: { from: 'enter' },
+            scene: 2002,
+        }),
+    );
 
     expect(showListeners.length).toBe(1);
 

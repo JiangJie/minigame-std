@@ -1,8 +1,9 @@
-import { afterAll, beforeAll, expect, test } from 'vitest';
+import { afterAll, beforeAll, expect, test } from 'vite-plus/test';
 import { fs, image } from '../src/mod.ts';
 
 // 1x1 red PNG image as base64
-const RED_PIXEL_PNG_BASE64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==';
+const RED_PIXEL_PNG_BASE64 =
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==';
 
 // Convert base64 to ArrayBuffer
 function base64ToArrayBuffer(base64: string): ArrayBuffer {
@@ -43,7 +44,8 @@ test('createImageFromUrl creates image with relative URL', () => {
 
 test('createImageFromUrl creates image with data URL', () => {
     // 1x1 transparent PNG as data URL
-    const dataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+    const dataUrl =
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
     const img = image.createImageFromUrl(dataUrl);
 
     expect(img).toBeInstanceOf(HTMLImageElement);
@@ -92,7 +94,7 @@ test('createImageFromUrl with blob URL format', () => {
 });
 
 test('createImageFromFile revokes URL on successful load', async () => {
-    const filePath = `${ TEST_DIR }/test-load-success.png`;
+    const filePath = `${TEST_DIR}/test-load-success.png`;
 
     // Write a valid PNG image
     const imageData = base64ToArrayBuffer(RED_PIXEL_PNG_BASE64);
@@ -122,7 +124,7 @@ test('createImageFromFile revokes URL on successful load', async () => {
 });
 
 test('createImageFromFile revokes URL on error', async () => {
-    const filePath = `${ TEST_DIR }/test-invalid-image.png`;
+    const filePath = `${TEST_DIR}/test-invalid-image.png`;
 
     // Write invalid image data (not a valid PNG)
     const invalidData = new TextEncoder().encode('this is not a valid image');
@@ -136,7 +138,7 @@ test('createImageFromFile revokes URL on error', async () => {
     expect(blobUrl).toContain('blob:');
 
     // Wait for the error event to fire (invalid image data should trigger error)
-    await new Promise<void>((resolve) => {
+    await new Promise<void>(resolve => {
         img.addEventListener('error', () => resolve());
         img.addEventListener('load', () => resolve()); // In case it somehow loads
         // Set a timeout as fallback

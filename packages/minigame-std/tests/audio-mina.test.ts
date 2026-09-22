@@ -1,7 +1,7 @@
 /**
  * 测试小游戏环境下的 audio/web_audio.ts
  */
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 
 // Mock AudioContext
 class MockAudioContext {
@@ -37,7 +37,11 @@ vi.hoisted(() => {
     };
 });
 
-import { closeGlobalAudioContext, createWebAudioContext, getGlobalAudioContext } from '../src/std/audio/web_audio.ts';
+import {
+    closeGlobalAudioContext,
+    createWebAudioContext,
+    getGlobalAudioContext,
+} from '../src/std/audio/web_audio.ts';
 
 test('createWebAudioContext creates AudioContext in minigame environment', () => {
     const context = createWebAudioContext();

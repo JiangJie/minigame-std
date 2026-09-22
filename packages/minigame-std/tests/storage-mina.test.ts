@@ -1,4 +1,4 @@
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 
 // 模拟存储数据
 const mockStorage = new Map<string, string>();
@@ -64,7 +64,20 @@ vi.stubGlobal('wx', {
 });
 
 // 动态导入 mina_storage，确保使用 mock 的 wx
-const { setItem, getItem, removeItem, clear, getLength, hasItem, setItemSync, getItemSync, removeItemSync, clearSync, getLengthSync, hasItemSync } = await import('../src/std/storage/mina_storage.ts');
+const {
+    setItem,
+    getItem,
+    removeItem,
+    clear,
+    getLength,
+    hasItem,
+    setItemSync,
+    getItemSync,
+    removeItemSync,
+    clearSync,
+    getLengthSync,
+    hasItemSync,
+} = await import('../src/std/storage/mina_storage.ts');
 
 test.beforeEach(() => {
     mockStorage.clear();

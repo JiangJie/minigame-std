@@ -3,11 +3,14 @@
  * @description 测试 mina fs 模块的异常情况
  */
 
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { fs } from '../src/mod.ts';
 
 // Mock 文件系统存储
-const mockFileSystem = new Map<string, { type: 'file' | 'directory'; content?: string | ArrayBuffer; }>();
+const mockFileSystem = new Map<
+    string,
+    { type: 'file' | 'directory'; content?: string | ArrayBuffer }
+>();
 
 // Mock wx.env
 const mockEnv = {
@@ -28,106 +31,137 @@ function createMockStats(isFile: boolean, size = 100): WechatMinigame.Stats {
 
 // Mock FileSystemManager
 const mockFsManager = {
-    readFile: vi.fn(({ path, success, fail }: { path: string; success?: (res: { data: string | ArrayBuffer; errMsg: string; }) => void; fail?: (res: { errMsg: string; errCode: number; }) => void; }) => {
-        const fullPath = path.startsWith('wxfile://') ? path : `wxfile://usr${ path }`;
-        const file = mockFileSystem.get(fullPath);
-        if (file && file.type === 'file') {
-            success?.({
-                data: file.content ?? '',
-                errMsg: 'readFile:ok',
-            });
-        } else {
-            fail?.({
-                errMsg: 'readFile:fail no such file or directory',
-                errCode: 1300002,
-            });
-        }
-    }),
+    readFile: vi.fn(
+        ({
+            path,
+            success,
+            fail,
+        }: {
+            path: string;
+            success?: (res: { data: string | ArrayBuffer; errMsg: string }) => void;
+            fail?: (res: { errMsg: string; errCode: number }) => void;
+        }) => {
+            const fullPath = path.startsWith('wxfile://') ? path : `wxfile://usr${path}`;
+            const file = mockFileSystem.get(fullPath);
+            if (file && file.type === 'file') {
+                success?.({
+                    data: file.content ?? '',
+                    errMsg: 'readFile:ok',
+                });
+            } else {
+                fail?.({
+                    errMsg: 'readFile:fail no such file or directory',
+                    errCode: 1300002,
+                });
+            }
+        },
+    ),
     readFileSync: vi.fn((path: string) => {
-        const fullPath = path.startsWith('wxfile://') ? path : `wxfile://usr${ path }`;
+        const fullPath = path.startsWith('wxfile://') ? path : `wxfile://usr${path}`;
         const file = mockFileSystem.get(fullPath);
         if (file && file.type === 'file') {
             return file.content ?? '';
         }
-        const err = new Error('no such file or directory') as Error & { errno: number; };
+        const err = new Error('no such file or directory') as Error & { errno: number };
         err.errno = 1300002;
         throw err;
     }),
-    writeFile: vi.fn(({ success }: { success?: (res: { errMsg: string; }) => void; }) => {
+    writeFile: vi.fn(({ success }: { success?: (res: { errMsg: string }) => void }) => {
         success?.({ errMsg: 'writeFile:ok' });
     }),
     writeFileSync: vi.fn(() => {
         // 成功，无返回
     }),
-    mkdir: vi.fn(({ success }: { success?: (res: { errMsg: string; }) => void; }) => {
+    mkdir: vi.fn(({ success }: { success?: (res: { errMsg: string }) => void }) => {
         success?.({ errMsg: 'mkdir:ok' });
     }),
     mkdirSync: vi.fn(() => {
         // 成功，无返回
     }),
-    rmdir: vi.fn(({ success }: { success?: (res: { errMsg: string; }) => void; }) => {
+    rmdir: vi.fn(({ success }: { success?: (res: { errMsg: string }) => void }) => {
         success?.({ errMsg: 'rmdir:ok' });
     }),
     rmdirSync: vi.fn(() => {
         // 成功，无返回
     }),
-    unlink: vi.fn(({ success }: { success?: (res: { errMsg: string; }) => void; }) => {
+    unlink: vi.fn(({ success }: { success?: (res: { errMsg: string }) => void }) => {
         success?.({ errMsg: 'unlink:ok' });
     }),
     unlinkSync: vi.fn(() => {
         // 成功，无返回
     }),
-    readdir: vi.fn(({ success }: { success?: (res: { files: string[]; errMsg: string; }) => void; }) => {
-        success?.({ files: [], errMsg: 'readdir:ok' });
-    }),
+    readdir: vi.fn(
+        ({ success }: { success?: (res: { files: string[]; errMsg: string }) => void }) => {
+            success?.({ files: [], errMsg: 'readdir:ok' });
+        },
+    ),
     readdirSync: vi.fn(() => []),
-    stat: vi.fn(({ path, success }: { path: string; success?: (res: { stats: WechatMinigame.Stats | WechatMinigame.FileStats[]; errMsg: string; }) => void; }) => {
-        const fullPath = path.startsWith('wxfile://') ? path : `wxfile://usr${ path }`;
-        const file = mockFileSystem.get(fullPath);
-        if (file) {
-            success?.({
-                stats: createMockStats(file.type === 'file'),
-                errMsg: 'stat:ok',
-            });
-        }
-    }),
+    stat: vi.fn(
+        ({
+            path,
+            success,
+        }: {
+            path: string;
+            success?: (res: {
+                stats: WechatMinigame.Stats | WechatMinigame.FileStats[];
+                errMsg: string;
+            }) => void;
+        }) => {
+            const fullPath = path.startsWith('wxfile://') ? path : `wxfile://usr${path}`;
+            const file = mockFileSystem.get(fullPath);
+            if (file) {
+                success?.({
+                    stats: createMockStats(file.type === 'file'),
+                    errMsg: 'stat:ok',
+                });
+            }
+        },
+    ),
     statSync: vi.fn((path: string) => {
-        const fullPath = path.startsWith('wxfile://') ? path : `wxfile://usr${ path }`;
+        const fullPath = path.startsWith('wxfile://') ? path : `wxfile://usr${path}`;
         const file = mockFileSystem.get(fullPath);
         if (file) {
             return createMockStats(file.type === 'file');
         }
-        const err = new Error('no such file or directory') as Error & { errno: number; };
+        const err = new Error('no such file or directory') as Error & { errno: number };
         err.errno = 1300002;
         throw err;
     }),
-    rename: vi.fn(({ success }: { success?: (res: { errMsg: string; }) => void; }) => {
+    rename: vi.fn(({ success }: { success?: (res: { errMsg: string }) => void }) => {
         success?.({ errMsg: 'rename:ok' });
     }),
     renameSync: vi.fn(() => {
         // 成功，无返回
     }),
-    copyFile: vi.fn(({ success }: { success?: (res: { errMsg: string; }) => void; }) => {
+    copyFile: vi.fn(({ success }: { success?: (res: { errMsg: string }) => void }) => {
         success?.({ errMsg: 'copyFile:ok' });
     }),
     copyFileSync: vi.fn(() => {
         // 成功，无返回
     }),
-    access: vi.fn(({ success }: { success?: (res: { errMsg: string; }) => void; }) => {
+    access: vi.fn(({ success }: { success?: (res: { errMsg: string }) => void }) => {
         success?.({ errMsg: 'access:ok' });
     }),
     accessSync: vi.fn(() => {
         // 成功，无返回
     }),
-    appendFile: vi.fn(({ success }: { success?: (res: { errMsg: string; }) => void; }) => {
+    appendFile: vi.fn(({ success }: { success?: (res: { errMsg: string }) => void }) => {
         success?.({ errMsg: 'appendFile:ok' });
     }),
     appendFileSync: vi.fn(() => {
         // 成功，无返回
     }),
-    saveFile: vi.fn(({ tempFilePath, success }: { tempFilePath: string; success?: (res: { savedFilePath: string; errMsg: string; }) => void; }) => {
-        success?.({ savedFilePath: tempFilePath.replace('tmp', 'usr'), errMsg: 'saveFile:ok' });
-    }),
+    saveFile: vi.fn(
+        ({
+            tempFilePath,
+            success,
+        }: {
+            tempFilePath: string;
+            success?: (res: { savedFilePath: string; errMsg: string }) => void;
+        }) => {
+            success?.({ savedFilePath: tempFilePath.replace('tmp', 'usr'), errMsg: 'saveFile:ok' });
+        },
+    ),
     saveFileSync: vi.fn((tempFilePath: string) => tempFilePath.replace('tmp', 'usr')),
 };
 
@@ -204,7 +238,7 @@ describe('mina fs error handling - statSync', () => {
         const result = minaFsSync.statSync('/not-found');
 
         expect(result.isErr()).toBe(true);
-        const error = result.unwrapErr() as Error & { errno?: number; };
+        const error = result.unwrapErr() as Error & { errno?: number };
         expect(error.name).toBe('NotFoundError');
         expect(error.errno).toBe(1300002);
     });
@@ -270,16 +304,22 @@ describe('mina fs error handling - readJsonFileSync and writeJsonFileSync', () =
     });
 
     test('readJsonFileSync returns error when JSON is invalid', () => {
-        mockFileSystem.set('wxfile://usr/invalid.json', { type: 'file', content: 'invalid json {{{' });
+        mockFileSystem.set('wxfile://usr/invalid.json', {
+            type: 'file',
+            content: 'invalid json {{{',
+        });
 
         const result = minaFsSync.readJsonFileSync('/invalid.json');
         expect(result.isErr()).toBe(true);
     });
 
     test('readJsonFileSync parses valid JSON', () => {
-        mockFileSystem.set('wxfile://usr/valid.json', { type: 'file', content: '{"key": "value", "num": 123}' });
+        mockFileSystem.set('wxfile://usr/valid.json', {
+            type: 'file',
+            content: '{"key": "value", "num": 123}',
+        });
 
-        const result = minaFsSync.readJsonFileSync<{ key: string; num: number; }>('/valid.json');
+        const result = minaFsSync.readJsonFileSync<{ key: string; num: number }>('/valid.json');
         expect(result.isOk()).toBe(true);
         expect(result.unwrap()).toEqual({ key: 'value', num: 123 });
     });
@@ -300,7 +340,7 @@ describe('mina fs error handling - readJsonFileSync and writeJsonFileSync', () =
 
     test('writeJsonFileSync returns error when writeFileSync fails', () => {
         vi.mocked(mockFsManager.writeFileSync).mockImplementationOnce(() => {
-            const err = new Error('permission denied') as Error & { errno: number; };
+            const err = new Error('permission denied') as Error & { errno: number };
             err.errno = 1300013;
             throw err;
         });
@@ -323,11 +363,14 @@ describe('mina fs error handling - unzipSync write failures', () => {
             'folder/': new Uint8Array(0),
             'folder/file.txt': new TextEncoder().encode('content'),
         });
-        mockFileSystem.set('wxfile://usr/test.zip', { type: 'file', content: zipData.buffer as ArrayBuffer });
+        mockFileSystem.set('wxfile://usr/test.zip', {
+            type: 'file',
+            content: zipData.buffer as ArrayBuffer,
+        });
 
         // Mock mkdirSync 失败
         vi.mocked(mockFsManager.mkdirSync).mockImplementationOnce(() => {
-            const err = new Error('permission denied') as Error & { errno: number; };
+            const err = new Error('permission denied') as Error & { errno: number };
             err.errno = 1300013;
             throw err;
         });
@@ -342,11 +385,14 @@ describe('mina fs error handling - unzipSync write failures', () => {
         const zipData = zipSync({
             'file.txt': new TextEncoder().encode('content'),
         });
-        mockFileSystem.set('wxfile://usr/test-write-fail.zip', { type: 'file', content: zipData.buffer as ArrayBuffer });
+        mockFileSystem.set('wxfile://usr/test-write-fail.zip', {
+            type: 'file',
+            content: zipData.buffer as ArrayBuffer,
+        });
 
         // Mock writeFileSync 失败
         vi.mocked(mockFsManager.writeFileSync).mockImplementationOnce(() => {
-            const err = new Error('disk full') as Error & { errno: number; };
+            const err = new Error('disk full') as Error & { errno: number };
             err.errno = 1300066;
             throw err;
         });
@@ -375,7 +421,7 @@ describe('mina fs error handling - isAlreadyExistsFileError', () => {
 
     test('mkdirSync returns error for other errors', () => {
         vi.mocked(mockFsManager.mkdirSync).mockImplementationOnce(() => {
-            const err = new Error('permission denied') as Error & { errno: number; };
+            const err = new Error('permission denied') as Error & { errno: number };
             err.errno = 1300013;
             throw err;
         });
@@ -392,13 +438,16 @@ describe('mina fs error handling - zipFromUrl', () => {
     });
 
     test('zipFromUrl with invalid zipFilePath returns error', async () => {
-        const result = await minaFsAsync.zipFromUrl('https://example.com/file.txt', 'relative-path.zip');
+        const result = await minaFsAsync.zipFromUrl(
+            'https://example.com/file.txt',
+            'relative-path.zip',
+        );
         expect(result.isErr()).toBe(true);
     });
 
     test('zipFromUrl returns error when download fails', async () => {
         // Mock downloadFile 失败
-        vi.mocked(mockDownloadFile).mockImplementationOnce((options) => {
+        vi.mocked(mockDownloadFile).mockImplementationOnce(options => {
             setTimeout(() => {
                 options.fail?.({
                     errMsg: 'downloadFile:fail network error',
@@ -429,10 +478,14 @@ describe('mina fs error handling - downloadFile edge cases', () => {
         const progressResults: unknown[] = [];
 
         // Mock downloadFile 返回无效的进度信息
-        vi.mocked(mockDownloadFile).mockImplementationOnce((options) => {
+        vi.mocked(mockDownloadFile).mockImplementationOnce(options => {
             const mockTask = {
                 abort: vi.fn(),
-                onProgressUpdate: (callback: (res: WechatMinigame.DownloadTaskOnProgressUpdateListenerResult) => void) => {
+                onProgressUpdate: (
+                    callback: (
+                        res: WechatMinigame.DownloadTaskOnProgressUpdateListenerResult,
+                    ) => void,
+                ) => {
                     // 触发一个无效的进度回调（totalBytesExpectedToWrite 为 0）
                     setTimeout(() => {
                         callback({
@@ -461,7 +514,7 @@ describe('mina fs error handling - downloadFile edge cases', () => {
         });
 
         const task = minaFsAsync.downloadFile('https://example.com/test.zip', {
-            onProgress: (result) => {
+            onProgress: result => {
                 progressResults.push(result);
             },
         });
@@ -504,7 +557,7 @@ describe('mina fs error handling - emptyDirSync edge cases', () => {
     test('emptyDirSync creates directory when not found', () => {
         // Mock readdirSync 返回不存在错误
         vi.mocked(mockFsManager.readdirSync).mockImplementationOnce(() => {
-            const err = new Error('no such file or directory') as Error & { errno: number; };
+            const err = new Error('no such file or directory') as Error & { errno: number };
             err.errno = 1300002;
             throw err;
         });
@@ -516,7 +569,7 @@ describe('mina fs error handling - emptyDirSync edge cases', () => {
     test('emptyDirSync returns error for other readdir errors', () => {
         // Mock readdirSync 返回权限错误
         vi.mocked(mockFsManager.readdirSync).mockImplementationOnce(() => {
-            const err = new Error('permission denied') as Error & { errno: number; };
+            const err = new Error('permission denied') as Error & { errno: number };
             err.errno = 1300013;
             throw err;
         });
@@ -553,7 +606,7 @@ describe('mina fs error handling - emptyDirSync edge cases', () => {
 
         // Mock unlinkSync 失败
         vi.mocked(mockFsManager.unlinkSync).mockImplementationOnce(() => {
-            const err = new Error('permission denied') as Error & { errno: number; };
+            const err = new Error('permission denied') as Error & { errno: number };
             err.errno = 1300013;
             throw err;
         });
@@ -573,13 +626,18 @@ describe('mina fs error handling - appendFileSync edge cases', () => {
         // 文件不存在，existsSync 会使用 statSync 检查
         // 不设置 mockFileSystem，让 statSync 抛出错误
 
-        const result = minaFsSync.appendFileSync('/new-append-sync.txt', 'content', { create: true });
+        const result = minaFsSync.appendFileSync('/new-append-sync.txt', 'content', {
+            create: true,
+        });
         expect(result.isOk()).toBe(true);
     });
 
     test('appendFileSync appends to existing file', () => {
         // 设置文件存在
-        mockFileSystem.set('wxfile://usr/existing-append.txt', { type: 'file', content: 'existing content' });
+        mockFileSystem.set('wxfile://usr/existing-append.txt', {
+            type: 'file',
+            content: 'existing content',
+        });
 
         const result = minaFsSync.appendFileSync('/existing-append.txt', ' new content');
         expect(result.isOk()).toBe(true);
@@ -605,7 +663,7 @@ describe('mina fs error handling - copySync directory edge cases', () => {
 
         // Mock mkdirSync 失败
         vi.mocked(mockFsManager.mkdirSync).mockImplementationOnce(() => {
-            const err = new Error('permission denied') as Error & { errno: number; };
+            const err = new Error('permission denied') as Error & { errno: number };
             err.errno = 1300013;
             throw err;
         });
@@ -622,14 +680,18 @@ describe('mina fs error handling - uploadFile', () => {
     });
 
     test('uploadFile returns error when file path is invalid', async () => {
-        const task = minaFsAsync.uploadFile('https://example.com/upload', 'relative-path.txt', 'file' as fs.UnionUploadFileOptions);
+        const task = minaFsAsync.uploadFile(
+            'https://example.com/upload',
+            'relative-path.txt',
+            'file' as fs.UnionUploadFileOptions,
+        );
         const result = await task.result;
         expect(result.isErr()).toBe(true);
     });
 
     test('uploadFile returns error on failure', async () => {
         // Mock uploadFile 失败
-        vi.mocked(mockUploadFile).mockImplementationOnce((options) => {
+        vi.mocked(mockUploadFile).mockImplementationOnce(options => {
             setTimeout(() => {
                 options.fail?.({
                     errMsg: 'uploadFile:fail network error',
@@ -645,7 +707,11 @@ describe('mina fs error handling - uploadFile', () => {
             };
         });
 
-        const task = minaFsAsync.uploadFile('https://example.com/upload', '/test-file.txt', 'file' as fs.UnionUploadFileOptions);
+        const task = minaFsAsync.uploadFile(
+            'https://example.com/upload',
+            '/test-file.txt',
+            'file' as fs.UnionUploadFileOptions,
+        );
         const result = await task.result;
         expect(result.isErr()).toBe(true);
     });
@@ -654,7 +720,7 @@ describe('mina fs error handling - uploadFile', () => {
         const abortFn = vi.fn();
 
         // Mock uploadFile
-        vi.mocked(mockUploadFile).mockImplementationOnce((options) => {
+        vi.mocked(mockUploadFile).mockImplementationOnce(options => {
             setTimeout(() => {
                 options.success?.({
                     data: '{"success": true}',
@@ -673,7 +739,11 @@ describe('mina fs error handling - uploadFile', () => {
             };
         });
 
-        const task = minaFsAsync.uploadFile('https://example.com/upload', '/test-file.txt', 'file' as fs.UnionUploadFileOptions);
+        const task = minaFsAsync.uploadFile(
+            'https://example.com/upload',
+            '/test-file.txt',
+            'file' as fs.UnionUploadFileOptions,
+        );
         task.abort();
 
         const result = await task.result;

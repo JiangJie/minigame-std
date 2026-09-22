@@ -1,15 +1,15 @@
 /**
  * 测试小游戏环境下的 socket/mod.ts（IS_MINA = true 分支）
  */
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 
 // 创建一个模拟的 SocketTask 对象
 function createMockSocketTask() {
     const listeners: {
         onOpen?: () => void;
-        onClose?: (res: { code: number; reason: string; }) => void;
-        onMessage?: (res: { data: string | ArrayBuffer; }) => void;
-        onError?: (err: { errMsg: string; }) => void;
+        onClose?: (res: { code: number; reason: string }) => void;
+        onMessage?: (res: { data: string | ArrayBuffer }) => void;
+        onError?: (err: { errMsg: string }) => void;
     } = {};
 
     const task = {
@@ -17,16 +17,16 @@ function createMockSocketTask() {
         onOpen: vi.fn((callback: () => void) => {
             listeners.onOpen = callback;
         }),
-        onClose: vi.fn((callback: (res: { code: number; reason: string; }) => void) => {
+        onClose: vi.fn((callback: (res: { code: number; reason: string }) => void) => {
             listeners.onClose = callback;
         }),
-        onMessage: vi.fn((callback: (res: { data: string | ArrayBuffer; }) => void) => {
+        onMessage: vi.fn((callback: (res: { data: string | ArrayBuffer }) => void) => {
             listeners.onMessage = callback;
         }),
-        onError: vi.fn((callback: (err: { errMsg: string; }) => void) => {
+        onError: vi.fn((callback: (err: { errMsg: string }) => void) => {
             listeners.onError = callback;
         }),
-        send: vi.fn(({ success }: { data: string | ArrayBuffer; success?: () => void; }) => {
+        send: vi.fn(({ success }: { data: string | ArrayBuffer; success?: () => void }) => {
             success?.();
         }),
         close: vi.fn(() => {

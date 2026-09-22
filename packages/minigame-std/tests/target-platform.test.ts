@@ -3,7 +3,7 @@
  *
  * 注意：由于模块缓存的存在，这个测试文件需要在模块加载之前就设置好 mock
  */
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 
 // 使用 vi.hoisted 确保在模块加载之前执行 mock
 vi.hoisted(() => {

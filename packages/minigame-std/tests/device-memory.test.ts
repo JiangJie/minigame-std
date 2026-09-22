@@ -1,9 +1,9 @@
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 
 // 使用 vi.hoisted 确保在模块加载之前执行
 // 设置 deviceMemory 为 undefined 来覆盖 ?? 0 的右侧分支（fallback）
 const originalDeviceMemory = vi.hoisted(() => {
-    const original = (navigator as Navigator & { deviceMemory?: number; }).deviceMemory;
+    const original = (navigator as Navigator & { deviceMemory?: number }).deviceMemory;
     Object.defineProperty(navigator, 'deviceMemory', {
         value: undefined,
         configurable: true,

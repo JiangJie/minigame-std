@@ -1,10 +1,13 @@
 /**
  * 测试小游戏环境下的 fs 模块（mina_fs_async.ts 和 mina_fs_sync.ts）
  */
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 
 // 模拟文件系统数据
-const mockFileSystem = new Map<string, { type: 'file' | 'directory'; content?: string | ArrayBuffer; lastModified?: number; }>();
+const mockFileSystem = new Map<
+    string,
+    { type: 'file' | 'directory'; content?: string | ArrayBuffer; lastModified?: number }
+>();
 
 // 初始化根目录
 mockFileSystem.set('wxfile://usr', { type: 'directory' });
@@ -30,7 +33,7 @@ function createMockFileSystemManager(): WechatMinigame.FileSystemManager {
             if (mockFileSystem.has(dirPath)) {
                 const existing = mockFileSystem.get(dirPath)!;
                 if (existing.type === 'file') {
-                    const err = new Error('file already exists') as Error & { errno: number; };
+                    const err = new Error('file already exists') as Error & { errno: number };
                     err.errno = 1301005;
                     throw err;
                 }
@@ -50,7 +53,7 @@ function createMockFileSystemManager(): WechatMinigame.FileSystemManager {
         }),
         renameSync: vi.fn((oldPath: string, newPath: string) => {
             if (!mockFileSystem.has(oldPath)) {
-                const err = new Error('no such file or directory') as Error & { errno: number; };
+                const err = new Error('no such file or directory') as Error & { errno: number };
                 err.errno = 1300002;
                 throw err;
             }
@@ -65,7 +68,10 @@ function createMockFileSystemManager(): WechatMinigame.FileSystemManager {
             }
             const files: string[] = [];
             for (const [path] of mockFileSystem) {
-                if (path.startsWith(`${dirPath  }/`) && !path.slice(dirPath.length + 1).includes('/')) {
+                if (
+                    path.startsWith(`${dirPath}/`) &&
+                    !path.slice(dirPath.length + 1).includes('/')
+                ) {
                     files.push(path.split('/').pop()!);
                 }
             }
@@ -73,13 +79,16 @@ function createMockFileSystemManager(): WechatMinigame.FileSystemManager {
         }),
         readdirSync: vi.fn((dirPath: string) => {
             if (!mockFileSystem.has(dirPath)) {
-                const err = new Error('no such file or directory') as Error & { errno: number; };
+                const err = new Error('no such file or directory') as Error & { errno: number };
                 err.errno = 1300002;
                 throw err;
             }
             const files: string[] = [];
             for (const [path] of mockFileSystem) {
-                if (path.startsWith(`${dirPath  }/`) && !path.slice(dirPath.length + 1).includes('/')) {
+                if (
+                    path.startsWith(`${dirPath}/`) &&
+                    !path.slice(dirPath.length + 1).includes('/')
+                ) {
                     files.push(path.split('/').pop()!);
                 }
             }
@@ -95,22 +104,23 @@ function createMockFileSystemManager(): WechatMinigame.FileSystemManager {
                 fail?.({ errMsg: 'is a directory', errCode: 1300013 });
                 return;
             }
-            const data = encoding === 'utf8' ? file.content as string : file.content as ArrayBuffer;
+            const data =
+                encoding === 'utf8' ? (file.content as string) : (file.content as ArrayBuffer);
             success?.({ data });
         }),
         readFileSync: vi.fn((filePath: string, encoding?: 'utf8') => {
             if (!mockFileSystem.has(filePath)) {
-                const err = new Error('no such file or directory') as Error & { errno: number; };
+                const err = new Error('no such file or directory') as Error & { errno: number };
                 err.errno = 1300002;
                 throw err;
             }
             const file = mockFileSystem.get(filePath)!;
             if (file.type === 'directory') {
-                const err = new Error('is a directory') as Error & { errno: number; };
+                const err = new Error('is a directory') as Error & { errno: number };
                 err.errno = 1300013;
                 throw err;
             }
-            return encoding === 'utf8' ? file.content as string : file.content as ArrayBuffer;
+            return encoding === 'utf8' ? (file.content as string) : (file.content as ArrayBuffer);
         }),
         writeFile: vi.fn(({ filePath, data, success }) => {
             mockFileSystem.set(filePath, {
@@ -154,7 +164,7 @@ function createMockFileSystemManager(): WechatMinigame.FileSystemManager {
         }),
         unlinkSync: vi.fn((filePath: string) => {
             if (!mockFileSystem.has(filePath)) {
-                const err = new Error('no such file or directory') as Error & { errno: number; };
+                const err = new Error('no such file or directory') as Error & { errno: number };
                 err.errno = 1300002;
                 throw err;
             }
@@ -167,7 +177,7 @@ function createMockFileSystemManager(): WechatMinigame.FileSystemManager {
             }
             // 删除目录及其内容
             for (const path of mockFileSystem.keys()) {
-                if (path === dirPath || path.startsWith(`${dirPath  }/`)) {
+                if (path === dirPath || path.startsWith(`${dirPath}/`)) {
                     mockFileSystem.delete(path);
                 }
             }
@@ -175,13 +185,13 @@ function createMockFileSystemManager(): WechatMinigame.FileSystemManager {
         }),
         rmdirSync: vi.fn((dirPath: string, _recursive?: boolean) => {
             if (!mockFileSystem.has(dirPath)) {
-                const err = new Error('no such file or directory') as Error & { errno: number; };
+                const err = new Error('no such file or directory') as Error & { errno: number };
                 err.errno = 1300002;
                 throw err;
             }
             // 删除目录及其内容
             for (const path of mockFileSystem.keys()) {
-                if (path === dirPath || path.startsWith(`${dirPath  }/`)) {
+                if (path === dirPath || path.startsWith(`${dirPath}/`)) {
                     mockFileSystem.delete(path);
                 }
             }
@@ -195,7 +205,9 @@ function createMockFileSystemManager(): WechatMinigame.FileSystemManager {
         }),
         accessSync: vi.fn((path: string) => {
             if (!mockFileSystem.has(path)) {
-                const err = new Error('accessSync:fail no such file or directory') as Error & { errno: number; };
+                const err = new Error('accessSync:fail no such file or directory') as Error & {
+                    errno: number;
+                };
                 err.errno = 1300002;
                 throw err;
             }
@@ -211,7 +223,7 @@ function createMockFileSystemManager(): WechatMinigame.FileSystemManager {
             if (recursive) {
                 const fileStats: WechatMinigame.FileStats[] = [{ path: '', stats }];
                 for (const [filePath, fileItem] of mockFileSystem) {
-                    if (filePath.startsWith(`${path  }/`)) {
+                    if (filePath.startsWith(`${path}/`)) {
                         const relativePath = filePath.slice(path.length);
                         fileStats.push({
                             path: relativePath,
@@ -226,7 +238,7 @@ function createMockFileSystemManager(): WechatMinigame.FileSystemManager {
         }),
         statSync: vi.fn((path: string, recursive?: boolean) => {
             if (!mockFileSystem.has(path)) {
-                const err = new Error('no such file or directory') as Error & { errno: number; };
+                const err = new Error('no such file or directory') as Error & { errno: number };
                 err.errno = 1300002;
                 throw err;
             }
@@ -236,7 +248,7 @@ function createMockFileSystemManager(): WechatMinigame.FileSystemManager {
             if (recursive) {
                 const fileStats: WechatMinigame.FileStats[] = [{ path: '', stats }];
                 for (const [filePath, fileItem] of mockFileSystem) {
-                    if (filePath.startsWith(`${path  }/`)) {
+                    if (filePath.startsWith(`${path}/`)) {
                         const relativePath = filePath.slice(path.length);
                         fileStats.push({
                             path: relativePath,
@@ -259,7 +271,7 @@ function createMockFileSystemManager(): WechatMinigame.FileSystemManager {
         }),
         copyFileSync: vi.fn((srcPath: string, destPath: string) => {
             if (!mockFileSystem.has(srcPath)) {
-                const err = new Error('no such file or directory') as Error & { errno: number; };
+                const err = new Error('no such file or directory') as Error & { errno: number };
                 err.errno = 1300002;
                 throw err;
             }
@@ -278,10 +290,16 @@ function createMockFileSystemManager(): WechatMinigame.FileSystemManager {
     } as unknown as WechatMinigame.FileSystemManager;
 }
 
-function createMockStats(type: 'file' | 'directory', content?: string | ArrayBuffer): WechatMinigame.Stats {
-    const size = type === 'file' && content
-        ? (typeof content === 'string' ? content.length : (content as ArrayBuffer).byteLength)
-        : 0;
+function createMockStats(
+    type: 'file' | 'directory',
+    content?: string | ArrayBuffer,
+): WechatMinigame.Stats {
+    const size =
+        type === 'file' && content
+            ? typeof content === 'string'
+                ? content.length
+                : (content as ArrayBuffer).byteLength
+            : 0;
 
     return {
         mode: 0,
@@ -523,7 +541,7 @@ describe('mina fs async', () => {
     test('readJsonFile parses JSON file', async () => {
         mockFileSystem.set('wxfile://usr/data.json', { type: 'file', content: '{"key":"value"}' });
 
-        const result = await minaFsAsync.readJsonFile<{ key: string; }>('/data.json');
+        const result = await minaFsAsync.readJsonFile<{ key: string }>('/data.json');
         expect(result.isOk()).toBe(true);
         expect(result.unwrap()).toEqual({ key: 'value' });
     });
@@ -534,7 +552,10 @@ describe('mina fs async', () => {
     });
 
     test('unzip extracts zip file', async () => {
-        mockFileSystem.set('wxfile://usr/archive.zip', { type: 'file', content: new ArrayBuffer(100) });
+        mockFileSystem.set('wxfile://usr/archive.zip', {
+            type: 'file',
+            content: new ArrayBuffer(100),
+        });
 
         const result = await minaFsAsync.unzip('/archive.zip', '/extracted');
         expect(result.isOk()).toBe(true);
@@ -548,7 +569,10 @@ describe('mina fs async', () => {
 
     test('downloadFile with filePath', async () => {
         mockFileSystem.set('wxfile://usr/downloads', { type: 'directory' });
-        const task = minaFsAsync.downloadFile('https://example.com/file.zip', '/downloads/file.zip');
+        const task = minaFsAsync.downloadFile(
+            'https://example.com/file.zip',
+            '/downloads/file.zip',
+        );
         const result = await task.result;
         expect(result.isOk()).toBe(true);
     });
@@ -631,7 +655,10 @@ describe('mina fs sync', () => {
 
     test('statSync with recursive returns FileStats array', () => {
         mockFileSystem.set('wxfile://usr/sync-stat-dir', { type: 'directory' });
-        mockFileSystem.set('wxfile://usr/sync-stat-dir/file.txt', { type: 'file', content: 'data' });
+        mockFileSystem.set('wxfile://usr/sync-stat-dir/file.txt', {
+            type: 'file',
+            content: 'data',
+        });
 
         const result = minaFsSync.statSync('/sync-stat-dir', { recursive: true });
         expect(result.isOk()).toBe(true);
@@ -674,15 +701,21 @@ describe('mina fs sync', () => {
     });
 
     test('readJsonFileSync parses JSON file', () => {
-        mockFileSystem.set('wxfile://usr/sync-data.json', { type: 'file', content: '{"sync":true}' });
+        mockFileSystem.set('wxfile://usr/sync-data.json', {
+            type: 'file',
+            content: '{"sync":true}',
+        });
 
-        const result = minaFsSync.readJsonFileSync<{ sync: boolean; }>('/sync-data.json');
+        const result = minaFsSync.readJsonFileSync<{ sync: boolean }>('/sync-data.json');
         expect(result.isOk()).toBe(true);
         expect(result.unwrap()).toEqual({ sync: true });
     });
 
     test('readJsonFileSync parses JSON array', () => {
-        mockFileSystem.set('wxfile://usr/array.json', { type: 'file', content: '[1, 2, 3, "four"]' });
+        mockFileSystem.set('wxfile://usr/array.json', {
+            type: 'file',
+            content: '[1, 2, 3, "four"]',
+        });
 
         const result = minaFsSync.readJsonFileSync<(number | string)[]>('/array.json');
         expect(result.isOk()).toBe(true);
@@ -705,8 +738,8 @@ describe('mina fs sync', () => {
 
         const result = minaFsSync.readJsonFileSync<{
             name: string;
-            nested: { level1: { level2: { value: number; }; }; };
-            items: { id: number; }[];
+            nested: { level1: { level2: { value: number } } };
+            items: { id: number }[];
         }>('/nested.json');
         expect(result.isOk()).toBe(true);
         const data = result.unwrap();
@@ -721,7 +754,10 @@ describe('mina fs sync', () => {
     });
 
     test('readJsonFileSync returns error for invalid JSON', () => {
-        mockFileSystem.set('wxfile://usr/invalid.json', { type: 'file', content: '{invalid json}' });
+        mockFileSystem.set('wxfile://usr/invalid.json', {
+            type: 'file',
+            content: '{invalid json}',
+        });
 
         const result = minaFsSync.readJsonFileSync('/invalid.json');
         expect(result.isErr()).toBe(true);
@@ -733,7 +769,10 @@ describe('mina fs sync', () => {
             emoji: '😀🎉',
             special: 'line1\nline2\ttab',
         });
-        mockFileSystem.set('wxfile://usr/special.json', { type: 'file', content: jsonWithSpecialChars });
+        mockFileSystem.set('wxfile://usr/special.json', {
+            type: 'file',
+            content: jsonWithSpecialChars,
+        });
 
         const result = minaFsSync.readJsonFileSync<{
             message: string;
@@ -797,12 +836,18 @@ describe('mina fs error handling', () => {
     });
 
     test('writeFile with append and create=false on non-existent file returns error', async () => {
-        const result = await minaFsAsync.writeFile('/non-existent.txt', 'data', { append: true, create: false });
+        const result = await minaFsAsync.writeFile('/non-existent.txt', 'data', {
+            append: true,
+            create: false,
+        });
         expect(result.isErr()).toBe(true);
     });
 
     test('writeFileSync with append and create=false on non-existent file returns error', () => {
-        const result = minaFsSync.writeFileSync('/non-existent.txt', 'data', { append: true, create: false });
+        const result = minaFsSync.writeFileSync('/non-existent.txt', 'data', {
+            append: true,
+            create: false,
+        });
         expect(result.isErr()).toBe(true);
     });
 });
@@ -876,7 +921,10 @@ describe('mina fs zip operations', () => {
 
     test('unzipFromUrl downloads and extracts', async () => {
         // 设置下载的临时文件
-        mockFileSystem.set('wxfile://tmp/downloaded.zip', { type: 'file', content: new ArrayBuffer(100) });
+        mockFileSystem.set('wxfile://tmp/downloaded.zip', {
+            type: 'file',
+            content: new ArrayBuffer(100),
+        });
 
         const result = await minaFsAsync.unzipFromUrl('https://example.com/file.zip', '/extracted');
         expect(result.isOk()).toBe(true);
@@ -896,7 +944,10 @@ describe('mina fs zip operations', () => {
         const content = new TextEncoder().encode('downloaded content').buffer;
         mockFileSystem.set('wxfile://tmp/downloaded.zip', { type: 'file', content });
 
-        const result = await minaFsAsync.zipFromUrl('https://example.com/file.txt', '/compressed.zip');
+        const result = await minaFsAsync.zipFromUrl(
+            'https://example.com/file.txt',
+            '/compressed.zip',
+        );
         expect(result.isOk()).toBe(true);
     });
 });
@@ -940,7 +991,10 @@ describe('mina fs copy operations', () => {
         mockFileSystem.set('wxfile://usr/src-dir', { type: 'directory' });
         mockFileSystem.set('wxfile://usr/src-dir/subdir', { type: 'directory' });
         mockFileSystem.set('wxfile://usr/src-dir/file.txt', { type: 'file', content: 'data' });
-        mockFileSystem.set('wxfile://usr/src-dir/subdir/nested.txt', { type: 'file', content: 'nested' });
+        mockFileSystem.set('wxfile://usr/src-dir/subdir/nested.txt', {
+            type: 'file',
+            content: 'nested',
+        });
 
         const result = await minaFsAsync.copy('/src-dir', '/dest-dir');
         expect(result.isOk()).toBe(true);
@@ -1041,7 +1095,10 @@ describe('mina fs unzipSync operations', () => {
     });
 
     test('unzipSync returns error for invalid zip content', () => {
-        mockFileSystem.set('wxfile://usr/invalid.zip', { type: 'file', content: new ArrayBuffer(10) });
+        mockFileSystem.set('wxfile://usr/invalid.zip', {
+            type: 'file',
+            content: new ArrayBuffer(10),
+        });
 
         const result = minaFsSync.unzipSync('/invalid.zip', '/invalid-dest');
         expect(result.isErr()).toBe(true);
@@ -1062,10 +1119,14 @@ describe('mina fs downloadFile progress edge cases', () => {
         const originalDownloadFile = vi.mocked(wx.downloadFile);
 
         // 创建一个新的 mock 来触发 unknown progress
-        vi.mocked(wx.downloadFile).mockImplementationOnce((options) => {
+        vi.mocked(wx.downloadFile).mockImplementationOnce(options => {
             const mockTask = {
                 abort: vi.fn(),
-                onProgressUpdate: (callback: (progress: WechatMinigame.DownloadTaskOnProgressUpdateListenerResult) => void) => {
+                onProgressUpdate: (
+                    callback: (
+                        progress: WechatMinigame.DownloadTaskOnProgressUpdateListenerResult,
+                    ) => void,
+                ) => {
                     // 触发一个没有有效进度信息的回调
                     setTimeout(() => {
                         callback({
@@ -1093,7 +1154,9 @@ describe('mina fs downloadFile progress edge cases', () => {
             return mockTask;
         });
 
-        const task = minaFsAsync.downloadFile('https://example.com/file.zip', { onProgress: progressCallback });
+        const task = minaFsAsync.downloadFile('https://example.com/file.zip', {
+            onProgress: progressCallback,
+        });
         await task.result;
 
         // 恢复原始 mock
@@ -1101,7 +1164,7 @@ describe('mina fs downloadFile progress edge cases', () => {
     });
 
     test('downloadFile handles error status code', async () => {
-        vi.mocked(wx.downloadFile).mockImplementationOnce((options) => {
+        vi.mocked(wx.downloadFile).mockImplementationOnce(options => {
             setTimeout(() => {
                 options.success?.({
                     tempFilePath: '',
@@ -1122,13 +1185,16 @@ describe('mina fs downloadFile progress edge cases', () => {
         });
 
         mockFileSystem.set('wxfile://usr/downloads', { type: 'directory' });
-        const task = minaFsAsync.downloadFile('https://example.com/notfound.zip', '/downloads/notfound.zip');
+        const task = minaFsAsync.downloadFile(
+            'https://example.com/notfound.zip',
+            '/downloads/notfound.zip',
+        );
         const result = await task.result;
         expect(result.isErr()).toBe(true);
     });
 
     test('downloadFile handles fail callback', async () => {
-        vi.mocked(wx.downloadFile).mockImplementationOnce((options) => {
+        vi.mocked(wx.downloadFile).mockImplementationOnce(options => {
             setTimeout(() => {
                 options.fail?.({
                     errMsg: 'downloadFile:fail network error',
@@ -1150,7 +1216,7 @@ describe('mina fs downloadFile progress edge cases', () => {
     });
 
     test('downloadFile abort before download starts', async () => {
-        vi.mocked(wx.downloadFile).mockImplementationOnce((options) => {
+        vi.mocked(wx.downloadFile).mockImplementationOnce(options => {
             // 延迟执行 success，让 abort 有机会先执行
             setTimeout(() => {
                 options.success?.({
@@ -1172,7 +1238,10 @@ describe('mina fs downloadFile progress edge cases', () => {
         });
 
         mockFileSystem.set('wxfile://usr/downloads', { type: 'directory' });
-        const task = minaFsAsync.downloadFile('https://example.com/file.zip', '/downloads/file.zip');
+        const task = minaFsAsync.downloadFile(
+            'https://example.com/file.zip',
+            '/downloads/file.zip',
+        );
 
         // 立即 abort
         task.abort();
@@ -1196,7 +1265,7 @@ describe('mina fs mkdir error handling', () => {
     test('mkdirSync handles already exists error as success', () => {
         // Mock mkdirSync 抛出 already exists 错误
         vi.mocked(mockFsManager.mkdirSync).mockImplementationOnce(() => {
-            const err = new Error('file already exists') as Error & { errno: number; };
+            const err = new Error('file already exists') as Error & { errno: number };
             err.errno = 1301005;
             throw err;
         });
@@ -1221,14 +1290,6 @@ describe('mina fs zip empty directory', () => {
         expect(result.isErr()).toBe(true);
     });
 });
-
-
-
-
-
-
-
-
 
 test.afterAll(() => {
     vi.unstubAllGlobals();

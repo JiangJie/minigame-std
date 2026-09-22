@@ -4,7 +4,7 @@
  * 注意：小游戏环境使用的是 rsa-oaep-encryption 库实现的 RSA 加密，
  * 不是 wx.rsa API
  */
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 
 // RSA 2048-bit 公钥（测试用）
 const TEST_PUBLIC_KEY = `-----BEGIN PUBLIC KEY-----

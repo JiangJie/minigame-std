@@ -4,7 +4,7 @@
  * 这个场景需要单独的测试文件，因为模块级别的 OnceAsync 缓存会导致
  * 同一文件中的多个测试相互影响
  */
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 
 // Mock 小游戏的设备信息（包含 benchmarkLevel）
 const mockMinaDeviceInfo = {

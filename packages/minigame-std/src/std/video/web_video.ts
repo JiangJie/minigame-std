@@ -76,11 +76,15 @@ export function createVideo(options: WechatMinigame.CreateVideoOption): WechatMi
 
     // 如果设置了初始播放位置，在元数据加载后跳转
     if (initialTime !== undefined) {
-        video.addEventListener('loadedmetadata', () => {
-            video.currentTime = initialTime;
-        }, {
-            once: true,
-        });
+        video.addEventListener(
+            'loadedmetadata',
+            () => {
+                video.currentTime = initialTime;
+            },
+            {
+                once: true,
+            },
+        );
     }
 
     // 事件监听器存储
@@ -103,9 +107,11 @@ export function createVideo(options: WechatMinigame.CreateVideoOption): WechatMi
     });
     video.addEventListener('error', () => {
         const errMsg = video.error?.message ?? 'MEDIA_ERR_UNKNOWN';
-        listeners.error.forEach(cb => cb({
-            errMsg,
-        }));
+        listeners.error.forEach(cb =>
+            cb({
+                errMsg,
+            }),
+        );
     });
     video.addEventListener('pause', () => {
         listeners.pause.forEach(cb => {
@@ -120,18 +126,23 @@ export function createVideo(options: WechatMinigame.CreateVideoOption): WechatMi
     video.addEventListener('progress', () => {
         const buffered = video.buffered;
         const { duration } = video;
-        const bufferedPercent = buffered.length > 0 && duration > 0
-            ? (buffered.end(buffered.length - 1) / duration) * 100
-            : 0;
-        listeners.progress.forEach(cb => cb({
-            buffered: bufferedPercent,
-        }));
+        const bufferedPercent =
+            buffered.length > 0 && duration > 0
+                ? (buffered.end(buffered.length - 1) / duration) * 100
+                : 0;
+        listeners.progress.forEach(cb =>
+            cb({
+                buffered: bufferedPercent,
+            }),
+        );
     });
     video.addEventListener('timeupdate', () => {
-        listeners.timeupdate.forEach(cb => cb({
-            position: video.currentTime,
-            duration: video.duration,
-        }));
+        listeners.timeupdate.forEach(cb =>
+            cb({
+                position: video.currentTime,
+                duration: video.duration,
+            }),
+        );
     });
     video.addEventListener('waiting', () => {
         listeners.waiting.forEach(cb => {
@@ -276,7 +287,7 @@ export function createVideo(options: WechatMinigame.CreateVideoOption): WechatMi
         },
 
         get x() {
-            return parseFloat(video.style.left) || 0;
+            return Number.parseFloat(video.style.left) || 0;
         },
         set x(value) {
             video.style.position = 'absolute';
@@ -284,7 +295,7 @@ export function createVideo(options: WechatMinigame.CreateVideoOption): WechatMi
         },
 
         get y() {
-            return parseFloat(video.style.top) || 0;
+            return Number.parseFloat(video.style.top) || 0;
         },
         set y(value) {
             video.style.position = 'absolute';
@@ -398,7 +409,7 @@ export function createVideo(options: WechatMinigame.CreateVideoOption): WechatMi
         },
 
         exitFullScreen(): Promise<void> {
-            document.exitFullscreen();
+            void document.exitFullscreen();
             return Promise.resolve();
         },
 

@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { connectSocket, SocketReadyState } from '../src/mod.ts';
 
 test('socket echo', () => {
@@ -10,7 +10,7 @@ test('socket echo', () => {
 
     let count = 0;
 
-    const removeMessageListener = socket.addEventListener('message', (msg) => {
+    const removeMessageListener = socket.addEventListener('message', msg => {
         count += 1;
 
         if (count === 1) {
@@ -21,11 +21,11 @@ test('socket echo', () => {
         }
     });
 
-    socket.addEventListener('error', (err) => {
+    socket.addEventListener('error', err => {
         console.log('socket error', err);
     });
 
-    socket.addEventListener('close', (code) => {
+    socket.addEventListener('close', code => {
         removeMessageListener();
         expect(code).toBe(1005);
 
@@ -84,6 +84,7 @@ test('socket send returns Ok result', async () => {
 
     const socket = connectSocket('wss://echo.websocket.org/').unwrap();
 
+    // oxlint-disable-next-line typescript/no-misused-promises -- 测试回调按需 await
     socket.addEventListener('open', async () => {
         const result = await socket.send('test');
         expect(result.isOk()).toBe(true);
@@ -107,7 +108,7 @@ test('socket send ArrayBuffer data', () => {
 
     let receivedWelcome = false;
 
-    socket.addEventListener('message', (msg) => {
+    socket.addEventListener('message', msg => {
         if (!receivedWelcome) {
             // First message is welcome message
             receivedWelcome = true;
@@ -205,7 +206,7 @@ test('socket error event fires on connection failure', () => {
     // Use a URL that will likely fail
     const socket = connectSocket('wss://this-domain-does-not-exist.test/').unwrap();
 
-    socket.addEventListener('error', (err) => {
+    socket.addEventListener('error', err => {
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toBe('WebSocket error');
         resolve();

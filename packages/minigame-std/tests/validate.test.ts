@@ -1,6 +1,11 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 // Internal functions - import directly from source for testing
-import { validatePositiveInteger, validateSafeSocketUrl, validateSafeUrl, validateString } from '../src/std/internal/mod.ts';
+import {
+    validatePositiveInteger,
+    validateSafeSocketUrl,
+    validateSafeUrl,
+    validateString,
+} from '../src/std/internal/mod.ts';
 
 // validateString tests
 test('validateString returns Ok for valid strings', () => {

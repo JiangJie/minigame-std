@@ -1,4 +1,4 @@
-import { afterAll, afterEach, beforeAll, expect, test, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, expect, test, vi } from 'vite-plus/test';
 import { audio, fs } from '../src/mod.ts';
 
 // Generate a simple WAV file buffer (100ms of silence)
@@ -299,7 +299,9 @@ test('playWebAudioFromFile with options', async () => {
 
 test('playWebAudioFromUrl downloads and plays audio from URL', async () => {
     const wavBuffer = generateSilentWavBuffer();
-    const fetchMock = vi.fn<(input: RequestInfo | URL, init?: RequestInit) => Promise<Response>>(async () => new Response(wavBuffer));
+    const fetchMock = vi.fn<(input: RequestInfo | URL, init?: RequestInit) => Promise<Response>>(
+        async () => new Response(wavBuffer),
+    );
     vi.stubGlobal('fetch', fetchMock);
 
     const result = await audio.playWebAudioFromUrl('https://example.com/audio.wav', {
@@ -320,10 +322,13 @@ test('playWebAudioFromUrl downloads and plays audio from URL', async () => {
 });
 
 test('playWebAudioFromUrl returns fetch error for non-ok response', async () => {
-    const fetchMock = vi.fn<(input: RequestInfo | URL, init?: RequestInit) => Promise<Response>>(async () => new Response(null, {
-        status: 404,
-        statusText: 'Not Found',
-    }));
+    const fetchMock = vi.fn<(input: RequestInfo | URL, init?: RequestInit) => Promise<Response>>(
+        async () =>
+            new Response(null, {
+                status: 404,
+                statusText: 'Not Found',
+            }),
+    );
     vi.stubGlobal('fetch', fetchMock);
 
     const result = await audio.playWebAudioFromUrl('https://example.com/missing.wav');

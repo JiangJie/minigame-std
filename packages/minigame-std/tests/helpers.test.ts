@@ -1,5 +1,5 @@
 import { Err } from 'happy-rusty';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import {
     bufferSourceToAb,
     bufferSourceToBytes,
@@ -39,7 +39,7 @@ test('createFailedFetchTask abort is noop', () => {
 test('createFailedFetchTask preserves error type', async () => {
     const customError = new Error('Server error');
     const errResult = Err(customError);
-    const task = createFailedFetchTask<{ data: string; }>(errResult);
+    const task = createFailedFetchTask<{ data: string }>(errResult);
 
     const result = await task.result;
 
@@ -85,7 +85,7 @@ test('miniGameFailureToError preserves errno from Error-like object', () => {
         message: 'statSync:fail:No such file or directory',
     } as unknown as WechatMinigame.GeneralCallbackResult;
 
-    const result = miniGameFailureToError(errorLike) as Error & { errno?: number; };
+    const result = miniGameFailureToError(errorLike) as Error & { errno?: number };
 
     expect(result.message).toBe('statSync:fail:No such file or directory');
     expect(result.errno).toBe(1300002);
@@ -157,7 +157,9 @@ test('bufferSourceToBytes handles TypedArray with offset', () => {
 });
 
 test('bufferSourceToBytes throws on invalid input', () => {
-    expect(() => bufferSourceToBytes({} as BufferSource)).toThrow('Input argument must be an ArrayBuffer or ArrayBufferView');
+    expect(() => bufferSourceToBytes({} as BufferSource)).toThrow(
+        'Input argument must be an ArrayBuffer or ArrayBufferView',
+    );
     expect(() => bufferSourceToBytes(null as unknown as BufferSource)).toThrow();
 });
 
@@ -222,7 +224,9 @@ test('bufferSourceToAb handles TypedArray with offset', () => {
 });
 
 test('bufferSourceToAb throws on invalid input', () => {
-    expect(() => bufferSourceToAb({} as BufferSource)).toThrow('Input argument must be an ArrayBuffer or ArrayBufferView');
+    expect(() => bufferSourceToAb({} as BufferSource)).toThrow(
+        'Input argument must be an ArrayBuffer or ArrayBufferView',
+    );
 });
 
 test('bufferSourceToAb handles empty ArrayBuffer', () => {

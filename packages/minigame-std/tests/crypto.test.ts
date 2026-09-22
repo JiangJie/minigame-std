@@ -1,9 +1,21 @@
-import { describe, expect, test } from 'vitest';
-import { cryptos, decodeBase64, decodeByteString, decodeUtf8, encodeUtf8, type DataSource } from '../src/mod.ts';
+import { describe, expect, test } from 'vite-plus/test';
+import {
+    cryptos,
+    decodeBase64,
+    decodeByteString,
+    decodeUtf8,
+    encodeUtf8,
+    type DataSource,
+} from '../src/mod.ts';
 // Direct imports for testing mina implementations (they don't use wx API)
 import { createHMAC as pureCreateHMAC } from '../src/std/crypto/hmac/hmac.ts';
 import { importPublicKey as minaImportPublicKey } from '../src/std/crypto/rsa/mina_rsa.ts';
-import { sha1 as pureSha1, sha256 as pureSha256, sha384 as pureSha384, sha512 as pureSha512 } from '../src/std/crypto/sha/sha.ts';
+import {
+    sha1 as pureSha1,
+    sha256 as pureSha256,
+    sha384 as pureSha384,
+    sha512 as pureSha512,
+} from '../src/std/crypto/sha/sha.ts';
 
 test('calculate md5', () => {
     const data = 'minigame-std-中文';
@@ -20,27 +32,45 @@ test('calculate sha', async () => {
     expect((await cryptos.sha1(data)).unwrap()).toBe(sha1Str);
     expect((await cryptos.sha1(encodeUtf8(data))).unwrap()).toBe(sha1Str);
 
-    expect((await cryptos.sha256(data)).unwrap()).toBe('9cff73e4d0e15d78089294a8519788df44f306411e8d20f5f3770e564a73467f');
-    expect((await cryptos.sha384(data)).unwrap()).toBe('23ba7aac72c86e88befc6094e8f903645e2531cf14ac57edf1796e74e40a6e567b0255502a342d3085493d34e87b0541');
-    expect((await cryptos.sha512(data)).unwrap()).toBe('b4ebfef03638039622452ce378974fba515a8cb46c07e667bf80cdae06e69127123d5c32d85deb0ccc9ce563e5939b3340a604b45bd6493e663ae266c203d694');
+    expect((await cryptos.sha256(data)).unwrap()).toBe(
+        '9cff73e4d0e15d78089294a8519788df44f306411e8d20f5f3770e564a73467f',
+    );
+    expect((await cryptos.sha384(data)).unwrap()).toBe(
+        '23ba7aac72c86e88befc6094e8f903645e2531cf14ac57edf1796e74e40a6e567b0255502a342d3085493d34e87b0541',
+    );
+    expect((await cryptos.sha512(data)).unwrap()).toBe(
+        'b4ebfef03638039622452ce378974fba515a8cb46c07e667bf80cdae06e69127123d5c32d85deb0ccc9ce563e5939b3340a604b45bd6493e663ae266c203d694',
+    );
 });
 
 test('calculate hmac', async () => {
     const key = '密码';
     const data = 'minigame-std-中文';
 
-    expect((await cryptos.sha1HMAC(key, data)).unwrap()).toBe('c039c11a31199388dfb540f989d27f1ec099a43e');
-    expect((await cryptos.sha256HMAC(key, data)).unwrap()).toBe('5e6bcf9fd1f62617773c18d420ef200dfd46dc15373d1192ff02cf648d703748');
-    expect((await cryptos.sha384HMAC(key, data)).unwrap()).toBe('7e011216b97450f06de084cdc6bd5f6e206dba1aa87519129dfc289ae9aa6231800188a0defe9543321365db2acc91f6');
-    expect((await cryptos.sha512HMAC(key, data)).unwrap()).toBe('e781e747d4358000756e7752086dbf37822bd5f4733df2953a6eb96945b670cad1df950d4ba2f09cdf0e90beba1cdab9f0798ce6814b5aad7521d41bf3b4d0f3');
+    expect((await cryptos.sha1HMAC(key, data)).unwrap()).toBe(
+        'c039c11a31199388dfb540f989d27f1ec099a43e',
+    );
+    expect((await cryptos.sha256HMAC(key, data)).unwrap()).toBe(
+        '5e6bcf9fd1f62617773c18d420ef200dfd46dc15373d1192ff02cf648d703748',
+    );
+    expect((await cryptos.sha384HMAC(key, data)).unwrap()).toBe(
+        '7e011216b97450f06de084cdc6bd5f6e206dba1aa87519129dfc289ae9aa6231800188a0defe9543321365db2acc91f6',
+    );
+    expect((await cryptos.sha512HMAC(key, data)).unwrap()).toBe(
+        'e781e747d4358000756e7752086dbf37822bd5f4733df2953a6eb96945b670cad1df950d4ba2f09cdf0e90beba1cdab9f0798ce6814b5aad7521d41bf3b4d0f3',
+    );
 });
 
 test('calculate hmac with ArrayBuffer', async () => {
     const key = encodeUtf8('密码');
     const data = encodeUtf8('minigame-std-中文');
 
-    expect((await cryptos.sha1HMAC(key, data)).unwrap()).toBe('c039c11a31199388dfb540f989d27f1ec099a43e');
-    expect((await cryptos.sha256HMAC(key, data)).unwrap()).toBe('5e6bcf9fd1f62617773c18d420ef200dfd46dc15373d1192ff02cf648d703748');
+    expect((await cryptos.sha1HMAC(key, data)).unwrap()).toBe(
+        'c039c11a31199388dfb540f989d27f1ec099a43e',
+    );
+    expect((await cryptos.sha256HMAC(key, data)).unwrap()).toBe(
+        '5e6bcf9fd1f62617773c18d420ef200dfd46dc15373d1192ff02cf648d703748',
+    );
 });
 
 test('calculate hmac with empty string', async () => {
@@ -64,7 +94,10 @@ test('calculate hmac with empty key returns error', async () => {
 });
 
 test('calculate hmac with binary key and data', async () => {
-    const key = new Uint8Array([0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b]);
+    const key = new Uint8Array([
+        0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b,
+        0x0b, 0x0b, 0x0b, 0x0b, 0x0b,
+    ]);
     const data = encodeUtf8('Hi There');
 
     // RFC 4231 test vector for HMAC-SHA-256
@@ -213,7 +246,7 @@ test('getRandomValues returns Err for invalid length', async () => {
     // 小数
     expect((await cryptos.getRandomValues(1.5)).isErr()).toBe(true);
     // NaN
-    expect((await cryptos.getRandomValues(NaN)).isErr()).toBe(true);
+    expect((await cryptos.getRandomValues(Number.NaN)).isErr()).toBe(true);
     // Infinity
     expect((await cryptos.getRandomValues(Infinity)).isErr()).toBe(true);
 
@@ -314,24 +347,23 @@ wIy0/kd6szCcWK5Ld1kH9R0=
                 hash: sha,
             },
             false,
-            [
-                'decrypt',
-            ],
+            ['decrypt'],
         );
     }
 
     async function decrypt(encryptedData: DataSource, hash: string) {
-        const buffer = typeof encryptedData === 'string'
-            ? decodeBase64(encryptedData)
-            : encryptedData;
+        const buffer =
+            typeof encryptedData === 'string' ? decodeBase64(encryptedData) : encryptedData;
         const privateKey = await importDecryptKey(privateKeyStr, hash);
-        const decryptedData = decodeUtf8(await crypto.subtle.decrypt(
-            {
-                name: 'RSA-OAEP',
-            },
-            privateKey,
-            buffer,
-        ));
+        const decryptedData = decodeUtf8(
+            await crypto.subtle.decrypt(
+                {
+                    name: 'RSA-OAEP',
+                },
+                privateKey,
+                buffer,
+            ),
+        );
 
         return decryptedData;
     }
@@ -341,32 +373,61 @@ wIy0/kd6szCcWK5Ld1kH9R0=
     expect((await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-2' as any)).isErr()).toBe(true);
 
     // Test invalid PEM format
-    expect((await cryptos.rsa.importPublicKey(publicKeyStr.slice(1), 'SHA-256')).isErr()).toBe(true);
-    expect((await cryptos.rsa.importPublicKey(publicKeyStr.replace('PUBLIC', 'AES PUBLIC'), 'SHA-256')).isErr()).toBe(true);
+    expect((await cryptos.rsa.importPublicKey(publicKeyStr.slice(1), 'SHA-256')).isErr()).toBe(
+        true,
+    );
+    expect(
+        (
+            await cryptos.rsa.importPublicKey(
+                publicKeyStr.replace('PUBLIC', 'AES PUBLIC'),
+                'SHA-256',
+            )
+        ).isErr(),
+    ).toBe(true);
 
     // Test encryption with different hash algorithms
     {
-        const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-256')).unwrap().encryptToString(data);
+        const encryptedData = await (
+            await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-256')
+        )
+            .unwrap()
+            .encryptToString(data);
         const decryptedData = await decrypt(encryptedData.unwrap(), 'SHA-256');
         expect(decryptedData).toBe(data);
     }
     {
-        const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-1')).unwrap().encrypt(data);
+        const encryptedData = await (
+            await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-1')
+        )
+            .unwrap()
+            .encrypt(data);
         const decryptedData = await decrypt(encryptedData.unwrap(), 'SHA-1');
         expect(decryptedData).toBe(data);
     }
     {
-        const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-256')).unwrap().encrypt(data);
+        const encryptedData = await (
+            await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-256')
+        )
+            .unwrap()
+            .encrypt(data);
         const decryptedData = await decrypt(encryptedData.unwrap(), 'SHA-256');
         expect(decryptedData).toBe(data);
     }
     {
-        const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-384')).unwrap().encrypt(data);
+        const encryptedData = await (
+            await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-384')
+        )
+            .unwrap()
+            .encrypt(data);
         const decryptedData = await decrypt(encryptedData.unwrap(), 'SHA-384');
         expect(decryptedData).toBe(data);
     }
     {
-        const encryptedData = await (await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-512')).unwrap().encrypt(data);
+        const encryptedData = await (
+            await cryptos.rsa.importPublicKey(publicKeyStr, 'SHA-512')
+        )
+            .unwrap()
+            .encrypt(data);
         const decryptedData = await decrypt(encryptedData.unwrap(), 'SHA-512');
         expect(decryptedData).toBe(data);
     }
@@ -378,11 +439,9 @@ wIy0/kd6szCcWK5Ld1kH9R0=
         const encryptedData = await rsaKey.encrypt(binaryData);
 
         const privateKey = await importDecryptKey(privateKeyStr, 'SHA-256');
-        const decryptedData = new Uint8Array(await crypto.subtle.decrypt(
-            { name: 'RSA-OAEP' },
-            privateKey,
-            encryptedData.unwrap(),
-        ));
+        const decryptedData = new Uint8Array(
+            await crypto.subtle.decrypt({ name: 'RSA-OAEP' }, privateKey, encryptedData.unwrap()),
+        );
 
         expect(decryptedData).toEqual(binaryData);
     }
@@ -427,17 +486,23 @@ describe('mina SHA implementation (rsa-oaep-encryption library)', () => {
 
     test('pureSha256 produces correct hash', () => {
         const data = 'minigame-std-中文';
-        expect(pureSha256(data)).toBe('9cff73e4d0e15d78089294a8519788df44f306411e8d20f5f3770e564a73467f');
+        expect(pureSha256(data)).toBe(
+            '9cff73e4d0e15d78089294a8519788df44f306411e8d20f5f3770e564a73467f',
+        );
     });
 
     test('pureSha384 produces correct hash', () => {
         const data = 'minigame-std-中文';
-        expect(pureSha384(data)).toBe('23ba7aac72c86e88befc6094e8f903645e2531cf14ac57edf1796e74e40a6e567b0255502a342d3085493d34e87b0541');
+        expect(pureSha384(data)).toBe(
+            '23ba7aac72c86e88befc6094e8f903645e2531cf14ac57edf1796e74e40a6e567b0255502a342d3085493d34e87b0541',
+        );
     });
 
     test('pureSha512 produces correct hash', () => {
         const data = 'minigame-std-中文';
-        expect(pureSha512(data)).toBe('b4ebfef03638039622452ce378974fba515a8cb46c07e667bf80cdae06e69127123d5c32d85deb0ccc9ce563e5939b3340a604b45bd6493e663ae266c203d694');
+        expect(pureSha512(data)).toBe(
+            'b4ebfef03638039622452ce378974fba515a8cb46c07e667bf80cdae06e69127123d5c32d85deb0ccc9ce563e5939b3340a604b45bd6493e663ae266c203d694',
+        );
     });
 
     test('mina SHA with binary data', () => {
@@ -466,7 +531,9 @@ describe('Pure JS HMAC implementation (rsa-oaep-encryption library)', () => {
         const data = 'minigame-std-中文';
 
         const result = await pureCreateHMAC('SHA-256', key, data);
-        expect(result.unwrap()).toBe('5e6bcf9fd1f62617773c18d420ef200dfd46dc15373d1192ff02cf648d703748');
+        expect(result.unwrap()).toBe(
+            '5e6bcf9fd1f62617773c18d420ef200dfd46dc15373d1192ff02cf648d703748',
+        );
     });
 
     test('pureCreateHMAC SHA-384 produces correct result', async () => {
@@ -474,7 +541,9 @@ describe('Pure JS HMAC implementation (rsa-oaep-encryption library)', () => {
         const data = 'minigame-std-中文';
 
         const result = await pureCreateHMAC('SHA-384', key, data);
-        expect(result.unwrap()).toBe('7e011216b97450f06de084cdc6bd5f6e206dba1aa87519129dfc289ae9aa6231800188a0defe9543321365db2acc91f6');
+        expect(result.unwrap()).toBe(
+            '7e011216b97450f06de084cdc6bd5f6e206dba1aa87519129dfc289ae9aa6231800188a0defe9543321365db2acc91f6',
+        );
     });
 
     test('pureCreateHMAC SHA-512 produces correct result', async () => {
@@ -482,7 +551,9 @@ describe('Pure JS HMAC implementation (rsa-oaep-encryption library)', () => {
         const data = 'minigame-std-中文';
 
         const result = await pureCreateHMAC('SHA-512', key, data);
-        expect(result.unwrap()).toBe('e781e747d4358000756e7752086dbf37822bd5f4733df2953a6eb96945b670cad1df950d4ba2f09cdf0e90beba1cdab9f0798ce6814b5aad7521d41bf3b4d0f3');
+        expect(result.unwrap()).toBe(
+            'e781e747d4358000756e7752086dbf37822bd5f4733df2953a6eb96945b670cad1df950d4ba2f09cdf0e90beba1cdab9f0798ce6814b5aad7521d41bf3b4d0f3',
+        );
     });
 
     test('pureCreateHMAC with long key (longer than block size)', async () => {
@@ -583,11 +654,9 @@ wIy0/kd6szCcWK5Ld1kH9R0=
 
         // Decrypt with Web Crypto API
         const privateKey = await importDecryptKey(privateKeyStr, 'SHA-256');
-        const decryptedData = decodeUtf8(await crypto.subtle.decrypt(
-            { name: 'RSA-OAEP' },
-            privateKey,
-            encryptedData.unwrap(),
-        ));
+        const decryptedData = decodeUtf8(
+            await crypto.subtle.decrypt({ name: 'RSA-OAEP' }, privateKey, encryptedData.unwrap()),
+        );
 
         expect(decryptedData).toBe(data);
     });
@@ -599,11 +668,9 @@ wIy0/kd6szCcWK5Ld1kH9R0=
         const encryptedData = await rsaKey.encrypt(data);
 
         const privateKey = await importDecryptKey(privateKeyStr, 'SHA-1');
-        const decryptedData = decodeUtf8(await crypto.subtle.decrypt(
-            { name: 'RSA-OAEP' },
-            privateKey,
-            encryptedData.unwrap(),
-        ));
+        const decryptedData = decodeUtf8(
+            await crypto.subtle.decrypt({ name: 'RSA-OAEP' }, privateKey, encryptedData.unwrap()),
+        );
 
         expect(decryptedData).toBe(data);
     });
@@ -615,11 +682,9 @@ wIy0/kd6szCcWK5Ld1kH9R0=
         const encryptedData = await rsaKey.encrypt(data);
 
         const privateKey = await importDecryptKey(privateKeyStr, 'SHA-384');
-        const decryptedData = decodeUtf8(await crypto.subtle.decrypt(
-            { name: 'RSA-OAEP' },
-            privateKey,
-            encryptedData.unwrap(),
-        ));
+        const decryptedData = decodeUtf8(
+            await crypto.subtle.decrypt({ name: 'RSA-OAEP' }, privateKey, encryptedData.unwrap()),
+        );
 
         expect(decryptedData).toBe(data);
     });
@@ -631,11 +696,9 @@ wIy0/kd6szCcWK5Ld1kH9R0=
         const encryptedData = await rsaKey.encrypt(data);
 
         const privateKey = await importDecryptKey(privateKeyStr, 'SHA-512');
-        const decryptedData = decodeUtf8(await crypto.subtle.decrypt(
-            { name: 'RSA-OAEP' },
-            privateKey,
-            encryptedData.unwrap(),
-        ));
+        const decryptedData = decodeUtf8(
+            await crypto.subtle.decrypt({ name: 'RSA-OAEP' }, privateKey, encryptedData.unwrap()),
+        );
 
         expect(decryptedData).toBe(data);
     });
@@ -653,11 +716,9 @@ wIy0/kd6szCcWK5Ld1kH9R0=
         // Decode and decrypt to verify
         const encryptedBuffer = decodeBase64(encryptedBase64);
         const privateKey = await importDecryptKey(privateKeyStr, 'SHA-256');
-        const decryptedData = decodeUtf8(await crypto.subtle.decrypt(
-            { name: 'RSA-OAEP' },
-            privateKey,
-            encryptedBuffer,
-        ));
+        const decryptedData = decodeUtf8(
+            await crypto.subtle.decrypt({ name: 'RSA-OAEP' }, privateKey, encryptedBuffer),
+        );
 
         expect(decryptedData).toBe(data);
     });
@@ -671,11 +732,9 @@ wIy0/kd6szCcWK5Ld1kH9R0=
 
         const privateKey = await importDecryptKey(privateKeyStr, 'SHA-256');
         // The mina implementation converts binary to text using decodeUtf8
-        const decryptedText = decodeUtf8(await crypto.subtle.decrypt(
-            { name: 'RSA-OAEP' },
-            privateKey,
-            encryptedData.unwrap(),
-        ));
+        const decryptedText = decodeUtf8(
+            await crypto.subtle.decrypt({ name: 'RSA-OAEP' }, privateKey, encryptedData.unwrap()),
+        );
 
         expect(decryptedText).toBe('Hello');
     });

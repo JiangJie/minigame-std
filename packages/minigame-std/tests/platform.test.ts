@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { platform } from '../src/mod.ts';
 import { getTargetType, isMiniGame, isWeb } from '../src/std/platform/base.ts';
 

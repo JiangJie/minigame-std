@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 
 test('typeof document and location are undefined in Node environment', () => {
     expect(typeof document).toBe('undefined');
@@ -26,10 +26,13 @@ test('addShowListener returns no-op with fireImmediately in non-DOM environment'
     const { addShowListener } = await import('../src/std/event/web_event.ts');
     let fireCount = 0;
     let lastOptions: WechatMinigame.OnShowListenerResult | undefined;
-    const removeListener = addShowListener((options) => {
-        fireCount++;
-        lastOptions = options;
-    }, { fireImmediately: true });
+    const removeListener = addShowListener(
+        options => {
+            fireCount++;
+            lastOptions = options;
+        },
+        { fireImmediately: true },
+    );
 
     // fireImmediately still fires once with degraded getWebShowOptions
     expect(fireCount).toBe(1);

@@ -1,7 +1,7 @@
 /**
  * 测试小游戏环境下的 crypto/random/mod.ts
  */
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 
 // 使用 vi.hoisted 确保在模块加载之前执行 mock
 vi.hoisted(() => {
@@ -11,7 +11,7 @@ vi.hoisted(() => {
         getUserCryptoManager: () => ({
             getRandomValues: (options: {
                 length: number;
-                success: (res: { randomValues: ArrayBuffer; }) => void;
+                success: (res: { randomValues: ArrayBuffer }) => void;
                 fail: (err: Error) => void;
             }) => {
                 // 模拟返回随机数据
@@ -45,7 +45,7 @@ test('getRandomValues returns Err for invalid length in minigame environment', a
     // 小数
     expect((await getRandomValues(1.5)).isErr()).toBe(true);
     // NaN
-    expect((await getRandomValues(NaN)).isErr()).toBe(true);
+    expect((await getRandomValues(Number.NaN)).isErr()).toBe(true);
     // Infinity
     expect((await getRandomValues(Infinity)).isErr()).toBe(true);
 

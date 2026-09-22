@@ -1,7 +1,7 @@
 /**
  * 测试小游戏环境下的 storage/mod.ts（IS_MINA = true 分支）
  */
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 
 // 模拟存储数据
 const mockStorage = new Map<string, string>();

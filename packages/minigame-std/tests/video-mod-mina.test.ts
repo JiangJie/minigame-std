@@ -1,7 +1,7 @@
 /**
  * 测试小游戏环境下的 video/mod.ts（IS_MINA = true 分支）
  */
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 
 // 创建 mock 的 Video 对象
 function createMockVideo(): WechatMinigame.Video {
@@ -29,38 +29,38 @@ function createMockVideo(): WechatMinigame.Video {
         requestFullScreen: vi.fn(),
         exitFullScreen: vi.fn(),
         destroy: vi.fn(),
-        onPlay: vi.fn((callback) => {
-            listeners['play'] = listeners['play'] || [];
+        onPlay: vi.fn(callback => {
+            listeners['play'] ||= [];
             listeners['play'].push(callback);
         }),
         offPlay: vi.fn(),
-        onPause: vi.fn((callback) => {
-            listeners['pause'] = listeners['pause'] || [];
+        onPause: vi.fn(callback => {
+            listeners['pause'] ||= [];
             listeners['pause'].push(callback);
         }),
         offPause: vi.fn(),
-        onEnded: vi.fn((callback) => {
-            listeners['ended'] = listeners['ended'] || [];
+        onEnded: vi.fn(callback => {
+            listeners['ended'] ||= [];
             listeners['ended'].push(callback);
         }),
         offEnded: vi.fn(),
-        onTimeUpdate: vi.fn((callback) => {
-            listeners['timeupdate'] = listeners['timeupdate'] || [];
+        onTimeUpdate: vi.fn(callback => {
+            listeners['timeupdate'] ||= [];
             listeners['timeupdate'].push(callback);
         }),
         offTimeUpdate: vi.fn(),
-        onError: vi.fn((callback) => {
-            listeners['error'] = listeners['error'] || [];
+        onError: vi.fn(callback => {
+            listeners['error'] ||= [];
             listeners['error'].push(callback);
         }),
         offError: vi.fn(),
-        onWaiting: vi.fn((callback) => {
-            listeners['waiting'] = listeners['waiting'] || [];
+        onWaiting: vi.fn(callback => {
+            listeners['waiting'] ||= [];
             listeners['waiting'].push(callback);
         }),
         offWaiting: vi.fn(),
-        onProgress: vi.fn((callback) => {
-            listeners['progress'] = listeners['progress'] || [];
+        onProgress: vi.fn(callback => {
+            listeners['progress'] ||= [];
             listeners['progress'].push(callback);
         }),
         offProgress: vi.fn(),

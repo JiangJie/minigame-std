@@ -2,10 +2,12 @@
   "name": "minigame-test",
   "private": true,
   "scripts": {
-    "check": "pnpm exec tsc --noEmit",
-    "lint": "pnpm exec eslint .",
-    "prebuild": "pnpm run check && pnpm run lint",
-    "build": "pnpm exec vite build",
+    "check": "pnpm exec vp check",
+    "typecheck": "pnpm exec tsc --noEmit",
+    "lint": "pnpm exec vp lint",
+    "fmt": "pnpm exec vp fmt",
+    "prebuild": "pnpm run check",
+    "build": "pnpm exec vp build",
     "watch": "pnpm run build --watch"
   },
   "dependencies": {

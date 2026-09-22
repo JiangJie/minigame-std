@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe, expect, test } from 'vitest';
+import { afterAll, beforeAll, describe, expect, test } from 'vite-plus/test';
 import { fs } from '../src/mod.ts';
 import {
     convertFileSystemHandleLikeToStats,
@@ -61,14 +61,16 @@ describe('convertFileSystemHandleToStats', () => {
     });
 
     test('converts FileSystemFileHandle to Stats', async () => {
-        const filePath = `${ TEST_DIR }/convert-handle-file.txt`;
+        const filePath = `${TEST_DIR}/convert-handle-file.txt`;
         const content = 'test content for handle';
         await fs.writeFile(filePath, content);
 
         // 通过 OPFS 获取真实的 FileSystemFileHandle
         const root = await navigator.storage.getDirectory();
         const dirHandle = await root.getDirectoryHandle('fs-test', { create: false });
-        const fileHandle = await dirHandle.getFileHandle('convert-handle-file.txt', { create: false });
+        const fileHandle = await dirHandle.getFileHandle('convert-handle-file.txt', {
+            create: false,
+        });
 
         const stats = await convertFileSystemHandleToStats(fileHandle);
 
@@ -81,7 +83,7 @@ describe('convertFileSystemHandleToStats', () => {
     });
 
     test('converts FileSystemDirectoryHandle to Stats', async () => {
-        const dirPath = `${ TEST_DIR }/convert-handle-dir`;
+        const dirPath = `${TEST_DIR}/convert-handle-dir`;
         await fs.mkdir(dirPath);
 
         // 通过 OPFS 获取真实的 FileSystemDirectoryHandle
@@ -111,11 +113,11 @@ describe('webToMinaReadDir', () => {
     });
 
     test('returns string array from directory entries', async () => {
-        const dirPath = `${ TEST_DIR }/web-readdir`;
+        const dirPath = `${TEST_DIR}/web-readdir`;
         await fs.mkdir(dirPath);
-        await fs.writeFile(`${ dirPath }/a.txt`, 'a');
-        await fs.writeFile(`${ dirPath }/b.txt`, 'b');
-        await fs.mkdir(`${ dirPath }/subdir`);
+        await fs.writeFile(`${dirPath}/a.txt`, 'a');
+        await fs.writeFile(`${dirPath}/b.txt`, 'b');
+        await fs.mkdir(`${dirPath}/subdir`);
 
         const result = await webToMinaReadDir(dirPath);
         expect(result.isOk()).toBe(true);
@@ -129,7 +131,7 @@ describe('webToMinaReadDir', () => {
     });
 
     test('returns empty array for empty directory', async () => {
-        const dirPath = `${ TEST_DIR }/web-readdir-empty`;
+        const dirPath = `${TEST_DIR}/web-readdir-empty`;
         await fs.mkdir(dirPath);
 
         const result = await webToMinaReadDir(dirPath);
@@ -138,15 +140,15 @@ describe('webToMinaReadDir', () => {
     });
 
     test('returns error for non-existent directory', async () => {
-        const result = await webToMinaReadDir(`${ TEST_DIR }/web-readdir-nonexistent`);
+        const result = await webToMinaReadDir(`${TEST_DIR}/web-readdir-nonexistent`);
         expect(result.isErr()).toBe(true);
     });
 
     test('fallback to for-await when Array.fromAsync is not available', async () => {
-        const dirPath = `${ TEST_DIR }/web-readdir-fallback`;
+        const dirPath = `${TEST_DIR}/web-readdir-fallback`;
         await fs.mkdir(dirPath);
-        await fs.writeFile(`${ dirPath }/m.txt`, 'm');
-        await fs.writeFile(`${ dirPath }/n.txt`, 'n');
+        await fs.writeFile(`${dirPath}/m.txt`, 'm');
+        await fs.writeFile(`${dirPath}/n.txt`, 'n');
 
         // 暂时移除 Array.fromAsync 以测试 fallback 逻辑
         const originalFromAsync = Array.fromAsync;
@@ -181,10 +183,10 @@ describe('webToMinaReadDirSync', () => {
     });
 
     test('returns string array from directory entries', async () => {
-        const dirPath = `${ TEST_DIR }/web-readdir-sync`;
+        const dirPath = `${TEST_DIR}/web-readdir-sync`;
         await fs.mkdir(dirPath);
-        await fs.writeFile(`${ dirPath }/x.txt`, 'x');
-        await fs.writeFile(`${ dirPath }/y.txt`, 'y');
+        await fs.writeFile(`${dirPath}/x.txt`, 'x');
+        await fs.writeFile(`${dirPath}/y.txt`, 'y');
 
         const result = webToMinaReadDirSync(dirPath);
         if (result.isErr()) {
@@ -201,7 +203,7 @@ describe('webToMinaReadDirSync', () => {
     });
 
     test('returns empty array for empty directory', async () => {
-        const dirPath = `${ TEST_DIR }/web-readdir-sync-empty`;
+        const dirPath = `${TEST_DIR}/web-readdir-sync-empty`;
         await fs.mkdir(dirPath);
 
         const result = webToMinaReadDirSync(dirPath);
@@ -214,7 +216,7 @@ describe('webToMinaReadDirSync', () => {
     });
 
     test('returns error for non-existent directory', () => {
-        const result = webToMinaReadDirSync(`${ TEST_DIR }/web-readdir-sync-nonexistent`);
+        const result = webToMinaReadDirSync(`${TEST_DIR}/web-readdir-sync-nonexistent`);
         expect(result.isErr()).toBe(true);
     });
 });
@@ -230,7 +232,7 @@ describe('webToMinaStat', () => {
     });
 
     test('returns Stats for file without recursive option', async () => {
-        const filePath = `${ TEST_DIR }/web-stat-file.txt`;
+        const filePath = `${TEST_DIR}/web-stat-file.txt`;
         await fs.writeFile(filePath, 'stat content');
 
         const result = await webToMinaStat(filePath);
@@ -243,7 +245,7 @@ describe('webToMinaStat', () => {
     });
 
     test('returns Stats for directory without recursive option', async () => {
-        const dirPath = `${ TEST_DIR }/web-stat-dir`;
+        const dirPath = `${TEST_DIR}/web-stat-dir`;
         await fs.mkdir(dirPath);
 
         const result = await webToMinaStat(dirPath);
@@ -256,7 +258,7 @@ describe('webToMinaStat', () => {
     });
 
     test('returns FileStats array for file with recursive option', async () => {
-        const filePath = `${ TEST_DIR }/web-stat-file-recursive.txt`;
+        const filePath = `${TEST_DIR}/web-stat-file-recursive.txt`;
         await fs.writeFile(filePath, 'recursive file');
 
         const result = await webToMinaStat(filePath, { recursive: true });
@@ -270,10 +272,10 @@ describe('webToMinaStat', () => {
     });
 
     test('returns FileStats array for directory with recursive option', async () => {
-        const dirPath = `${ TEST_DIR }/web-stat-dir-recursive`;
+        const dirPath = `${TEST_DIR}/web-stat-dir-recursive`;
         await fs.mkdir(dirPath);
-        await fs.writeFile(`${ dirPath }/file1.txt`, 'content1');
-        await fs.writeFile(`${ dirPath }/file2.txt`, 'content2');
+        await fs.writeFile(`${dirPath}/file1.txt`, 'content1');
+        await fs.writeFile(`${dirPath}/file2.txt`, 'content2');
 
         const result = await webToMinaStat(dirPath, { recursive: true });
         expect(result.isOk()).toBe(true);
@@ -289,7 +291,7 @@ describe('webToMinaStat', () => {
     });
 
     test('returns FileStats array for empty directory with recursive option', async () => {
-        const dirPath = `${ TEST_DIR }/web-stat-empty-recursive`;
+        const dirPath = `${TEST_DIR}/web-stat-empty-recursive`;
         await fs.mkdir(dirPath);
 
         const result = await webToMinaStat(dirPath, { recursive: true });
@@ -304,7 +306,7 @@ describe('webToMinaStat', () => {
     });
 
     test('returns error for non-existent path', async () => {
-        const result = await webToMinaStat(`${ TEST_DIR }/web-stat-nonexistent`);
+        const result = await webToMinaStat(`${TEST_DIR}/web-stat-nonexistent`);
         expect(result.isErr()).toBe(true);
     });
 });
@@ -320,7 +322,7 @@ describe('webToMinaStatSync', () => {
     });
 
     test('returns Stats for file without recursive option', async () => {
-        const filePath = `${ TEST_DIR }/web-stat-sync-file.txt`;
+        const filePath = `${TEST_DIR}/web-stat-sync-file.txt`;
         await fs.writeFile(filePath, 'sync stat content');
 
         const result = webToMinaStatSync(filePath);
@@ -336,7 +338,7 @@ describe('webToMinaStatSync', () => {
     });
 
     test('returns Stats for directory without recursive option', async () => {
-        const dirPath = `${ TEST_DIR }/web-stat-sync-dir`;
+        const dirPath = `${TEST_DIR}/web-stat-sync-dir`;
         await fs.mkdir(dirPath);
 
         const result = webToMinaStatSync(dirPath);
@@ -352,7 +354,7 @@ describe('webToMinaStatSync', () => {
     });
 
     test('returns FileStats array for file with recursive option', async () => {
-        const filePath = `${ TEST_DIR }/web-stat-sync-file-rec.txt`;
+        const filePath = `${TEST_DIR}/web-stat-sync-file-rec.txt`;
         await fs.writeFile(filePath, 'sync recursive file');
 
         const result = webToMinaStatSync(filePath, { recursive: true });
@@ -369,10 +371,10 @@ describe('webToMinaStatSync', () => {
     });
 
     test('returns FileStats array for directory with recursive option', async () => {
-        const dirPath = `${ TEST_DIR }/web-stat-sync-dir-rec`;
+        const dirPath = `${TEST_DIR}/web-stat-sync-dir-rec`;
         await fs.mkdir(dirPath);
-        await fs.writeFile(`${ dirPath }/a.txt`, 'a');
-        await fs.mkdir(`${ dirPath }/sub`);
+        await fs.writeFile(`${dirPath}/a.txt`, 'a');
+        await fs.mkdir(`${dirPath}/sub`);
 
         const result = webToMinaStatSync(dirPath, { recursive: true });
         if (result.isErr()) {
@@ -391,7 +393,7 @@ describe('webToMinaStatSync', () => {
     });
 
     test('returns FileStats array for empty directory with recursive option', async () => {
-        const dirPath = `${ TEST_DIR }/web-stat-sync-empty-rec`;
+        const dirPath = `${TEST_DIR}/web-stat-sync-empty-rec`;
         await fs.mkdir(dirPath);
 
         const result = webToMinaStatSync(dirPath, { recursive: true });
@@ -407,7 +409,7 @@ describe('webToMinaStatSync', () => {
     });
 
     test('returns error for non-existent path', () => {
-        const result = webToMinaStatSync(`${ TEST_DIR }/web-stat-sync-nonexistent`);
+        const result = webToMinaStatSync(`${TEST_DIR}/web-stat-sync-nonexistent`);
         expect(result.isErr()).toBe(true);
     });
 });
@@ -525,7 +527,7 @@ describe('fs stat', () => {
     });
 
     test('stat with recursive on file returns FileStats array', async () => {
-        const filePath = `${ TEST_DIR }/stat-recursive-file`;
+        const filePath = `${TEST_DIR}/stat-recursive-file`;
         await fs.writeFile(filePath, 'content');
 
         const result = await fs.stat(filePath, { recursive: true });
@@ -724,7 +726,7 @@ describe('fs writeJsonFile', () => {
     });
 
     test('readJsonFileSync parses nested JSON object', async () => {
-        const filePath = `${ TEST_DIR }/sync-nested.json`;
+        const filePath = `${TEST_DIR}/sync-nested.json`;
         const data = {
             name: 'test',
             nested: {
@@ -755,7 +757,7 @@ describe('fs writeJsonFile', () => {
     });
 
     test('readJsonFileSync parses JSON with special characters', async () => {
-        const filePath = `${ TEST_DIR }/sync-special.json`;
+        const filePath = `${TEST_DIR}/sync-special.json`;
         const data = {
             message: '你好世界',
             emoji: '😀🎉',
@@ -780,14 +782,14 @@ describe('fs writeJsonFile', () => {
     });
 
     test('readJsonFileSync returns error for non-existent file', async () => {
-        const filePath = `${ TEST_DIR }/non-existent-sync.json`;
+        const filePath = `${TEST_DIR}/non-existent-sync.json`;
 
         const readResult = fs.readJsonFileSync(filePath);
         expect(readResult.isErr()).toBe(true);
     });
 
     test('readJsonFileSync returns error for invalid JSON', async () => {
-        const filePath = `${ TEST_DIR }/invalid-sync.json`;
+        const filePath = `${TEST_DIR}/invalid-sync.json`;
 
         await fs.mkdir(TEST_DIR);
 
@@ -825,7 +827,7 @@ describe('fs sync operations', () => {
     });
 
     test('mkdirSync creates directory', async () => {
-        const dirPath = `${ TEST_DIR }/sync-mkdir`;
+        const dirPath = `${TEST_DIR}/sync-mkdir`;
 
         const result = fs.mkdirSync(dirPath);
         // Sync operations may not be supported in all environments
@@ -842,8 +844,8 @@ describe('fs sync operations', () => {
     });
 
     test('moveSync moves file', async () => {
-        const srcPath = `${ TEST_DIR }/sync-move-src.txt`;
-        const destPath = `${ TEST_DIR }/sync-move-dest.txt`;
+        const srcPath = `${TEST_DIR}/sync-move-src.txt`;
+        const destPath = `${TEST_DIR}/sync-move-dest.txt`;
         await fs.writeFile(srcPath, 'move content');
 
         const result = fs.moveSync(srcPath, destPath);
@@ -861,10 +863,10 @@ describe('fs sync operations', () => {
     });
 
     test('readDirSync reads directory contents', async () => {
-        const dirPath = `${ TEST_DIR }/sync-readdir`;
+        const dirPath = `${TEST_DIR}/sync-readdir`;
         await fs.mkdir(dirPath);
-        await fs.writeFile(`${ dirPath }/file1.txt`, 'content1');
-        await fs.writeFile(`${ dirPath }/file2.txt`, 'content2');
+        await fs.writeFile(`${dirPath}/file1.txt`, 'content1');
+        await fs.writeFile(`${dirPath}/file2.txt`, 'content2');
 
         const result = fs.readDirSync(dirPath);
         if (result.isErr()) {
@@ -882,7 +884,7 @@ describe('fs sync operations', () => {
     });
 
     test('readDirSync returns empty array for empty directory', async () => {
-        const dirPath = `${ TEST_DIR }/sync-empty-dir`;
+        const dirPath = `${TEST_DIR}/sync-empty-dir`;
         await fs.mkdir(dirPath);
 
         const result = fs.readDirSync(dirPath);
@@ -895,7 +897,7 @@ describe('fs sync operations', () => {
     });
 
     test('readFileSync reads file content', async () => {
-        const filePath = `${ TEST_DIR }/sync-read.txt`;
+        const filePath = `${TEST_DIR}/sync-read.txt`;
         await fs.writeFile(filePath, 'sync read content');
 
         const result = fs.readFileSync(filePath, { encoding: 'utf8' });
@@ -908,7 +910,7 @@ describe('fs sync operations', () => {
     });
 
     test('readFileSync reads binary content', async () => {
-        const filePath = `${ TEST_DIR }/sync-read-binary.txt`;
+        const filePath = `${TEST_DIR}/sync-read-binary.txt`;
         await fs.writeFile(filePath, 'binary content');
 
         const result = fs.readFileSync(filePath);
@@ -921,7 +923,7 @@ describe('fs sync operations', () => {
     });
 
     test('writeFileSync writes file content', async () => {
-        const filePath = `${ TEST_DIR }/sync-write.txt`;
+        const filePath = `${TEST_DIR}/sync-write.txt`;
 
         const result = fs.writeFileSync(filePath, 'sync write content');
         if (result.isErr()) {
@@ -936,7 +938,7 @@ describe('fs sync operations', () => {
     });
 
     test('appendFileSync appends to file', async () => {
-        const filePath = `${ TEST_DIR }/sync-append.txt`;
+        const filePath = `${TEST_DIR}/sync-append.txt`;
         await fs.writeFile(filePath, 'initial');
 
         const result = fs.appendFileSync(filePath, ' appended');
@@ -952,7 +954,7 @@ describe('fs sync operations', () => {
     });
 
     test('removeSync deletes file', async () => {
-        const filePath = `${ TEST_DIR }/sync-remove.txt`;
+        const filePath = `${TEST_DIR}/sync-remove.txt`;
         await fs.writeFile(filePath, 'to delete');
 
         const result = fs.removeSync(filePath);
@@ -968,8 +970,8 @@ describe('fs sync operations', () => {
     });
 
     test('copySync copies file', async () => {
-        const srcPath = `${ TEST_DIR }/sync-copy-src.txt`;
-        const destPath = `${ TEST_DIR }/sync-copy-dest.txt`;
+        const srcPath = `${TEST_DIR}/sync-copy-src.txt`;
+        const destPath = `${TEST_DIR}/sync-copy-dest.txt`;
         await fs.writeFile(srcPath, 'copy content');
 
         const result = fs.copySync(srcPath, destPath);
@@ -987,7 +989,7 @@ describe('fs sync operations', () => {
     });
 
     test('existsSync checks if file exists', async () => {
-        const filePath = `${ TEST_DIR }/sync-exists.txt`;
+        const filePath = `${TEST_DIR}/sync-exists.txt`;
         await fs.writeFile(filePath, 'exists');
 
         const existsResult = fs.existsSync(filePath);
@@ -998,14 +1000,14 @@ describe('fs sync operations', () => {
         expect(existsResult.isOk()).toBe(true);
         expect(existsResult.unwrap()).toBe(true);
 
-        const notExistsResult = fs.existsSync(`${ TEST_DIR }/sync-not-exists.txt`);
+        const notExistsResult = fs.existsSync(`${TEST_DIR}/sync-not-exists.txt`);
         expect(notExistsResult.isOk()).toBe(true);
         expect(notExistsResult.unwrap()).toBe(false);
     });
 
     test('existsSync with isFile option', async () => {
-        const filePath = `${ TEST_DIR }/sync-exists-file.txt`;
-        const dirPath = `${ TEST_DIR }/sync-exists-dir`;
+        const filePath = `${TEST_DIR}/sync-exists-file.txt`;
+        const dirPath = `${TEST_DIR}/sync-exists-dir`;
         await fs.writeFile(filePath, 'file');
         await fs.mkdir(dirPath);
 
@@ -1021,8 +1023,8 @@ describe('fs sync operations', () => {
     });
 
     test('existsSync with isDirectory option', async () => {
-        const filePath = `${ TEST_DIR }/sync-exists-file2.txt`;
-        const dirPath = `${ TEST_DIR }/sync-exists-dir2`;
+        const filePath = `${TEST_DIR}/sync-exists-file2.txt`;
+        const dirPath = `${TEST_DIR}/sync-exists-dir2`;
         await fs.writeFile(filePath, 'file');
         await fs.mkdir(dirPath);
 
@@ -1038,9 +1040,9 @@ describe('fs sync operations', () => {
     });
 
     test('emptyDirSync clears directory contents', async () => {
-        const dirPath = `${ TEST_DIR }/sync-empty`;
+        const dirPath = `${TEST_DIR}/sync-empty`;
         await fs.mkdir(dirPath);
-        await fs.writeFile(`${ dirPath }/file.txt`, 'content');
+        await fs.writeFile(`${dirPath}/file.txt`, 'content');
 
         const result = fs.emptyDirSync(dirPath);
         if (result.isErr()) {
@@ -1055,7 +1057,7 @@ describe('fs sync operations', () => {
     });
 
     test('readTextFileSync reads text file', async () => {
-        const filePath = `${ TEST_DIR }/sync-text.txt`;
+        const filePath = `${TEST_DIR}/sync-text.txt`;
         await fs.writeFile(filePath, 'text content');
 
         const result = fs.readTextFileSync(filePath);
@@ -1079,7 +1081,7 @@ describe('fs zip operations', () => {
     });
 
     test('zip compresses file to bytes', async () => {
-        const filePath = `${ TEST_DIR }/zip-file.txt`;
+        const filePath = `${TEST_DIR}/zip-file.txt`;
         await fs.writeFile(filePath, 'zip content');
 
         const result = await fs.zip(filePath);
@@ -1089,8 +1091,8 @@ describe('fs zip operations', () => {
     });
 
     test('zip compresses file to zip file', async () => {
-        const filePath = `${ TEST_DIR }/zip-src.txt`;
-        const zipPath = `${ TEST_DIR }/output.zip`;
+        const filePath = `${TEST_DIR}/zip-src.txt`;
+        const zipPath = `${TEST_DIR}/output.zip`;
         await fs.writeFile(filePath, 'zip to file');
 
         const result = await fs.zip(filePath, zipPath);
@@ -1102,10 +1104,10 @@ describe('fs zip operations', () => {
     });
 
     test('zip compresses directory', async () => {
-        const dirPath = `${ TEST_DIR }/zip-dir`;
+        const dirPath = `${TEST_DIR}/zip-dir`;
         await fs.mkdir(dirPath);
-        await fs.writeFile(`${ dirPath }/file1.txt`, 'content1');
-        await fs.writeFile(`${ dirPath }/file2.txt`, 'content2');
+        await fs.writeFile(`${dirPath}/file1.txt`, 'content1');
+        await fs.writeFile(`${dirPath}/file2.txt`, 'content2');
 
         const result = await fs.zip(dirPath);
         expect(result.isOk()).toBe(true);
@@ -1113,7 +1115,7 @@ describe('fs zip operations', () => {
     });
 
     test('zipSync compresses file to bytes', async () => {
-        const filePath = `${ TEST_DIR }/zip-sync-file.txt`;
+        const filePath = `${TEST_DIR}/zip-sync-file.txt`;
         await fs.writeFile(filePath, 'sync zip content');
 
         const result = fs.zipSync(filePath);
@@ -1126,8 +1128,8 @@ describe('fs zip operations', () => {
     });
 
     test('zipSync compresses file to zip file', async () => {
-        const filePath = `${ TEST_DIR }/zip-sync-src.txt`;
-        const zipPath = `${ TEST_DIR }/sync-output.zip`;
+        const filePath = `${TEST_DIR}/zip-sync-src.txt`;
+        const zipPath = `${TEST_DIR}/sync-output.zip`;
         await fs.writeFile(filePath, 'sync zip to file');
 
         const result = fs.zipSync(filePath, zipPath);
@@ -1139,9 +1141,9 @@ describe('fs zip operations', () => {
     });
 
     test('unzip extracts zip file', async () => {
-        const filePath = `${ TEST_DIR }/unzip-src.txt`;
-        const zipPath = `${ TEST_DIR }/unzip.zip`;
-        const targetPath = `${ TEST_DIR }/unzip-target`;
+        const filePath = `${TEST_DIR}/unzip-src.txt`;
+        const zipPath = `${TEST_DIR}/unzip.zip`;
+        const targetPath = `${TEST_DIR}/unzip-target`;
 
         await fs.writeFile(filePath, 'unzip content');
         await fs.zip(filePath, zipPath);
@@ -1155,9 +1157,9 @@ describe('fs zip operations', () => {
     });
 
     test('unzipSync extracts zip file', async () => {
-        const filePath = `${ TEST_DIR }/unzip-sync-src.txt`;
-        const zipPath = `${ TEST_DIR }/unzip-sync.zip`;
-        const targetPath = `${ TEST_DIR }/unzip-sync-target`;
+        const filePath = `${TEST_DIR}/unzip-sync-src.txt`;
+        const zipPath = `${TEST_DIR}/unzip-sync.zip`;
+        const targetPath = `${TEST_DIR}/unzip-sync-target`;
 
         await fs.writeFile(filePath, 'unzip sync content');
         await fs.zip(filePath, zipPath);
@@ -1171,7 +1173,7 @@ describe('fs zip operations', () => {
     });
 
     test('zip with options', async () => {
-        const filePath = `${ TEST_DIR }/zip-options.txt`;
+        const filePath = `${TEST_DIR}/zip-options.txt`;
         await fs.writeFile(filePath, 'zip with options');
 
         const result = await fs.zip(filePath, { preserveRoot: false });
@@ -1179,7 +1181,7 @@ describe('fs zip operations', () => {
     });
 
     test('zipSync with options', async () => {
-        const filePath = `${ TEST_DIR }/zip-sync-options.txt`;
+        const filePath = `${TEST_DIR}/zip-sync-options.txt`;
         await fs.writeFile(filePath, 'sync zip with options');
 
         const result = fs.zipSync(filePath, { preserveRoot: false });
@@ -1202,7 +1204,7 @@ describe('fs statSync edge cases', () => {
     });
 
     test('statSync with recursive on file returns FileStats array', async () => {
-        const filePath = `${ TEST_DIR }/stat-sync-recursive-file.txt`;
+        const filePath = `${TEST_DIR}/stat-sync-recursive-file.txt`;
         await fs.writeFile(filePath, 'stat recursive file');
 
         const result = fs.statSync(filePath, { recursive: true });
@@ -1219,7 +1221,7 @@ describe('fs statSync edge cases', () => {
     });
 
     test('statSync with recursive on empty directory', async () => {
-        const dirPath = `${ TEST_DIR }/stat-sync-empty-recursive`;
+        const dirPath = `${TEST_DIR}/stat-sync-empty-recursive`;
         await fs.mkdir(dirPath);
 
         const result = fs.statSync(dirPath, { recursive: true });
@@ -1236,7 +1238,7 @@ describe('fs statSync edge cases', () => {
     });
 
     test('statSync without recursive returns single Stats', async () => {
-        const filePath = `${ TEST_DIR }/stat-sync-no-recursive.txt`;
+        const filePath = `${TEST_DIR}/stat-sync-no-recursive.txt`;
         await fs.writeFile(filePath, 'no recursive');
 
         const result = fs.statSync(filePath);
@@ -1251,7 +1253,7 @@ describe('fs statSync edge cases', () => {
     });
 
     test('statSync returns error for non-existent path', async () => {
-        const result = fs.statSync(`${ TEST_DIR }/stat-sync-non-existent`);
+        const result = fs.statSync(`${TEST_DIR}/stat-sync-non-existent`);
         if (result.isErr()) {
             // Expected behavior - either not supported or path not found
             expect(result.isErr()).toBe(true);
@@ -1259,11 +1261,11 @@ describe('fs statSync edge cases', () => {
     });
 
     test('statSync with recursive on directory with nested content', async () => {
-        const dirPath = `${ TEST_DIR }/stat-sync-nested`;
+        const dirPath = `${TEST_DIR}/stat-sync-nested`;
         await fs.mkdir(dirPath);
-        await fs.writeFile(`${ dirPath }/file1.txt`, 'content1');
-        await fs.mkdir(`${ dirPath }/subdir`);
-        await fs.writeFile(`${ dirPath }/subdir/file2.txt`, 'content2');
+        await fs.writeFile(`${dirPath}/file1.txt`, 'content1');
+        await fs.mkdir(`${dirPath}/subdir`);
+        await fs.writeFile(`${dirPath}/subdir/file2.txt`, 'content2');
 
         const result = fs.statSync(dirPath, { recursive: true });
         if (result.isErr()) {

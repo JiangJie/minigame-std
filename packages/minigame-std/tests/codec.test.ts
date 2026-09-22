@@ -1,7 +1,7 @@
 /**
  * 测试 Web 平台下的 codec 模块
  */
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { decodeUtf8, encodeUtf8 } from '../src/mod.ts';
 
 test('decodeUtf8 with default options replaces invalid bytes with U+FFFD', () => {
