@@ -22,8 +22,21 @@ export async function testDevice(): Promise<void> {
 
     // 测试平台类型
     console.log('测试平台类型...');
-    const validPlatforms = ['ios', 'android', 'mac', 'windows', 'ohos', 'ohos_pc', 'devtools', 'linux', 'unknown'];
-    assert(validPlatforms.includes(deviceInfo.platform), `platform应该是有效的平台类型，当前值: ${deviceInfo.platform}`);
+    const validPlatforms = [
+        'ios',
+        'android',
+        'mac',
+        'windows',
+        'ohos',
+        'ohos_pc',
+        'devtools',
+        'linux',
+        'unknown',
+    ];
+    assert(
+        validPlatforms.includes(deviceInfo.platform),
+        `platform应该是有效的平台类型，当前值: ${deviceInfo.platform}`,
+    );
     console.log('✅ 平台类型有效');
 
     // 测试获取设备性能等级

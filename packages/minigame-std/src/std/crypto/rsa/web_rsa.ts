@@ -16,7 +16,8 @@ import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
  * @returns RSA 公钥对象。
  */
 export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublicKey> {
-    const rMessage = /\s*-----BEGIN ([A-Z0-9- ]+)-----\r?\n?([\x21-\x7e\s]+?(?:\r?\n\r?\n))?([:A-Za-z0-9+/=\s]+?)-----END \1-----/g;
+    const rMessage =
+        /\s*-----BEGIN ([A-Z0-9- ]+)-----\r?\n?([\x21-\x7e\s]+?(?:\r?\n\r?\n))?([:A-Za-z0-9+/=\s]+?)-----END \1-----/g;
     const match = rMessage.exec(pem);
 
     if (!match) {
@@ -36,9 +37,7 @@ export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublic
                 hash,
             },
             false,
-            [
-                'encrypt',
-            ],
+            ['encrypt'],
         );
 
         return {

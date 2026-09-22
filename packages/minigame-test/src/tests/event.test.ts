@@ -1,7 +1,13 @@
-import { addErrorListener, addHideListener, addResizeListener, addShowListener, addUnhandledrejectionListener } from 'minigame-std';
+import {
+    addErrorListener,
+    addHideListener,
+    addResizeListener,
+    addShowListener,
+    addUnhandledrejectionListener,
+} from 'minigame-std';
 
 export function testEvent(): void {
-    addShowListener((options) => {
+    addShowListener(options => {
         console.log('addShowListener', options?.scene, options?.query);
     });
 
@@ -11,11 +17,11 @@ export function testEvent(): void {
 
     console.log('前后台监听器已注册');
 
-    addErrorListener((err) => {
+    addErrorListener(err => {
         console.error('addErrorListener message', err.message);
     });
 
-    addUnhandledrejectionListener((err) => {
+    addUnhandledrejectionListener(err => {
         console.error('addUnhandledrejectionListener reason', err.reason);
     });
 

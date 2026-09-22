@@ -27,11 +27,11 @@ export function encodeUtf8(data: string): Uint8Array<ArrayBuffer> {
     // 待平台修复后可移除 `isMiniGameHarmonyOS() && isMiniGameHarmonyPC()` 判断恢复使用 `wx.encode`。
     return typeof wx.encode === 'function' && !isMiniGameHarmonyOS() && !isMiniGameHarmonyPC()
         ? new Uint8Array(
-            wx.encode({
-                data,
-                format: FORMAT,
-            }),
-        )
+              wx.encode({
+                  data,
+                  format: FORMAT,
+              }),
+          )
         : webEncodeUtf8(data);
 }
 
@@ -48,10 +48,7 @@ export function encodeUtf8(data: string): Uint8Array<ArrayBuffer> {
  * @returns 解码后的字符串。
  */
 export function decodeUtf8(data: BufferSource, options?: TextDecoderOptions): string {
-    const {
-        fatal = false,
-        ignoreBOM = false,
-    } = options ?? {};
+    const { fatal = false, ignoreBOM = false } = options ?? {};
 
     // `wx.decode` 的行为和 `fatal = false(不会报错) && ignoreBOM = false(丢弃BOM)` 的行为一致
     // 兼容某些平台没有 `decode` 方法

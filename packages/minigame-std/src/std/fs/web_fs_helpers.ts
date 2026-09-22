@@ -3,7 +3,15 @@
  * 文件系统辅助函数。
  */
 
-import { isFileHandle, isFileHandleLike, readDir, readDirSync, stat, statSync, type FileSystemHandleLike } from 'happy-opfs';
+import {
+    isFileHandle,
+    isFileHandleLike,
+    readDir,
+    readDirSync,
+    stat,
+    statSync,
+    type FileSystemHandleLike,
+} from 'happy-opfs';
 import { Ok, tryAsyncResult, type AsyncIOResult, type IOResult } from 'happy-rusty';
 import type { StatOptions } from './fs_define.ts';
 
@@ -12,7 +20,9 @@ import type { StatOptions } from './fs_define.ts';
  * @param handleLike - 要转换的 `FileSystemHandleLike` 对象。
  * @returns 小游戏的 `Stats` 对象。
  */
-export function convertFileSystemHandleLikeToStats(handleLike: FileSystemHandleLike): WechatMinigame.Stats {
+export function convertFileSystemHandleLikeToStats(
+    handleLike: FileSystemHandleLike,
+): WechatMinigame.Stats {
     const isFile = isFileHandleLike(handleLike);
 
     return {
@@ -30,7 +40,9 @@ export function convertFileSystemHandleLikeToStats(handleLike: FileSystemHandleL
  * @param handle - 要转换的 `FileSystemHandle` 对象。
  * @returns 小游戏的 `Stats` 对象。
  */
-export async function convertFileSystemHandleToStats(handle: FileSystemHandle): Promise<WechatMinigame.Stats> {
+export async function convertFileSystemHandleToStats(
+    handle: FileSystemHandle,
+): Promise<WechatMinigame.Stats> {
     const isFile = isFileHandle(handle);
     let size = 0;
     let lastModified = 0;
@@ -77,7 +89,10 @@ export async function webToMinaReadDir(dirPath: string): AsyncIOResult<string[]>
  * @param options - 可选的 stat 选项。
  * @returns 文件或目录的状态信息。
  */
-export async function webToMinaStat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
+export async function webToMinaStat(
+    path: string,
+    options?: StatOptions,
+): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     const statRes = await stat(path);
     if (statRes.isErr()) return statRes.asErr();
 
@@ -93,29 +108,35 @@ export async function webToMinaStat(path: string, options?: StatOptions): AsyncI
 
     const entryStats = entryStatsRes.unwrap();
     if (entryStats.isFile()) {
-        return Ok([{
-            path: '', // 当前文件本身的相对路径
-            stats: entryStats,
-        }]);
+        return Ok([
+            {
+                path: '', // 当前文件本身的相对路径
+                stats: entryStats,
+            },
+        ]);
     }
 
     // 递归读取目录
     const readDirRes = await readDir(path);
     return readDirRes.andTryAsync(async entries => {
         // 只要是 recursive 模式下的目录, 就返回数组(即使空目录)
-        const tasks = [Promise.resolve({
-            path: '', // 当前文件夹本身的相对路径
-            stats: entryStats,
-        })];
+        const tasks = [
+            Promise.resolve({
+                path: '', // 当前文件夹本身的相对路径
+                stats: entryStats,
+            }),
+        ];
 
         for await (const { path, handle } of entries) {
-            tasks.push((async () => {
-                const stats = await convertFileSystemHandleToStats(handle);
-                return {
-                    path,
-                    stats,
-                };
-            })());
+            tasks.push(
+                (async () => {
+                    const stats = await convertFileSystemHandleToStats(handle);
+                    return {
+                        path,
+                        stats,
+                    };
+                })(),
+            );
         }
 
         return Promise.all(tasks);
@@ -141,7 +162,10 @@ export function webToMinaReadDirSync(dirPath: string): IOResult<string[]> {
  * @param options - 可选的 stat 选项。
  * @returns 文件或目录的状态信息。
  */
-export function webToMinaStatSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
+export function webToMinaStatSync(
+    path: string,
+    options?: StatOptions,
+): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     const statRes = statSync(path);
     if (statRes.isErr()) return statRes.asErr();
 
@@ -155,10 +179,12 @@ export function webToMinaStatSync(path: string, options?: StatOptions): IOResult
     }
 
     if (entryStats.isFile()) {
-        return Ok([{
-            path: '', // 当前文件本身的相对路径
-            stats: entryStats,
-        }]);
+        return Ok([
+            {
+                path: '', // 当前文件本身的相对路径
+                stats: entryStats,
+            },
+        ]);
     }
 
     // 递归读取目录

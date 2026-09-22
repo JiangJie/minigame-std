@@ -163,10 +163,10 @@ function normalizeString(path: string, allowAboveRoot: boolean): string {
                 // NOOP — empty segment or single dot
             } else if (dots === 2) {
                 if (
-                    res.length < 2
-                    || lastSegmentLength !== 2
-                    || res.charCodeAt(res.length - 1) !== CHAR_DOT
-                    || res.charCodeAt(res.length - 2) !== CHAR_DOT
+                    res.length < 2 ||
+                    lastSegmentLength !== 2 ||
+                    res.charCodeAt(res.length - 1) !== CHAR_DOT ||
+                    res.charCodeAt(res.length - 2) !== CHAR_DOT
                 ) {
                     if (res.length > 2) {
                         const lastSlashIndex = res.lastIndexOf(SEPARATOR);

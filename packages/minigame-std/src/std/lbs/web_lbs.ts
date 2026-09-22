@@ -16,10 +16,12 @@ export function getCurrentPosition(): AsyncIOResult<GeoPosition> {
 
     navigator.geolocation.getCurrentPosition(
         position => {
-            future.resolve(Ok({
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-            }));
+            future.resolve(
+                Ok({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                }),
+            );
         },
         err => {
             future.resolve(Err(new Error(err.message)));

@@ -5,7 +5,14 @@
 
 import { Err, Ok, tryAsyncResult, type AsyncVoidIOResult, type IOResult } from 'happy-rusty';
 import { validateReadablePath } from '../../fs/mina_fs_shared.ts';
-import type { CreateVideoFrameSourceFromFileOptions, CreateVideoFrameSourceOptions, PixelVideoFrame, VideoFrameSource, VideoFrameSourceFrame, VideoFrameSourceState } from './defines.ts';
+import type {
+    CreateVideoFrameSourceFromFileOptions,
+    CreateVideoFrameSourceOptions,
+    PixelVideoFrame,
+    VideoFrameSource,
+    VideoFrameSourceFrame,
+    VideoFrameSourceState,
+} from './defines.ts';
 
 // #region Exports
 
@@ -24,7 +31,9 @@ export function isVideoFrameSourceSupported(): boolean {
  * @param options - 视频帧源创建选项。
  * @returns 视频帧源创建结果。
  */
-export function createVideoFrameSource(options: CreateVideoFrameSourceOptions): IOResult<VideoFrameSource> {
+export function createVideoFrameSource(
+    options: CreateVideoFrameSourceOptions,
+): IOResult<VideoFrameSource> {
     if (!isVideoFrameSourceSupported()) {
         return Err(new Error('VideoFrameSource is not supported on this minigame platform'));
     }
@@ -149,12 +158,16 @@ export function createVideoFrameSource(options: CreateVideoFrameSourceOptions): 
  * @param options - 视频帧源创建选项。
  * @returns 视频帧源创建结果。
  */
-export function createVideoFrameSourceFromFile(filePath: string, options?: CreateVideoFrameSourceFromFileOptions): IOResult<VideoFrameSource> {
-    return validateReadablePath(filePath)
-        .andThen(source => createVideoFrameSource({
+export function createVideoFrameSourceFromFile(
+    filePath: string,
+    options?: CreateVideoFrameSourceFromFileOptions,
+): IOResult<VideoFrameSource> {
+    return validateReadablePath(filePath).andThen(source =>
+        createVideoFrameSource({
             ...options,
             source,
-        }));
+        }),
+    );
 }
 
 // #endregion

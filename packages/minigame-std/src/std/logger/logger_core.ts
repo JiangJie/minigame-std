@@ -3,13 +3,7 @@
  */
 
 import { Lazy } from 'happy-rusty';
-import type {
-    LogFilter,
-    LoggerConfig,
-    LoggerPlugin,
-    LogLevel,
-    PluginContext,
-} from './defines.ts';
+import type { LogFilter, LoggerConfig, LoggerPlugin, LogLevel, PluginContext } from './defines.ts';
 import { shouldLog } from './helpers.ts';
 
 // #region Internal Variables
@@ -20,10 +14,10 @@ import { shouldLog } from './helpers.ts';
  * `.bind(console)` 防止直接传递方法引用时 `this` 上下文丢失。
  */
 const CONSOLE_FN: Record<LogLevel, (...args: unknown[]) => void> = {
-    'debug': console.debug.bind(console),
-    'info': console.info.bind(console),
-    'warn': console.warn.bind(console),
-    'error': console.error.bind(console),
+    debug: console.debug.bind(console),
+    info: console.info.bind(console),
+    warn: console.warn.bind(console),
+    error: console.error.bind(console),
 };
 
 /**
@@ -195,9 +189,11 @@ function dispatchLog(level: LogLevel, ...args: unknown[]): void {
     const state = lazyState.force();
 
     // 1. 控制台输出
-    if (state.console.enabled
-        && shouldLog(level, state.console.level)
-        && (!state.console.filter || state.console.filter(level, ...args))) {
+    if (
+        state.console.enabled &&
+        shouldLog(level, state.console.level) &&
+        (!state.console.filter || state.console.filter(level, ...args))
+    ) {
         CONSOLE_FN[level](...args);
     }
 

@@ -106,9 +106,12 @@ export function readDirSync(dirPath: string): IOResult<string[]> {
  * }
  * ```
  */
-export function readFileSync(filePath: string, options: ReadOptions & {
-    encoding: 'utf8';
-}): IOResult<string>;
+export function readFileSync(
+    filePath: string,
+    options: ReadOptions & {
+        encoding: 'utf8';
+    },
+): IOResult<string>;
 
 /**
  * 以二进制格式读取文件。
@@ -125,9 +128,12 @@ export function readFileSync(filePath: string, options: ReadOptions & {
  * }
  * ```
  */
-export function readFileSync(filePath: string, options?: ReadOptions & {
-    encoding: 'bytes';
-}): IOResult<Uint8Array<ArrayBuffer>>;
+export function readFileSync(
+    filePath: string,
+    options?: ReadOptions & {
+        encoding: 'bytes';
+    },
+): IOResult<Uint8Array<ArrayBuffer>>;
 
 /**
  * `readFile` 的同步版本，读取文件内容。
@@ -148,7 +154,7 @@ export function readFileSync(filePath: string, options?: ReadOptions): IOResult<
 export function readFileSync(filePath: string, options?: ReadOptions): IOResult<ReadFileContent> {
     return IS_MINA
         ? minaReadFileSync(filePath, options)
-        : webReadFileSync(filePath, options) as IOResult<ReadFileContent>;
+        : (webReadFileSync(filePath, options) as IOResult<ReadFileContent>);
 }
 
 /**
@@ -181,9 +187,12 @@ export function removeSync(path: string): VoidIOResult {
  * }
  * ```
  */
-export function statSync(path: string, options?: StatOptions & {
-    recursive: false;
-}): IOResult<WechatMinigame.Stats>;
+export function statSync(
+    path: string,
+    options?: StatOptions & {
+        recursive: false;
+    },
+): IOResult<WechatMinigame.Stats>;
 /**
  * `stat` 的同步版本，递归获取目录下所有文件和子目录的状态信息。
  * @param path - 目录的路径。
@@ -200,9 +209,12 @@ export function statSync(path: string, options?: StatOptions & {
  * }
  * ```
  */
-export function statSync(path: string, options: StatOptions & {
-    recursive: true;
-}): IOResult<WechatMinigame.FileStats[]>;
+export function statSync(
+    path: string,
+    options: StatOptions & {
+        recursive: true;
+    },
+): IOResult<WechatMinigame.FileStats[]>;
 /**
  * `stat` 的同步版本，获取文件或目录的状态信息。
  * @param path - 文件或目录的路径。
@@ -210,8 +222,14 @@ export function statSync(path: string, options: StatOptions & {
  * @returns 包含状态信息的操作结果，根据 options.recursive 返回单个 Stats 或 FileStats 数组。
  * @since 1.1.0
  */
-export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
-export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
+export function statSync(
+    path: string,
+    options?: StatOptions,
+): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
+export function statSync(
+    path: string,
+    options?: StatOptions,
+): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     return (IS_MINA ? minaStatSync : webToMinaStatSync)(path, options);
 }
 
@@ -248,7 +266,11 @@ export function writeFileSync(filePath: string, contents: WriteFileContent): Voi
  * }
  * ```
  */
-export function appendFileSync(filePath: string, contents: WriteFileContent, options?: AppendOptions): VoidIOResult {
+export function appendFileSync(
+    filePath: string,
+    contents: WriteFileContent,
+    options?: AppendOptions,
+): VoidIOResult {
     return (IS_MINA ? minaAppendFileSync : webAppendFileSync)(filePath, contents, options);
 }
 
@@ -391,7 +413,10 @@ export function unzipSync(zipFilePath: string, targetPath: string): VoidIOResult
  * }
  * ```
  */
-export function zipSync(sourcePath: string, options?: ZipOptions): IOResult<Uint8Array<ArrayBuffer>>;
+export function zipSync(
+    sourcePath: string,
+    options?: ZipOptions,
+): IOResult<Uint8Array<ArrayBuffer>>;
 /**
  * `zip` 的同步版本，压缩文件或文件夹。
  * @param sourcePath - 需要压缩的文件（夹）路径。
@@ -407,8 +432,16 @@ export function zipSync(sourcePath: string, options?: ZipOptions): IOResult<Uint
  * }
  * ```
  */
-export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOptions): VoidIOResult;
-export function zipSync(sourcePath: string, zipFilePath?: string | ZipOptions, options?: ZipOptions): IOResult<Uint8Array<ArrayBuffer> | void> {
+export function zipSync(
+    sourcePath: string,
+    zipFilePath: string,
+    options?: ZipOptions,
+): VoidIOResult;
+export function zipSync(
+    sourcePath: string,
+    zipFilePath?: string | ZipOptions,
+    options?: ZipOptions,
+): IOResult<Uint8Array<ArrayBuffer> | void> {
     if (typeof zipFilePath === 'string') {
         return (IS_MINA ? minaZipSync : webZipSync)(sourcePath, zipFilePath, options);
     } else {

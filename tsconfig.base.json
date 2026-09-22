@@ -24,8 +24,6 @@
     "noUnusedParameters": true,
     "noPropertyAccessFromIndexSignature": true,
 
-    "types": [
-      "minigame-api-typings"
-    ]
+    "types": ["minigame-api-typings"]
   }
 }

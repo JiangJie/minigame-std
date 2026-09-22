@@ -15,7 +15,5 @@ import { encodeUtf8 } from './mod.ts';
  * @returns 转换后的 `Uint8Array`。
  */
 export function dataSourceToBytes(data: DataSource): Uint8Array<ArrayBuffer> {
-    return typeof data === 'string'
-        ? encodeUtf8(data)
-        : bufferSourceToBytes(data);
+    return typeof data === 'string' ? encodeUtf8(data) : bufferSourceToBytes(data);
 }

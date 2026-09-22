@@ -26,7 +26,10 @@ export async function testPerformance(): Promise<void> {
     }
 
     for (let i = 1; i < measurements.length; i++) {
-        assert(measurements[i] > measurements[i - 1], `measurements[${i}]应该大于measurements[${i - 1}]`);
+        assert(
+            measurements[i] > measurements[i - 1],
+            `measurements[${i}]应该大于measurements[${i - 1}]`,
+        );
     }
     console.log('✅ 精度测试通过，测量值:', measurements);
 

@@ -4,7 +4,9 @@ import { image } from 'minigame-std';
 export async function testImage(): Promise<void> {
     // 测试1：从URL创建图片
     await new Promise<void>((resolve, reject) => {
-        const img = image.createImageFromUrl('https://hlddz.huanle.qq.com/remote/resources/native/1d/1d8cecb27.833bf.png');
+        const img = image.createImageFromUrl(
+            'https://hlddz.huanle.qq.com/remote/resources/native/1d/1d8cecb27.833bf.png',
+        );
 
         img.onload = () => {
             assert(img.width === 119);

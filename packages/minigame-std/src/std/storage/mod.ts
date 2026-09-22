@@ -49,9 +49,7 @@ export async function setItem(key: string, data: string): AsyncVoidIOResult {
     const dataRes = validateString(data, 'data');
     if (dataRes.isErr()) return dataRes;
 
-    return IS_MINA
-        ? minaSetItem(key, data)
-        : webSetItem(key, data);
+    return IS_MINA ? minaSetItem(key, data) : webSetItem(key, data);
 }
 
 /**
@@ -71,9 +69,7 @@ export async function getItem(key: string): AsyncIOResult<string> {
     const keyRes = validateString(key, 'key');
     if (keyRes.isErr()) return keyRes.asErr();
 
-    return IS_MINA
-        ? minaGetItem(key)
-        : webGetItem(key);
+    return IS_MINA ? minaGetItem(key) : webGetItem(key);
 }
 
 /**
@@ -93,9 +89,7 @@ export async function removeItem(key: string): AsyncVoidIOResult {
     const keyRes = validateString(key, 'key');
     if (keyRes.isErr()) return keyRes;
 
-    return IS_MINA
-        ? minaRemoveItem(key)
-        : webRemoveItem(key);
+    return IS_MINA ? minaRemoveItem(key) : webRemoveItem(key);
 }
 
 /**
@@ -111,9 +105,7 @@ export async function removeItem(key: string): AsyncVoidIOResult {
  * ```
  */
 export function clear(): AsyncVoidIOResult {
-    return IS_MINA
-        ? minaClear()
-        : Promise.resolve(webClear());
+    return IS_MINA ? minaClear() : Promise.resolve(webClear());
 }
 
 /**
@@ -129,9 +121,7 @@ export function clear(): AsyncVoidIOResult {
  * ```
  */
 export function getLength(): AsyncIOResult<number> {
-    return IS_MINA
-        ? minaGetLength()
-        : Promise.resolve(webGetLength());
+    return IS_MINA ? minaGetLength() : Promise.resolve(webGetLength());
 }
 
 /**
@@ -151,9 +141,7 @@ export async function hasItem(key: string): AsyncIOResult<boolean> {
     const keyRes = validateString(key, 'key');
     if (keyRes.isErr()) return keyRes.asErr();
 
-    return IS_MINA
-        ? minaHasItem(key)
-        : webHasItem(key);
+    return IS_MINA ? minaHasItem(key) : webHasItem(key);
 }
 
 /**

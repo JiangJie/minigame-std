@@ -40,13 +40,12 @@ export function validateString(str: string, name: string): VoidIOResult {
  * @returns 验证结果，如果不是 https 协议则返回 Err。
  */
 export function validateSafeUrl(url: string): VoidIOResult {
-    return validateString(url, 'url')
-        .andThen(() => {
-            if (!url.startsWith('https://')) {
-                return Err(new Error(`Param url must start with https:// but received ${url}`));
-            }
-            return RESULT_VOID;
-        });
+    return validateString(url, 'url').andThen(() => {
+        if (!url.startsWith('https://')) {
+            return Err(new Error(`Param url must start with https:// but received ${url}`));
+        }
+        return RESULT_VOID;
+    });
 }
 
 /**
@@ -55,11 +54,12 @@ export function validateSafeUrl(url: string): VoidIOResult {
  * @returns 验证结果，如果不是 wss 协议则返回 Err。
  */
 export function validateSafeSocketUrl(socketUrl: string): VoidIOResult {
-    return validateString(socketUrl, 'socketUrl')
-        .andThen(() => {
-            if (!socketUrl.startsWith('wss://')) {
-                return Err(new Error(`Param socketUrl must start with wss:// but received ${socketUrl}`));
-            }
-            return RESULT_VOID;
-        });
+    return validateString(socketUrl, 'socketUrl').andThen(() => {
+        if (!socketUrl.startsWith('wss://')) {
+            return Err(
+                new Error(`Param socketUrl must start with wss:// but received ${socketUrl}`),
+            );
+        }
+        return RESULT_VOID;
+    });
 }

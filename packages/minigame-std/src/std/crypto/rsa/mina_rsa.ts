@@ -24,23 +24,26 @@ export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublic
 
     const encrypt = (data: DataSource): IOResult<ArrayBuffer> => {
         return tryResult(() => {
-            const decodedData = typeof data === 'string'
-                ? data
-                // 可能抛异常
-                : decodeUtf8(data);
+            const decodedData =
+                typeof data === 'string'
+                    ? data
+                    : // 可能抛异常
+                      decodeUtf8(data);
             return publicKey.encrypt(decodedData, shaFactory.create());
         });
     };
 
-    return Promise.resolve(Ok({
-        encrypt(data: DataSource): AsyncIOResult<ArrayBuffer> {
-            return Promise.resolve(encrypt(data));
-        },
+    return Promise.resolve(
+        Ok({
+            encrypt(data: DataSource): AsyncIOResult<ArrayBuffer> {
+                return Promise.resolve(encrypt(data));
+            },
 
-        encryptToString(data: DataSource): AsyncIOResult<string> {
-            return Promise.resolve(encrypt(data).map(encodeBase64));
-        },
-    }));
+            encryptToString(data: DataSource): AsyncIOResult<string> {
+                return Promise.resolve(encrypt(data).map(encodeBase64));
+            },
+        }),
+    );
 }
 
 // #region Internal Functions

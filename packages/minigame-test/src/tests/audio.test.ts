@@ -4,7 +4,12 @@ import { audio, fs } from 'minigame-std';
 const audioUrl = 'https://www.w3schools.com/html/horse.mp3';
 
 export async function testAudio(): Promise<void> {
-    (await fs.unzipFromUrl('https://hlddz.huanle.qq.com/web/FeaturesPicture/WH_Dialect_Package_MP3.zip', '/audios')).inspect(() => {
+    (
+        await fs.unzipFromUrl(
+            'https://hlddz.huanle.qq.com/web/FeaturesPicture/WH_Dialect_Package_MP3.zip',
+            '/audios',
+        )
+    ).inspect(() => {
         audio.playWebAudioFromFile('/audios/Sound/WH_Dialect_Package/Man/chaojijiabei.mp3');
     });
 
@@ -13,7 +18,10 @@ export async function testAudio(): Promise<void> {
         autoDisconnect: false,
     });
 
-    assert(playFromUrlRes.isOk(), `playWebAudioFromUrl 应该成功: ${ playFromUrlRes.isErr() ? playFromUrlRes.unwrapErr().message : '' }`);
+    assert(
+        playFromUrlRes.isOk(),
+        `playWebAudioFromUrl 应该成功: ${playFromUrlRes.isErr() ? playFromUrlRes.unwrapErr().message : ''}`,
+    );
 
     const source = playFromUrlRes.unwrap();
     source.stop();

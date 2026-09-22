@@ -67,159 +67,177 @@ jsr add @happy-js/minigame-std
 
 ### Core Functionality
 
--   **Platform Detection & Adaptation**
-    ```js
-    import { platform } from 'minigame-std';
-    // Detect current runtime environment
-    platform.isWeb();
-    platform.isMiniGame();
-    ```
+- **Platform Detection & Adaptation**
 
--   **Text Encoding/Decoding**
-    ```js
-    import { decodeUtf8, encodeUtf8 } from 'minigame-std';
-    // UTF-8 string ↔ ArrayBuffer
-    ```
+  ```js
+  import { platform } from 'minigame-std';
+  // Detect current runtime environment
+  platform.isWeb();
+  platform.isMiniGame();
+  ```
 
--   **Base64 Encoding/Decoding**
-    ```js
-    import { decodeBase64, encodeBase64 } from 'minigame-std';
-    ```
+- **Text Encoding/Decoding**
 
--   **Hex Encoding/Decoding**
-    ```js
-    import { decodeHex, encodeHex } from 'minigame-std';
-    // Hex string ↔ Uint8Array
-    ```
+  ```js
+  import { decodeUtf8, encodeUtf8 } from 'minigame-std';
+  // UTF-8 string ↔ ArrayBuffer
+  ```
 
--   **ByteString Encoding/Decoding**
-    ```js
-    import { decodeByteString, encodeByteString } from 'minigame-std';
-    // ByteString (Latin-1) ↔ Uint8Array
-    ```
+- **Base64 Encoding/Decoding**
 
--   **File System Operations**
-    ```js
-    import { fs } from 'minigame-std';
-    // Supports zip/unzip, read/write files, directory operations, etc.
-    await fs.writeFile('path/to/file.txt', 'content');
-    await fs.readFile('path/to/file.txt');
-    await fs.writeJsonFile('path/to/data.json', { key: 'value' });
-    await fs.zip('source', 'target.zip');
-    ```
+  ```js
+  import { decodeBase64, encodeBase64 } from 'minigame-std';
+  ```
 
--   **Clipboard Operations**
-    ```js
-    import { clipboard } from 'minigame-std';
-    await clipboard.writeText('text');
-    const text = await clipboard.readText();
-    ```
+- **Hex Encoding/Decoding**
 
--   **Global Event Handling**
-    ```js
-    import { addErrorListener, addUnhandledrejectionListener } from 'minigame-std';
-    // Unified error and Promise rejection handling
-    ```
+  ```js
+  import { decodeHex, encodeHex } from 'minigame-std';
+  // Hex string ↔ Uint8Array
+  ```
 
--   **Network Status Monitoring**
-    ```js
-    import { addNetworkChangeListener, getNetworkType } from 'minigame-std';
-    ```
+- **ByteString Encoding/Decoding**
 
--   **HTTP Requests**
-    ```js
-    import { fetchT } from 'minigame-std';
-    // Supports abortable requests with platform-specific parameters
-    const task = fetchT(url, { abortable: true });
-    task.abort(); // Abort request
-    ```
+  ```js
+  import { decodeByteString, encodeByteString } from 'minigame-std';
+  // ByteString (Latin-1) ↔ Uint8Array
+  ```
 
--   **WebSocket**
-    ```js
-    import { connectSocket } from 'minigame-std';
-    const socket = connectSocket('wss://example.com');
-    ```
+- **File System Operations**
 
--   **Local Storage**
-    ```js
-    import { storage } from 'minigame-std';
-    // localStorage-compatible API
-    await storage.setItem('key', 'value');
-    const value = await storage.getItem('key');
-    ```
+  ```js
+  import { fs } from 'minigame-std';
+  // Supports zip/unzip, read/write files, directory operations, etc.
+  await fs.writeFile('path/to/file.txt', 'content');
+  await fs.readFile('path/to/file.txt');
+  await fs.writeJsonFile('path/to/data.json', { key: 'value' });
+  await fs.zip('source', 'target.zip');
+  ```
 
--   **WebAudio**
-    ```js
-    import { audio } from 'minigame-std';
-    const context = audio.createAudioContext();
-    ```
+- **Clipboard Operations**
 
--   **Cryptographic Algorithms**
-    ```js
-    import { cryptos } from 'minigame-std';
-    // MD5, SHA-1/256/384/512, HMAC, RSA
-    cryptos.md5('data');  // MD5 returns synchronous result
+  ```js
+  import { clipboard } from 'minigame-std';
+  await clipboard.writeText('text');
+  const text = await clipboard.readText();
+  ```
 
-    const sha256Result = await cryptos.sha256('data');
-    if (sha256Result.isOk()) {
-        const hash = sha256Result.unwrap();  // Hex hash string
-    }
+- **Global Event Handling**
 
-    const hmacResult = await cryptos.sha256HMAC('key', 'data');
-    if (hmacResult.isOk()) {
-        const hmac = hmacResult.unwrap();  // Hex HMAC string
-    }
-    ```
+  ```js
+  import { addErrorListener, addUnhandledrejectionListener } from 'minigame-std';
+  // Unified error and Promise rejection handling
+  ```
 
--   **Geolocation**
-    ```js
-    import { lbs } from 'minigame-std';
-    const position = await lbs.getCurrentPosition();
-    ```
+- **Network Status Monitoring**
 
--   **Performance Measurement**
-    ```js
-    import { getPerformanceNow } from 'minigame-std';
-    const timestamp = getPerformanceNow();
-    ```
+  ```js
+  import { addNetworkChangeListener, getNetworkType } from 'minigame-std';
+  ```
 
--   **Image Processing**
-    ```js
-    import { image } from 'minigame-std';
-    const img = image.createImageFromUrl(url);
-    ```
+- **HTTP Requests**
 
--   **Video Playback**
-    ```js
-    import { video } from 'minigame-std';
-    const v = video.createVideo({ src: 'video.mp4' });
-    v.play();
-    v.requestFullScreen(0); // 0: portrait, 90/-90: landscape
-    ```
+  ```js
+  import { fetchT } from 'minigame-std';
+  // Supports abortable requests with platform-specific parameters
+  const task = fetchT(url, { abortable: true });
+  task.abort(); // Abort request
+  ```
 
--   **Logging**
-    ```js
-    import { logger } from 'minigame-std';
-    // Pluggable logging with level filtering, console output, and file persistence
-    logger.init({
-        level: 'debug',
-        plugins: [logger.fileLog({ split: { maxSize: 10 * 1024 * 1024 } })],
-    });
-    logger.info('App started');
-    logger.error('Something went wrong', new Error('test'));
+- **WebSocket**
 
-    // Intercept global console methods
-    logger.init({
-        plugins: [logger.fileLog()],
-        injectConsole: true,
-    });
-    console.info('Redirected to logger pipeline'); // → file write + console output
+  ```js
+  import { connectSocket } from 'minigame-std';
+  const socket = connectSocket('wss://example.com');
+  ```
 
-    // WeChat Mini-Game logging (mini-game platform only)
-    logger.init({
-        plugins: [logger.wxLog({ level: 'warn' })],
-    });
-    ```
+- **Local Storage**
+
+  ```js
+  import { storage } from 'minigame-std';
+  // localStorage-compatible API
+  await storage.setItem('key', 'value');
+  const value = await storage.getItem('key');
+  ```
+
+- **WebAudio**
+
+  ```js
+  import { audio } from 'minigame-std';
+  const context = audio.createAudioContext();
+  ```
+
+- **Cryptographic Algorithms**
+
+  ```js
+  import { cryptos } from 'minigame-std';
+  // MD5, SHA-1/256/384/512, HMAC, RSA
+  cryptos.md5('data');  // MD5 returns synchronous result
+
+  const sha256Result = await cryptos.sha256('data');
+  if (sha256Result.isOk()) {
+      const hash = sha256Result.unwrap();  // Hex hash string
+  }
+
+  const hmacResult = await cryptos.sha256HMAC('key', 'data');
+  if (hmacResult.isOk()) {
+      const hmac = hmacResult.unwrap();  // Hex HMAC string
+  }
+  ```
+
+- **Geolocation**
+
+  ```js
+  import { lbs } from 'minigame-std';
+  const position = await lbs.getCurrentPosition();
+  ```
+
+- **Performance Measurement**
+
+  ```js
+  import { getPerformanceNow } from 'minigame-std';
+  const timestamp = getPerformanceNow();
+  ```
+
+- **Image Processing**
+
+  ```js
+  import { image } from 'minigame-std';
+  const img = image.createImageFromUrl(url);
+  ```
+
+- **Video Playback**
+
+  ```js
+  import { video } from 'minigame-std';
+  const v = video.createVideo({ src: 'video.mp4' });
+  v.play();
+  v.requestFullScreen(0); // 0: portrait, 90/-90: landscape
+  ```
+
+- **Logging**
+  ```js
+  import { logger } from 'minigame-std';
+  // Pluggable logging with level filtering, console output, and file persistence
+  logger.init({
+      level: 'debug',
+      plugins: [logger.fileLog({ split: { maxSize: 10 * 1024 * 1024 } })],
+  });
+  logger.info('App started');
+  logger.error('Something went wrong', new Error('test'));
+
+  // Intercept global console methods
+  logger.init({
+      plugins: [logger.fileLog()],
+      injectConsole: true,
+  });
+  console.info('Redirected to logger pipeline'); // → file write + console output
+
+  // WeChat Mini-Game logging (mini-game platform only)
+  logger.init({
+      plugins: [logger.wxLog({ level: 'warn' })],
+  });
+  ```
 
 For more features, see the [API Documentation](https://jiangjie.github.io/minigame-std/).
 
@@ -227,46 +245,46 @@ For more features, see the [API Documentation](https://jiangjie.github.io/miniga
 
 [Adapter](https://developers.weixin.qq.com/minigame/dev/game-engine/workflow/adapter.html) is also designed to bridge the gap between `wx` APIs and DOM/BOM APIs. Compared to Adapter, minigame-std has several significant advantages:
 
--   **Preserves Platform-Specific Features**
+- **Preserves Platform-Specific Features**
 
-    Adapter uses mini-game APIs to simulate browser-specific APIs, but the two are not functionally equivalent, which means some mini-game API features are lost.
+  Adapter uses mini-game APIs to simulate browser-specific APIs, but the two are not functionally equivalent, which means some mini-game API features are lost.
 
-    For example, `wx.request` supports the `enableHttpDNS` parameter, but browser `fetch` and `XMLHttpRequest` don't support it, so full simulation can't pass such parameters.
+  For example, `wx.request` supports the `enableHttpDNS` parameter, but browser `fetch` and `XMLHttpRequest` don't support it, so full simulation can't pass such parameters.
 
-    With `minigame-std`, you can write code like this, and platform-specific parameters will be automatically ignored on other platforms:
+  With `minigame-std`, you can write code like this, and platform-specific parameters will be automatically ignored on other platforms:
 
-    ```ts
-    fetchT(url, {
-        mode: 'no-cors', // Browser-specific
-        enableHttpDNS: true, // Mini-game-specific
-    });
-    ```
+  ```ts
+  fetchT(url, {
+      mode: 'no-cors', // Browser-specific
+      enableHttpDNS: true, // Mini-game-specific
+  });
+  ```
 
-    Another example: `wx.request` returns an abortable `RequestTask`, while `fetch` returns a `Promise<Response>` that requires an additional `AbortController` to abort. If you simulate `wx.request` to return `Promise<Response>`, you lose the abort functionality.
+  Another example: `wx.request` returns an abortable `RequestTask`, while `fetch` returns a `Promise<Response>` that requires an additional `AbortController` to abort. If you simulate `wx.request` to return `Promise<Response>`, you lose the abort functionality.
 
-    `minigame-std`'s `fetchT` follows the `wx.request` design, with an `abortable` parameter to control abort functionality:
+  `minigame-std`'s `fetchT` follows the `wx.request` design, with an `abortable` parameter to control abort functionality:
 
-    ```ts
-    fetchT(url, {
-        abortable: true,
-    }).abort();
-    ```
+  ```ts
+  fetchT(url, {
+      abortable: true,
+  }).abort();
+  ```
 
--   **No Runtime Overhead**
+- **No Runtime Overhead**
 
-    Adapter generates a lot of glue code that gets bundled regardless of usage. If you can call mini-game APIs directly, this glue code is actually a burden and may even hurt performance.
+  Adapter generates a lot of glue code that gets bundled regardless of usage. If you can call mini-game APIs directly, this glue code is actually a burden and may even hurt performance.
 
-    `minigame-std` doesn't require runtime Adapter injection. Through the build process, it automatically removes code for other platforms, reducing bundle size and improving runtime performance.
+  `minigame-std` doesn't require runtime Adapter injection. Through the build process, it automatically removes code for other platforms, reducing bundle size and improving runtime performance.
 
-    `minigame-std` is developed using ESM and supports tree-shaking, so unused features can be removed during the build, further reducing bundle size.
+  `minigame-std` is developed using ESM and supports tree-shaking, so unused features can be removed during the build, further reducing bundle size.
 
--   **Additional Features**
+- **Additional Features**
 
-    `minigame-std` provides additional features like `base64`, `fs`, etc.
+  `minigame-std` provides additional features like `base64`, `fs`, etc.
 
-    For platform-exclusive features, implementations are provided for other platforms as well.
+  For platform-exclusive features, implementations are provided for other platforms as well.
 
-    Some common features that aren't natively supported on any platform are gradually being added.
+  Some common features that aren't natively supported on any platform are gradually being added.
 
 ### Can It Replace Adapter?
 
@@ -276,15 +294,15 @@ Some DOM Element-related adaptation code still requires Adapter, primarily for g
 
 ## Mini-Game Platform Support
 
--   **WeChat Mini-Game**
+- **WeChat Mini-Game**
 
-    100% tested.
+  100% tested.
 
--   **Other Mini-Games**
+- **Other Mini-Games**
 
-    Since mini-game platforms all use the `wx` global namespace for API calls, other mini-game platforms usually set up a `wx` namespace for WeChat compatibility (e.g., `GameGlobal.wx = qq`), and the APIs are generally consistent, so they are basically supported.
+  Since mini-game platforms all use the `wx` global namespace for API calls, other mini-game platforms usually set up a `wx` namespace for WeChat compatibility (e.g., `GameGlobal.wx = qq`), and the APIs are generally consistent, so they are basically supported.
 
-    If you find any differences, please submit an [issue](https://github.com/JiangJie/minigame-std/issues).
+  If you find any differences, please submit an [issue](https://github.com/JiangJie/minigame-std/issues).
 
 ## Code Pruning
 
@@ -323,12 +341,13 @@ pnpm test
 
 > [!NOTE]
 > Web platform tests achieve 100% code coverage by excluding mini-game specific files via Vite configuration. The excluded files include:
+>
 > - `fs_async.ts` / `fs_sync.ts`: Simple wrapper layers that delegate to platform-specific implementations
 > - `mina_fs_async.ts` / `mina_fs_sync.ts`: Mini-game specific implementations tested separately via [minigame-test](https://github.com/JiangJie/minigame-std/tree/main/packages/minigame-test)
 
--   **Web Platform Tests**: Test cases in the `tests` directory are based on the web platform (`__MINIGAME_STD_MINA__: false`), using [Vitest](https://vitest.dev/) + [Playwright](https://playwright.dev/) to run in a real browser environment
--   **File System Tests**: For web platform OPFS file system tests, see [happy-opfs](https://github.com/JiangJie/happy-opfs)
--   **Mini-Game Platform Tests**: Mini-game environment test cases are located in the [packages/minigame-test](https://github.com/JiangJie/minigame-std/tree/main/packages/minigame-test) directory and require WeChat DevTools to run
+- **Web Platform Tests**: Test cases in the `tests` directory are based on the web platform (`__MINIGAME_STD_MINA__: false`), using [Vitest](https://vitest.dev/) + [Playwright](https://playwright.dev/) to run in a real browser environment
+- **File System Tests**: For web platform OPFS file system tests, see [happy-opfs](https://github.com/JiangJie/happy-opfs)
+- **Mini-Game Platform Tests**: Mini-game environment test cases are located in the [packages/minigame-test](https://github.com/JiangJie/minigame-std/tree/main/packages/minigame-test) directory and require WeChat DevTools to run
 
 ## Contributing
 

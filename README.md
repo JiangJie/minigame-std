@@ -67,167 +67,186 @@ jsr add @happy-js/minigame-std
 
 ### 核心功能
 
--   **平台检测与适配**
-    ```js
-    import { platform } from 'minigame-std';
-    // 检测当前运行环境
-    platform.isWeb();
-    platform.isMiniGame();
-    ```
+- **平台检测与适配**
 
--   **文本编解码**
-    ```js
-    import { decodeUtf8, encodeUtf8 } from 'minigame-std';
-    // UTF-8 字符串 ↔ Uint8Array
-    ```
+  ```js
+  import { platform } from 'minigame-std';
+  // 检测当前运行环境
+  platform.isWeb();
+  platform.isMiniGame();
+  ```
 
--   **Base64 编解码**
-    ```js
-    import { decodeBase64, encodeBase64 } from 'minigame-std';
-    ```
+- **文本编解码**
 
--   **Hex 编解码**
-    ```js
-    import { decodeHex, encodeHex } from 'minigame-std';
-    // 十六进制字符串 ↔ Uint8Array
-    ```
+  ```js
+  import { decodeUtf8, encodeUtf8 } from 'minigame-std';
+  // UTF-8 字符串 ↔ Uint8Array
+  ```
 
--   **ByteString 编解码**
-    ```js
-    import { decodeByteString, encodeByteString } from 'minigame-std';
-    // ByteString (Latin-1) ↔ Uint8Array
-    ```
+- **Base64 编解码**
 
--   **文件系统操作**
-    ```js
-    import { fs } from 'minigame-std';
-    // 支持 zip/unzip、读写文件、目录操作等
-    await fs.writeFile('path/to/file.txt', 'content');
-    await fs.readFile('path/to/file.txt');
-    await fs.writeJsonFile('path/to/data.json', { key: 'value' });
-    await fs.zip('source', 'target.zip');
-    ```
+  ```js
+  import { decodeBase64, encodeBase64 } from 'minigame-std';
+  ```
 
--   **剪贴板操作**
-    ```js
-    import { clipboard } from 'minigame-std';
-    await clipboard.writeText('text');
-    const text = await clipboard.readText();
-    ```
+- **Hex 编解码**
 
--   **全局事件处理**
-    ```js
-    import { addErrorListener, addUnhandledrejectionListener } from 'minigame-std';
-    // 统一的错误和 Promise rejection 处理
-    ```
+  ```js
+  import { decodeHex, encodeHex } from 'minigame-std';
+  // 十六进制字符串 ↔ Uint8Array
+  ```
 
--   **网络状态监听**
-    ```js
-    import { addNetworkChangeListener, getNetworkType } from 'minigame-std';
-    ```
+- **ByteString 编解码**
 
--   **HTTP 请求**
-    ```js
-    import { fetchT } from 'minigame-std';
-    // 支持可中断的请求，兼容平台特定参数
-    const task = fetchT(url, { abortable: true });
-    task.abort(); // 中断请求
-    ```
+  ```js
+  import { decodeByteString, encodeByteString } from 'minigame-std';
+  // ByteString (Latin-1) ↔ Uint8Array
+  ```
 
--   **WebSocket**
-    ```js
-    import { connectSocket } from 'minigame-std';
-    const socket = connectSocket('wss://example.com');
-    ```
+- **文件系统操作**
 
--   **本地存储**
-    ```js
-    import { storage } from 'minigame-std';
-    // localStorage 兼容 API
-    await storage.setItem('key', 'value');
-    const value = await storage.getItem('key');
-    ```
+  ```js
+  import { fs } from 'minigame-std';
+  // 支持 zip/unzip、读写文件、目录操作等
+  await fs.writeFile('path/to/file.txt', 'content');
+  await fs.readFile('path/to/file.txt');
+  await fs.writeJsonFile('path/to/data.json', { key: 'value' });
+  await fs.zip('source', 'target.zip');
+  ```
 
--   **WebAudio**
-    ```js
-    import { audio } from 'minigame-std';
-    const context = audio.createAudioContext();
-    ```
+- **剪贴板操作**
 
--   **加密算法**
-    ```js
-    import { cryptos } from 'minigame-std';
-    // MD5, SHA-1/256/384/512, HMAC, RSA
-    cryptos.md5('data');  // MD5 返回同步结果
+  ```js
+  import { clipboard } from 'minigame-std';
+  await clipboard.writeText('text');
+  const text = await clipboard.readText();
+  ```
 
-    const sha256Result = await cryptos.sha256('data');
-    if (sha256Result.isOk()) {
-        const hash = sha256Result.unwrap();  // 十六进制哈希字符串
-    }
+- **全局事件处理**
 
-    const hmacResult = await cryptos.sha256HMAC('key', 'data');
-    if (hmacResult.isOk()) {
-        const hmac = hmacResult.unwrap();  // 十六进制 HMAC 字符串
-    }
-    ```
+  ```js
+  import { addErrorListener, addUnhandledrejectionListener } from 'minigame-std';
+  // 统一的错误和 Promise rejection 处理
+  ```
 
--   **地理位置**
-    ```js
-    import { lbs } from 'minigame-std';
-    const position = await lbs.getCurrentPosition();
-    ```
+- **网络状态监听**
 
--   **性能测量**
-    ```js
-    import { getPerformanceNow } from 'minigame-std';
-    const timestamp = getPerformanceNow();
-    ```
+  ```js
+  import { addNetworkChangeListener, getNetworkType } from 'minigame-std';
+  ```
 
--   **路径操作**
-    ```js
-    import { path } from 'minigame-std';
-    path.basename('/usr/local/file.txt');         // 'file.txt'
-    path.dirname('/usr/local/file.txt');          // '/usr/local'
-    path.normalize('/foo/bar//baz/../quux');      // '/foo/bar/quux'
-    ```
+- **HTTP 请求**
 
--   **图像处理**
-    ```js
-    import { image } from 'minigame-std';
-    const img = image.createImageFromUrl(url);
-    ```
+  ```js
+  import { fetchT } from 'minigame-std';
+  // 支持可中断的请求，兼容平台特定参数
+  const task = fetchT(url, { abortable: true });
+  task.abort(); // 中断请求
+  ```
 
--   **视频播放**
-    ```js
-    import { video } from 'minigame-std';
-    const v = video.createVideo({ src: 'video.mp4' });
-    v.play();
-    v.requestFullScreen(0); // 0: 竖屏, 90/-90: 横屏
-    ```
+- **WebSocket**
 
--   **日志系统**
-    ```js
-    import { logger } from 'minigame-std';
-    // 可插拔日志，支持级别过滤、控制台输出、文件持久化
-    logger.init({
-        level: 'debug',
-        plugins: [logger.fileLog({ split: { maxSize: 10 * 1024 * 1024 } })],
-    });
-    logger.info('App started');
-    logger.error('Something went wrong', new Error('test'));
+  ```js
+  import { connectSocket } from 'minigame-std';
+  const socket = connectSocket('wss://example.com');
+  ```
 
-    // 拦截全局 console 方法
-    logger.init({
-        plugins: [logger.fileLog()],
-        injectConsole: true,
-    });
-    console.info('Redirected to logger pipeline'); // → file 写入 + console 输出
+- **本地存储**
 
-    // 微信小游戏日志（仅小游戏平台生效）
-    logger.init({
-        plugins: [logger.wxLog({ level: 'warn' })],
-    });
-    ```
+  ```js
+  import { storage } from 'minigame-std';
+  // localStorage 兼容 API
+  await storage.setItem('key', 'value');
+  const value = await storage.getItem('key');
+  ```
+
+- **WebAudio**
+
+  ```js
+  import { audio } from 'minigame-std';
+  const context = audio.createAudioContext();
+  ```
+
+- **加密算法**
+
+  ```js
+  import { cryptos } from 'minigame-std';
+  // MD5, SHA-1/256/384/512, HMAC, RSA
+  cryptos.md5('data');  // MD5 返回同步结果
+
+  const sha256Result = await cryptos.sha256('data');
+  if (sha256Result.isOk()) {
+      const hash = sha256Result.unwrap();  // 十六进制哈希字符串
+  }
+
+  const hmacResult = await cryptos.sha256HMAC('key', 'data');
+  if (hmacResult.isOk()) {
+      const hmac = hmacResult.unwrap();  // 十六进制 HMAC 字符串
+  }
+  ```
+
+- **地理位置**
+
+  ```js
+  import { lbs } from 'minigame-std';
+  const position = await lbs.getCurrentPosition();
+  ```
+
+- **性能测量**
+
+  ```js
+  import { getPerformanceNow } from 'minigame-std';
+  const timestamp = getPerformanceNow();
+  ```
+
+- **路径操作**
+
+  ```js
+  import { path } from 'minigame-std';
+  path.basename('/usr/local/file.txt');         // 'file.txt'
+  path.dirname('/usr/local/file.txt');          // '/usr/local'
+  path.normalize('/foo/bar//baz/../quux');      // '/foo/bar/quux'
+  ```
+
+- **图像处理**
+
+  ```js
+  import { image } from 'minigame-std';
+  const img = image.createImageFromUrl(url);
+  ```
+
+- **视频播放**
+
+  ```js
+  import { video } from 'minigame-std';
+  const v = video.createVideo({ src: 'video.mp4' });
+  v.play();
+  v.requestFullScreen(0); // 0: 竖屏, 90/-90: 横屏
+  ```
+
+- **日志系统**
+  ```js
+  import { logger } from 'minigame-std';
+  // 可插拔日志，支持级别过滤、控制台输出、文件持久化
+  logger.init({
+      level: 'debug',
+      plugins: [logger.fileLog({ split: { maxSize: 10 * 1024 * 1024 } })],
+  });
+  logger.info('App started');
+  logger.error('Something went wrong', new Error('test'));
+
+  // 拦截全局 console 方法
+  logger.init({
+      plugins: [logger.fileLog()],
+      injectConsole: true,
+  });
+  console.info('Redirected to logger pipeline'); // → file 写入 + console 输出
+
+  // 微信小游戏日志（仅小游戏平台生效）
+  logger.init({
+      plugins: [logger.wxLog({ level: 'warn' })],
+  });
+  ```
 
 更多功能请查看 [API 文档](https://jiangjie.github.io/minigame-std/)。
 
@@ -235,40 +254,40 @@ jsr add @happy-js/minigame-std
 
 [Adapter](https://developers.weixin.qq.com/minigame/dev/game-engine/workflow/adapter.html) 也是为了适配 wx API 和 DOM/BOM API 的差异，相比 Adapter，minigame-std 具有一些显著的优势。
 
--   Adapter 使用小游戏 API 模拟浏览器特有的 API，但两者在功能上其实并不等价，所以这样会丧失一些小游戏 API 特有的功能。
+- Adapter 使用小游戏 API 模拟浏览器特有的 API，但两者在功能上其实并不等价，所以这样会丧失一些小游戏 API 特有的功能。
 
-    比如 `wx.request` 支持 `enableHttpDNS` 参数，但浏览器环境的 `fetch` 和 `XMLHttpRequest` 都不支持，所以完全模拟就无法传递这样的参数。
+  比如 `wx.request` 支持 `enableHttpDNS` 参数，但浏览器环境的 `fetch` 和 `XMLHttpRequest` 都不支持，所以完全模拟就无法传递这样的参数。
 
-    使用 `minigame-std` 完全可以这样写，平台特有的参数会被其他平台自动忽略。
+  使用 `minigame-std` 完全可以这样写，平台特有的参数会被其他平台自动忽略。
 
-    ```ts
-    fetchT(url, {
-        mode: 'no-cors', // 浏览器特有
-        enableHttpDNS: true, // 小游戏特有
-    });
-    ```
+  ```ts
+  fetchT(url, {
+      mode: 'no-cors', // 浏览器特有
+      enableHttpDNS: true, // 小游戏特有
+  });
+  ```
 
-    再如 `wx.request` 的返回值是一个支持 `abort` 的 `RequestTask`，而 `fetch` 的返回值是一个 `Promise<Response>`，需要由额外的 `AbortController` 控制才能实现 `abort` 功能，如果为了模拟而将 `wx.request` 返回 `Promise<Response>`，则将失去`abort` 功能。
+  再如 `wx.request` 的返回值是一个支持 `abort` 的 `RequestTask`，而 `fetch` 的返回值是一个 `Promise<Response>`，需要由额外的 `AbortController` 控制才能实现 `abort` 功能，如果为了模拟而将 `wx.request` 返回 `Promise<Response>`，则将失去`abort` 功能。
 
-    `minigame-std` 的 `fetchT` 沿用了 `wx.request` 的返回值设计，由一个 `abortable` 参数控制是否可 abort。
+  `minigame-std` 的 `fetchT` 沿用了 `wx.request` 的返回值设计，由一个 `abortable` 参数控制是否可 abort。
 
-    ```ts
-    fetchT(url, {
-        abortable: true,
-    }).abort();
-    ```
+  ```ts
+  fetchT(url, {
+      abortable: true,
+  }).abort();
+  ```
 
--   Adapter 会产生很多胶水代码，这些代码不管是否使用都会打进包体，如果能直接调用小游戏 API 的话，这些胶水代码实际上是一种负担，某种情况下甚至是负优化，完全可以舍弃。
+- Adapter 会产生很多胶水代码，这些代码不管是否使用都会打进包体，如果能直接调用小游戏 API 的话，这些胶水代码实际上是一种负担，某种情况下甚至是负优化，完全可以舍弃。
 
-    使用 `minigame-std` 不需要在运行时注入 Adapter，通过构建流程可以自动为特定平台去除其他平台的代码，达到节省包体大小和提高运行性能的效果。
+  使用 `minigame-std` 不需要在运行时注入 Adapter，通过构建流程可以自动为特定平台去除其他平台的代码，达到节省包体大小和提高运行性能的效果。
 
-    `minigame-std` 使用 ESM 规范开发，支持`tree shake`，没有使用的特性可以在构建时删除，进一步节省包体大小。
+  `minigame-std` 使用 ESM 规范开发，支持`tree shake`，没有使用的特性可以在构建时删除，进一步节省包体大小。
 
--   `minigame-std` 额外提供了一些特性，如 `base64` `fs`等。
+- `minigame-std` 额外提供了一些特性，如 `base64` `fs`等。
 
-    对于某些平台独有的特性，也会为其他平台补齐实现。
+  对于某些平台独有的特性，也会为其他平台补齐实现。
 
-    所有平台都不原生支持，但一些常用的功能逐渐添加中。
+  所有平台都不原生支持，但一些常用的功能逐渐添加中。
 
 ### 能替代 Adapter 吗
 
@@ -278,15 +297,15 @@ jsr add @happy-js/minigame-std
 
 ## 小游戏平台的支持情况
 
--   微信小游戏
+- 微信小游戏
 
-    100% 经过测试。
+  100% 经过测试。
 
--   其他小游戏
+- 其他小游戏
 
-    由于小游戏平台的 API 全部使用 `wx` 全局 namespace 进行调用，其他小游戏平台为了兼容微信小游戏，通常也会设置 `wx` namespace，比如 `GameGlobal.wx = qq`，且 API 会大体保持一致，所以基本也是支持的。
+  由于小游戏平台的 API 全部使用 `wx` 全局 namespace 进行调用，其他小游戏平台为了兼容微信小游戏，通常也会设置 `wx` namespace，比如 `GameGlobal.wx = qq`，且 API 会大体保持一致，所以基本也是支持的。
 
-    如发现有差异，请提 [issue](https://github.com/JiangJie/minigame-std/issues)。
+  如发现有差异，请提 [issue](https://github.com/JiangJie/minigame-std/issues)。
 
 ## 代码裁剪
 
@@ -326,12 +345,13 @@ pnpm test
 
 > [!NOTE]
 > Web 平台测试通过 Vite 配置排除小游戏特有文件，实现了 100% 代码覆盖率。被排除的文件包括：
+>
 > - `fs_async.ts` / `fs_sync.ts`：简单的包装层，仅负责委托调用平台特定实现
 > - `mina_fs_async.ts` / `mina_fs_sync.ts`：小游戏特有实现，通过 [minigame-test](https://github.com/JiangJie/minigame-std/tree/main/packages/minigame-test) 单独测试
 
--   **Web 平台测试**: `tests` 目录下的测试用例基于 web 平台（`__MINIGAME_STD_MINA__: false`），使用 [Vitest](https://vitest.dev/) + [Playwright](https://playwright.dev/) 在真实浏览器环境中运行
--   **文件系统测试**: Web 平台的 OPFS 文件系统测试请参考 [happy-opfs](https://github.com/JiangJie/happy-opfs)
--   **小游戏平台测试**: 小游戏环境的测试用例位于 [packages/minigame-test](https://github.com/JiangJie/minigame-std/tree/main/packages/minigame-test) 目录，需要在 WeChat DevTools 中运行
+- **Web 平台测试**: `tests` 目录下的测试用例基于 web 平台（`__MINIGAME_STD_MINA__: false`），使用 [Vitest](https://vitest.dev/) + [Playwright](https://playwright.dev/) 在真实浏览器环境中运行
+- **文件系统测试**: Web 平台的 OPFS 文件系统测试请参考 [happy-opfs](https://github.com/JiangJie/happy-opfs)
+- **小游戏平台测试**: 小游戏环境的测试用例位于 [packages/minigame-test](https://github.com/JiangJie/minigame-std/tree/main/packages/minigame-test) 目录，需要在 WeChat DevTools 中运行
 
 ## 贡献
 

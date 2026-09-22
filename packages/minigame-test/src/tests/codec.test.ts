@@ -160,10 +160,7 @@ function testDecodeUtf8Options(): void {
     assertEquals(replaced, '\uFFFD\uFFFD');
 
     // fatal=true：遇到无效字节抛出异常（回退到 webDecodeUtf8）
-    assertThrows(
-        () => decodeUtf8(invalidBytes, { fatal: true }),
-        TypeError,
-    );
+    assertThrows(() => decodeUtf8(invalidBytes, { fatal: true }), TypeError);
 
     // BOM 处理：默认剥离 BOM（wx.decode 路径）
     // UTF-8 BOM (EF BB BF) + 'Hi'

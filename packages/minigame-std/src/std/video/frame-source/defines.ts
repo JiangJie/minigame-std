@@ -64,14 +64,25 @@ export interface CreateVideoFrameSourceOptions {
  *
  * @since 2.2.0
  */
-export type CreateVideoFrameSourceFromFileOptions = Omit<CreateVideoFrameSourceOptions, 'source' | 'crossOrigin'>;
+export type CreateVideoFrameSourceFromFileOptions = Omit<
+    CreateVideoFrameSourceOptions,
+    'source' | 'crossOrigin'
+>;
 
 /**
  * 视频帧源状态。
  *
  * @since 2.2.0
  */
-export type VideoFrameSourceState = 'idle' | 'loading' | 'ready' | 'playing' | 'paused' | 'ended' | 'error' | 'destroyed';
+export type VideoFrameSourceState =
+    | 'idle'
+    | 'loading'
+    | 'ready'
+    | 'playing'
+    | 'paused'
+    | 'ended'
+    | 'error'
+    | 'destroyed';
 
 /**
  * 视频帧基础信息。

@@ -26,7 +26,15 @@ import {
 } from 'happy-opfs';
 import { type AsyncIOResult, type AsyncVoidIOResult } from 'happy-rusty';
 import { IS_MINA } from '../../macros/env.ts';
-import type { ReadFileContent, ReadOptions, StatOptions, UnionDownloadFileOptions, UnionUploadFileOptions, WriteFileContent, ZipFromUrlOptions } from './fs_define.ts';
+import type {
+    ReadFileContent,
+    ReadOptions,
+    StatOptions,
+    UnionDownloadFileOptions,
+    UnionUploadFileOptions,
+    WriteFileContent,
+    ZipFromUrlOptions,
+} from './fs_define.ts';
 import {
     appendFile as minaAppendFile,
     copy as minaCopy,
@@ -117,9 +125,12 @@ export async function readDir(dirPath: string): AsyncIOResult<string[]> {
  * }
  * ```
  */
-export function readFile(filePath: string, options: ReadOptions & {
-    encoding: 'utf8';
-}): AsyncIOResult<string>;
+export function readFile(
+    filePath: string,
+    options: ReadOptions & {
+        encoding: 'utf8';
+    },
+): AsyncIOResult<string>;
 
 /**
  * 以二进制格式读取文件。
@@ -136,9 +147,12 @@ export function readFile(filePath: string, options: ReadOptions & {
  * }
  * ```
  */
-export function readFile(filePath: string, options?: ReadOptions & {
-    encoding: 'bytes';
-}): AsyncIOResult<Uint8Array<ArrayBuffer>>;
+export function readFile(
+    filePath: string,
+    options?: ReadOptions & {
+        encoding: 'bytes';
+    },
+): AsyncIOResult<Uint8Array<ArrayBuffer>>;
 
 /**
  * 读取文件内容。
@@ -166,7 +180,7 @@ export function readFile(filePath: string, options?: ReadOptions): AsyncIOResult
 export function readFile(filePath: string, options?: ReadOptions): AsyncIOResult<ReadFileContent> {
     return IS_MINA
         ? minaReadFile(filePath, options)
-        : webReadFile(filePath, options) as AsyncIOResult<ReadFileContent>;
+        : (webReadFile(filePath, options) as AsyncIOResult<ReadFileContent>);
 }
 
 /**
@@ -201,9 +215,12 @@ export function remove(path: string): AsyncVoidIOResult {
  * }
  * ```
  */
-export function stat(path: string, options?: StatOptions & {
-    recursive: false;
-}): AsyncIOResult<WechatMinigame.Stats>;
+export function stat(
+    path: string,
+    options?: StatOptions & {
+        recursive: false;
+    },
+): AsyncIOResult<WechatMinigame.Stats>;
 /**
  * 递归获取目录下所有文件和子目录的状态信息。
  * @param path - 目录的路径。
@@ -219,10 +236,16 @@ export function stat(path: string, options?: StatOptions & {
  * }
  * ```
  */
-export function stat(path: string, options: StatOptions & {
-    recursive: true;
-}): AsyncIOResult<WechatMinigame.FileStats[]>;
-export function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
+export function stat(
+    path: string,
+    options: StatOptions & {
+        recursive: true;
+    },
+): AsyncIOResult<WechatMinigame.FileStats[]>;
+export function stat(
+    path: string,
+    options?: StatOptions,
+): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
 /**
  * 获取文件或目录的状态信息。
  * @param path - 文件或目录的路径。
@@ -238,7 +261,10 @@ export function stat(path: string, options?: StatOptions): AsyncIOResult<WechatM
  * }
  * ```
  */
-export async function stat(path: string, options?: StatOptions): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
+export async function stat(
+    path: string,
+    options?: StatOptions,
+): AsyncIOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     return (IS_MINA ? minaStat : webToMinaStat)(path, options);
 }
 
@@ -257,7 +283,11 @@ export async function stat(path: string, options?: StatOptions): AsyncIOResult<W
  * }
  * ```
  */
-export function writeFile(filePath: string, contents: WriteFileContent, options?: WriteOptions): AsyncVoidIOResult {
+export function writeFile(
+    filePath: string,
+    contents: WriteFileContent,
+    options?: WriteOptions,
+): AsyncVoidIOResult {
     return (IS_MINA ? minaWriteFile : webWriteFile)(filePath, contents, options);
 }
 
@@ -276,7 +306,11 @@ export function writeFile(filePath: string, contents: WriteFileContent, options?
  * }
  * ```
  */
-export function appendFile(filePath: string, contents: WriteFileContent, options?: AppendOptions): AsyncVoidIOResult {
+export function appendFile(
+    filePath: string,
+    contents: WriteFileContent,
+    options?: AppendOptions,
+): AsyncVoidIOResult {
     return (IS_MINA ? minaAppendFile : webAppendFile)(filePath, contents, options);
 }
 
@@ -402,7 +436,10 @@ export function writeJsonFile<T>(filePath: string, data: T): AsyncVoidIOResult {
  * }
  * ```
  */
-export function downloadFile(fileUrl: string, options?: UnionDownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | DownloadFileTempResponse>;
+export function downloadFile(
+    fileUrl: string,
+    options?: UnionDownloadFileOptions,
+): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | DownloadFileTempResponse>;
 /**
  * 下载文件并保存到指定路径。
  * @param fileUrl - 文件的网络 URL。
@@ -419,16 +456,24 @@ export function downloadFile(fileUrl: string, options?: UnionDownloadFileOptions
  * }
  * ```
  */
-export function downloadFile(fileUrl: string, filePath: string, options?: UnionDownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | Response>;
-export function downloadFile(fileUrl: string, filePath?: string | UnionDownloadFileOptions, options?: UnionDownloadFileOptions): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | DownloadFileTempResponse | Response> {
+export function downloadFile(
+    fileUrl: string,
+    filePath: string,
+    options?: UnionDownloadFileOptions,
+): FetchTask<WechatMinigame.DownloadFileSuccessCallbackResult | Response>;
+export function downloadFile(
+    fileUrl: string,
+    filePath?: string | UnionDownloadFileOptions,
+    options?: UnionDownloadFileOptions,
+): FetchTask<
+    WechatMinigame.DownloadFileSuccessCallbackResult | DownloadFileTempResponse | Response
+> {
     if (typeof filePath === 'string') {
         return IS_MINA
             ? minaDownloadFile(fileUrl, filePath, options)
             : webDownloadFile(fileUrl, filePath, options);
     } else {
-        return IS_MINA
-            ? minaDownloadFile(fileUrl, filePath)
-            : webDownloadFile(fileUrl, filePath);
+        return IS_MINA ? minaDownloadFile(fileUrl, filePath) : webDownloadFile(fileUrl, filePath);
     }
 }
 
@@ -448,7 +493,11 @@ export function downloadFile(fileUrl: string, filePath?: string | UnionDownloadF
  * }
  * ```
  */
-export function uploadFile(filePath: string, fileUrl: string, options?: UnionUploadFileOptions): FetchTask<WechatMinigame.UploadFileSuccessCallbackResult | Response> {
+export function uploadFile(
+    filePath: string,
+    fileUrl: string,
+    options?: UnionUploadFileOptions,
+): FetchTask<WechatMinigame.UploadFileSuccessCallbackResult | Response> {
     return IS_MINA
         ? minaUploadFile(filePath, fileUrl, options)
         : webUploadFile(filePath, fileUrl, options);
@@ -487,7 +536,11 @@ export function unzip(zipFilePath: string, targetPath: string): AsyncVoidIOResul
  * }
  * ```
  */
-export function unzipFromUrl(zipFileUrl: string, targetPath: string, options?: UnionDownloadFileOptions): AsyncVoidIOResult {
+export function unzipFromUrl(
+    zipFileUrl: string,
+    targetPath: string,
+    options?: UnionDownloadFileOptions,
+): AsyncVoidIOResult {
     return (IS_MINA ? minaUnzipFromUrl : webUnzipFromUrl)(zipFileUrl, targetPath, options);
 }
 
@@ -505,7 +558,10 @@ export function unzipFromUrl(zipFileUrl: string, targetPath: string, options?: U
  * }
  * ```
  */
-export function zip(sourcePath: string, options?: ZipOptions): AsyncIOResult<Uint8Array<ArrayBuffer>>;
+export function zip(
+    sourcePath: string,
+    options?: ZipOptions,
+): AsyncIOResult<Uint8Array<ArrayBuffer>>;
 /**
  * 压缩文件或文件夹并保存到指定路径。
  * @param sourcePath - 需要压缩的文件（夹）路径。
@@ -521,8 +577,16 @@ export function zip(sourcePath: string, options?: ZipOptions): AsyncIOResult<Uin
  * }
  * ```
  */
-export function zip(sourcePath: string, zipFilePath: string, options?: ZipOptions): AsyncVoidIOResult;
-export function zip(sourcePath: string, zipFilePath?: string | ZipOptions, options?: ZipOptions): AsyncIOResult<Uint8Array<ArrayBuffer> | void> {
+export function zip(
+    sourcePath: string,
+    zipFilePath: string,
+    options?: ZipOptions,
+): AsyncVoidIOResult;
+export function zip(
+    sourcePath: string,
+    zipFilePath?: string | ZipOptions,
+    options?: ZipOptions,
+): AsyncIOResult<Uint8Array<ArrayBuffer> | void> {
     if (typeof zipFilePath === 'string') {
         return (IS_MINA ? minaZip : webZip)(sourcePath, zipFilePath, options);
     } else {
@@ -544,7 +608,10 @@ export function zip(sourcePath: string, zipFilePath?: string | ZipOptions, optio
  * }
  * ```
  */
-export function zipFromUrl(sourceUrl: string, options?: ZipFromUrlOptions): AsyncIOResult<Uint8Array<ArrayBuffer>>;
+export function zipFromUrl(
+    sourceUrl: string,
+    options?: ZipFromUrlOptions,
+): AsyncIOResult<Uint8Array<ArrayBuffer>>;
 /**
  * 下载文件并压缩为 zip 文件。
  * @param sourceUrl - 要下载的文件 URL。
@@ -560,8 +627,16 @@ export function zipFromUrl(sourceUrl: string, options?: ZipFromUrlOptions): Asyn
  * }
  * ```
  */
-export function zipFromUrl(sourceUrl: string, zipFilePath: string, options?: ZipFromUrlOptions): AsyncVoidIOResult;
-export function zipFromUrl(sourceUrl: string, zipFilePath?: string | ZipFromUrlOptions, options?: ZipFromUrlOptions): AsyncIOResult<Uint8Array<ArrayBuffer> | void> {
+export function zipFromUrl(
+    sourceUrl: string,
+    zipFilePath: string,
+    options?: ZipFromUrlOptions,
+): AsyncVoidIOResult;
+export function zipFromUrl(
+    sourceUrl: string,
+    zipFilePath?: string | ZipFromUrlOptions,
+    options?: ZipFromUrlOptions,
+): AsyncIOResult<Uint8Array<ArrayBuffer> | void> {
     if (typeof zipFilePath === 'string') {
         return IS_MINA
             ? minaZipFromUrl(sourceUrl, zipFilePath, options)

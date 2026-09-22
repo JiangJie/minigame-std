@@ -22,12 +22,7 @@ import { importPublicKey as webImportPublicKey } from './web_rsa.ts';
  * ```
  */
 export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublicKey> {
-    if (
-        hash !== 'SHA-1'
-        && hash !== 'SHA-256'
-        && hash !== 'SHA-384'
-        && hash !== 'SHA-512'
-    ) {
+    if (hash !== 'SHA-1' && hash !== 'SHA-256' && hash !== 'SHA-384' && hash !== 'SHA-512') {
         return Promise.resolve(Err(new TypeError(`Unsupported hash algorithm: ${hash}`)));
     }
 

@@ -6,14 +6,7 @@ import { gzipSync } from 'fflate/browser';
 import type { AsyncIOResult } from 'happy-rusty';
 import { encodeUtf8 } from '../../codec/mod.ts';
 import { addHideListener } from '../../event/mod.ts';
-import {
-    appendFile,
-    readDir,
-    readFile,
-    remove,
-    stat,
-    writeFile,
-} from '../../fs/mod.ts';
+import { appendFile, readDir, readFile, remove, stat, writeFile } from '../../fs/mod.ts';
 import type {
     LogEntry,
     LogFilter,
@@ -257,10 +250,9 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
         if (split.compress && currentFileSize > 0) {
             // currentFile 是 string，传参时值已复制，后续 reassign 不影响
             // Promise.all 调用时同步迭代 inFlight，调用后的新增 append 不影响
-            void compressOldFile(currentFile, inFlight)
-                .catch(() => {
-                    // 压缩失败——原始 .log 仍存在，下次 prune 清理
-                });
+            void compressOldFile(currentFile, inFlight).catch(() => {
+                // 压缩失败——原始 .log 仍存在，下次 prune 清理
+            });
         }
         currentFile = newLogPath();
         currentFileStartTime = Date.now();
@@ -321,9 +313,8 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
     // 读取目录下排序后的日志文件名列表（含 .log 和 .log.gz）
     async function readLogFiles(): AsyncIOResult<string[]> {
         const dirResult = await readDir(rootDir);
-        return dirResult.map(files => files
-            .filter(n => n.endsWith('.log') || n.endsWith('.log.gz'))
-            .sort(),
+        return dirResult.map(files =>
+            files.filter(n => n.endsWith('.log') || n.endsWith('.log.gz')).sort(),
         );
     }
 
@@ -574,13 +565,13 @@ function formatTimestamp(timestamp: number, pattern: string): string {
     const date = new Date(timestamp);
 
     const tokens: Record<string, string> = {
-        'yyyy': date.getFullYear().toString(),
-        'MM': pad2(date.getMonth() + 1),
-        'dd': pad2(date.getDate()),
-        'HH': pad2(date.getHours()),
-        'mm': pad2(date.getMinutes()),
-        'ss': pad2(date.getSeconds()),
-        'SSS': pad3(date.getMilliseconds()),
+        yyyy: date.getFullYear().toString(),
+        MM: pad2(date.getMonth() + 1),
+        dd: pad2(date.getDate()),
+        HH: pad2(date.getHours()),
+        mm: pad2(date.getMinutes()),
+        ss: pad2(date.getSeconds()),
+        SSS: pad3(date.getMilliseconds()),
     };
 
     return pattern.replace(/yyyy|MM|dd|HH|mm|ss|SSS/g, matched => tokens[matched]);
@@ -606,7 +597,9 @@ function toLogName(): string {
  * `new Date(string)` 在不同运行时对无时区字符串的解析差异。
  */
 function parseTimestamp(name: string): number | null {
-    const match = name.match(/^(\d{4})-(\d{2})-(\d{2})-(\d{2})-(\d{2})-(\d{2})\.(\d{3})\.log(?:\.gz)?$/);
+    const match = name.match(
+        /^(\d{4})-(\d{2})-(\d{2})-(\d{2})-(\d{2})-(\d{2})\.(\d{3})\.log(?:\.gz)?$/,
+    );
     if (!match) return null;
 
     const [, y, mo, d, h, mi, s, ms] = match.map(Number);

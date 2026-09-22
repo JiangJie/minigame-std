@@ -32,9 +32,7 @@ export function getRandomValues(length: number): AsyncIOResult<Uint8Array<ArrayB
         return Promise.resolve(validateResult.asErr());
     }
 
-    return IS_MINA
-        ? minaGetRandomValues(length)
-        : Promise.resolve(webGetRandomValues(length));
+    return IS_MINA ? minaGetRandomValues(length) : Promise.resolve(webGetRandomValues(length));
 }
 
 /**
@@ -50,7 +48,5 @@ export function getRandomValues(length: number): AsyncIOResult<Uint8Array<ArrayB
  * ```
  */
 export function randomUUID(): AsyncIOResult<UUID> {
-    return IS_MINA
-        ? minaRandomUUID()
-        : Promise.resolve(Ok(webRandomUUID()));
+    return IS_MINA ? minaRandomUUID() : Promise.resolve(Ok(webRandomUUID()));
 }

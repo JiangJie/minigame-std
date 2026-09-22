@@ -4,7 +4,10 @@ import { asyncIOResultify, asyncResultify, syncIOResultify } from 'minigame-std'
 export async function testResultify(): Promise<void> {
     // 测试 asyncResultify - 成功场景
     console.log('测试 asyncResultify 成功场景...');
-    const mockSuccessApi = (params: { success?: (res: { data: string; }) => void; fail?: (err: { code: number; }) => void; }) => {
+    const mockSuccessApi = (params: {
+        success?: (res: { data: string }) => void;
+        fail?: (err: { code: number }) => void;
+    }) => {
         setTimeout(() => {
             params.success?.({ data: 'success data' });
         }, 10);
@@ -18,7 +21,10 @@ export async function testResultify(): Promise<void> {
 
     // 测试 asyncResultify - 失败场景
     console.log('测试 asyncResultify 失败场景...');
-    const mockFailApi = (params: { success?: (res: { data: string; }) => void; fail?: (err: { code: number; }) => void; }) => {
+    const mockFailApi = (params: {
+        success?: (res: { data: string }) => void;
+        fail?: (err: { code: number }) => void;
+    }) => {
         setTimeout(() => {
             params.fail?.({ code: 500 });
         }, 10);
@@ -34,7 +40,9 @@ export async function testResultify(): Promise<void> {
     console.log('测试 asyncResultify 保留原始回调...');
     let originalSuccessCalled = false;
     const resultWithCallback = await promisifiedSuccess({
-        success: () => { originalSuccessCalled = true; },
+        success: () => {
+            originalSuccessCalled = true;
+        },
     });
     assert(resultWithCallback.isOk(), '结果应该成功');
     assert(originalSuccessCalled, '原始success回调应该被调用');
@@ -42,7 +50,10 @@ export async function testResultify(): Promise<void> {
 
     // 测试 asyncIOResultify - 成功场景
     console.log('测试 asyncIOResultify 成功场景...');
-    const mockIOSuccessApi = (params: { success?: (res: { data: string; }) => void; fail?: (err: WechatMinigame.GeneralCallbackResult) => void; }) => {
+    const mockIOSuccessApi = (params: {
+        success?: (res: { data: string }) => void;
+        fail?: (err: WechatMinigame.GeneralCallbackResult) => void;
+    }) => {
         setTimeout(() => {
             params.success?.({ data: 'io success data' });
         }, 10);
@@ -56,7 +67,10 @@ export async function testResultify(): Promise<void> {
 
     // 测试 asyncIOResultify - 失败场景（转换为Error）
     console.log('测试 asyncIOResultify 失败场景（错误转换）...');
-    const mockIOFailApi = (params: { success?: (res: { data: string; }) => void; fail?: (err: WechatMinigame.GeneralCallbackResult) => void; }) => {
+    const mockIOFailApi = (params: {
+        success?: (res: { data: string }) => void;
+        fail?: (err: WechatMinigame.GeneralCallbackResult) => void;
+    }) => {
         setTimeout(() => {
             params.fail?.({ errMsg: 'test error message' });
         }, 10);

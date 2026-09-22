@@ -29,8 +29,8 @@ const minaPerformance = /*#__PURE__*/ Lazy(() => wx.getPerformance());
  */
 export function getPerformanceNow(): number {
     return IS_MINA
-        // 小游戏 的 performance.now() 返回的是微秒
-        // NOTE: 但是小游戏开发者工具返回的是毫秒
-        ? minaPerformance.force().now() / (isMiniGameDevtools() ? 1 : 1000)
+        ? // 小游戏 的 performance.now() 返回的是微秒
+          // NOTE: 但是小游戏开发者工具返回的是毫秒
+          minaPerformance.force().now() / (isMiniGameDevtools() ? 1 : 1000)
         : performance.now();
 }

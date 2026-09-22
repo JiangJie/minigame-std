@@ -28,9 +28,12 @@ export type { UnionFetchInit } from './fetch_defines.ts';
  * task.abort();
  * ```
  */
-export function fetchT(url: string, init: UnionFetchInit & {
-    responseType: 'text';
-}): FetchTask<string>;
+export function fetchT(
+    url: string,
+    init: UnionFetchInit & {
+        responseType: 'text';
+    },
+): FetchTask<string>;
 
 /**
  * 发起一个可中断的 ArrayBuffer 类型响应的网络请求。
@@ -48,9 +51,12 @@ export function fetchT(url: string, init: UnionFetchInit & {
  * }
  * ```
  */
-export function fetchT(url: string, init: UnionFetchInit & {
-    responseType: 'arraybuffer';
-}): FetchTask<ArrayBuffer>;
+export function fetchT(
+    url: string,
+    init: UnionFetchInit & {
+        responseType: 'arraybuffer';
+    },
+): FetchTask<ArrayBuffer>;
 
 /**
  * 发起一个可中断的 JSON 类型响应的网络请求。
@@ -73,9 +79,12 @@ export function fetchT(url: string, init: UnionFetchInit & {
  * }
  * ```
  */
-export function fetchT<T>(url: string, init: UnionFetchInit & {
-    responseType: 'json';
-}): FetchTask<T>;
+export function fetchT<T>(
+    url: string,
+    init: UnionFetchInit & {
+        responseType: 'json';
+    },
+): FetchTask<T>;
 
 /**
  * 发起一个可中断的网络请求，默认返回文本类型响应。
@@ -125,9 +134,10 @@ export function fetchT<T>(url: string, init?: UnionFetchInit): FetchTask<T> {
         if (body != null) {
             // wx.request data only accepts string | IAnyObject | ArrayBuffer
             // BufferSource needs conversion to handle potential byteOffset
-            (rest as MinaFetchInit).data = typeof body === 'string' || isPlainObject(body)
-                ? body
-                : bufferSourceToAb(body as BufferSource);
+            (rest as MinaFetchInit).data =
+                typeof body === 'string' || isPlainObject(body)
+                    ? body
+                    : bufferSourceToAb(body as BufferSource);
         }
         if (headers !== undefined) {
             (rest as MinaFetchInit).header = headers;
@@ -137,7 +147,11 @@ export function fetchT<T>(url: string, init?: UnionFetchInit): FetchTask<T> {
 
     // Auto-serialize object body for web
     const { body, ...rest } = defaultInit;
-    const webInit: FetchInit & { abortable: true; } = { ...rest, body: body as BodyInit | null | undefined, abortable: true };
+    const webInit: FetchInit & { abortable: true } = {
+        ...rest,
+        body: body as BodyInit | null | undefined,
+        abortable: true,
+    };
 
     if (isPlainObject(body)) {
         webInit.body = JSON.stringify(body);
@@ -154,8 +168,10 @@ export function fetchT<T>(url: string, init?: UnionFetchInit): FetchTask<T> {
  * 判断值是否为普通对象（非 string、非 BufferSource）。
  */
 function isPlainObject(value: unknown): value is Record<string, unknown> {
-    return value != null
-        && typeof value === 'object'
-        && !ArrayBuffer.isView(value)
-        && !(value instanceof ArrayBuffer);
+    return (
+        value != null &&
+        typeof value === 'object' &&
+        !ArrayBuffer.isView(value) &&
+        !(value instanceof ArrayBuffer)
+    );
 }

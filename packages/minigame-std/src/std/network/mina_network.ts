@@ -11,8 +11,7 @@ import type { NetworkType } from './network_define.ts';
  * @returns 返回值可能为 `wifi` | `none` | `unknown` | `2g` | `3g` | `4g`
  */
 export async function getNetworkType(): Promise<NetworkType> {
-    return (await asyncResultify(wx.getNetworkType)())
-        .mapOr('unknown', x => x.networkType);
+    return (await asyncResultify(wx.getNetworkType)()).mapOr('unknown', x => x.networkType);
 }
 
 /**
@@ -31,6 +30,8 @@ export function addNetworkChangeListener(listener: (type: NetworkType) => void):
     wx.onNetworkStatusChange(networkListener);
 
     return () => {
-        wx.offNetworkStatusChange(networkListener as unknown as WechatMinigame.OffNetworkStatusChangeCallback);
+        wx.offNetworkStatusChange(
+            networkListener as unknown as WechatMinigame.OffNetworkStatusChangeCallback,
+        );
     };
 }

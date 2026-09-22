@@ -4,7 +4,11 @@
  * @returns 解析后的设备信息，包含 model、platform 和 system。
  * @internal
  */
-export function parseUserAgent(ua: string = navigator.userAgent): { model: string; platform: string; system: string; } {
+export function parseUserAgent(ua: string = navigator.userAgent): {
+    model: string;
+    platform: string;
+    system: string;
+} {
     // iOS 设备: iPhone/iPad/iPod
     // 示例: Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X)
     // wx.getDeviceInfo: model="iPhone 17 Pro<iPhone18,1>", system="iOS 26.2"

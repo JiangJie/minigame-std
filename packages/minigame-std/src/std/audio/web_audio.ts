@@ -61,8 +61,8 @@ export function closeGlobalAudioContext(): AsyncVoidIOResult {
  */
 export function createWebAudioContext(): AudioContext {
     return IS_MINA
-        // 两者 API 基本兼容
-        ? (wx.createWebAudioContext() as unknown as AudioContext)
+        ? // 两者 API 基本兼容
+          (wx.createWebAudioContext() as unknown as AudioContext)
         : new AudioContext();
 }
 
@@ -77,11 +77,11 @@ export function createWebAudioContext(): AudioContext {
  * const source = audio.playWebAudioFromAudioBuffer(audioBuffer, { loop: true });
  * ```
  */
-export function playWebAudioFromAudioBuffer(buffer: AudioBuffer, options?: PlayOptions): AudioBufferSourceNode {
-    const {
-        loop = false,
-        autoDisconnect = true,
-    } = options ?? {};
+export function playWebAudioFromAudioBuffer(
+    buffer: AudioBuffer,
+    options?: PlayOptions,
+): AudioBufferSourceNode {
+    const { loop = false, autoDisconnect = true } = options ?? {};
 
     const context = getGlobalAudioContext();
     const source = context.createBufferSource();
@@ -115,9 +115,14 @@ export function playWebAudioFromAudioBuffer(buffer: AudioBuffer, options?: PlayO
  * }
  * ```
  */
-export async function playWebAudioFromBufferSource(buffer: BufferSource, options?: PlayOptions): AsyncIOResult<AudioBufferSourceNode> {
+export async function playWebAudioFromBufferSource(
+    buffer: BufferSource,
+    options?: PlayOptions,
+): AsyncIOResult<AudioBufferSourceNode> {
     const context = getGlobalAudioContext();
-    const audioBufferRes = await tryAsyncResult(() => context.decodeAudioData(bufferSourceToAb(buffer)));
+    const audioBufferRes = await tryAsyncResult(() =>
+        context.decodeAudioData(bufferSourceToAb(buffer)),
+    );
 
     return audioBufferRes.map(audioBuffer => playWebAudioFromAudioBuffer(audioBuffer, options));
 }
@@ -136,7 +141,10 @@ export async function playWebAudioFromBufferSource(buffer: BufferSource, options
  * }
  * ```
  */
-export async function playWebAudioFromFile(filePath: string, options?: PlayOptions): AsyncIOResult<AudioBufferSourceNode> {
+export async function playWebAudioFromFile(
+    filePath: string,
+    options?: PlayOptions,
+): AsyncIOResult<AudioBufferSourceNode> {
     const bufferRes = await readFile(filePath);
 
     return bufferRes.andThenAsync(bytes => playWebAudioFromBufferSource(bytes.buffer, options));
@@ -157,7 +165,10 @@ export async function playWebAudioFromFile(filePath: string, options?: PlayOptio
  * }
  * ```
  */
-export async function playWebAudioFromUrl(url: string, options?: PlayOptions): AsyncIOResult<AudioBufferSourceNode> {
+export async function playWebAudioFromUrl(
+    url: string,
+    options?: PlayOptions,
+): AsyncIOResult<AudioBufferSourceNode> {
     const bufferRes = await fetchT(url, { responseType: 'arraybuffer' }).result;
 
     return bufferRes.andThenAsync(ab => playWebAudioFromBufferSource(ab, options));

@@ -6,7 +6,8 @@ const mockServer = 'https://fakestoreapi.com';
 const mockAll = `${mockServer}/products`;
 const mockSingle = `${mockAll}/1`;
 
-export const mockZipUrl = 'https://hlddz.huanle.qq.com/web/FeaturesPicture/WH_Dialect_Package_MP3.zip';
+export const mockZipUrl =
+    'https://hlddz.huanle.qq.com/web/FeaturesPicture/WH_Dialect_Package_MP3.zip';
 
 async function testAsync() {
     // Clear all files and folders
@@ -28,9 +29,13 @@ async function testAsync() {
 
     // File no longer exists
     const statRes = await fs.stat('/happy/opfs/a.txt');
-    assert(statRes.inspect(x => {
-        console.log('stat', x);
-    }).isErr());
+    assert(
+        statRes
+            .inspect(x => {
+                console.log('stat', x);
+            })
+            .isErr(),
+    );
 
     assert((await fs.readFile('/happy/b.txt')).unwrap().byteLength === 21);
     // Automatically normalize the path
@@ -47,17 +52,26 @@ async function testAsync() {
     const downloadTask = fs.downloadFile(mockSingle, '/todo.json', {
         timeout: 1000,
         onProgress(progressResult) {
-            progressResult.inspect(progress => {
-                // Maybe zero?
-                assert(progress.totalByteLength === 0 || progress.completedByteLength <= progress.totalByteLength);
-            }).inspectErr(err => {
-                console.log(err);
-            });
+            progressResult
+                .inspect(progress => {
+                    // Maybe zero?
+                    assert(
+                        progress.totalByteLength === 0 ||
+                            progress.completedByteLength <= progress.totalByteLength,
+                    );
+                })
+                .inspectErr(err => {
+                    console.log(err);
+                });
         },
     });
     const downloadRes = await downloadTask.result;
     if (downloadRes.isOk()) {
-        assert((downloadRes.unwrap() as WechatMinigame.DownloadFileSuccessCallbackResult).filePath.endsWith('/todo.json'));
+        assert(
+            (
+                downloadRes.unwrap() as WechatMinigame.DownloadFileSuccessCallbackResult
+            ).filePath.endsWith('/todo.json'),
+        );
 
         const postData = (await fs.readTextFile('/todo.json')).unwrap();
         const postJson: {
@@ -71,7 +85,13 @@ async function testAsync() {
         await fs.writeFile('/todo.json', JSON.stringify(postJson));
 
         // Upload a file
-        assert(((await fs.uploadFile('/todo.json', mockAll).result).unwrap() as WechatMinigame.UploadFileSuccessCallbackResult).statusCode === 201);
+        assert(
+            (
+                (
+                    await fs.uploadFile('/todo.json', mockAll).result
+                ).unwrap() as WechatMinigame.UploadFileSuccessCallbackResult
+            ).statusCode === 201,
+        );
     } else {
         assert(downloadRes.unwrapErr() instanceof Error);
     }
@@ -80,10 +100,12 @@ async function testAsync() {
         // Download a file to a temporary file
         const downloadTask = fs.downloadFile(mockSingle);
         const downloadRes = await downloadTask.result;
-        downloadRes.inspect((x: WechatMinigame.DownloadFileSuccessCallbackResult | { tempFilePath: string; }) => {
-            // Maybe /tmp/xxx or /tmp_xxx
-            assert(x.tempFilePath.includes('/tmp'));
-        });
+        downloadRes.inspect(
+            (x: WechatMinigame.DownloadFileSuccessCallbackResult | { tempFilePath: string }) => {
+                // Maybe /tmp/xxx or /tmp_xxx
+                assert(x.tempFilePath.includes('/tmp'));
+            },
+        );
         if (downloadRes.isOk()) {
             await fs.remove(downloadRes.unwrap().tempFilePath);
         }
@@ -94,17 +116,29 @@ async function testAsync() {
 
     // Zip/Unzip
     assert((await fs.zip('/happy', '/happy.zip')).isOk());
-    assert((await fs.zip('/happy')).unwrap().byteLength === (await fs.readFile('/happy.zip')).unwrap().byteLength);
+    assert(
+        (await fs.zip('/happy')).unwrap().byteLength ===
+            (await fs.readFile('/happy.zip')).unwrap().byteLength,
+    );
     assert((await fs.unzip('/happy.zip', '/happy-2')).isOk());
-    assert((await fs.unzipFromUrl(mockZipUrl, '/happy-3', {
-        onProgress(progressResult) {
-            progressResult.inspect(progress => {
-                console.log(`Unzipped ${progress.completedByteLength}/${progress.totalByteLength} bytes`);
-            });
-        },
-    })).isOk());
+    assert(
+        (
+            await fs.unzipFromUrl(mockZipUrl, '/happy-3', {
+                onProgress(progressResult) {
+                    progressResult.inspect(progress => {
+                        console.log(
+                            `Unzipped ${progress.completedByteLength}/${progress.totalByteLength} bytes`,
+                        );
+                    });
+                },
+            })
+        ).isOk(),
+    );
     assert((await fs.zipFromUrl(mockZipUrl, '/test-zip.zip')).isOk());
-    assert((await fs.zipFromUrl(mockZipUrl)).unwrap().byteLength === (await fs.readFile('/test-zip.zip')).unwrap().byteLength);
+    assert(
+        (await fs.zipFromUrl(mockZipUrl)).unwrap().byteLength ===
+            (await fs.readFile('/test-zip.zip')).unwrap().byteLength,
+    );
 
     // Copy
     await fs.mkdir('/happy/copy');
@@ -248,12 +282,18 @@ async function testAsync() {
     // Test invalid code package path (should fail with ./ prefix)
     const invalidPathRes1 = await fs.readFile('./images/test.png');
     assert(invalidPathRes1.isErr());
-    console.log('Invalid path ./images/test.png correctly rejected:', invalidPathRes1.unwrapErr().message);
+    console.log(
+        'Invalid path ./images/test.png correctly rejected:',
+        invalidPathRes1.unwrapErr().message,
+    );
 
     // Test invalid code package path (should fail with ../ prefix)
     const invalidPathRes2 = await fs.readFile('../images/test.png');
     assert(invalidPathRes2.isErr());
-    console.log('Invalid path ../images/test.png correctly rejected:', invalidPathRes2.unwrapErr().message);
+    console.log(
+        'Invalid path ../images/test.png correctly rejected:',
+        invalidPathRes2.unwrapErr().message,
+    );
 
     // Test code package path with subdirectory stat
     const imagesDirRes = await fs.stat('images');
@@ -287,23 +327,23 @@ function testSync() {
     const statRes = fs.statSync('/happy/opfs/a.txt');
     assert(statRes.isErr());
 
-    assert((fs.readFileSync('/happy/b.txt')).unwrap().byteLength === 21);
+    assert(fs.readFileSync('/happy/b.txt').unwrap().byteLength === 21);
     // Automatically normalize the path
-    assert((fs.readTextFileSync('//happy///b.txt//')).unwrap() === 'hello opfs happy opfs');
+    assert(fs.readTextFileSync('//happy///b.txt//').unwrap() === 'hello opfs happy opfs');
 
-    assert((fs.removeSync('/happy/not/exists')).isOk());
+    assert(fs.removeSync('/happy/not/exists').isOk());
     fs.removeSync('/happy/opfs');
 
-    assert(!(fs.existsSync('/happy/opfs')).unwrap());
-    assert((fs.existsSync('/happy/b.txt')).unwrap());
-    assert((fs.statSync('/happy/b.txt')).unwrap().isFile());
+    assert(!fs.existsSync('/happy/opfs').unwrap());
+    assert(fs.existsSync('/happy/b.txt').unwrap());
+    assert(fs.statSync('/happy/b.txt').unwrap().isFile());
 
     // Will create directory
     fs.emptyDirSync('/not-exists');
 
     // Zip/Unzip
-    assert((fs.zipSync('/happy', '/happy.zip')).isOk());
-    assert((fs.unzipSync('/happy.zip', '/happy-2')).isOk());
+    assert(fs.zipSync('/happy', '/happy.zip').isOk());
+    assert(fs.unzipSync('/happy.zip', '/happy-2').isOk());
 
     // Copy
     fs.mkdirSync('/happy/copy');
@@ -313,7 +353,7 @@ function testSync() {
     assert(fs.readFileSync('/happy-copy/b.txt').unwrap().byteLength === 26);
 
     // List all files and folders in the root directory
-    for (const name of (fs.readDirSync(fs.opfs.ROOT_DIR)).unwrap()) {
+    for (const name of fs.readDirSync(fs.opfs.ROOT_DIR).unwrap()) {
         console.log(name);
     }
 
@@ -431,7 +471,10 @@ function testSync() {
     // Test readFileSync with code package path
     const testPngSyncRes = fs.readFileSync('images/test.png');
     assert(testPngSyncRes.isOk());
-    console.log('ReadSync code package file images/test.png, size:', testPngSyncRes.unwrap().byteLength);
+    console.log(
+        'ReadSync code package file images/test.png, size:',
+        testPngSyncRes.unwrap().byteLength,
+    );
     assert(testPngSyncRes.unwrap() instanceof Uint8Array);
 
     // Test statSync with code package path
@@ -448,12 +491,18 @@ function testSync() {
     // Test invalid code package path sync (should fail with ./ prefix)
     const invalidSyncPathRes1 = fs.readFileSync('./images/test.png');
     assert(invalidSyncPathRes1.isErr());
-    console.log('Invalid sync path ./images/test.png correctly rejected:', invalidSyncPathRes1.unwrapErr().message);
+    console.log(
+        'Invalid sync path ./images/test.png correctly rejected:',
+        invalidSyncPathRes1.unwrapErr().message,
+    );
 
     // Test invalid code package path sync (should fail with ../ prefix)
     const invalidSyncPathRes2 = fs.readFileSync('../images/test.png');
     assert(invalidSyncPathRes2.isErr());
-    console.log('Invalid sync path ../images/test.png correctly rejected:', invalidSyncPathRes2.unwrapErr().message);
+    console.log(
+        'Invalid sync path ../images/test.png correctly rejected:',
+        invalidSyncPathRes2.unwrapErr().message,
+    );
 
     // ==================== 代码包路径同步测试结束 ====================
 

@@ -9,7 +9,6 @@
  */
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
-
 /**
  * 单条日志记录。
  *
@@ -45,7 +44,6 @@ export type LogFilter = (level: LogLevel, ...args: unknown[]) => boolean;
  * @since 2.6.0
  */
 export type LogFormatter = (entry: LogEntry) => string;
-
 
 // ── Plugin Types ────────────────────────────────────────────────
 

@@ -44,7 +44,7 @@ export function addErrorListener(listener: (ev: WechatMinigame.ListenerError) =>
 
     const webListener = (ev: ErrorEvent) => {
         listener({
-            message: `${ ev.message }${ ev.error?.stack ? `\n${ ev.error.stack }` : '' }`,
+            message: `${ev.message}${ev.error?.stack ? `\n${ev.error.stack}` : ''}`,
         });
     };
 
@@ -66,9 +66,13 @@ export function addErrorListener(listener: (ev: WechatMinigame.ListenerError) =>
  * removeListener();
  * ```
  */
-export function addUnhandledrejectionListener(listener: (ev: Pick<PromiseRejectionEvent, 'reason' | 'promise'>) => void): () => void {
+export function addUnhandledrejectionListener(
+    listener: (ev: Pick<PromiseRejectionEvent, 'reason' | 'promise'>) => void,
+): () => void {
     return IS_MINA
-        ? minaAddUnhandledrejectionListener(listener as unknown as WechatMinigame.OnUnhandledRejectionCallback)
+        ? minaAddUnhandledrejectionListener(
+              listener as unknown as WechatMinigame.OnUnhandledRejectionCallback,
+          )
         : webAddUnhandledrejectionListener(listener);
 }
 
@@ -91,11 +95,11 @@ export function addResizeListener(listener: WechatMinigame.OnWindowResizeCallbac
     return IS_MINA
         ? minaAddResizeListener(listener)
         : webAddResizeListener(ev => {
-            listener({
-                windowWidth: (ev.target as Window).innerWidth,
-                windowHeight: (ev.target as Window).innerHeight,
-            });
-        });
+              listener({
+                  windowWidth: (ev.target as Window).innerWidth,
+                  windowHeight: (ev.target as Window).innerHeight,
+              });
+          });
 }
 
 /**
@@ -125,11 +129,9 @@ export function addResizeListener(listener: WechatMinigame.OnWindowResizeCallbac
  */
 export function addShowListener(
     listener: (ev?: WechatMinigame.OnShowListenerResult) => void,
-    options?: { fireImmediately?: boolean; },
+    options?: { fireImmediately?: boolean },
 ): () => void {
-    return IS_MINA
-        ? minaAddShowListener(listener, options)
-        : webAddShowListener(listener, options);
+    return IS_MINA ? minaAddShowListener(listener, options) : webAddShowListener(listener, options);
 }
 
 /**
@@ -148,9 +150,7 @@ export function addShowListener(
  * ```
  */
 export function addHideListener(listener: () => void): () => void {
-    return IS_MINA
-        ? minaAddHideListener(listener)
-        : webAddHideListener(listener);
+    return IS_MINA ? minaAddHideListener(listener) : webAddHideListener(listener);
 }
 
 /**
@@ -172,9 +172,7 @@ export function addHideListener(listener: () => void): () => void {
  * ```
  */
 export function getLaunchOptionsSync(): WechatMinigame.LaunchOptionsGame {
-    return IS_MINA
-        ? minaGetLaunchOptionsSync()
-        : webGetLaunchOptionsSync();
+    return IS_MINA ? minaGetLaunchOptionsSync() : webGetLaunchOptionsSync();
 }
 
 /**
@@ -195,7 +193,5 @@ export function getLaunchOptionsSync(): WechatMinigame.LaunchOptionsGame {
  * ```
  */
 export function getEnterOptionsSync(): WechatMinigame.EnterOptionsGame {
-    return IS_MINA
-        ? minaGetEnterOptionsSync()
-        : webGetEnterOptionsSync();
+    return IS_MINA ? minaGetEnterOptionsSync() : webGetEnterOptionsSync();
 }

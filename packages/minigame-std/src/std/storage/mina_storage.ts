@@ -3,7 +3,13 @@
  * 小游戏平台的存储操作实现。
  */
 
-import { RESULT_VOID, type AsyncIOResult, type AsyncVoidIOResult, type IOResult, type VoidIOResult } from 'happy-rusty';
+import {
+    RESULT_VOID,
+    type AsyncIOResult,
+    type AsyncVoidIOResult,
+    type IOResult,
+    type VoidIOResult,
+} from 'happy-rusty';
 import { asyncIOResultify, syncIOResultify } from '../utils/mod.ts';
 
 /**
@@ -119,8 +125,7 @@ export function clearSync(): VoidIOResult {
  * @returns 返回存储项的数量。
  */
 export function getLengthSync(): IOResult<number> {
-    return getStorageKeysSync()
-        .map(x => x.length);
+    return getStorageKeysSync().map(x => x.length);
 }
 
 /**
@@ -129,8 +134,7 @@ export function getLengthSync(): IOResult<number> {
  * @returns 返回是否存在的布尔值。
  */
 export function hasItemSync(key: string): IOResult<boolean> {
-    return getStorageKeysSync()
-        .map(x => x.includes(key));
+    return getStorageKeysSync().map(x => x.includes(key));
 }
 
 // #region Internal Functions
@@ -148,8 +152,7 @@ async function getStorageKeys(): AsyncIOResult<string[]> {
  * 同步获取所有存储键名。
  */
 function getStorageKeysSync(): IOResult<string[]> {
-    return syncIOResultify(wx.getStorageInfoSync)()
-        .map(x => x.keys);
+    return syncIOResultify(wx.getStorageInfoSync)().map(x => x.keys);
 }
 
 // #endregion

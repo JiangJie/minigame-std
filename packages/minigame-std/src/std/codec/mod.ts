@@ -9,7 +9,16 @@ import { decodeUtf8 as webDecodeUtf8, encodeUtf8 as webEncodeUtf8 } from 'happy-
 import { IS_MINA } from '../../macros/env.ts';
 import { decodeUtf8 as minaDecodeUtf8, encodeUtf8 as minaEncodeUtf8 } from './mina_utf8.ts';
 
-export { decodeBase64, decodeByteString, decodeHex, encodeBase64, encodeByteString, encodeHex, type DecodeBase64Options, type EncodeBase64Options } from 'happy-codec';
+export {
+    decodeBase64,
+    decodeByteString,
+    decodeHex,
+    encodeBase64,
+    encodeByteString,
+    encodeHex,
+    type DecodeBase64Options,
+    type EncodeBase64Options,
+} from 'happy-codec';
 
 /**
  * 将字符串数据编码为 `Uint8Array`（UTF-8 编码）。

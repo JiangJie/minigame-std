@@ -14,13 +14,11 @@ export function getNetworkType(): NetworkType {
         return 'none';
     }
 
-    const nav = (navigator as Navigator);
+    const nav = navigator as Navigator;
 
     // 进一步判断
     if (nav.connection) {
-        return nav.connection.type === 'wifi'
-            ? 'wifi'
-            : nav.connection.effectiveType;
+        return nav.connection.type === 'wifi' ? 'wifi' : nav.connection.effectiveType;
     }
 
     return 'unknown';
@@ -42,7 +40,7 @@ export function addNetworkChangeListener(listener: (type: NetworkType) => void):
         }
     };
 
-    const nav = (navigator as Navigator);
+    const nav = navigator as Navigator;
 
     if (nav.connection) {
         nav.connection.addEventListener('change', networkListener);

@@ -27,7 +27,5 @@ export * from './lbs_defines.ts';
  * ```
  */
 export function getCurrentPosition(): AsyncIOResult<GeoPosition> {
-    return IS_MINA
-        ? minaGetCurrentPosition()
-        : webGetCurrentPosition();
+    return IS_MINA ? minaGetCurrentPosition() : webGetCurrentPosition();
 }

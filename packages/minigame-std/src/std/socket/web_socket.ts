@@ -24,7 +24,10 @@ export function connectSocket(url: string, protocols?: string | string[]): ISock
             return socket.readyState;
         },
 
-        addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: SocketListenerMap[K]): () => void {
+        addEventListener<K extends keyof WebSocketEventMap>(
+            type: K,
+            listener: SocketListenerMap[K],
+        ): () => void {
             switch (type) {
                 case 'open': {
                     const socketListener = listener as SocketListenerMap['open'];

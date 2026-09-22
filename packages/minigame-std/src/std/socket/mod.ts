@@ -46,7 +46,7 @@ export function connectSocket(url: string, options?: SocketOptions): IOResult<IS
     const urlRes = validateSafeSocketUrl(url);
     if (urlRes.isErr()) return urlRes.asErr();
 
-    return Ok(IS_MINA
-        ? minaConnectSocket(url, options)
-        : webConnectSocket(url, options?.protocols));
+    return Ok(
+        IS_MINA ? minaConnectSocket(url, options) : webConnectSocket(url, options?.protocols),
+    );
 }

@@ -8,34 +8,41 @@
 ## [2.7.1] - 2026-09-07
 
 ### 修复
+
 - `fs.statSync`：修复微信小游戏同步文件系统 API 抛出非 `Error` 错误对象时丢失 `errno`，并正确识别大小写不同的不存在文件错误
 
 ## [2.7.0] - 2026-07-23
 
 ### 新增
+
 - 新增子路径导出：每个功能模块可独立导入（如 `minigame-std/fs`、`minigame-std/codec`），与根入口导入的 API 完全一致；共 18 个子路径，npm 与 JSR 均可使用；对 tree-shaking 支持较弱的构建工具，子路径导入可更明确地控制打入包内的模块
 
 ### 变更
+
 - 包构建改为多入口架构：每个公共入口独立打包（`dist/<name>.mjs` / `dist/<name>.cjs` + `dist/types/<name>.d.ts`），共享内部助手抽取为 `_internal` chunk，跨入口无重复代码
 
 ## [2.6.2] - 2026-07-14
 
 ### 修复
+
 - `video.VideoFrameSource.seek`：修复单位转换 bug，秒参数未转换为毫秒传给 `wx.VideoDecoder.seek`，导致跳转位置偏差 1000 倍
 - `event`：修复 Web Worker/SSR 等非 DOM 环境中加载 minigame-std 因 `launchOptions` IIFE 访问 `document.referrer` 而崩溃的问题，对 `document`/`location`/`URLSearchParams` 加 `typeof` guard 优雅降级
 
 ## [2.6.1] - 2026-07-06
 
 ### 修复
+
 - `fs.exists`/`fs.existsSync`：修复 Windows 和 Mac 平台 `stat` 代码包内不存在的文件时误报成功的问题（平台返回 `stats.size = -1`，现通过 `stats.size < 0` 判断视为不存在）
 - `codec.encodeUtf8`：修复鸿蒙微信小游戏（HarmonyOS / HarmonyOS PC）`wx.encode` 实现存在 bug 导致 UTF-8 编码结果错误的问题，现跳过 `wx.encode` 直接走 `happy-codec` 兜底
 
 ### 优化
+
 - `fs.exists`/`fs.existsSync`：当 `ExistsOptions` 不要求检查 `isDirectory`/`isFile` 时，改用 `access`/`accessSync` 替代 `stat`，避免构造 `Stats` 对象，开销更小
 
 ## [2.6.0] - 2026-06-29
 
 ### 新增
+
 - `logger` 模块：跨平台统一的日志系统，提供贴近 `console` 的 API（`debug`/`info`/`warn`/`error`），支持插件化扩展、全局 `console` 拦截（`injectConsole`）、日志过滤与级别控制
 - `logger.fileLog`：文件日志插件，支持缓冲写入、按时间/大小分割、旧文件清理（`maxCount`/`maxAge`）、可选 gzip 压缩
 - `logger.wxLog`：微信小游戏 `wx.getLogManager` 插件，预序列化处理 BigInt 等平台无法序列化的类型
@@ -44,39 +51,47 @@
 ## [2.5.0] - 2026-06-15
 
 ### 新增
+
 - `getLaunchOptionsSync`：新增同步获取冷启动参数 API，小游戏对应 `wx.getLaunchOptionsSync()`，Web 模块加载时缓存页面 URL 参数
 - `getEnterOptionsSync`：新增同步获取当前进入参数 API，小游戏对应 `wx.getEnterOptionsSync()`，Web 每次实时解析当前 URL 参数
 - `addShowListener`：新增 `fireImmediately` 选项，设为 `true` 时注册即回调当前进入参数，覆盖首次启动和后续切前台场景
 
 ### 修复
+
 - `addNetworkChangeListener`：修复不支持 `navigator.connection` 的环境中缺少 online/offline 事件回退的问题
 - `addNetworkChangeListener`：修复 Chrome 挂机/休眠唤醒时 RTT 波动导致重复触发相同网络类型回调的问题
 
 ### 变更
+
 - socket：小游戏平台 `connectSocket` 使用原生 `SocketTask.readyState` 替代手动 mock 跟踪
 
 ## [2.4.0] - 2026-05-24
 
 ### 新增
+
 - 新增 `path` 模块，提供小游戏平台兼容的 POSIX 路径工具（`basename`、`dirname`、`normalize`、`SEPARATOR`），不依赖 `URL`，可安全在小游戏环境使用
 - `platform.isMiniGameHarmonyPC`：新增鸿蒙 PC 平台检测
 
 ### 变更
+
 - 移除 `@std/path` 运行时依赖，改用内置 `path` 模块实现，解决小游戏平台 `URL` 未定义导致的兼容问题
 - 升级 `@happy-ts/fetch-t` 至 `^1.10.0`
 
 ## [2.3.1] - 2026-05-24
 
 ### 修复
+
 - 修复 `fetchT` 在小游戏平台传入带 `byteOffset` 的 `BufferSource`（如 `Uint8Array` 子视图）作为 `body` 时，数据未正确截取的问题
 
 ## [2.3.0] - 2026-05-22
 
 ### 新增
+
 - `fetchT` 的 `body` 参数现在支持直接传入对象（`WechatMinigame.IAnyObject`），Web 平台自动 `JSON.stringify` 并设置 `Content-Type: application/json`，小游戏平台直接作为 `data` 传递
 - `fetchT`、`connectSocket`、`fs.downloadFile`、`fs.uploadFile` 统一使用 `headers`（`Record<string, string>`）传递请求头，小游戏平台自动映射为 `header`
 
 ### 变更
+
 - **⚠️ BREAKING**：`UnionFetchInit` 不再包含 `data` 和 `header` 属性，请迁移到 `body` 和 `headers`
 - **⚠️ BREAKING**：`SocketOptions` 不再包含 `header` 属性，请迁移到 `headers`
 - **⚠️ BREAKING**：`DownloadFileOptions`、`UploadFileOptions` 不再包含 `header` 属性，请迁移到 `headers`
@@ -86,61 +101,75 @@
 ## [2.2.0] - 2026-05-20
 
 ### 新增
+
 - `audio.playWebAudioFromUrl`：支持从远程 URL 下载音频并通过 WebAudio 解码播放
 - `video.createVideoFrameSource` / `video.isVideoFrameSourceSupported`：新增视频帧源 API，支持游戏渲染循环获取视频帧并上传到 RenderTexture/WebGL
 - `video.createVideoFrameSourceFromFile`：支持从本地文件创建视频帧源
 - `event.addShowListener` / `event.addHideListener`：新增游戏回到前台、切到后台事件监听；Web 平台 `addShowListener` 会返回当前 URL query
 
 ### 变更
+
 - 重命名视频帧源创建选项字段，使 API 语义更贴近 URL / 文件统一来源
 - 升级依赖版本
 
 ### 修复
+
 - 修复 `minigame-test` 构建中 `inlineDynamicImports` 弃用警告，改用 `codeSplitting: false` 保持单文件输出
 
 ### 测试
+
 - 为 `audio.playWebAudioFromUrl`、`VideoFrameSource`、前后台事件监听补充小游戏侧测试
 - 调整小游戏测试以兼容微信开发者工具中的视频和事件行为差异
 
 ## [2.1.2] - 2026-05-12
 
 ### 性能优化
+
 - 为模块顶层调用全面添加 `/*#__PURE__*/` 注解，配合更激进的 treeshake 配置后，下游 bundler 可按需消除未使用的顶层副作用，进一步缩小产物体积
 
 ### 变更
+
 - 收紧 Rollup treeshake 选项：`moduleSideEffects: false` + `propertyReadSideEffects: false`，并在 cjs/esm 输出中关闭 `topLevelVar`，使 PURE 注解对 `const` 顶层声明持续生效
 - 升级依赖版本（vitest 4.1.5、eslint 10.3.0、rollup 4.60.3、typescript 6.0.3、typescript-eslint 8.59.2、vite 8.0.11、minigame-api-typings 3.8.20、rsa-oaep-encryption 1.2.1 等），并适配 pnpm 11
 
 ### 修复
+
 - 修复 pnpm 11 下 `pnpm run docs` 因新增内置子命令冲突而无法分发到 workspace 的问题（root 脚本显式补 `run` 关键字）
 
 ### 风格
+
 - 将仓库内所有 `/*@__PURE__*/` 统一为 `/*#__PURE__*/` 风格，与 Rollup/Vite/Terser/SWC 社区惯例一致
 
 ### 文档
+
 - `tsconfig.base.json` 的 `$schema` URL 由 `http` 改为 `https`
 - 将 `CODEBUDDY.md` 重命名为 `AGENTS.md`，对所有 AI agent 通用，并刷新 PURE 注解、treeshake 配置、pnpm 11 注意事项、release 流程、单测命令等指引
 
 ## [2.1.1] - 2026-03-05
 
 ### 新增
+
 - `decodeUtf8` 新增 `TextDecoderOptions` 参数，支持 `fatal` 和 `ignoreBOM` 选项
 
 ### 变更
+
 - 构建前置步骤 (`prebuild`) 增加 lint 检查，确保构建前通过类型检查和代码规范检查
 - 升级依赖版本（eslint v10、rollup、typedoc、typescript-eslint、happy-codec、minigame-api-typings 等）
 
 ### 修复
+
 - 修复 `mina_utf8.ts` 中 `decodeUtf8` 回退到 Web 实现时未传递 `options` 参数的问题
 - 修复 `asyncResultify` 对小游戏平台返回非 void 非 PromiseLike 值的 API 的兼容性
 
 ### 测试
+
 - 新增 `decodeUtf8` 的 `TextDecoderOptions` 测试用例（Web 平台、mina 模拟、mina-wx 模拟）
 - 更新 `asyncResultify` 测试用例以匹配新的容错行为
 
 ## [2.1.0] - 2026-02-11
 
 ### 新增
+
 - `fs.readFile`、`fs.readFileSync`、`fs.stat`、`fs.statSync`、`fs.readDir`、`fs.readDirSync` 支持读取代码包文件（不以 `./` 或 `../` 开头的相对路径）
 - 新增 `validateReadablePath` 函数用于验证只读操作的路径
 - `fs.stat` 递归结果按路径排序，确保跨平台一致性
@@ -148,6 +177,7 @@
 - `getRandomValues` 新增正整数验证
 
 ### 变更
+
 - 重构 codec 模块，将 base64、hex、bytestring、utf8 编解码实现替换为 `happy-codec` 包
 - Web 平台 UTF-8 编解码回退到 `happy-codec` 实现（保留微信小游戏平台适配器）
 - 提取路径类型验证逻辑到 `validatePathType` 辅助函数
@@ -161,6 +191,7 @@
 - 升级依赖版本
 
 ### 修复
+
 - 修复 Android 子项目中递归 stat 的路径规范化问题
 - 修复 `web_storage` 的 `getItem` 在 key 不存在时的错误消息
 - 修复部分文件中缺少 `.ts` 扩展名的相对导入路径
@@ -168,12 +199,14 @@
 - 移除 `mina_fs_async` 中的重复 region 注释
 
 ### 文档
+
 - 更新 codec 模块文档以反映 `happy-codec` 迁移
 - 修正 README 中 codec 返回类型描述（`ArrayBuffer` → `Uint8Array`）
 - 改进 codec 和 defines 模块的 JSDoc 注释
 - 移除 typedoc.json 中不必要的 exclude 选项
 
 ### 测试
+
 - 新增代码包路径的异步和同步测试用例
 - 新增 `normalizeStats` 排序行为测试用例
 - 新增 UTF-8 codec 基准测试（对比 wx 原生与纯 JS 实现）
@@ -182,23 +215,28 @@
 ## [2.0.2] - 2026-01-29
 
 ### 文档
+
 - 为各子模块文件添加 `@module` JSDoc 注释
 - 为 `fs.stat` 方法的所有重载签名添加 JSDoc 注释
 
 ### 变更
+
 - 移除 prepublishOnly 中的文件复制步骤
 
 ## [2.0.1] - 2026-01-29
 
 ### 文档
+
 - 为所有导出模块添加 JSDoc 文档注释
 
 ### 变更
+
 - CI 发布流程添加复制共享文件的步骤
 
 ## [2.0.0] - 2026-01-29
 
 ### 破坏性变更
+
 - `fs.readFile` 返回类型从 `ArrayBuffer` 改为 `Uint8Array<ArrayBuffer>`
 - SHA 系列函数返回类型从 `Promise<string>` 改为 `AsyncIOResult<string>`
 - HMAC 系列函数返回类型改为 `AsyncIOResult`
@@ -211,6 +249,7 @@
 - 适配 `@happy-ts/fetch-t` 和 `happy-opfs` 的破坏性变更
 
 ### 新增
+
 - 新增 `video` 模块及跨平台 `createVideo` API
 - 新增 `fs.writeJsonFile` 和 `fs.writeJsonFileSync` 方法
 - 新增 `decodeHex` 函数用于十六进制解码
@@ -226,6 +265,7 @@
 - 导出 `fs.createAbortError` 辅助函数
 
 ### 变更
+
 - 许可证从 GPL-3.0 切换到 MIT
 - 迁移到 pnpm monorepo 结构
 - 构建工具从 Rollup 迁移到 Vite
@@ -245,6 +285,7 @@
 - 更新依赖到最新版本
 
 ### 修复
+
 - 修复 UTF-8 解码使用 `fromCodePoint` 替代 `fromCharCode` 处理代理对
 - 修复 UTF-8 编码使用 `codePointAt` 正确处理代理对
 - 修复 `TextDecoder` 设置 `fatal` 选项以正确处理错误
@@ -258,6 +299,7 @@
 - 修复各模块错误类型改进
 
 ### 文档
+
 - 重写 README，添加双语支持和详细功能说明
 - 新增 CODEBUDDY.md 仓库上下文指南
 - 为所有公开 API 添加 `@since` 版本标签
@@ -265,6 +307,7 @@
 - 将 JSDoc 注释从英文翻译为中文
 
 ### 测试
+
 - 迁移测试到 Vitest 并大幅扩展测试覆盖率
 - 新增 minigame-test 项目用于小游戏平台测试
 - 新增 mina 平台各模块的综合测试
@@ -273,111 +316,133 @@
 ## [1.10.0] - 2025-07-31
 
 ### 新增
+
 - 新增设备性能评级功能 (`getDeviceBenchmarkLevel`)
 - 新增 `promisify` 工具函数，用于将回调式 API 转换为 AsyncResult
 
 ### 变更
+
 - 重构平台检测工具函数
 - 升级依赖版本
 
 ## [1.9.7] - 2025-07-09
 
 ### 变更
+
 - 重构 fetch 模块的导入结构
 
 ## [1.9.6] - 2025-06-30
 
 ### 变更
+
 - 二进制数据的编码参数改为 undefined
 
 ## [1.9.5] - 2025-06-18
 
 ### 变更
+
 - 重构下载文件时的目录创建逻辑
 
 ## [1.9.4] - 2025-06-04
 
 ### 修复
+
 - 修复 `fetchT` 的响应类型错误
 
 ## [1.9.3] - 2025-05-21
 
 ### 新增
+
 - 新增 `storage.hasItem` 和 `storage.hasItemSync` 方法
 
 ## [1.9.2] - 2025-05-06
 
 ### 变更
+
 - 更新 happy-opfs 到 v1.8.6
 
 ## [1.9.1] - 2025-05-06
 
 ### 变更
+
 - 使用 `toLowerCase` 来判断平台类型
 - 更新依赖
 
 ## [1.9.0] - 2025-04-24
 
 ### 新增
+
 - 新增更多平台判断方法
 
 ## [1.8.8] - 2025-04-21
 
 ### 修复
+
 - 修复下载文件前未创建目录的问题
 
 ## [1.8.7] - 2025-03-31
 
 ### 新增
+
 - `writeFile` 支持 `WriteOptions` 参数
 
 ### 修复
+
 - 修复 `mkdir` 在目录已存在时返回成功
 
 ## [1.8.6] - 2025-03-31
 
 ### 修复
+
 - 修复 `mkdir` 应过滤根目录的问题
 
 ## [1.8.5] - 2025-03-18
 
 ### 变更
+
 - 更新导出以包含 `happy-opfs` 的所有成员
 
 ## [1.8.4] - 2025-02-27
 
 ### 修复
+
 - 添加对缺少 `wx.encode` 和 `wx.decode` 方法的兼容处理
 
 ## [1.8.3] - 2025-02-19
 
 ### 修复
+
 - 当 `wx.getFuzzyLocation` 不存在时回退到 `wx.getLocation`
 
 ## [1.8.2] - 2025-01-07
 
 ### 修复
+
 - 修复 `wx.getDeviceInfo` 可能不存在的问题
 
 ## [1.8.1] - 2024-12-25
 
 ### 修复
+
 - 修复文件不存在时 `appendFile` 失败的问题
 
 ## [1.8.0] - 2024-12-19
 
 ### 新增
+
 - 支持 HMAC 计算
 - 新增 `DataSource` 类型别名 (`string | BufferSource`)
 
 ## [1.7.1] - 2024-12-13
 
 ### 变更
+
 - SHA 方法的键改为字符串类型
 
 ## [1.7.0] - 2024-08-23
 
 ### 新增
+
 - 新增 `cryptos.random` 模块
 - 新增 `addResizeListener` 方法
 - 新增 `lbs` (位置服务) 模块
@@ -385,11 +450,13 @@
 - 新增 `getWindowInfo` 方法
 
 ### 变更
+
 - 删除 `getDeviceInfo` 方法
 
 ## [1.6.0] - 2024-08-18
 
 ### 新增
+
 - 支持更多 SHA 算法
 - 支持 SHA1 计算
 - 支持 RSA 加密
@@ -400,6 +467,7 @@
 - `publicKeyFromPem` 支持 `hash` 参数
 
 ### 变更
+
 - 使用 `rsa-oaep-encryption` 替代 `node-forge`
 - 修改 base64 编解码实现
 - 部分函数参数从 `ArrayBuffer` 改为 `BufferSource`
@@ -408,24 +476,29 @@
 ## [1.5.2] - 2024-08-13
 
 ### 修复
+
 - `fs.downloadFile` 失败时应删除未完成的文件
 
 ## [1.5.1] - 2024-08-13
 
 ### 修复
+
 - `fs.downloadFile` 当状态码非 2XX 时应返回 Err
 
 ## [1.5.0] - 2024-08-12
 
 ### 新增
+
 - 支持 WebAudio
 
 ### 变更
+
 - 调整部分 API 名称和命名空间
 
 ## [1.4.1] - 2024-08-12
 
 ### 变更
+
 - `fs.rename` 重命名为 `fs.move`
 - 使用 `Result.andThen` 优化流程控制
 - 重命名 `move` 的参数
@@ -433,6 +506,7 @@
 ## [1.4.0] - 2024-08-09
 
 ### 新增
+
 - 新增 `zipFromUrl` 方法，支持压缩到内存
 - 新增 `unzipFromUrl` 方法
 - `fs.downloadFile` 支持下载到临时文件
@@ -442,31 +516,37 @@
 - fetch 支持 `onChunkReceived` (或 `onChunk`)
 
 ### 变更
+
 - 使用 `Uint8Array` 进行 base64 编解码
 - 使用 `BufferSource` 替代 `ArrayBuffer | ArrayBufferView`
 - `encode` 返回 `Uint8Array`
 
 ### 修复
+
 - 修复临时路径断言失败的问题
 
 ## [1.3.0] - 2024-08-06
 
 ### 新增
+
 - 实现 `fs.zip` 方法
 - 实现 `fs.zipSync` 和 `fs.unzipSync` 方法
 - 新增 `fs.unzip` 方法
 
 ### 变更
+
 - `minaErrorToError` 重命名为 `miniGameFailureToError`
 - 同步 `fs` API 改为抛出 Error
 
 ## [1.2.0] - 2024-08-06
 
 ### 新增
+
 - 新增 `storage.getLength` 方法
 - 导出 `utils` 模块
 
 ### 变更
+
 - `storage` 方法返回 `Result` 类型
 - 统一 `clipboard` 方法的返回值
 - `socket` 的 `send` 方法返回 `RESULT_VOID`
@@ -476,10 +556,12 @@
 ## [1.1.0] - 2024-08-04
 
 ### 新增
+
 - 新增 fs 同步方法
 - 使用 Future 模式
 
 ### 变更
+
 - 测试工具切换到 Deno
 - 整理 `fs` 代码结构
 - 使用 `AsyncOption` 类型
@@ -490,6 +572,7 @@
 ## [1.0.9] - 2024-07-26
 
 ### 新增
+
 - 导出 `NetworkType` 类型
 - 支持获取网络类型和监听变化
 - `addListener` 返回 `removeListener` 委托
@@ -497,63 +580,75 @@
 - socket 支持 `removeEventListener`
 
 ### 变更
+
 - 移除全局类型增强
 
 ## [1.0.8] - 2024-07-25
 
 ### 变更
+
 - fetch 默认返回 `string | Response`
 - 更新 happy-opfs 到 v1.0.17
 
 ## [1.0.7] - 2024-07-25
 
 ### 变更
+
 - 上传文件时 `name` 参数改为可选
 
 ## [1.0.6] - 2024-07-24
 
 ### 新增
+
 - 导出所有定义的类型
 - fetch 和 download/upload 支持中止操作
 
 ### 变更
+
 - 更新 happy-opfs 到 v1.0.13
 - 修改 `fetchT` 返回类型
 
 ## [1.0.5] - 2024-07-23
 
 ### 新增
+
 - 新增请求超时错误 (TimeoutError)
 
 ## [1.0.4] - 2024-07-17
 
 ### 变更
+
 - 使用 `asErr` 进行类型转换
 
 ## [1.0.3] - 2024-07-13
 
 ### 变更
+
 - 更新 GitHub Actions 配置
 - 重置 typedoc 入口文件名
 
 ## [1.0.2] - 2024-06-11
 
 ### 新增
+
 - 导出部分接口类型
 - 添加代码注释
 
 ### 变更
+
 - 移除 rimraf 依赖
 - 使用 tiny-invariant
 
 ## [1.0.1] - 2024-05-17
 
 ### 新增
+
 - 新增 `fs.emptyDir` 方法
 
 ## [1.0.0] - 2024-05-15
 
 ### 新增
+
 - 首次正式发布
 - 支持跨平台 API：小游戏环境 (微信、QQ 等) 和 Web 浏览器
 - 模块包括：

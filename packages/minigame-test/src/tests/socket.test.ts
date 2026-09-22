@@ -8,7 +8,7 @@ export function testSocket(): Promise<void> {
         const socket = connectSocket('wss://echo.websocket.org/').unwrap();
 
         let count = 0;
-        socket.addEventListener('message', (msg) => {
+        socket.addEventListener('message', msg => {
             count += 1;
 
             if (count === 1) {
@@ -19,12 +19,12 @@ export function testSocket(): Promise<void> {
             }
         });
 
-        socket.addEventListener('error', (err) => {
+        socket.addEventListener('error', err => {
             console.log('socket error', err);
             reject(err);
         });
 
-        socket.addEventListener('close', (code) => {
+        socket.addEventListener('close', code => {
             // 开发者工具有差异
             assert(code === (platform.isMiniGameDevtools() ? 1005 : 1000));
             resolve();

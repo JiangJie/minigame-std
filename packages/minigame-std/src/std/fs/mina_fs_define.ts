@@ -7,7 +7,10 @@ import type { FetchInit } from '@happy-ts/fetch-t';
 /**
  * 下载文件的选项。
  */
-export interface DownloadFileOptions extends Omit<WechatMinigame.DownloadFileOption, 'url' | 'filePath' | 'header' | 'success' | 'fail'> {
+export interface DownloadFileOptions extends Omit<
+    WechatMinigame.DownloadFileOption,
+    'url' | 'filePath' | 'header' | 'success' | 'fail'
+> {
     headers?: Record<string, string>;
     onProgress?: FetchInit['onProgress'];
 }
@@ -15,7 +18,10 @@ export interface DownloadFileOptions extends Omit<WechatMinigame.DownloadFileOpt
 /**
  * 上传文件的选项。
  */
-export interface UploadFileOptions extends Omit<WechatMinigame.UploadFileOption, 'url' | 'filePath' | 'name' | 'header' | 'success' | 'fail'> {
+export interface UploadFileOptions extends Omit<
+    WechatMinigame.UploadFileOption,
+    'url' | 'filePath' | 'name' | 'header' | 'success' | 'fail'
+> {
     headers?: Record<string, string>;
     /**
      * 可选的文件名称。

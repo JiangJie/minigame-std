@@ -8,7 +8,7 @@ export async function testFetch(): Promise<void> {
     }>('https://raw.githubusercontent.com/JiangJie/minigame-std/main/package.json', {
         abortable: true,
         responseType: 'json',
-        onChunk: (chunk) => {
+        onChunk: chunk => {
             console.log('chunk', chunk);
         },
     });
@@ -20,7 +20,7 @@ export async function testFetch(): Promise<void> {
     const res = await fetchTask.result;
 
     if (res.isErr()) {
-        assert((res.unwrapErr()).name === 'AbortError');
+        assert(res.unwrapErr().name === 'AbortError');
     } else {
         assert(res.unwrap().name === 'minigame-std-monorepo');
     }
@@ -36,7 +36,7 @@ export async function testFetch(): Promise<void> {
     const res2 = await task.result;
 
     if (res2.isErr()) {
-        assert((res2.unwrapErr()).name === 'TimeoutError');
+        assert(res2.unwrapErr().name === 'TimeoutError');
     } else {
         assert(res2.unwrap().name === 'minigame-std-monorepo');
     }

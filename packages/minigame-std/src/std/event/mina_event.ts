@@ -21,7 +21,9 @@ export function addErrorListener(listener: WechatMinigame.WxOnErrorCallback): ()
  * @param listener - 未处理的 Promise 拒绝事件的回调函数。
  * @returns 返回一个函数，调用该函数可以移除监听器。
  */
-export function addUnhandledrejectionListener(listener: (WechatMinigame.OnUnhandledRejectionCallback)): () => void {
+export function addUnhandledrejectionListener(
+    listener: WechatMinigame.OnUnhandledRejectionCallback,
+): () => void {
     wx.onUnhandledRejection(listener);
 
     return (): void => {
@@ -51,7 +53,7 @@ export function addResizeListener(listener: WechatMinigame.OnWindowResizeCallbac
  */
 export function addShowListener(
     listener: WechatMinigame.OnShowCallback,
-    options?: { fireImmediately?: boolean; },
+    options?: { fireImmediately?: boolean },
 ): () => void {
     if (options?.fireImmediately) {
         // 使用 getEnterOptionsSync 获取最新进入参数，语义与 wx.onShow 回调参数一致

@@ -4,7 +4,18 @@
  */
 
 import { NOT_FOUND_ERROR, NOTHING_TO_ZIP_ERROR, ROOT_DIR, type ExistsOptions } from 'happy-opfs';
-import { Err, Lazy, Ok, RESULT_FALSE, RESULT_VOID, tryResult, type AsyncIOResult, type IOResult, type Result, type VoidIOResult } from 'happy-rusty';
+import {
+    Err,
+    Lazy,
+    Ok,
+    RESULT_FALSE,
+    RESULT_VOID,
+    tryResult,
+    type AsyncIOResult,
+    type IOResult,
+    type Result,
+    type VoidIOResult,
+} from 'happy-rusty';
 import { bufferSourceToAb, miniGameFailureToError } from '../internal/mod.ts';
 import { normalize } from '../path/mod.ts';
 import { asyncResultify } from '../utils/mod.ts';
@@ -88,9 +99,10 @@ export function validateAbsolutePath(path: string): IOResult<string> {
 
     // 标准化路径（处理 `.`、`..` 等）并去除末尾的 `/`
     const normalized = normalize(path);
-    path = normalized.length > 1 && normalized[normalized.length - 1] === ROOT_DIR
-        ? normalized.slice(0, -1)
-        : normalized;
+    path =
+        normalized.length > 1 && normalized[normalized.length - 1] === ROOT_DIR
+            ? normalized.slice(0, -1)
+            : normalized;
 
     // 完整路径：重新拼接协议前缀
     if (isFullPath) {
@@ -136,7 +148,11 @@ export function validateReadablePath(path: string): IOResult<string> {
 
     // 既不是完整路径，也不以 / 开头，检查是否为代码包路径（不以 ./、../ 开头）
     if (path.startsWith('./') || path.startsWith('../')) {
-        return Err(new Error(`Invalid path: '${path}'. Code package paths must not start with './' or '../'`));
+        return Err(
+            new Error(
+                `Invalid path: '${path}'. Code package paths must not start with './' or '../'`,
+            ),
+        );
     }
 
     // 代码包路径返回标准化后的结果
@@ -272,19 +288,24 @@ export function getWriteFileContents(contents: WriteFileContent): IOResult<GetWr
  * TODO(platform-wx): 待微信 Windows/Mac 平台修复该 stat 误报 bug 后, 移除 `stats.size < 0` 判断。
  * 跟踪点: `mina_fs_shared.ts` getExistsResult。
  */
-export function getExistsResult(statResult: IOResult<WechatMinigame.Stats>, options?: ExistsOptions): IOResult<boolean> {
-    return statResult.map(stats => {
-        const { isDirectory = false, isFile = false } = options ?? {};
+export function getExistsResult(
+    statResult: IOResult<WechatMinigame.Stats>,
+    options?: ExistsOptions,
+): IOResult<boolean> {
+    return statResult
+        .map(stats => {
+            const { isDirectory = false, isFile = false } = options ?? {};
 
-        const notExist =
-            stats.size < 0 // TODO(platform-wx): Windows/Mac 平台 stat 代码包不存在文件时的误报, 待平台修复后移除
-            || (isDirectory && stats.isFile())
-            || (isFile && stats.isDirectory());
+            const notExist =
+                stats.size < 0 || // TODO(platform-wx): Windows/Mac 平台 stat 代码包不存在文件时的误报, 待平台修复后移除
+                (isDirectory && stats.isFile()) ||
+                (isFile && stats.isDirectory());
 
-        return !notExist;
-    }).orElse(err => {
-        return isNotFoundError(err) ? RESULT_FALSE : statResult.asErr();
-    });
+            return !notExist;
+        })
+        .orElse(err => {
+            return isNotFoundError(err) ? RESULT_FALSE : statResult.asErr();
+        });
 }
 
 /**
@@ -320,35 +341,43 @@ export function accessExistsSync(path: string): IOResult<boolean> {
     return accessResultToExists(accessRes);
 }
 
-
 /**
  * 根据 `recursive` 不同标准化 `stat` 的结果(recursive=true 的时候开发者工具对于文件和空文件夹会返回单个 Stats)。
  * - `recursive=false`: 返回单个 `Stats` 或 `FileStats[]`
  * - `recursive=true`: 始终返回 `FileStats[]`，即使是单个文件或空目录
  *   - 如果是单个 `Stats`，包装成数组，path 设为 '' 表示当前项目
  */
-export function normalizeStats(statsOrFileStats: WechatMinigame.Stats | WechatMinigame.FileStats[], recursive: boolean): WechatMinigame.Stats | WechatMinigame.FileStats[] {
+export function normalizeStats(
+    statsOrFileStats: WechatMinigame.Stats | WechatMinigame.FileStats[],
+    recursive: boolean,
+): WechatMinigame.Stats | WechatMinigame.FileStats[] {
     if (Array.isArray(statsOrFileStats)) {
-        return statsOrFileStats.map(({ path, stats }) => ({
-            path: path.replace(/^\/+/, ''), // 返回相对路径, 去掉开头的 `/`(安卓子项目 path 不以 `/` 开头)
-            stats,
-        })).sort((a, b) => a.path.localeCompare(b.path)); // 按 path 排序
+        return statsOrFileStats
+            .map(({ path, stats }) => ({
+                path: path.replace(/^\/+/, ''), // 返回相对路径, 去掉开头的 `/`(安卓子项目 path 不以 `/` 开头)
+                stats,
+            }))
+            .sort((a, b) => a.path.localeCompare(b.path)); // 按 path 排序
     }
 
     // 只要是 recursive 就返回数组(即使是文件或者空目录))
     return recursive
-        ? [{
-            path: '', // 当前文件夹本身的相对路径
-            stats: statsOrFileStats,
-        }]
+        ? [
+              {
+                  path: '', // 当前文件夹本身的相对路径
+                  stats: statsOrFileStats,
+              },
+          ]
         : statsOrFileStats;
 }
 
 // #region Internal Types
 
-type FileError = WechatMinigame.FileError | (Error & {
-    errno?: number;
-});
+type FileError =
+    | WechatMinigame.FileError
+    | (Error & {
+          errno?: number;
+      });
 
 interface GetWriteFileContents {
     data: string | ArrayBuffer;
@@ -366,9 +395,9 @@ interface GetWriteFileContents {
 function normalizeFileError(error: FileError): WechatMinigame.FileError {
     return error instanceof Error
         ? {
-            errCode: error.errno ?? 0,
-            errMsg: error.message,
-        }
+              errCode: error.errno ?? 0,
+              errMsg: error.message,
+          }
         : error;
 }
 
@@ -380,8 +409,7 @@ function isNotFoundFileError(error: FileError): boolean {
     // 1300002	no such file or directory ${path}
     const { errCode, errMsg } = normalizeFileError(error);
     // 可能没有errCode
-    return errCode === 1300002
-        || errMsg.toLowerCase().includes('no such file or directory');
+    return errCode === 1300002 || errMsg.toLowerCase().includes('no such file or directory');
 }
 
 /**
@@ -392,8 +420,7 @@ function isAlreadyExistsFileError(error: FileError): boolean {
     // 1301005	file already exists ${dirPath}	已有同名文件或目录
     const { errCode, errMsg } = normalizeFileError(error);
     // 可能没有errCode
-    return errCode === 1301005
-        || errMsg.includes('already exists');
+    return errCode === 1301005 || errMsg.includes('already exists');
 }
 
 /**

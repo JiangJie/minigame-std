@@ -3,12 +3,41 @@
  * 小游戏平台的同步文件系统操作实现。
  */
 
-import { zipSync as compressSync, unzipSync as decompressSync, type AsyncZippable } from 'fflate/browser';
-import { type AppendOptions, type ExistsOptions, type WriteOptions, type ZipOptions } from 'happy-opfs';
+import {
+    zipSync as compressSync,
+    unzipSync as decompressSync,
+    type AsyncZippable,
+} from 'fflate/browser';
+import {
+    type AppendOptions,
+    type ExistsOptions,
+    type WriteOptions,
+    type ZipOptions,
+} from 'happy-opfs';
 import { Ok, RESULT_VOID, tryResult, type IOResult, type VoidIOResult } from 'happy-rusty';
 import { basename, dirname, SEPARATOR } from '../path/mod.ts';
 import type { ReadFileContent, ReadOptions, StatOptions, WriteFileContent } from './fs_define.ts';
-import { accessExistsSync, createDirIsFileError, createFileNotExistsError, createNothingToZipError, EMPTY_BYTES, fileErrorToMkdirResult, fileErrorToRemoveResult, fileErrorToResult, getExistsResult, getFs, getReadFileEncoding, getUsrPath, getWriteFileContents, isNotFoundError, normalizeStats, validateAbsolutePath, validateExistsOptions, validateReadablePath, type ZipIOResult } from './mina_fs_shared.ts';
+import {
+    accessExistsSync,
+    createDirIsFileError,
+    createFileNotExistsError,
+    createNothingToZipError,
+    EMPTY_BYTES,
+    fileErrorToMkdirResult,
+    fileErrorToRemoveResult,
+    fileErrorToResult,
+    getExistsResult,
+    getFs,
+    getReadFileEncoding,
+    getUsrPath,
+    getWriteFileContents,
+    isNotFoundError,
+    normalizeStats,
+    validateAbsolutePath,
+    validateExistsOptions,
+    validateReadablePath,
+    type ZipIOResult,
+} from './mina_fs_shared.ts';
 
 /**
  * `mkdir` 的同步版本。
@@ -77,12 +106,18 @@ export function readDirSync(dirPath: string): IOResult<string[]> {
  * @param options - 读取选项。
  * @returns 文件内容。
  */
-export function readFileSync(filePath: string, options: ReadOptions & {
-    encoding: 'utf8';
-}): IOResult<string>;
-export function readFileSync(filePath: string, options?: ReadOptions & {
-    encoding: 'bytes';
-}): IOResult<Uint8Array<ArrayBuffer>>;
+export function readFileSync(
+    filePath: string,
+    options: ReadOptions & {
+        encoding: 'utf8';
+    },
+): IOResult<string>;
+export function readFileSync(
+    filePath: string,
+    options?: ReadOptions & {
+        encoding: 'bytes';
+    },
+): IOResult<Uint8Array<ArrayBuffer>>;
 export function readFileSync(filePath: string, options?: ReadOptions): IOResult<ReadFileContent>;
 export function readFileSync(filePath: string, options?: ReadOptions): IOResult<ReadFileContent> {
     const filePathRes = validateReadablePath(filePath);
@@ -130,22 +165,35 @@ export function removeSync(path: string): VoidIOResult {
  * @param options - 统计选项。
  * @returns 文件或目录的统计信息。
  */
-export function statSync(path: string, options?: StatOptions & {
-    recursive: false;
-}): IOResult<WechatMinigame.Stats>;
-export function statSync(path: string, options: StatOptions & {
-    recursive: true;
-}): IOResult<WechatMinigame.FileStats[]>;
-export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
-export function statSync(path: string, options?: StatOptions): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
+export function statSync(
+    path: string,
+    options?: StatOptions & {
+        recursive: false;
+    },
+): IOResult<WechatMinigame.Stats>;
+export function statSync(
+    path: string,
+    options: StatOptions & {
+        recursive: true;
+    },
+): IOResult<WechatMinigame.FileStats[]>;
+export function statSync(
+    path: string,
+    options?: StatOptions,
+): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]>;
+export function statSync(
+    path: string,
+    options?: StatOptions,
+): IOResult<WechatMinigame.Stats | WechatMinigame.FileStats[]> {
     const pathRes = validateReadablePath(path);
     if (pathRes.isErr()) return pathRes.asErr();
     path = pathRes.unwrap();
 
     const { recursive = false } = options ?? {};
 
-    return trySyncOp(() => getFs().statSync(path, recursive))
-        .map(x => normalizeStats(x, recursive));
+    return trySyncOp(() => getFs().statSync(path, recursive)).map(x =>
+        normalizeStats(x, recursive),
+    );
 }
 
 /**
@@ -155,7 +203,11 @@ export function statSync(path: string, options?: StatOptions): IOResult<WechatMi
  * @param options - 写入选项。
  * @returns 操作结果。
  */
-export function writeFileSync(filePath: string, contents: WriteFileContent, options?: WriteOptions): VoidIOResult {
+export function writeFileSync(
+    filePath: string,
+    contents: WriteFileContent,
+    options?: WriteOptions,
+): VoidIOResult {
     // 默认创建
     const { append = false, create = true } = options ?? {};
 
@@ -206,7 +258,11 @@ export function writeFileSync(filePath: string, contents: WriteFileContent, opti
  * @param options - 可选的追加选项。
  * @returns 操作结果。
  */
-export function appendFileSync(filePath: string, contents: WriteFileContent, options?: AppendOptions): VoidIOResult {
+export function appendFileSync(
+    filePath: string,
+    contents: WriteFileContent,
+    options?: AppendOptions,
+): VoidIOResult {
     return writeFileSync(filePath, contents, {
         append: true,
         create: options?.create ?? true,
@@ -250,10 +306,10 @@ export function copySync(srcPath: string, destPath: string): VoidIOResult {
             const srcEntryPath = srcPath + SEPARATOR + path;
             const destEntryPath = destPath + SEPARATOR + path;
 
-            copyRes = (stats.isDirectory()
+            copyRes = stats.isDirectory()
                 ? mkdirSync(destEntryPath)
-                // 由于串行执行, 文件的父目录一定先于文件创建, 所以不需要额外 mkdir
-                : copyFileSync(srcEntryPath, destEntryPath));
+                : // 由于串行执行, 文件的父目录一定先于文件创建, 所以不需要额外 mkdir
+                  copyFileSync(srcEntryPath, destEntryPath);
         }
 
         if (copyRes.isErr()) return copyRes;
@@ -292,9 +348,7 @@ export function emptyDirSync(dirPath: string): VoidIOResult {
     const readDirRes = readDirSync(dirPath);
     if (readDirRes.isErr()) {
         // 不存在则创建
-        return isNotFoundError(readDirRes.unwrapErr())
-            ? mkdirSync(dirPath)
-            : readDirRes.asErr();
+        return isNotFoundError(readDirRes.unwrapErr()) ? mkdirSync(dirPath) : readDirRes.asErr();
     }
 
     // readDirSync 已经校验通过了
@@ -369,7 +423,10 @@ export function unzipSync(zipFilePath: string, destDir: string): VoidIOResult {
             const mkdirRes = mkdirSync(destDir + SEPARATOR + path.slice(1));
             if (mkdirRes.isErr()) return mkdirRes.asErr();
         } else {
-            const writeFileRes = writeFileSync(destDir + SEPARATOR + path, unzipped[path] as Uint8Array<ArrayBuffer>);
+            const writeFileRes = writeFileSync(
+                destDir + SEPARATOR + path,
+                unzipped[path] as Uint8Array<ArrayBuffer>,
+            );
             if (writeFileRes.isErr()) return writeFileRes.asErr();
         }
     }
@@ -383,7 +440,10 @@ export function unzipSync(zipFilePath: string, destDir: string): VoidIOResult {
  * @param options - 压缩选项。
  * @returns 压缩后的字节数组。
  */
-export function zipSync(sourcePath: string, options?: ZipOptions): IOResult<Uint8Array<ArrayBuffer>>;
+export function zipSync(
+    sourcePath: string,
+    options?: ZipOptions,
+): IOResult<Uint8Array<ArrayBuffer>>;
 /**
  * `zip` 的同步版本，将压缩结果写入指定文件。
  * @param sourcePath - 要压缩的源路径。
@@ -391,8 +451,16 @@ export function zipSync(sourcePath: string, options?: ZipOptions): IOResult<Uint
  * @param options - 压缩选项。
  * @returns 操作结果。
  */
-export function zipSync(sourcePath: string, zipFilePath: string, options?: ZipOptions): VoidIOResult;
-export function zipSync(sourcePath: string, zipFilePath?: string | ZipOptions, options?: ZipOptions): ZipIOResult {
+export function zipSync(
+    sourcePath: string,
+    zipFilePath: string,
+    options?: ZipOptions,
+): VoidIOResult;
+export function zipSync(
+    sourcePath: string,
+    zipFilePath?: string | ZipOptions,
+    options?: ZipOptions,
+): ZipIOResult {
     if (typeof zipFilePath === 'string') {
         const zipFilePathRes = validateAbsolutePath(zipFilePath);
         if (zipFilePathRes.isErr()) return zipFilePathRes.asErr();
@@ -453,14 +521,13 @@ export function zipSync(sourcePath: string, zipFilePath?: string | ZipOptions, o
         return createNothingToZipError();
     }
 
-    return tryResult(() => compressSync(zippable))
-        .andThen<Uint8Array<ArrayBuffer> | void>(bytesLike => {
+    return tryResult(() => compressSync(zippable)).andThen<Uint8Array<ArrayBuffer> | void>(
+        bytesLike => {
             const bytes = bytesLike as Uint8Array<ArrayBuffer>;
             // 有文件路径则写入文件
-            return zipFilePath
-                ? writeFileSync(zipFilePath, bytes)
-                : Ok(bytes);
-        });
+            return zipFilePath ? writeFileSync(zipFilePath, bytes) : Ok(bytes);
+        },
+    );
 }
 
 // #region Internal Functions
@@ -468,7 +535,10 @@ export function zipSync(sourcePath: string, zipFilePath?: string | ZipOptions, o
 /**
  * 安全地调用同步接口。
  */
-function trySyncOp<T>(op: () => T, errToResult: (err: Error) => IOResult<T> = fileErrorToResult): IOResult<T> {
+function trySyncOp<T>(
+    op: () => T,
+    errToResult: (err: Error) => IOResult<T> = fileErrorToResult,
+): IOResult<T> {
     return tryResult<T, Error>(op).orElse(errToResult);
 }
 

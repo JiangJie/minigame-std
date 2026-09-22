@@ -3,9 +3,15 @@
  * @module network
  */
 import { IS_MINA } from '../../macros/env.ts';
-import { addNetworkChangeListener as minaAddNetworkChangeListener, getNetworkType as minaGetNetworkType } from './mina_network.ts';
+import {
+    addNetworkChangeListener as minaAddNetworkChangeListener,
+    getNetworkType as minaGetNetworkType,
+} from './mina_network.ts';
 import type { NetworkType } from './network_define.ts';
-import { addNetworkChangeListener as webAddNetworkChangeListener, getNetworkType as webGetNetworkType } from './web_network.ts';
+import {
+    addNetworkChangeListener as webAddNetworkChangeListener,
+    getNetworkType as webGetNetworkType,
+} from './web_network.ts';
 
 export * from './network_define.ts';
 
@@ -23,9 +29,7 @@ export * from './network_define.ts';
  * ```
  */
 export function getNetworkType(): Promise<NetworkType> {
-    return IS_MINA
-        ? minaGetNetworkType()
-        : Promise.resolve(webGetNetworkType());
+    return IS_MINA ? minaGetNetworkType() : Promise.resolve(webGetNetworkType());
 }
 
 /**

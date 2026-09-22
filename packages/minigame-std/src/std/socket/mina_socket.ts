@@ -26,10 +26,13 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
     return {
         get readyState(): number {
             // 小游戏 SocketTask 实际已支持 readyState，但 api typings 尚未更新
-            return (socket as typeof socket & { readyState: number; }).readyState;
+            return (socket as typeof socket & { readyState: number }).readyState;
         },
 
-        addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: SocketListenerMap[K]): () => void {
+        addEventListener<K extends keyof WebSocketEventMap>(
+            type: K,
+            listener: SocketListenerMap[K],
+        ): () => void {
             switch (type) {
                 case 'open': {
                     socket.onOpen(() => {
@@ -41,17 +44,16 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
                     };
                 }
                 case 'close': {
-                    socket.onClose((res) => {
+                    socket.onClose(res => {
                         (listener as SocketListenerMap['close'])(res.code, res.reason);
                     });
-
 
                     return (): void => {
                         // 小游戏没有实现移除监听
                     };
                 }
                 case 'message': {
-                    socket.onMessage((res) => {
+                    socket.onMessage(res => {
                         (listener as SocketListenerMap['message'])(res.data);
                     });
 
@@ -60,7 +62,7 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
                     };
                 }
                 case 'error': {
-                    socket.onError((err) => {
+                    socket.onError(err => {
                         (listener as SocketListenerMap['error'])(miniGameFailureToError(err));
                     });
 
@@ -75,9 +77,9 @@ export function connectSocket(url: string, options?: SocketOptions): ISocket {
         },
 
         async send(data: DataSource): AsyncVoidIOResult {
-            const sendDataRes = tryResult(() => typeof data === 'string'
-                ? data
-                : bufferSourceToAb(data));
+            const sendDataRes = tryResult(() =>
+                typeof data === 'string' ? data : bufferSourceToAb(data),
+            );
             if (sendDataRes.isErr()) return sendDataRes.asErr();
 
             const result = await asyncIOResultify(socket.send)({

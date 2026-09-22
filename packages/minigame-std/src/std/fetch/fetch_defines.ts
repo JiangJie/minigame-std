@@ -19,7 +19,10 @@ import type { FetchInit } from '@happy-ts/fetch-t';
  * const task = fetchT('https://api.example.com/data', init);
  * ```
  */
-export interface UnionFetchInit extends Omit<FetchInit & MinaFetchInit, 'body' | 'header' | 'headers' | 'data'> {
+export interface UnionFetchInit extends Omit<
+    FetchInit & MinaFetchInit,
+    'body' | 'header' | 'headers' | 'data'
+> {
     body?: string | WechatMinigame.IAnyObject | BufferSource;
     headers?: Record<string, string>;
 }
@@ -28,7 +31,10 @@ export interface UnionFetchInit extends Omit<FetchInit & MinaFetchInit, 'body' |
  * 微信小游戏网络请求初始化配置接口，继承自微信小游戏请求选项，除去'url'和'responseType'。
  * @internal
  */
-export interface MinaFetchInit extends Omit<WechatMinigame.RequestOption, 'url' | 'dataType' | 'responseType' | 'success' | 'fail'> {
+export interface MinaFetchInit extends Omit<
+    WechatMinigame.RequestOption,
+    'url' | 'dataType' | 'responseType' | 'success' | 'fail'
+> {
     responseType?: 'arraybuffer' | 'text' | 'json';
     onChunk?: FetchInit['onChunk'];
 }

@@ -53,7 +53,9 @@ export function addErrorListener(listener: (ev: ErrorEvent) => void): () => void
  * @param listener - 未处理的 Promise 拒绝事件的回调函数。
  * @returns 返回一个函数，调用该函数可以移除监听器。
  */
-export function addUnhandledrejectionListener(listener: (ev: PromiseRejectionEvent) => void): () => void {
+export function addUnhandledrejectionListener(
+    listener: (ev: PromiseRejectionEvent) => void,
+): () => void {
     addEventListener('unhandledrejection', listener);
 
     return (): void => {
@@ -83,14 +85,16 @@ export function addResizeListener(listener: (ev: UIEvent) => void): () => void {
  */
 export function addShowListener(
     listener: (ev: WechatMinigame.OnShowListenerResult) => void,
-    options?: { fireImmediately?: boolean; },
+    options?: { fireImmediately?: boolean },
 ): () => void {
     // Web Worker / SSR 等非 DOM 环境无前台/后台概念，fireImmediately 仍可回调一次
     if (typeof document === 'undefined') {
         if (options?.fireImmediately) {
             listener(getWebShowOptions());
         }
-        return (): void => { /* noop */ };
+        return (): void => {
+            /* noop */
+        };
     }
 
     if (options?.fireImmediately) {
@@ -116,7 +120,9 @@ export function addShowListener(
 export function addHideListener(listener: () => void): () => void {
     // Web Worker / SSR 等非 DOM 环境无前台/后台概念
     if (typeof document === 'undefined') {
-        return (): void => { /* noop */ };
+        return (): void => {
+            /* noop */
+        };
     }
 
     const webListener = () => {

@@ -5,6 +5,7 @@
 ## 测试范围
 
 本项目主要测试 minigame-std 中仅能在小游戏环境运行的代码，包括：
+
 - `mina_fs_async.ts` / `mina_fs_sync.ts`：小游戏文件系统的异步和同步实现
 - 其他依赖 `wx` API 的小游戏特有功能
 

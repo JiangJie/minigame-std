@@ -9,7 +9,14 @@
  */
 
 import { tryAsyncResult, type AsyncIOResult } from 'happy-rusty';
-import { ByteStringBuffer, sha1, sha256, sha384, sha512, type HashAlgorithmCreator } from 'rsa-oaep-encryption';
+import {
+    ByteStringBuffer,
+    sha1,
+    sha256,
+    sha384,
+    sha512,
+    type HashAlgorithmCreator,
+} from 'rsa-oaep-encryption';
 import { encodeByteString } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
 import type { SHA } from '../crypto_defines.ts';

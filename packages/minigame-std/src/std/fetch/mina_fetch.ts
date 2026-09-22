@@ -3,7 +3,13 @@
  * 小游戏平台的 HTTP 请求实现。
  */
 
-import { ABORT_ERROR, FetchError, TIMEOUT_ERROR, type FetchResult, type FetchTask } from '@happy-ts/fetch-t';
+import {
+    ABORT_ERROR,
+    FetchError,
+    TIMEOUT_ERROR,
+    type FetchResult,
+    type FetchTask,
+} from '@happy-ts/fetch-t';
 import { Err, Ok, type IOResult } from 'happy-rusty';
 import { Future } from 'tiny-future';
 import { createFailedFetchTask, miniGameFailureToError, validateSafeUrl } from '../internal/mod.ts';
@@ -15,9 +21,12 @@ import type { MinaFetchInit } from './fetch_defines.ts';
  * @param init - 请求的初始化配置，指定响应类型为 ArrayBuffer 且请求可中断。
  * @returns 返回一个 ArrayBuffer 类型的 FetchTask。
  */
-export function minaFetch(url: string, init: MinaFetchInit & {
-    responseType: 'arraybuffer';
-}): FetchTask<ArrayBuffer>;
+export function minaFetch(
+    url: string,
+    init: MinaFetchInit & {
+        responseType: 'arraybuffer';
+    },
+): FetchTask<ArrayBuffer>;
 
 /**
  * 发起一个可中断的 JSON 类型响应的网络请求。
@@ -26,9 +35,12 @@ export function minaFetch(url: string, init: MinaFetchInit & {
  * @param init - 请求的初始化配置，指定响应类型为 JSON 且请求可中断。
  * @returns 返回一个 JSON 类型的 FetchTask。
  */
-export function minaFetch<T>(url: string, init: MinaFetchInit & {
-    responseType: 'json';
-}): FetchTask<T>;
+export function minaFetch<T>(
+    url: string,
+    init: MinaFetchInit & {
+        responseType: 'json';
+    },
+): FetchTask<T>;
 
 /**
  * 发起一个可中断的文本类型响应的网络请求。
@@ -36,9 +48,12 @@ export function minaFetch<T>(url: string, init: MinaFetchInit & {
  * @param init - 请求的初始化配置，指定响应类型为文本且请求可中断。
  * @returns 返回一个文本类型的 FetchTask。
  */
-export function minaFetch(url: string, init?: MinaFetchInit & {
-    responseType: 'text';
-}): FetchTask<string>;
+export function minaFetch(
+    url: string,
+    init?: MinaFetchInit & {
+        responseType: 'text';
+    },
+): FetchTask<string>;
 
 /**
  * 发起一个可中断的网络请求，默认返回文本类型响应。
@@ -59,11 +74,7 @@ export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> {
     const urlRes = validateSafeUrl(url);
     if (urlRes.isErr()) return createFailedFetchTask(urlRes);
 
-    const {
-        responseType,
-        onChunk,
-        ...rest
-    } = init ?? {};
+    const { responseType, onChunk, ...rest } = init ?? {};
 
     let aborted = false;
 

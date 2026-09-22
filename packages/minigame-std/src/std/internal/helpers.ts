@@ -25,7 +25,7 @@ export function miniGameFailureToError(error: WechatMinigame.GeneralCallbackResu
     const result = new Error(error.errMsg ?? errorLike.message);
 
     if (typeof errorLike.errno === 'number') {
-        (result as Error & { errno?: number; }).errno = errorLike.errno;
+        (result as Error & { errno?: number }).errno = errorLike.errno;
     }
 
     return result;
@@ -79,8 +79,14 @@ export function bufferSourceToAb(data: BufferSource): ArrayBuffer {
  */
 export function createFailedFetchTask<T>(errResult: IOResult<unknown>): FetchTask<T> {
     return {
-        abort(): void { /* noop */ },
-        get aborted(): boolean { return false; },
-        get result() { return Promise.resolve(errResult.asErr<T>()); },
+        abort(): void {
+            /* noop */
+        },
+        get aborted(): boolean {
+            return false;
+        },
+        get result() {
+            return Promise.resolve(errResult.asErr<T>());
+        },
     };
 }

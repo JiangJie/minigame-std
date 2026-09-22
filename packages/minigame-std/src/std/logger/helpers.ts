@@ -29,9 +29,7 @@ export function shouldLog(entryLevel: LogLevel, minLevel: LogLevel): boolean {
  * 单参数直接序列化，多参数用空格拼接，避免不必要的 map/join 开销。
  */
 export function buildMessage(args: unknown[]): string {
-    return args.length === 1
-        ? stringifyArg(args[0])
-        : args.map(stringifyArg).join(' ');
+    return args.length === 1 ? stringifyArg(args[0]) : args.map(stringifyArg).join(' ');
 }
 
 // #region Internal Functions
@@ -49,9 +47,7 @@ function stringifyArg(arg: unknown): string {
 
     if (typeof arg === 'object' && arg !== null) {
         try {
-            return JSON.stringify(arg, (_, v) =>
-                typeof v === 'bigint' ? `${v}n` : v,
-            );
+            return JSON.stringify(arg, (_, v) => (typeof v === 'bigint' ? `${v}n` : v));
         } catch {
             // 循环引用等，最终 fallback
             return String(arg);

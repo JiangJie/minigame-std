@@ -99,7 +99,10 @@ export interface ISocket {
      * @param listener - 对应事件的监听器回调函数。
      * @returns 返回对应的`removeEventListener代理函数`。
      */
-    addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: SocketListenerMap[K]): () => void;
+    addEventListener<K extends keyof WebSocketEventMap>(
+        type: K,
+        listener: SocketListenerMap[K],
+    ): () => void;
 
     /**
      * 发送数据到 WebSocket 服务器。
@@ -130,6 +133,9 @@ export interface ISocket {
  * const socket = connectSocket('wss://example.com', options);
  * ```
  */
-export interface SocketOptions extends Omit<WechatMinigame.ConnectSocketOption, 'url' | 'header' | 'complete' | 'success' | 'fail'> {
+export interface SocketOptions extends Omit<
+    WechatMinigame.ConnectSocketOption,
+    'url' | 'header' | 'complete' | 'success' | 'fail'
+> {
     headers?: Record<string, string>;
 }

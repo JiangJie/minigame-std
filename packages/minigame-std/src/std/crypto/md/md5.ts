@@ -75,10 +75,7 @@ export class Md5 {
         let d = this.d;
 
         const blk = (i: number): number =>
-            block[i] |
-            (block[i + 1] << 8) |
-            (block[i + 2] << 16) |
-            (block[i + 3] << 24);
+            block[i] | (block[i + 1] << 8) | (block[i + 2] << 16) | (block[i + 3] << 24);
 
         const rol32 = (x: number, n: number): number => (x << n) | (x >>> (32 - n));
 

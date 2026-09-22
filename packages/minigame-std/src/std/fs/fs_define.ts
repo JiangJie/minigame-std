@@ -75,7 +75,10 @@ export type FileEncoding = 'bytes' | 'utf8';
  * };
  * ```
  */
-export interface UnionDownloadFileOptions extends Omit<FsRequestInit & DownloadFileOptions, 'headers'> {
+export interface UnionDownloadFileOptions extends Omit<
+    FsRequestInit & DownloadFileOptions,
+    'headers'
+> {
     headers?: Record<string, string>;
 }
 
@@ -93,7 +96,10 @@ export interface UnionDownloadFileOptions extends Omit<FsRequestInit & DownloadF
  * };
  * ```
  */
-export interface UnionUploadFileOptions extends Omit<UploadRequestInit & UploadFileOptions, 'headers'> {
+export interface UnionUploadFileOptions extends Omit<
+    UploadRequestInit & UploadFileOptions,
+    'headers'
+> {
     headers?: Record<string, string>;
 }
 
@@ -129,6 +135,9 @@ export interface StatOptions {
  * await fs.unzipFromUrl('https://example.com/archive.zip', '/path/to/output', options);
  * ```
  */
-export interface ZipFromUrlOptions extends Omit<DownloadFileOptions & ZipFromUrlRequestInit, 'headers'> {
+export interface ZipFromUrlOptions extends Omit<
+    DownloadFileOptions & ZipFromUrlRequestInit,
+    'headers'
+> {
     headers?: Record<string, string>;
 }

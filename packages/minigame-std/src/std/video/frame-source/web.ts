@@ -4,8 +4,21 @@
  */
 
 import { readBlobFile } from 'happy-opfs';
-import { Ok, tryAsyncResult, type AsyncIOResult, type AsyncVoidIOResult, type IOResult } from 'happy-rusty';
-import type { CreateVideoFrameSourceFromFileOptions, CreateVideoFrameSourceOptions, ElementVideoFrame, VideoFrameSource, VideoFrameSourceFrame, VideoFrameSourceState } from './defines.ts';
+import {
+    Ok,
+    tryAsyncResult,
+    type AsyncIOResult,
+    type AsyncVoidIOResult,
+    type IOResult,
+} from 'happy-rusty';
+import type {
+    CreateVideoFrameSourceFromFileOptions,
+    CreateVideoFrameSourceOptions,
+    ElementVideoFrame,
+    VideoFrameSource,
+    VideoFrameSourceFrame,
+    VideoFrameSourceState,
+} from './defines.ts';
 
 // #region Exports
 
@@ -219,7 +232,10 @@ export function createVideoFrameSource(options: CreateVideoFrameSourceOptions): 
  * @param options - 视频帧源创建选项。
  * @returns 视频帧源创建结果。
  */
-export async function createVideoFrameSourceFromFile(filePath: string, options?: CreateVideoFrameSourceFromFileOptions): AsyncIOResult<VideoFrameSource> {
+export async function createVideoFrameSourceFromFile(
+    filePath: string,
+    options?: CreateVideoFrameSourceFromFileOptions,
+): AsyncIOResult<VideoFrameSource> {
     const readRes = await readBlobFile(filePath);
 
     return readRes.andThen(blob => {

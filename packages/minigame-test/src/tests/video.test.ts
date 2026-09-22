@@ -6,12 +6,18 @@ import { getMainCanvas, getMainCtx } from '../test-runner.ts';
 const videoUrl = 'https://www.w3schools.com/html/mov_bbb.mp4';
 const videoPlaybackTimeout = 15000;
 
-async function waitForVideoFrame(source: video.VideoFrameSource, timeout = 5000): Promise<video.VideoFrameSourceFrame | null> {
+async function waitForVideoFrame(
+    source: video.VideoFrameSource,
+    timeout = 5000,
+): Promise<video.VideoFrameSourceFrame | null> {
     const start = Date.now();
 
     while (Date.now() - start < timeout) {
         const frameRes = source.getFrame();
-        assert(frameRes.isOk(), `getFrame 应该成功: ${ frameRes.isErr() ? frameRes.unwrapErr().message : '' }`);
+        assert(
+            frameRes.isOk(),
+            `getFrame 应该成功: ${frameRes.isErr() ? frameRes.unwrapErr().message : ''}`,
+        );
 
         const frame = frameRes.unwrap();
         if (frame != null) return frame;
@@ -36,11 +42,17 @@ async function testVideoFrameSource(): Promise<void> {
             source: 'videos/mov_bbb.mp4',
         });
 
-        assert(sourceRes.isOk(), `createVideoFrameSource 应该成功: ${sourceRes.isErr() ? sourceRes.unwrapErr().message : ''}`);
+        assert(
+            sourceRes.isOk(),
+            `createVideoFrameSource 应该成功: ${sourceRes.isErr() ? sourceRes.unwrapErr().message : ''}`,
+        );
         const source = sourceRes.unwrap();
 
         const playRes = await source.play();
-        assert(playRes.isOk(), `VideoFrameSource.play 应该成功: ${playRes.isErr() ? playRes.unwrapErr().message : ''}`);
+        assert(
+            playRes.isOk(),
+            `VideoFrameSource.play 应该成功: ${playRes.isErr() ? playRes.unwrapErr().message : ''}`,
+        );
 
         const frame = await waitForVideoFrame(source);
         assert(frame != null, 'VideoFrameSource 应该在超时时间内读取到视频帧');
@@ -53,11 +65,17 @@ async function testVideoFrameSource(): Promise<void> {
         // 测试 seek（公开 API 单位为秒，底层转换为 ms）
         const seekTarget = 5;
         const seekRes = await source.seek(seekTarget);
-        assert(seekRes.isOk(), `VideoFrameSource.seek 应该成功: ${ seekRes.isErr() ? seekRes.unwrapErr().message : '' }`);
+        assert(
+            seekRes.isOk(),
+            `VideoFrameSource.seek 应该成功: ${seekRes.isErr() ? seekRes.unwrapErr().message : ''}`,
+        );
 
         const seekFrame = await waitForVideoFrame(source, 3000);
         if (seekFrame != null) {
-            assert(Math.abs(seekFrame.timestamp - seekTarget) < 1.5, `seek 后帧 timestamp 应接近 ${ seekTarget }s，实际 ${ seekFrame.timestamp }s`);
+            assert(
+                Math.abs(seekFrame.timestamp - seekTarget) < 1.5,
+                `seek 后帧 timestamp 应接近 ${seekTarget}s，实际 ${seekFrame.timestamp}s`,
+            );
             console.log('✅ seek 验证通过，timestamp:', seekFrame.timestamp, 's');
             seekFrame.release();
         } else {
@@ -94,7 +112,10 @@ async function testVideoFrameRender(): Promise<void> {
         muted: true,
         loop: false,
     });
-    assert(sourceRes.isOk(), `createVideoFrameSource 应该成功: ${ sourceRes.isErr() ? sourceRes.unwrapErr().message : '' }`);
+    assert(
+        sourceRes.isOk(),
+        `createVideoFrameSource 应该成功: ${sourceRes.isErr() ? sourceRes.unwrapErr().message : ''}`,
+    );
     const source = sourceRes.unwrap();
 
     const mainCanvas = getMainCanvas();
@@ -119,14 +140,17 @@ async function testVideoFrameRender(): Promise<void> {
     };
 
     const playRes = await source.play();
-    assert(playRes.isOk(), `VideoFrameSource.play 应该成功: ${ playRes.isErr() ? playRes.unwrapErr().message : '' }`);
+    assert(
+        playRes.isOk(),
+        `VideoFrameSource.play 应该成功: ${playRes.isErr() ? playRes.unwrapErr().message : ''}`,
+    );
     console.log('开始渲染视频帧...');
 
     const renderTimeout = 15000;
 
-    await new Promise<void>((resolve) => {
+    await new Promise<void>(resolve => {
         const timeoutTimer = setTimeout(() => {
-            console.log(`渲染播放达到超时 ${ renderTimeout }ms，停止`);
+            console.log(`渲染播放达到超时 ${renderTimeout}ms，停止`);
             cleanup();
             resolve();
         }, renderTimeout);
@@ -138,7 +162,7 @@ async function testVideoFrameRender(): Promise<void> {
             resolve();
         });
 
-        source.onError((err) => {
+        source.onError(err => {
             console.error('视频帧源错误:', err.message);
             clearTimeout(timeoutTimer);
             cleanup();
@@ -149,7 +173,10 @@ async function testVideoFrameRender(): Promise<void> {
             if (stopped) return;
 
             const frameRes = source.getFrame();
-            assert(frameRes.isOk(), `getFrame 应该成功: ${ frameRes.isErr() ? frameRes.unwrapErr().message : '' }`);
+            assert(
+                frameRes.isOk(),
+                `getFrame 应该成功: ${frameRes.isErr() ? frameRes.unwrapErr().message : ''}`,
+            );
 
             const frame = frameRes.unwrap();
             if (frame != null && frame.kind === 'pixels') {
@@ -169,7 +196,10 @@ async function testVideoFrameRender(): Promise<void> {
                     mainCtx.fillStyle = '#000000';
                     mainCtx.fillRect(0, 0, mainCanvas.width, mainCanvas.height);
 
-                    const scale = Math.min(mainCanvas.width / frame.width, mainCanvas.height / frame.height);
+                    const scale = Math.min(
+                        mainCanvas.width / frame.width,
+                        mainCanvas.height / frame.height,
+                    );
                     const drawWidth = frame.width * scale;
                     const drawHeight = frame.height * scale;
                     const drawX = (mainCanvas.width - drawWidth) / 2;
@@ -213,8 +243,8 @@ export async function testVideo(): Promise<void> {
     });
 
     // 测试基本属性
-    assert(v.width === videoWidth, `width应该为${ videoWidth }`);
-    assert(v.height === videoHeight, `height应该为${ videoHeight }`);
+    assert(v.width === videoWidth, `width应该为${videoWidth}`);
+    assert(v.height === videoHeight, `height应该为${videoHeight}`);
     console.log('✅ 创建视频成功，尺寸:', v.width, 'x', v.height, '位置:', x, ',', y);
 
     // 测试设置属性
@@ -227,7 +257,7 @@ export async function testVideo(): Promise<void> {
     console.log('测试事件监听...');
 
     // 创建一个Promise，等待视频播放完毕
-    const videoEndedPromise = new Promise<void>((resolve) => {
+    const videoEndedPromise = new Promise<void>(resolve => {
         v.onPlay(() => {
             console.log('📢 play事件触发');
         });
@@ -236,11 +266,11 @@ export async function testVideo(): Promise<void> {
             console.log('📢 pause事件触发');
         });
 
-        v.onTimeUpdate((data) => {
+        v.onTimeUpdate(data => {
             console.log('📢 timeupdate - position:', data.position, 'duration:', data.duration);
         });
 
-        v.onError((err) => {
+        v.onError(err => {
             console.log('📢 error事件:', err.errMsg);
             // 发生错误时也resolve，避免无限等待
             resolve();
@@ -255,7 +285,7 @@ export async function testVideo(): Promise<void> {
             console.log('📢 waiting事件触发');
         });
 
-        v.onProgress((data) => {
+        v.onProgress(data => {
             console.log('📢 progress事件 - buffered:', data.buffered);
         });
     });
@@ -273,7 +303,7 @@ export async function testVideo(): Promise<void> {
             let videoEndedTimer: ReturnType<typeof setTimeout> | undefined;
             const waitResult = await Promise.race([
                 videoEndedPromise.then(() => 'ended' as const),
-                new Promise<'timeout'>((resolve) => {
+                new Promise<'timeout'>(resolve => {
                     videoEndedTimer = setTimeout(() => resolve('timeout'), videoPlaybackTimeout);
                 }),
             ]);
@@ -281,7 +311,9 @@ export async function testVideo(): Promise<void> {
             if (videoEndedTimer != null) clearTimeout(videoEndedTimer);
 
             if (waitResult === 'timeout') {
-                console.log(`视频播放等待超过${ videoPlaybackTimeout }ms，可能是 DevTools 未触发 ended 事件`);
+                console.log(
+                    `视频播放等待超过${videoPlaybackTimeout}ms，可能是 DevTools 未触发 ended 事件`,
+                );
             } else {
                 console.log('✅ 视频播放完毕');
             }

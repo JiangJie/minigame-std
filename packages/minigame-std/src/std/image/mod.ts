@@ -44,7 +44,9 @@ export function createImageFromUrl(url: string): HTMLImageElement | WechatMiniga
  * }
  * ```
  */
-export function createImageFromFile(filePath: string): AsyncIOResult<HTMLImageElement | WechatMinigame.Image> {
+export function createImageFromFile(
+    filePath: string,
+): AsyncIOResult<HTMLImageElement | WechatMinigame.Image> {
     return IS_MINA
         ? Promise.resolve(Ok(minaCreateImageFromFile(filePath)))
         : webCreateImageFromFile(filePath);

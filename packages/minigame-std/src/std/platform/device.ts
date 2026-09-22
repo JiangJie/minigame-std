@@ -7,9 +7,12 @@ import { parseUserAgent } from './user_agent.ts';
 
 // 以下变量一旦获取则不会变化
 // 兼容基础库低版本
-const deviceInfo = /*#__PURE__*/ Lazy<DeviceInfo>(() => IS_MINA
-    ? (wx.getDeviceInfo ? wx.getDeviceInfo() : wx.getSystemInfoSync()) as unknown as DeviceInfo
-    : getWebDeviceInfo(),
+const deviceInfo = /*#__PURE__*/ Lazy<DeviceInfo>(() =>
+    IS_MINA
+        ? ((wx.getDeviceInfo
+              ? wx.getDeviceInfo()
+              : wx.getSystemInfoSync()) as unknown as DeviceInfo)
+        : getWebDeviceInfo(),
 );
 const benchmarkLevel = /*#__PURE__*/ OnceAsync<number>();
 
@@ -104,7 +107,16 @@ export function getWindowInfo(): WechatMinigame.WindowInfo {
  * console.log(devicePlatform); // 'ios' | 'android' | 'mac' | ...
  * ```
  */
-export type Platform = 'ios' | 'android' | 'mac' | 'windows' | 'ohos' | 'ohos_pc' | 'devtools' | 'linux' | 'unknown';
+export type Platform =
+    | 'ios'
+    | 'android'
+    | 'mac'
+    | 'windows'
+    | 'ohos'
+    | 'ohos_pc'
+    | 'devtools'
+    | 'linux'
+    | 'unknown';
 
 /**
  * 设备信息类型。
@@ -120,7 +132,10 @@ export type Platform = 'ios' | 'android' | 'mac' | 'windows' | 'ohos' | 'ohos_pc
  * console.log('内存:', info.memorySize, 'MB');
  * ```
  */
-export type DeviceInfo = Omit<WechatMinigame.DeviceInfo, 'abi' | 'cpuType' | 'deviceAbi' | 'memorySize' | 'platform'> & {
+export type DeviceInfo = Omit<
+    WechatMinigame.DeviceInfo,
+    'abi' | 'cpuType' | 'deviceAbi' | 'memorySize' | 'platform'
+> & {
     abi?: string;
     cpuType?: string;
     deviceAbi?: string;
@@ -137,7 +152,8 @@ export type DeviceInfo = Omit<WechatMinigame.DeviceInfo, 'abi' | 'cpuType' | 'de
  */
 function getWebDeviceInfo(): DeviceInfo {
     const { model, platform, system } = parseUserAgent();
-    const memorySize = ((navigator as Navigator & { deviceMemory?: number; }).deviceMemory ?? 0) * 1024;
+    const memorySize =
+        ((navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 0) * 1024;
 
     return {
         benchmarkLevel: -2, // Web 环境固定返回 -2
