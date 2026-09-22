@@ -24,7 +24,10 @@ const fsMock = vi.hoisted(() => ({
 }));
 
 vi.mock('../src/std/fs/mod.ts', async importOriginal => {
-    const original = (await importOriginal()) as typeof import('../src/std/fs/mod.ts');
+    // Type argument rather than a cast: the untyped call infers the module type in
+    // a fresh checkout but unknown once dist/ exists, so a cast is only clean in
+    // one of the two environments.
+    const original = await importOriginal<typeof import('../src/std/fs/mod.ts')>();
     return {
         ...original,
         readFile: vi.fn(async (...args: Parameters<typeof original.readFile>) => {
