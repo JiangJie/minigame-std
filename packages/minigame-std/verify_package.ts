@@ -26,7 +26,11 @@ const green = (s: string): string => colorize(32, s);
 const yellow = (s: string): string => colorize(33, s);
 const cyan = (s: string): string => colorize(36, s);
 
-function run(cmd: string, args: string[], opts: { cwd: string; env?: NodeJS.ProcessEnv; } = { cwd: PACKAGE_DIR }): string {
+function run(
+    cmd: string,
+    args: string[],
+    opts: { cwd: string; env?: NodeJS.ProcessEnv } = { cwd: PACKAGE_DIR },
+): string {
     return execFileSync(cmd, args, {
         cwd: opts.cwd,
         env: { ...process.env, ...opts.env },
@@ -82,13 +86,20 @@ try {
     const consumerDir = join(tmpDir, 'consumer');
     mkdirSync(consumerDir, { recursive: true });
     writeFileSync(join(consumerDir, '.npmrc'), readFileSync(join(ROOT_DIR, '.npmrc')));
-    writeFileSync(join(consumerDir, 'package.json'), `${JSON.stringify({
-        name: 'verify-consumer',
-        private: true,
-        type: 'module',
-        dependencies: { 'minigame-std': `file:${tgzPath}` },
-        devDependencies: { typescript: typescriptVersion },
-    }, null, 2)}\n`);
+    writeFileSync(
+        join(consumerDir, 'package.json'),
+        `${JSON.stringify(
+            {
+                name: 'verify-consumer',
+                private: true,
+                type: 'module',
+                dependencies: { 'minigame-std': `file:${tgzPath}` },
+                devDependencies: { typescript: typescriptVersion },
+            },
+            null,
+            2,
+        )}\n`,
+    );
     run('pnpm', ['install', '--ignore-scripts', '--prefer-offline'], { cwd: consumerDir });
     const installedPkgDir = join(consumerDir, 'node_modules', 'minigame-std');
 
@@ -102,38 +113,64 @@ try {
     const missingExports = expectedSubpaths.filter(s => !exportKeys.includes(s));
     if (missingExports.length) fail(`Missing exports: ${missingExports.join(', ')}`);
 
-    // Check each export target exists
+    // Check each export target exists. Conditions nest (`import.types`,
+    // `require.default`), so walk one level deeper before resolving a path.
     for (const [subpath, target] of Object.entries(pkg.exports)) {
-        if (typeof target !== 'object') continue;
-        for (const [condition, file] of Object.entries(target as Record<string, string>)) {
-            const fullPath = join(installedPkgDir, file);
-            if (!existsSync(fullPath)) fail(`Export "${subpath}" condition "${condition}": file not found: ${file}`);
+        if (typeof target !== 'object' || target === null) continue;
+
+        for (const [condition, value] of Object.entries(target as Record<string, unknown>)) {
+            const targets: [string, string][] =
+                typeof value === 'string'
+                    ? [[condition, value]]
+                    : Object.entries(value as Record<string, string>).map(([sub, file]) => [
+                          `${condition}.${sub}`,
+                          file,
+                      ]);
+
+            for (const [label, file] of targets) {
+                if (!existsSync(join(installedPkgDir, file))) {
+                    fail(`Export "${subpath}" condition "${label}": file not found: ${file}`);
+                }
+            }
         }
     }
 
     // Check _internal exists but is not exported
-    if (!existsSync(join(installedPkgDir, 'dist/_internal.mjs'))) fail('dist/_internal.mjs not found');
-    if (!existsSync(join(installedPkgDir, 'dist/_internal.cjs'))) fail('dist/_internal.cjs not found');
+    if (!existsSync(join(installedPkgDir, 'dist/_internal.mjs')))
+        fail('dist/_internal.mjs not found');
+    if (!existsSync(join(installedPkgDir, 'dist/_internal.cjs')))
+        fail('dist/_internal.cjs not found');
     if (exportKeys.includes('./_internal')) fail('./_internal should not be in exports');
 
     // Check _env is not a separate file
-    if (existsSync(join(installedPkgDir, 'dist/_env.mjs'))) fail('dist/_env.mjs should not exist (_env must be inlined)');
+    if (existsSync(join(installedPkgDir, 'dist/_env.mjs')))
+        fail('dist/_env.mjs should not exist (_env must be inlined)');
 
     // Check src is not in tarball
     if (existsSync(join(installedPkgDir, 'src'))) fail('src/ should not be in published package');
 
-    // Check no mod-*.d.ts chunks
-    const typesDir = join(installedPkgDir, 'dist/types');
-    const dtsFiles = run('ls', [typesDir]).trim().split('\n');
-    const modChunks = dtsFiles.filter(f => f.startsWith('mod-'));
-    if (modChunks.length) fail(`Found mod-*.d.ts chunks: ${modChunks.join(', ')}`);
+    // Check declaration files: one pair per public entry, no shared chunks, and
+    // no declarations for the internal-only entry.
+    const distDir = join(installedPkgDir, 'dist');
+    const distFiles = run('ls', [distDir]).trim().split('\n');
+    const sharedChunks = distFiles.filter(f => f.startsWith('mod-'));
+    if (sharedChunks.length) fail(`Found shared declaration chunks: ${sharedChunks.join(', ')}`);
 
-    // Check expected .d.ts count
     const expectedDtsCount = ENTRY_NAMES.length;
-    const actualDtsCount = dtsFiles.filter(f => f.endsWith('.d.ts')).length;
-    if (actualDtsCount !== expectedDtsCount) fail(`Expected ${expectedDtsCount} .d.ts files, got ${actualDtsCount}`);
+    const dtsMts = distFiles.filter(f => f.endsWith('.d.mts'));
+    const dtsCts = distFiles.filter(f => f.endsWith('.d.cts'));
+    if (dtsMts.length !== expectedDtsCount)
+        fail(`Expected ${expectedDtsCount} .d.mts files, got ${dtsMts.length}`);
+    if (dtsCts.length !== expectedDtsCount)
+        fail(`Expected ${expectedDtsCount} .d.cts files, got ${dtsCts.length}`);
+    if (distFiles.some(f => f.startsWith('_internal.') && f.includes('.d.')))
+        fail('_internal must not ship declaration files');
 
-    console.log(dim(`  ${exportKeys.length} exports, ${actualDtsCount} .d.ts, _internal present, _env inlined, no src, no mod-* chunks`));
+    console.log(
+        dim(
+            `  ${exportKeys.length} exports, ${dtsMts.length} .d.mts + ${dtsCts.length} .d.cts, _internal present, _env inlined, no src, no shared chunks`,
+        ),
+    );
 
     // ── CJS smoke test ────────────────────────────────────────────────
     step('CJS smoke test (all entries)');
@@ -178,18 +215,25 @@ void cryptos.rsa.importPublicKey;
 void fs.opfs;
 `;
     writeFileSync(join(consumerDir, 'type-check.ts'), typeFixture);
-    writeFileSync(join(consumerDir, 'tsconfig.json'), `${JSON.stringify({
-        compilerOptions: {
-            target: 'ESNext',
-            module: 'ESNext',
-            moduleResolution: 'bundler',
-            strict: true,
-            noEmit: true,
-            skipLibCheck: true,
-            types: ['minigame-api-typings'],
-        },
-        include: ['type-check.ts'],
-    }, null, 2)}\n`);
+    writeFileSync(
+        join(consumerDir, 'tsconfig.json'),
+        `${JSON.stringify(
+            {
+                compilerOptions: {
+                    target: 'ESNext',
+                    module: 'ESNext',
+                    moduleResolution: 'bundler',
+                    strict: true,
+                    noEmit: true,
+                    skipLibCheck: true,
+                    types: ['minigame-api-typings'],
+                },
+                include: ['type-check.ts'],
+            },
+            null,
+            2,
+        )}\n`,
+    );
     // Install minigame-api-typings for type checking. It is a runtime dep of
     // minigame-std, but pnpm does not publicly hoist transitive deps, so the
     // consumer needs it as a direct devDep for `types: [...]` to resolve.
@@ -198,7 +242,7 @@ void fs.opfs;
         run('pnpm', ['exec', 'tsc', '--noEmit'], { cwd: consumerDir });
         console.log(green('  bundler: PASS'));
     } catch (e) {
-        const err = e as { stderr?: string; stdout?: string; };
+        const err = e as { stderr?: string; stdout?: string };
         if (err.stderr) console.error(err.stderr);
         if (err.stdout) console.error(err.stdout);
         fail('TypeScript bundler type check failed');
@@ -208,11 +252,13 @@ void fs.opfs;
     step('publint');
     // publint is installed at workspace root; run from package dir
     try {
-        const publintResult = run('pnpm', ['exec', 'publint', installedPkgDir], { cwd: PACKAGE_DIR });
+        const publintResult = run('pnpm', ['exec', 'publint', installedPkgDir], {
+            cwd: PACKAGE_DIR,
+        });
         console.log(publintResult);
         console.log(green('  publint: PASS'));
     } catch (e) {
-        const err = e as { stdout?: string; stderr?: string; };
+        const err = e as { stdout?: string; stderr?: string };
         if (err.stdout) console.log(err.stdout);
         if (err.stderr) console.error(err.stderr);
         const output = (err.stdout ?? '') + (err.stderr ?? '');
@@ -225,19 +271,22 @@ void fs.opfs;
     // ── attw ──────────────────────────────────────────────────────────
     step('attw (Are the Types Wrong)');
     try {
-        const attwResult = run('pnpm', ['exec', 'attw', tgzPath, '--profile', 'strict', '--no-color', '--no-emoji'], { cwd: PACKAGE_DIR });
+        const attwResult = run(
+            'pnpm',
+            ['exec', 'attw', tgzPath, '--profile', 'strict', '--no-color', '--no-emoji'],
+            { cwd: PACKAGE_DIR },
+        );
         console.log(attwResult);
         console.log(green('  attw: PASS'));
     } catch (e) {
-        const err = e as { stdout?: string; stderr?: string; };
+        const err = e as { stdout?: string; stderr?: string };
         if (err.stdout) console.log(err.stdout);
         if (err.stderr) console.error(err.stderr);
         const output = (err.stdout ?? '') + (err.stderr ?? '');
         // attw exits non-zero on any problem; "Resolution failed" in node10/cjs is expected for ESM-only packages
         if (output.includes('Resolution failed') && !output.includes('💀')) {
             console.log(yellow('  attw: completed with expected CJS resolution warnings'));
-        }
-        else {
+        } else {
             console.log(yellow('  attw: completed with warnings (review output above)'));
         }
     }
@@ -246,10 +295,9 @@ void fs.opfs;
     console.log(green(bold('\n✓ All package compatibility checks passed')));
     console.log(dim(`  ${exportKeys.length} exports verified`));
     console.log(dim(`  ${ENTRY_NAMES.length} ESM + CJS entries loaded`));
-    console.log(dim(`  ${actualDtsCount} .d.ts files verified`));
+    console.log(dim(`  ${dtsMts.length} .d.mts + ${dtsCts.length} .d.cts files verified`));
     console.log(dim('  publint + attw completed'));
     console.log(dim('  TypeScript bundler type check passed'));
-
 } finally {
     rmSync(tmpDir, { recursive: true, force: true });
 }

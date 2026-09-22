@@ -7,120 +7,215 @@
   "type": "module",
   "main": "dist/main.cjs",
   "module": "dist/main.mjs",
-  "types": "dist/types/main.d.ts",
+  "types": "dist/main.d.mts",
   "exports": {
     ".": {
-      "types": "./dist/types/main.d.ts",
-      "import": "./dist/main.mjs",
-      "require": "./dist/main.cjs",
+      "import": {
+        "types": "./dist/main.d.mts",
+        "default": "./dist/main.mjs"
+      },
+      "require": {
+        "types": "./dist/main.d.cts",
+        "default": "./dist/main.cjs"
+      },
       "default": "./dist/main.mjs"
     },
     "./audio": {
-      "types": "./dist/types/audio.d.ts",
-      "import": "./dist/audio.mjs",
-      "require": "./dist/audio.cjs",
+      "import": {
+        "types": "./dist/audio.d.mts",
+        "default": "./dist/audio.mjs"
+      },
+      "require": {
+        "types": "./dist/audio.d.cts",
+        "default": "./dist/audio.cjs"
+      },
       "default": "./dist/audio.mjs"
     },
     "./clipboard": {
-      "types": "./dist/types/clipboard.d.ts",
-      "import": "./dist/clipboard.mjs",
-      "require": "./dist/clipboard.cjs",
+      "import": {
+        "types": "./dist/clipboard.d.mts",
+        "default": "./dist/clipboard.mjs"
+      },
+      "require": {
+        "types": "./dist/clipboard.d.cts",
+        "default": "./dist/clipboard.cjs"
+      },
       "default": "./dist/clipboard.mjs"
     },
     "./codec": {
-      "types": "./dist/types/codec.d.ts",
-      "import": "./dist/codec.mjs",
-      "require": "./dist/codec.cjs",
+      "import": {
+        "types": "./dist/codec.d.mts",
+        "default": "./dist/codec.mjs"
+      },
+      "require": {
+        "types": "./dist/codec.d.cts",
+        "default": "./dist/codec.cjs"
+      },
       "default": "./dist/codec.mjs"
     },
     "./cryptos": {
-      "types": "./dist/types/cryptos.d.ts",
-      "import": "./dist/cryptos.mjs",
-      "require": "./dist/cryptos.cjs",
+      "import": {
+        "types": "./dist/cryptos.d.mts",
+        "default": "./dist/cryptos.mjs"
+      },
+      "require": {
+        "types": "./dist/cryptos.d.cts",
+        "default": "./dist/cryptos.cjs"
+      },
       "default": "./dist/cryptos.mjs"
     },
     "./event": {
-      "types": "./dist/types/event.d.ts",
-      "import": "./dist/event.mjs",
-      "require": "./dist/event.cjs",
+      "import": {
+        "types": "./dist/event.d.mts",
+        "default": "./dist/event.mjs"
+      },
+      "require": {
+        "types": "./dist/event.d.cts",
+        "default": "./dist/event.cjs"
+      },
       "default": "./dist/event.mjs"
     },
     "./fetch": {
-      "types": "./dist/types/fetch.d.ts",
-      "import": "./dist/fetch.mjs",
-      "require": "./dist/fetch.cjs",
+      "import": {
+        "types": "./dist/fetch.d.mts",
+        "default": "./dist/fetch.mjs"
+      },
+      "require": {
+        "types": "./dist/fetch.d.cts",
+        "default": "./dist/fetch.cjs"
+      },
       "default": "./dist/fetch.mjs"
     },
     "./fs": {
-      "types": "./dist/types/fs.d.ts",
-      "import": "./dist/fs.mjs",
-      "require": "./dist/fs.cjs",
+      "import": {
+        "types": "./dist/fs.d.mts",
+        "default": "./dist/fs.mjs"
+      },
+      "require": {
+        "types": "./dist/fs.d.cts",
+        "default": "./dist/fs.cjs"
+      },
       "default": "./dist/fs.mjs"
     },
     "./image": {
-      "types": "./dist/types/image.d.ts",
-      "import": "./dist/image.mjs",
-      "require": "./dist/image.cjs",
+      "import": {
+        "types": "./dist/image.d.mts",
+        "default": "./dist/image.mjs"
+      },
+      "require": {
+        "types": "./dist/image.d.cts",
+        "default": "./dist/image.cjs"
+      },
       "default": "./dist/image.mjs"
     },
     "./lbs": {
-      "types": "./dist/types/lbs.d.ts",
-      "import": "./dist/lbs.mjs",
-      "require": "./dist/lbs.cjs",
+      "import": {
+        "types": "./dist/lbs.d.mts",
+        "default": "./dist/lbs.mjs"
+      },
+      "require": {
+        "types": "./dist/lbs.d.cts",
+        "default": "./dist/lbs.cjs"
+      },
       "default": "./dist/lbs.mjs"
     },
     "./logger": {
-      "types": "./dist/types/logger.d.ts",
-      "import": "./dist/logger.mjs",
-      "require": "./dist/logger.cjs",
+      "import": {
+        "types": "./dist/logger.d.mts",
+        "default": "./dist/logger.mjs"
+      },
+      "require": {
+        "types": "./dist/logger.d.cts",
+        "default": "./dist/logger.cjs"
+      },
       "default": "./dist/logger.mjs"
     },
     "./network": {
-      "types": "./dist/types/network.d.ts",
-      "import": "./dist/network.mjs",
-      "require": "./dist/network.cjs",
+      "import": {
+        "types": "./dist/network.d.mts",
+        "default": "./dist/network.mjs"
+      },
+      "require": {
+        "types": "./dist/network.d.cts",
+        "default": "./dist/network.cjs"
+      },
       "default": "./dist/network.mjs"
     },
     "./path": {
-      "types": "./dist/types/path.d.ts",
-      "import": "./dist/path.mjs",
-      "require": "./dist/path.cjs",
+      "import": {
+        "types": "./dist/path.d.mts",
+        "default": "./dist/path.mjs"
+      },
+      "require": {
+        "types": "./dist/path.d.cts",
+        "default": "./dist/path.cjs"
+      },
       "default": "./dist/path.mjs"
     },
     "./performance": {
-      "types": "./dist/types/performance.d.ts",
-      "import": "./dist/performance.mjs",
-      "require": "./dist/performance.cjs",
+      "import": {
+        "types": "./dist/performance.d.mts",
+        "default": "./dist/performance.mjs"
+      },
+      "require": {
+        "types": "./dist/performance.d.cts",
+        "default": "./dist/performance.cjs"
+      },
       "default": "./dist/performance.mjs"
     },
     "./platform": {
-      "types": "./dist/types/platform.d.ts",
-      "import": "./dist/platform.mjs",
-      "require": "./dist/platform.cjs",
+      "import": {
+        "types": "./dist/platform.d.mts",
+        "default": "./dist/platform.mjs"
+      },
+      "require": {
+        "types": "./dist/platform.d.cts",
+        "default": "./dist/platform.cjs"
+      },
       "default": "./dist/platform.mjs"
     },
     "./socket": {
-      "types": "./dist/types/socket.d.ts",
-      "import": "./dist/socket.mjs",
-      "require": "./dist/socket.cjs",
+      "import": {
+        "types": "./dist/socket.d.mts",
+        "default": "./dist/socket.mjs"
+      },
+      "require": {
+        "types": "./dist/socket.d.cts",
+        "default": "./dist/socket.cjs"
+      },
       "default": "./dist/socket.mjs"
     },
     "./storage": {
-      "types": "./dist/types/storage.d.ts",
-      "import": "./dist/storage.mjs",
-      "require": "./dist/storage.cjs",
+      "import": {
+        "types": "./dist/storage.d.mts",
+        "default": "./dist/storage.mjs"
+      },
+      "require": {
+        "types": "./dist/storage.d.cts",
+        "default": "./dist/storage.cjs"
+      },
       "default": "./dist/storage.mjs"
     },
     "./utils": {
-      "types": "./dist/types/utils.d.ts",
-      "import": "./dist/utils.mjs",
-      "require": "./dist/utils.cjs",
+      "import": {
+        "types": "./dist/utils.d.mts",
+        "default": "./dist/utils.mjs"
+      },
+      "require": {
+        "types": "./dist/utils.d.cts",
+        "default": "./dist/utils.cjs"
+      },
       "default": "./dist/utils.mjs"
     },
     "./video": {
-      "types": "./dist/types/video.d.ts",
-      "import": "./dist/video.mjs",
-      "require": "./dist/video.cjs",
+      "import": {
+        "types": "./dist/video.d.mts",
+        "default": "./dist/video.mjs"
+      },
+      "require": {
+        "types": "./dist/video.d.cts",
+        "default": "./dist/video.cjs"
+      },
       "default": "./dist/video.mjs"
     },
     "./package.json": "./package.json"
@@ -133,17 +228,19 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "check": "pnpm exec tsc --noEmit",
-    "lint": "pnpm exec eslint .",
-    "prebuild": "pnpm run check && pnpm run lint",
-    "build": "node build.ts && pnpm exec rollup --config rollup.config.ts",
+    "check": "pnpm exec vp check",
+    "typecheck": "pnpm exec tsc --noEmit",
+    "lint": "pnpm exec vp lint",
+    "fmt": "pnpm exec vp fmt",
+    "prebuild": "pnpm run check",
+    "build": "pnpm exec vp pack",
     "verify:package": "pnpm run build && node verify_package.ts",
     "docs": "pnpm exec typedoc",
     "prepublishOnly": "pnpm run verify:package",
-    "test": "pnpm exec vitest run --coverage",
-    "test:node": "pnpm exec vitest run --project node",
-    "test:watch": "pnpm exec vitest watch",
-    "test:ui": "pnpm exec vitest --ui"
+    "test": "pnpm exec vp test run --coverage",
+    "test:node": "pnpm exec vp test run --project node",
+    "test:watch": "pnpm exec vp test watch",
+    "test:ui": "pnpm exec vp test --ui"
   },
   "repository": {
     "type": "git",
