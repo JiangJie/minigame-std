@@ -8,7 +8,7 @@
 [![JSR Version](https://jsr.io/badges/@happy-js/minigame-std)](https://jsr.io/@happy-js/minigame-std)
 [![JSR Score](https://jsr.io/badges/@happy-js/minigame-std/score)](https://jsr.io/@happy-js/minigame-std/score)
 
-小游戏跨平台标准开发库。
+小游戏跨平台标准开发库：同一套 API，同时运行在小游戏环境与浏览器环境。
 
 > [!NOTE]
 > 这不是任何一家小游戏平台的官方项目。
@@ -19,15 +19,9 @@
 
 ---
 
-## 动机
+## 为什么需要它
 
-本项目的目的是提供一套能同时运行于小游戏环境和浏览器环境，具有相同 API 的常用开发库。
-
-鉴于小游戏平台通常在运行时之外还有一套官方的基础库（Core），而本项目是基于基础库的再次封装，定位为基础库的补充，希望可以作为"标准开发库（Std）"存在。
-
-按照[微信小游戏](https://developers.weixin.qq.com/minigame/dev/guide/)的官方说法（其他小游戏平台类似），小游戏和浏览器运行环境的主要差别在于没有 BOM 和 DOM API，而提供了类似功能的 wx API，但两者存在较大差异。
-
-比如将 UTF-8 字符串编码为 ArrayBuffer：
+小游戏环境没有 BOM / DOM，只提供 wx API，而它与浏览器 API 差异很大：
 
 **浏览器**
 
@@ -44,319 +38,145 @@ wx.encode({
 });
 ```
 
-此外，并非所有小游戏平台都提供了 `wx.encode` 接口（如部分平台可能缺失该 API），这进一步增加了跨平台开发的复杂性。
+而且并非所有小游戏平台都实现了 `wx.encode` 这类接口。同一套代码往往先在浏览器上开发调试、再发布到小游戏平台，甚至同时发布到两端，于是这些差异就成了必须处理、又极其琐碎的负担。
 
-首先，小游戏基本都是先在浏览器上进行开发调试，而后再发布到小游戏平台；进而，通常同一套代码还会同时发布到小游戏平台和 web 平台。
-
-在这种情况下，以上差异则是不得不面对的问题，处理这些差异将是一种繁琐的挑战，本项目就是为了抹平这种差异，帮助开发者做到使用相同的 API 兼容不同的平台，同时为缺失某些 API 的平台提供统一的实现。
+minigame-std 以此来抹平差异：用相同的 API 兼容不同平台，并为缺失某些能力的平台提供统一实现。
 
 ## 安装
 
 ```sh
-# via pnpm
+# npm / pnpm / yarn
 pnpm add minigame-std
-# or via yarn
-yarn add minigame-std
-# or via npm
-npm install --save minigame-std
-# via JSR
+
+# JSR
 jsr add @happy-js/minigame-std
 ```
 
-## 特性
+## 快速上手
 
-### 核心功能
+```ts
+import { cryptos, fs, platform } from 'minigame-std';
 
-- **平台检测与适配**
+platform.isMiniGame();                          // 平台检测：true / false
+const hash = cryptos.md5('hello');              // 同步 API 直接返回结果
 
-  ```js
-  import { platform } from 'minigame-std';
-  // 检测当前运行环境
-  platform.isWeb();
-  platform.isMiniGame();
-  ```
+const result = await fs.readFile('a.txt', { encoding: 'utf8' });
+if (result.isOk()) {
+    console.log(result.unwrap());               // 异步 API 返回 Result
+}
+```
 
-- **文本编解码**
+异步 API 统一返回 [happy-rusty](https://github.com/JiangJie/happy-rusty) 的 `Result`（`IOResult` / `AsyncIOResult`），用 `isOk` / `unwrap` / `mapErr` 等方式处理，不抛异常。
 
-  ```js
-  import { decodeUtf8, encodeUtf8 } from 'minigame-std';
-  // UTF-8 字符串 ↔ Uint8Array
-  ```
+### 必读：`__MINIGAME_STD_MINA__`
 
-- **Base64 编解码**
+发布出去的代码里，`__MINIGAME_STD_MINA__` 是一个**未解析的全局标识符**，需要由你的构建工具替换为**布尔字面量**：
 
-  ```js
-  import { decodeBase64, encodeBase64 } from 'minigame-std';
-  ```
+```ts
+// vite.config.ts
+export default defineConfig({
+    define: {
+        __MINIGAME_STD_MINA__: true, // 小游戏构建：true；Web 构建：false
+    },
+});
+```
 
-- **Hex 编解码**
+```js
+// webpack.config.js
+new webpack.DefinePlugin({
+    __MINIGAME_STD_MINA__: 'true',
+});
+```
 
-  ```js
-  import { decodeHex, encodeHex } from 'minigame-std';
-  // 十六进制字符串 ↔ Uint8Array
-  ```
+- `true`：裁掉 web 平台实现，用于发布小游戏
+- `false`：裁掉小游戏平台实现，用于浏览器开发或发布到 web
 
-- **ByteString 编解码**
+平台特有代码都是 side effect free，可安全裁剪。若构建时未替换，平台代码无法被裁剪，运行时会因未定义标识符报错。详见[代码裁剪](#代码裁剪)。
 
-  ```js
-  import { decodeByteString, encodeByteString } from 'minigame-std';
-  // ByteString (Latin-1) ↔ Uint8Array
-  ```
+## 能力概览
 
-- **文件系统操作**
+| 模块        | 子路径                   | 说明                                                            |
+| ----------- | ------------------------ | --------------------------------------------------------------- |
+| platform    | `platform`               | 目标平台、设备与机型信息、运行环境判断                          |
+| codec       | `codec`                  | UTF-8、Base64、Hex、ByteString 编解码                           |
+| cryptos     | `cryptos`、`cryptos/rsa` | MD5、SHA-1/256/384/512、HMAC、随机数、RSA                       |
+| fs          | `fs`                     | 文件与目录读写、zip/unzip、下载与上传、JSON 读写（异步 + 同步） |
+| storage     | `storage`                | localStorage 风格的本地存储（异步 + 同步）                      |
+| clipboard   | `clipboard`              | 剪贴板读写                                                      |
+| fetch       | `fetch`                  | 可中断的 HTTP 请求（`fetchT`），兼容各平台特有参数              |
+| socket      | `socket`                 | WebSocket 封装，含小游戏 SocketTask                             |
+| network     | `network`                | 网络类型查询与变化监听                                          |
+| event       | `event`                  | 全局错误、unhandledrejection、前后台与 resize 监听              |
+| logger      | `logger`                 | 可插拔日志：级别过滤、文件持久化、微信日志、console 拦截        |
+| audio       | `audio`                  | WebAudio 上下文管理与音频播放                                   |
+| video       | `video`                  | 视频播放与 VideoFrameSource                                     |
+| image       | `image`                  | 图像加载                                                        |
+| lbs         | `lbs`                    | 地理位置                                                        |
+| path        | `path`                   | POSIX 路径工具                                                  |
+| performance | `performance`            | 高精度计时                                                      |
+| utils       | `utils`                  | 平台回调 API 的封装工具（`asyncResultify` 等）                  |
 
-  ```js
-  import { fs } from 'minigame-std';
-  // 支持 zip/unzip、读写文件、目录操作等
-  await fs.writeFile('path/to/file.txt', 'content');
-  await fs.readFile('path/to/file.txt');
-  await fs.writeJsonFile('path/to/data.json', { key: 'value' });
-  await fs.zip('source', 'target.zip');
-  ```
+每个模块的完整签名与示例见 [API 文档](https://jiangjie.github.io/minigame-std/)，构建流程可参考 [packages/minigame-test](https://github.com/JiangJie/minigame-std/tree/main/packages/minigame-test)。
 
-- **剪贴板操作**
+## 平台支持
 
-  ```js
-  import { clipboard } from 'minigame-std';
-  await clipboard.writeText('text');
-  const text = await clipboard.readText();
-  ```
+- **微信小游戏**：100% 经过测试
+- **其他小游戏平台**：小游戏 API 基本都挂在 `wx` 命名空间下，其他平台为了兼容通常会做映射（如 `GameGlobal.wx = qq`）且 API 大体一致，因此基本可用；发现差异欢迎提 [issue](https://github.com/JiangJie/minigame-std/issues)
+- **浏览器**：web 实现与测试基准
 
-- **全局事件处理**
+## 与 Adapter 的关系
 
-  ```js
-  import { addErrorListener, addUnhandledrejectionListener } from 'minigame-std';
-  // 统一的错误和 Promise rejection 处理
-  ```
+[Adapter](https://developers.weixin.qq.com/minigame/dev/game-engine/workflow/adapter.html) 同样是为了抹平 wx API 与 DOM / BOM 的差异，但两者路径不同：
 
-- **网络状态监听**
-
-  ```js
-  import { addNetworkChangeListener, getNetworkType } from 'minigame-std';
-  ```
-
-- **HTTP 请求**
-
-  ```js
-  import { fetchT } from 'minigame-std';
-  // 支持可中断的请求，兼容平台特定参数
-  const task = fetchT(url, { abortable: true });
-  task.abort(); // 中断请求
-  ```
-
-- **WebSocket**
-
-  ```js
-  import { connectSocket } from 'minigame-std';
-  const socket = connectSocket('wss://example.com');
-  ```
-
-- **本地存储**
-
-  ```js
-  import { storage } from 'minigame-std';
-  // localStorage 兼容 API
-  await storage.setItem('key', 'value');
-  const value = await storage.getItem('key');
-  ```
-
-- **WebAudio**
-
-  ```js
-  import { audio } from 'minigame-std';
-  const context = audio.createAudioContext();
-  ```
-
-- **加密算法**
-
-  ```js
-  import { cryptos } from 'minigame-std';
-  // MD5, SHA-1/256/384/512, HMAC, RSA
-  cryptos.md5('data');  // MD5 返回同步结果
-
-  const sha256Result = await cryptos.sha256('data');
-  if (sha256Result.isOk()) {
-      const hash = sha256Result.unwrap();  // 十六进制哈希字符串
-  }
-
-  const hmacResult = await cryptos.sha256HMAC('key', 'data');
-  if (hmacResult.isOk()) {
-      const hmac = hmacResult.unwrap();  // 十六进制 HMAC 字符串
-  }
-  ```
-
-- **地理位置**
-
-  ```js
-  import { lbs } from 'minigame-std';
-  const position = await lbs.getCurrentPosition();
-  ```
-
-- **性能测量**
-
-  ```js
-  import { getPerformanceNow } from 'minigame-std';
-  const timestamp = getPerformanceNow();
-  ```
-
-- **路径操作**
-
-  ```js
-  import { path } from 'minigame-std';
-  path.basename('/usr/local/file.txt');         // 'file.txt'
-  path.dirname('/usr/local/file.txt');          // '/usr/local'
-  path.normalize('/foo/bar//baz/../quux');      // '/foo/bar/quux'
-  ```
-
-- **图像处理**
-
-  ```js
-  import { image } from 'minigame-std';
-  const img = image.createImageFromUrl(url);
-  ```
-
-- **视频播放**
-
-  ```js
-  import { video } from 'minigame-std';
-  const v = video.createVideo({ src: 'video.mp4' });
-  v.play();
-  v.requestFullScreen(0); // 0: 竖屏, 90/-90: 横屏
-  ```
-
-- **日志系统**
-  ```js
-  import { logger } from 'minigame-std';
-  // 可插拔日志，支持级别过滤、控制台输出、文件持久化
-  logger.init({
-      level: 'debug',
-      plugins: [logger.fileLog({ split: { maxSize: 10 * 1024 * 1024 } })],
-  });
-  logger.info('App started');
-  logger.error('Something went wrong', new Error('test'));
-
-  // 拦截全局 console 方法
-  logger.init({
-      plugins: [logger.fileLog()],
-      injectConsole: true,
-  });
-  console.info('Redirected to logger pipeline'); // → file 写入 + console 输出
-
-  // 微信小游戏日志（仅小游戏平台生效）
-  logger.init({
-      plugins: [logger.wxLog({ level: 'warn' })],
-  });
-  ```
-
-更多功能请查看 [API 文档](https://jiangjie.github.io/minigame-std/)。
-
-## 和 Adapter 是什么关系
-
-[Adapter](https://developers.weixin.qq.com/minigame/dev/game-engine/workflow/adapter.html) 也是为了适配 wx API 和 DOM/BOM API 的差异，相比 Adapter，minigame-std 具有一些显著的优势。
-
-- Adapter 使用小游戏 API 模拟浏览器特有的 API，但两者在功能上其实并不等价，所以这样会丧失一些小游戏 API 特有的功能。
-
-  比如 `wx.request` 支持 `enableHttpDNS` 参数，但浏览器环境的 `fetch` 和 `XMLHttpRequest` 都不支持，所以完全模拟就无法传递这样的参数。
-
-  使用 `minigame-std` 完全可以这样写，平台特有的参数会被其他平台自动忽略。
+- Adapter 用小游戏 API 模拟浏览器 API，而两者功能并不等价，会丢失小游戏特有参数。比如 `wx.request` 支持 `enableHttpDNS`，浏览器侧没有对应能力，模拟之后就传不进去；再如 `wx.request` 返回可 `abort` 的 `RequestTask`，而 `fetch` 要靠额外的 `AbortController`，一味模拟反而失去该能力。minigame-std 不做模拟，平台特有参数在其他平台自动忽略，`fetchT` 沿用 `wx.request` 的返回值设计并支持 `abortable`：
 
   ```ts
   fetchT(url, {
       mode: 'no-cors', // 浏览器特有
       enableHttpDNS: true, // 小游戏特有
+
+      abortable: true, // 可中断
   });
   ```
 
-  再如 `wx.request` 的返回值是一个支持 `abort` 的 `RequestTask`，而 `fetch` 的返回值是一个 `Promise<Response>`，需要由额外的 `AbortController` 控制才能实现 `abort` 功能，如果为了模拟而将 `wx.request` 返回 `Promise<Response>`，则将失去`abort` 功能。
+- Adapter 的胶水代码无论是否使用都会进入包体；minigame-std 通过构建期裁剪平台代码来避免这一点，并且是 ESM + tree shake 友好的，未使用的特性会在构建时删除。
 
-  `minigame-std` 的 `fetchT` 沿用了 `wx.request` 的返回值设计，由一个 `abortable` 参数控制是否可 abort。
-
-  ```ts
-  fetchT(url, {
-      abortable: true,
-  }).abort();
-  ```
-
-- Adapter 会产生很多胶水代码，这些代码不管是否使用都会打进包体，如果能直接调用小游戏 API 的话，这些胶水代码实际上是一种负担，某种情况下甚至是负优化，完全可以舍弃。
-
-  使用 `minigame-std` 不需要在运行时注入 Adapter，通过构建流程可以自动为特定平台去除其他平台的代码，达到节省包体大小和提高运行性能的效果。
-
-  `minigame-std` 使用 ESM 规范开发，支持`tree shake`，没有使用的特性可以在构建时删除，进一步节省包体大小。
-
-- `minigame-std` 额外提供了一些特性，如 `base64` `fs`等。
-
-  对于某些平台独有的特性，也会为其他平台补齐实现。
-
-  所有平台都不原生支持，但一些常用的功能逐渐添加中。
-
-### 能替代 Adapter 吗
-
-**还不能！**
-
-一些 DOM Element 相关的适配代码仍需要 Adapter，主要是游戏引擎需要使用。
-
-## 小游戏平台的支持情况
-
-- 微信小游戏
-
-  100% 经过测试。
-
-- 其他小游戏
-
-  由于小游戏平台的 API 全部使用 `wx` 全局 namespace 进行调用，其他小游戏平台为了兼容微信小游戏，通常也会设置 `wx` namespace，比如 `GameGlobal.wx = qq`，且 API 会大体保持一致，所以基本也是支持的。
-
-  如发现有差异，请提 [issue](https://github.com/JiangJie/minigame-std/issues)。
+**目前还不能完全替代 Adapter**：部分 DOM Element 相关的适配代码（游戏引擎需要）仍依赖它。
 
 ## 代码裁剪
 
-**`__MINIGAME_STD_MINA__`**
-
-代码打包时通过设置 `__MINIGAME_STD_MINA__` boolean 变量来控制需要裁剪掉 web 平台还是小游戏平台的专属代码，所有平台特有的代码都是 `side effect free` 的，可以放心裁剪。
-
-设置为 `true` 则裁减掉 web 平台的代码，适合发布小游戏时的构建。
-
-设置为 `false` 则裁减掉小游戏平台代码，适合在浏览器上开发阶段或者发布到 web 平台时的构建。
-
 ### 子路径导入
 
-除了根入口，每个功能模块也提供独立的子路径入口，两种方式导入的 API 完全一致：
+除根入口外，每个模块都提供独立子路径，两种导入方式的 API 完全一致：
 
 ```ts
-// 根入口导入
+// 根入口
 import { fs, encodeBase64 } from 'minigame-std';
 
 // 等价的子路径导入
 import * as fs from 'minigame-std/fs';
 import { encodeBase64 } from 'minigame-std/codec';
-import { importPublicKey } from 'minigame-std/cryptos/rsa'; // 等价于 cryptos.rsa.importPublicKey
 ```
 
 可用子路径：`audio`、`clipboard`、`codec`、`cryptos`、`cryptos/rsa`、`event`、`fetch`、`fs`、`image`、`lbs`、`logger`、`network`、`path`、`performance`、`platform`、`socket`、`storage`、`utils`、`video`。JSR 用户对应 `@happy-js/minigame-std/<subpath>`，如 `@happy-js/minigame-std/fs`。
 
-子路径导入同样依赖 `__MINIGAME_STD_MINA__` 裁剪平台代码；对于 tree-shaking 支持较弱的构建工具，子路径导入可以更明确地控制打入包内的模块。
+子路径同样依赖 `__MINIGAME_STD_MINA__` 裁剪平台代码；对于 tree-shaking 较弱的构建工具，子路径导入能更明确地控制进入包体的模块。
 
-构建流程可参考 [packages/minigame-test](https://github.com/JiangJie/minigame-std/tree/main/packages/minigame-test)。
+## 环境要求
 
-## 测试
+- 使用：任意支持 `define` 替换与 tree-shaking 的构建工具（Vite、webpack、Rollup 等）
+- 开发本仓库：Node `^20.19.0 || ^22.18.0 || >=24.11.0`（与 Vite+ 的要求一致）、pnpm
+
+## 开发
 
 ```bash
 pnpm install
-pnpm test
+pnpm test        # 浏览器 + Node 测试
+pnpm run check   # 格式、lint 与类型检查
+pnpm run build   # 构建所有包
 ```
 
-> [!NOTE]
-> Web 平台测试通过 Vite 配置排除小游戏特有文件，实现了 100% 代码覆盖率。被排除的文件包括：
->
-> - `fs_async.ts` / `fs_sync.ts`：简单的包装层，仅负责委托调用平台特定实现
-> - `mina_fs_async.ts` / `mina_fs_sync.ts`：小游戏特有实现，通过 [minigame-test](https://github.com/JiangJie/minigame-std/tree/main/packages/minigame-test) 单独测试
-
-- **Web 平台测试**: `tests` 目录下的测试用例基于 web 平台（`__MINIGAME_STD_MINA__: false`），使用 [Vitest](https://vitest.dev/) + [Playwright](https://playwright.dev/) 在真实浏览器环境中运行
-- **文件系统测试**: Web 平台的 OPFS 文件系统测试请参考 [happy-opfs](https://github.com/JiangJie/happy-opfs)
-- **小游戏平台测试**: 小游戏环境的测试用例位于 [packages/minigame-test](https://github.com/JiangJie/minigame-std/tree/main/packages/minigame-test) 目录，需要在 WeChat DevTools 中运行
-
-## 贡献
-
-欢迎提交 Issue 和 Pull Request！
+测试组织、工具链与提交规范的细节见 [CONTRIBUTING.md](./CONTRIBUTING.md)。
 
 ## 许可证
 
