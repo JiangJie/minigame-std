@@ -5,7 +5,8 @@ import { beforeEach, expect, test, vi } from 'vite-plus/test';
 
 // 创建 mock 的 Video 对象
 function createMockVideo(): WechatMinigame.Video {
-    const listeners: Record<string, ((...args: unknown[]) => void)[]> = {};
+    // 值是惰性创建的：类型必须承认键可能不存在，否则下面的 ||= 守卫就是自欺
+    const listeners: Partial<Record<string, ((...args: unknown[]) => void)[]>> = {};
 
     return {
         src: '',
