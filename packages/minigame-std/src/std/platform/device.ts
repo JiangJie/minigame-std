@@ -100,10 +100,10 @@ export function getWindowInfo(): WechatMinigame.WindowInfo {
  * @since 1.0.0
  * @example
  * ```ts
- * import { platform, type Platform } from 'minigame-std';
+ * import { platform } from 'minigame-std';
  *
  * const info = platform.getDeviceInfo();
- * const devicePlatform: Platform = info.platform;
+ * const devicePlatform: platform.Platform = info.platform;
  * console.log(devicePlatform); // 'ios' | 'android' | 'mac' | ...
  * ```
  */
@@ -125,9 +125,9 @@ export type Platform =
  * @since 1.0.0
  * @example
  * ```ts
- * import { platform, type DeviceInfo } from 'minigame-std';
+ * import { platform } from 'minigame-std';
  *
- * const info: DeviceInfo = platform.getDeviceInfo();
+ * const info: platform.DeviceInfo = platform.getDeviceInfo();
  * console.log('平台:', info.platform);
  * console.log('内存:', info.memorySize, 'MB');
  * ```

@@ -8,9 +8,9 @@ import type { DownloadFileOptions, UploadFileOptions } from './mina_fs_define.ts
  * @since 1.0.0
  * @example
  * ```ts
- * import { fs, type WriteFileContent } from 'minigame-std';
+ * import { fs } from 'minigame-std';
  *
- * const content: WriteFileContent = '文本内容';
+ * const content: fs.WriteFileContent = '文本内容';
  * await fs.writeFile('/path/to/file.txt', content);
  * ```
  */
@@ -22,7 +22,7 @@ export type WriteFileContent = DataSource;
  * @since 1.0.0
  * @example
  * ```ts
- * import type { ReadFileContent } from 'minigame-std';
+ * import type { ReadFileContent } from 'minigame-std/fs';
  *
  * // ReadFileContent 可以是 Uint8Array<ArrayBuffer> 或 string
  * const content: ReadFileContent = new Uint8Array(8);
@@ -35,7 +35,7 @@ export type ReadFileContent = Uint8Array<ArrayBuffer> | string;
  * @since 1.0.0
  * @example
  * ```ts
- * import type { ReadOptions } from 'minigame-std';
+ * import type { ReadOptions } from 'minigame-std/fs';
  *
  * const options: ReadOptions = { encoding: 'utf8' };
  * ```
@@ -54,7 +54,7 @@ export interface ReadOptions {
  * @since 1.0.0
  * @example
  * ```ts
- * import type { FileEncoding } from 'minigame-std';
+ * import type { FileEncoding } from 'minigame-std/fs';
  *
  * const encoding: FileEncoding = 'utf8';
  * ```
@@ -66,7 +66,7 @@ export type FileEncoding = 'bytes' | 'utf8';
  * @since 1.0.0
  * @example
  * ```ts
- * import type { UnionDownloadFileOptions } from 'minigame-std';
+ * import type { UnionDownloadFileOptions } from 'minigame-std/fs';
  *
  * const options: UnionDownloadFileOptions = {
  *     headers: { 'Authorization': 'Bearer token' },
@@ -87,7 +87,7 @@ export interface UnionDownloadFileOptions extends Omit<
  * @since 1.0.0
  * @example
  * ```ts
- * import type { UnionUploadFileOptions } from 'minigame-std';
+ * import type { UnionUploadFileOptions } from 'minigame-std/fs';
  *
  * const options: UnionUploadFileOptions = {
  *     name: 'file',
@@ -108,9 +108,9 @@ export interface UnionUploadFileOptions extends Omit<
  * @since 1.0.0
  * @example
  * ```ts
- * import { fs, type StatOptions } from 'minigame-std';
+ * import { fs } from 'minigame-std';
  *
- * const options: StatOptions = { recursive: true };
+ * const options: fs.StatOptions = { recursive: true };
  * const result = await fs.stat('/path/to/dir', options);
  * ```
  */
@@ -126,9 +126,9 @@ export interface StatOptions {
  * @since 1.4.0
  * @example
  * ```ts
- * import { fs, type ZipFromUrlOptions } from 'minigame-std';
+ * import { fs } from 'minigame-std';
  *
- * const options: ZipFromUrlOptions = {
+ * const options: fs.ZipFromUrlOptions = {
  *     headers: { 'Authorization': 'Bearer token' },
  *     onProgress: (p) => console.log(p.progress),
  * };

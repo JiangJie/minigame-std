@@ -4,14 +4,14 @@
  * @module
  * @example
  * ```ts
- * import { logger, fileLog, wxLog } from 'minigame-std';
+ * import { logger } from 'minigame-std';
  *
- * const file = fileLog({ level: 'debug' });
+ * const file = logger.fileLog({ level: 'debug' });
  *
  * logger.init({
  *     level: 'info',
  *     console: { level: 'warn' },
- *     plugins: [file, wxLog({ level: 'warn' })],
+ *     plugins: [file, logger.wxLog({ level: 'warn' })],
  * });
  *
  * logger.info('App started');

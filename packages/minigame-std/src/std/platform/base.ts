@@ -3,9 +3,9 @@
  * @since 1.0.0
  * @example
  * ```ts
- * import { platform, type TargetType } from 'minigame-std';
+ * import { platform } from 'minigame-std';
  *
- * const type: TargetType = platform.getTargetType();
+ * const type: platform.TargetType = platform.getTargetType();
  * console.log(type); // 'minigame' 或 'web'
  * ```
  */

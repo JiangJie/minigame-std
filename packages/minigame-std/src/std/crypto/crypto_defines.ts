@@ -39,10 +39,10 @@ export interface RSAPublicKey {
  * @since 1.6.0
  * @example
  * ```ts
- * import { importPublicKey, type SHA } from 'minigame-std';
+ * import { cryptos } from 'minigame-std';
  *
- * const hash: SHA = 'SHA-256';
- * const publicKey = (await importPublicKey(pemString, hash)).unwrap();
+ * const hash: cryptos.SHA = 'SHA-256';
+ * const publicKey = (await cryptos.rsa.importPublicKey(pemString, hash)).unwrap();
  * ```
  */
 export type SHA = 'SHA-1' | 'SHA-256' | 'SHA-384' | 'SHA-512';
