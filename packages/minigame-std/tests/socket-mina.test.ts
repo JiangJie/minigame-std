@@ -41,16 +41,16 @@ function createMockSocketTask() {
             task.readyState = 2; // CLOSING
         }),
         // 触发事件的辅助方法
-        _triggerOpen: () => {
+        triggerOpen: () => {
             task.readyState = 1; // OPEN
             listeners.onOpen?.();
         },
-        _triggerClose: (code: number, reason: string) => {
+        triggerClose: (code: number, reason: string) => {
             task.readyState = 3; // CLOSED
             listeners.onClose?.({ code, reason });
         },
-        _triggerMessage: (data: string | ArrayBuffer) => listeners.onMessage?.({ data }),
-        _triggerError: (errMsg: string) => listeners.onError?.({ errMsg }),
+        triggerMessage: (data: string | ArrayBuffer) => listeners.onMessage?.({ data }),
+        triggerError: (errMsg: string) => listeners.onError?.({ errMsg }),
     };
 
     return task;
@@ -92,7 +92,7 @@ test('mina socket open event changes readyState', () => {
     expect(socket.readyState).toBe(0); // CONNECTING
 
     // 触发 open 事件
-    mockSocketTask._triggerOpen();
+    mockSocketTask.triggerOpen();
 
     expect(openListener).toHaveBeenCalled();
     expect(socket.readyState).toBe(1); // OPEN
@@ -105,7 +105,7 @@ test('mina socket close event changes readyState', () => {
     socket.addEventListener('close', closeListener);
 
     // 触发 close 事件
-    mockSocketTask._triggerClose(1000, 'Normal closure');
+    mockSocketTask.triggerClose(1000, 'Normal closure');
 
     expect(closeListener).toHaveBeenCalledWith(1000, 'Normal closure');
     expect(socket.readyState).toBe(3); // CLOSED
@@ -118,7 +118,7 @@ test('mina socket message event', () => {
     socket.addEventListener('message', messageListener);
 
     // 触发 message 事件
-    mockSocketTask._triggerMessage('Hello World');
+    mockSocketTask.triggerMessage('Hello World');
 
     expect(messageListener).toHaveBeenCalledWith('Hello World');
 });
@@ -130,7 +130,7 @@ test('mina socket error event', () => {
     socket.addEventListener('error', errorListener);
 
     // 触发 error 事件
-    mockSocketTask._triggerError('Connection failed');
+    mockSocketTask.triggerError('Connection failed');
 
     expect(errorListener).toHaveBeenCalled();
     const error = errorListener.mock.calls[0][0];

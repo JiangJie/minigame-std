@@ -225,7 +225,7 @@ test('syncIOResultify converts sync API to IOResult - failure', () => {
     const mockSyncApi = (_key: string): string => {
         throw {
             errMsg: 'getStorageSync:fail data not found',
-        } as WechatMinigame.GeneralCallbackResult;
+        };
     };
 
     const wrapped = syncIOResultify(mockSyncApi);

@@ -3,7 +3,7 @@
  * 通过 mock happy-opfs 的底层函数来测试
  */
 import type { FileSystemFileHandleLike, FileSystemHandleLike } from 'happy-opfs';
-import { Err, Ok, type IOResult } from 'happy-rusty';
+import { Err, Ok } from 'happy-rusty';
 import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import {
     convertFileSystemHandleLikeToStats,
@@ -380,7 +380,7 @@ describe('webToMinaStatSync', () => {
 
     test('returns Stats for file without recursive option', () => {
         const handleLike = createMockFileHandleLike('test.txt', 600, 11111);
-        mockedStatSync.mockReturnValue(Ok(handleLike) as IOResult<FileSystemHandleLike>);
+        mockedStatSync.mockReturnValue(Ok(handleLike));
 
         const result = webToMinaStatSync('/test.txt');
 
@@ -393,7 +393,7 @@ describe('webToMinaStatSync', () => {
 
     test('returns Stats for directory without recursive option', () => {
         const handleLike = createMockDirectoryHandleLike('my-dir');
-        mockedStatSync.mockReturnValue(Ok(handleLike) as IOResult<FileSystemHandleLike>);
+        mockedStatSync.mockReturnValue(Ok(handleLike));
 
         const result = webToMinaStatSync('/my-dir');
 
@@ -405,7 +405,7 @@ describe('webToMinaStatSync', () => {
 
     test('returns error when statSync fails', () => {
         const error = new Error('Path not found');
-        mockedStatSync.mockReturnValue(Err(error) as IOResult<FileSystemHandleLike>);
+        mockedStatSync.mockReturnValue(Err(error));
 
         const result = webToMinaStatSync('/nonexistent');
 
@@ -415,7 +415,7 @@ describe('webToMinaStatSync', () => {
 
     test('returns FileStats array for file with recursive option', () => {
         const handleLike = createMockFileHandleLike('test.txt', 700, 22222);
-        mockedStatSync.mockReturnValue(Ok(handleLike) as IOResult<FileSystemHandleLike>);
+        mockedStatSync.mockReturnValue(Ok(handleLike));
 
         const result = webToMinaStatSync('/test.txt', { recursive: true });
 
@@ -429,15 +429,13 @@ describe('webToMinaStatSync', () => {
 
     test('returns FileStats array for directory with recursive option', () => {
         const handleLike = createMockDirectoryHandleLike('my-dir');
-        mockedStatSync.mockReturnValue(Ok(handleLike) as IOResult<FileSystemHandleLike>);
+        mockedStatSync.mockReturnValue(Ok(handleLike));
 
         const entries = [
             { path: 'child1.txt', handle: createMockFileHandleLike('child1.txt', 100, 1000) },
             { path: 'sub-dir', handle: createMockDirectoryHandleLike('sub-dir') },
         ];
-        mockedReadDirSync.mockReturnValue(
-            Ok(entries) as IOResult<{ path: string; handle: FileSystemHandleLike }[]>,
-        );
+        mockedReadDirSync.mockReturnValue(Ok(entries));
 
         const result = webToMinaStatSync('/my-dir', { recursive: true });
 
@@ -456,10 +454,8 @@ describe('webToMinaStatSync', () => {
 
     test('returns FileStats array for empty directory with recursive option', () => {
         const handleLike = createMockDirectoryHandleLike('empty-dir');
-        mockedStatSync.mockReturnValue(Ok(handleLike) as IOResult<FileSystemHandleLike>);
-        mockedReadDirSync.mockReturnValue(
-            Ok([]) as IOResult<{ path: string; handle: FileSystemHandleLike }[]>,
-        );
+        mockedStatSync.mockReturnValue(Ok(handleLike));
+        mockedReadDirSync.mockReturnValue(Ok([]));
 
         const result = webToMinaStatSync('/empty-dir', { recursive: true });
 
@@ -473,12 +469,10 @@ describe('webToMinaStatSync', () => {
 
     test('returns error when recursive readDirSync fails', () => {
         const handleLike = createMockDirectoryHandleLike('my-dir');
-        mockedStatSync.mockReturnValue(Ok(handleLike) as IOResult<FileSystemHandleLike>);
+        mockedStatSync.mockReturnValue(Ok(handleLike));
 
         const error = new Error('Read dir failed');
-        mockedReadDirSync.mockReturnValue(
-            Err(error) as IOResult<{ path: string; handle: FileSystemHandleLike }[]>,
-        );
+        mockedReadDirSync.mockReturnValue(Err(error));
 
         const result = webToMinaStatSync('/my-dir', { recursive: true });
 

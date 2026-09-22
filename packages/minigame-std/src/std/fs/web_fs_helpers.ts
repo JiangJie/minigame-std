@@ -127,12 +127,12 @@ export async function webToMinaStat(
             }),
         ];
 
-        for await (const { path, handle } of entries) {
+        for await (const { path: entryPath, handle: entryHandle } of entries) {
             tasks.push(
                 (async () => {
-                    const stats = await convertFileSystemHandleToStats(handle);
+                    const stats = await convertFileSystemHandleToStats(entryHandle);
                     return {
-                        path,
+                        path: entryPath,
                         stats,
                     };
                 })(),
@@ -190,9 +190,9 @@ export function webToMinaStatSync(
     // 递归读取目录
     const readDirRes = readDirSync(path);
     return readDirRes.map(entries => {
-        const statsArr = entries.map(({ path, handle }) => ({
-            path,
-            stats: convertFileSystemHandleLikeToStats(handle),
+        const statsArr = entries.map(({ path: entryPath, handle: entryHandle }) => ({
+            path: entryPath,
+            stats: convertFileSystemHandleLikeToStats(entryHandle),
         }));
 
         // 只要是 recursive 模式下的目录, 就返回数组(即使是空目录)

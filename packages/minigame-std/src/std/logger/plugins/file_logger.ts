@@ -314,7 +314,10 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
     async function readLogFiles(): AsyncIOResult<string[]> {
         const dirResult = await readDir(rootDir);
         return dirResult.map(files =>
-            files.filter(n => n.endsWith('.log') || n.endsWith('.log.gz')).sort(),
+            files
+                .filter(n => n.endsWith('.log') || n.endsWith('.log.gz'))
+                // oxlint-disable-next-line unicorn/no-array-sort -- toSorted 需要 ES2023，小游戏基础库与旧 WebView 不保证可用
+                .sort(),
         );
     }
 
@@ -372,8 +375,12 @@ export function fileLog(config: FilePluginConfig = {}): FilePluginAPI {
     }
 
     // 将过滤后的日志条目加入缓冲，同步决策切分 + 累加 size
-    function writeEntry(level: LogLevel, args: unknown[], timestamp: number = Date.now()): void {
-        const entry: LogEntry = { timestamp, level, message: buildMessage(args) };
+    function writeEntry(
+        entryLevel: LogLevel,
+        args: unknown[],
+        timestamp: number = Date.now(),
+    ): void {
+        const entry: LogEntry = { timestamp, level: entryLevel, message: buildMessage(args) };
         const formatted = formatter(entry);
         const entryLen = split.useByteSize ? encodeUtf8(formatted).length : formatted.length;
 

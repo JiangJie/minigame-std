@@ -365,7 +365,7 @@ describe('mina fs error handling - unzipSync write failures', () => {
         });
         mockFileSystem.set('wxfile://usr/test.zip', {
             type: 'file',
-            content: zipData.buffer as ArrayBuffer,
+            content: zipData.buffer,
         });
 
         // Mock mkdirSync 失败
@@ -387,7 +387,7 @@ describe('mina fs error handling - unzipSync write failures', () => {
         });
         mockFileSystem.set('wxfile://usr/test-write-fail.zip', {
             type: 'file',
-            content: zipData.buffer as ArrayBuffer,
+            content: zipData.buffer,
         });
 
         // Mock writeFileSync 失败

@@ -22,9 +22,18 @@ import { importPublicKey as webImportPublicKey } from './web_rsa.ts';
  * ```
  */
 export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublicKey> {
-    if (hash !== 'SHA-1' && hash !== 'SHA-256' && hash !== 'SHA-384' && hash !== 'SHA-512') {
+    if (!isSupportedHash(hash)) {
         return Promise.resolve(Err(new TypeError(`Unsupported hash algorithm: ${hash}`)));
     }
 
     return (IS_MINA ? minaImportPublicKey : webImportPublicKey)(pem, hash);
 }
+
+// #region Internal Functions
+
+/** JS 调用方可能传入联合类型之外的值，这里做一次运行时兜底。 */
+function isSupportedHash(hash: string): boolean {
+    return hash === 'SHA-1' || hash === 'SHA-256' || hash === 'SHA-384' || hash === 'SHA-512';
+}
+
+// #endregion

@@ -49,7 +49,8 @@ function stringifyArg(arg: unknown): string {
         try {
             return JSON.stringify(arg, (_, v) => (typeof v === 'bigint' ? `${v}n` : v));
         } catch {
-            // 循环引用等，最终 fallback
+            // 循环引用等，最终 fallback：JSON 序列化失败时仍要给出可读文本
+            // oxlint-disable-next-line typescript/no-base-to-string -- 对象值最后的字符串化兜底
             return String(arg);
         }
     }

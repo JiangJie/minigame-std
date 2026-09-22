@@ -458,7 +458,7 @@ export async function readJsonFile<T>(filePath: string): AsyncIOResult<T> {
  * @param data - 要写入的数据。
  * @returns 写入结果。
  */
-export async function writeJsonFile<T>(filePath: string, data: T): AsyncVoidIOResult {
+export async function writeJsonFile(filePath: string, data: unknown): AsyncVoidIOResult {
     const result = tryResult(JSON.stringify, data);
 
     return result.andThenAsync(text => writeFile(filePath, text));
@@ -517,7 +517,7 @@ export function downloadFile(
         task = wx.downloadFile({
             ...rest,
             url: fileUrl,
-            filePath: filePath as string,
+            filePath,
             header: headers,
             // wx 回调声明为 async 以便内部 await；平台忽略返回值，无需浮动 Promise 处理。
             // oxlint-disable-next-line typescript/no-misused-promises
@@ -910,11 +910,14 @@ async function copyFile(srcPath: string, destPath: string): AsyncVoidIOResult {
 function zipTo(zippable: AsyncZippable, zipFilePath?: string): AsyncZipIOResult {
     // 小游戏不支持 Web Worker(fflate 异步接口内部使用了), 退化到同步接口
     return tryResult(() => compressSync(zippable)).andThenAsync(bytesLike => {
+        // 断言不是冗余：去掉后 andThenAsync 会把回调返回类型推成 void（TS2345）
+        // oxlint-disable-next-line typescript/no-unnecessary-type-assertion
         const bytes = bytesLike as Uint8Array<ArrayBuffer>;
         // 有文件路径则写入文件
         return zipFilePath
             ? writeFile(zipFilePath, bytes)
-            : (Promise.resolve(Ok(bytes)) as AsyncZipIOResult);
+            : // oxlint-disable-next-line typescript/no-unnecessary-type-assertion
+              (Promise.resolve(Ok(bytes)) as AsyncZipIOResult);
     });
 }
 

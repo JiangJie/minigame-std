@@ -364,7 +364,6 @@ export function readTextFileSync(filePath: string): IOResult<string> {
 
 /**
  * `writeJsonFile` 的同步版本，将数据序列化为 JSON 并写入文件。
- * @typeParam T - 要写入数据的类型。
  * @param filePath - 文件路径。
  * @param data - 要写入的数据。
  * @returns 写入操作的结果。
@@ -377,7 +376,7 @@ export function readTextFileSync(filePath: string): IOResult<string> {
  * }
  * ```
  */
-export function writeJsonFileSync<T>(filePath: string, data: T): VoidIOResult {
+export function writeJsonFileSync(filePath: string, data: unknown): VoidIOResult {
     return (IS_MINA ? minaWriteJsonFileSync : webWriteJsonFileSync)(filePath, data);
 }
 

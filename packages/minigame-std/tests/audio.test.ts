@@ -310,7 +310,9 @@ test('playWebAudioFromUrl downloads and plays audio from URL', async () => {
     });
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(String(fetchMock.mock.calls[0]?.[0])).toBe('https://example.com/audio.wav');
+    const [requestedUrl] = fetchMock.mock.calls[0] ?? [];
+    expect(requestedUrl).toBeInstanceOf(URL);
+    expect((requestedUrl as URL).href).toBe('https://example.com/audio.wav');
     expect(result.isOk()).toBe(true);
 
     const source = result.unwrap();

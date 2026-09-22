@@ -34,17 +34,17 @@ test('getTargetType returns web', () => {
 
 test('platform detection is consistent', () => {
     // All platform detection methods should be consistent
-    const isWeb = platform.isWeb();
-    const isMiniGame = platform.isMiniGame();
+    const webDetected = platform.isWeb();
+    const miniGameDetected = platform.isMiniGame();
     const targetType = platform.getTargetType();
 
-    if (isWeb) {
-        expect(isMiniGame).toBe(false);
+    if (webDetected) {
+        expect(miniGameDetected).toBe(false);
         expect(targetType).toBe('web');
     }
 
-    if (isMiniGame) {
-        expect(isWeb).toBe(false);
+    if (miniGameDetected) {
+        expect(webDetected).toBe(false);
         expect(targetType).toBe('minigame');
     }
 });
@@ -130,11 +130,11 @@ test('TargetType is either minigame or web', () => {
 });
 
 test('isWeb and isMiniGame are mutually exclusive', () => {
-    const isWeb = platform.isWeb();
-    const isMiniGame = platform.isMiniGame();
+    const webDetected = platform.isWeb();
+    const miniGameDetected = platform.isMiniGame();
 
     // Exactly one should be true
-    expect(isWeb !== isMiniGame).toBe(true);
+    expect(webDetected !== miniGameDetected).toBe(true);
 });
 
 test('all isMiniGame* functions return false when not in minigame environment', () => {

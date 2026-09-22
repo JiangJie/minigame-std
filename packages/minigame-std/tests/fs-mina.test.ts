@@ -298,7 +298,7 @@ function createMockStats(
         type === 'file' && content
             ? typeof content === 'string'
                 ? content.length
-                : (content as ArrayBuffer).byteLength
+                : content.byteLength
             : 0;
 
     return {
@@ -469,7 +469,7 @@ describe('mina fs async', () => {
 
         const result = await minaFsAsync.stat('/stat-file');
         expect(result.isOk()).toBe(true);
-        const stats = result.unwrap() as WechatMinigame.Stats;
+        const stats = result.unwrap();
         expect(stats.isFile()).toBe(true);
         expect(stats.isDirectory()).toBe(false);
     });
@@ -480,7 +480,7 @@ describe('mina fs async', () => {
 
         const result = await minaFsAsync.stat('/stat-dir', { recursive: true });
         expect(result.isOk()).toBe(true);
-        const statsArray = result.unwrap() as WechatMinigame.FileStats[];
+        const statsArray = result.unwrap();
         expect(Array.isArray(statsArray)).toBe(true);
     });
 

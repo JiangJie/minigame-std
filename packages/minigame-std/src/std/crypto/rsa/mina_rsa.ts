@@ -9,6 +9,18 @@ import { decodeUtf8, encodeBase64 } from '../../codec/mod.ts';
 import type { DataSource } from '../../defines.ts';
 import type { RSAPublicKey, SHA } from '../crypto_defines.ts';
 
+// #region Internal Variables
+
+// 用 Record 而不是 switch：SHA 联合类型在编译期保证穷尽，运行时不产生不可达分支。
+const SHA_FACTORIES: Record<SHA, typeof sha1> = {
+    'SHA-1': sha1,
+    'SHA-256': sha256,
+    'SHA-384': sha384,
+    'SHA-512': sha512,
+};
+
+// #endregion
+
 /**
  * 从 PEM 编码的字符串导入用于加密的公钥。
  * @param pem - PEM 编码的字符串。
@@ -52,20 +64,7 @@ export function importPublicKey(pem: string, hash: SHA): AsyncIOResult<RSAPublic
  * 根据算法名称获取 SHA 哈希工厂。
  */
 function getShaFactory(hash: SHA): typeof sha1 {
-    switch (hash) {
-        case 'SHA-1': {
-            return sha1;
-        }
-        case 'SHA-256': {
-            return sha256;
-        }
-        case 'SHA-384': {
-            return sha384;
-        }
-        case 'SHA-512': {
-            return sha512;
-        }
-    }
+    return SHA_FACTORIES[hash];
 }
 
 // #endregion

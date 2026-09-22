@@ -13,7 +13,7 @@ function createMockRequestTask() {
             chunkCallback = callback;
         }),
         // 辅助方法：触发 chunk 事件
-        _triggerChunk: (data: ArrayBuffer) => {
+        triggerChunk: (data: ArrayBuffer) => {
             chunkCallback?.({ data });
         },
     };
@@ -234,7 +234,7 @@ test('mina fetch with onChunk callback', async () => {
 
     // 触发 chunk 事件
     const chunkData = new ArrayBuffer(16);
-    mockTask._triggerChunk(chunkData);
+    mockTask.triggerChunk(chunkData);
 
     expect(onChunk).toHaveBeenCalled();
     const receivedChunk = onChunk.mock.calls[0][0];

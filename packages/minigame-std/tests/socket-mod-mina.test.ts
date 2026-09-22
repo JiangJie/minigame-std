@@ -32,16 +32,16 @@ function createMockSocketTask() {
         close: vi.fn(() => {
             task.readyState = 2; // CLOSING
         }),
-        _triggerOpen: () => {
+        triggerOpen: () => {
             task.readyState = 1; // OPEN
             listeners.onOpen?.();
         },
-        _triggerClose: (code: number, reason: string) => {
+        triggerClose: (code: number, reason: string) => {
             task.readyState = 3; // CLOSED
             listeners.onClose?.({ code, reason });
         },
-        _triggerMessage: (data: string | ArrayBuffer) => listeners.onMessage?.({ data }),
-        _triggerError: (errMsg: string) => listeners.onError?.({ errMsg }),
+        triggerMessage: (data: string | ArrayBuffer) => listeners.onMessage?.({ data }),
+        triggerError: (errMsg: string) => listeners.onError?.({ errMsg }),
     };
 
     return task;
@@ -112,14 +112,14 @@ test('socket events work correctly through mod.ts', () => {
     socket.addEventListener('close', closeListener);
 
     // 触发事件
-    mockSocketTask._triggerOpen();
+    mockSocketTask.triggerOpen();
     expect(openListener).toHaveBeenCalled();
     expect(socket.readyState).toBe(1); // OPEN
 
-    mockSocketTask._triggerMessage('test message');
+    mockSocketTask.triggerMessage('test message');
     expect(messageListener).toHaveBeenCalledWith('test message');
 
-    mockSocketTask._triggerClose(1000, 'Normal closure');
+    mockSocketTask.triggerClose(1000, 'Normal closure');
     expect(closeListener).toHaveBeenCalledWith(1000, 'Normal closure');
     expect(socket.readyState).toBe(3); // CLOSED
 });

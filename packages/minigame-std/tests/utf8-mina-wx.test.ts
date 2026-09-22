@@ -16,7 +16,7 @@ vi.hoisted(() => {
             // 模拟 UTF-8 编码
             const encoder = new TextEncoder();
             const uint8 = encoder.encode(options.data);
-            return uint8.buffer as ArrayBuffer;
+            return uint8.buffer;
         },
         decode: (options: { data: ArrayBuffer; format: string }): string => {
             // 模拟 UTF-8 解码

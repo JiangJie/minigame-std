@@ -33,11 +33,14 @@ import { miniGameFailureToError } from '../internal/helpers.js';
 export function asyncResultify<
     // oxlint-disable-next-line typescript/no-explicit-any -- 函数泛型约束需要 any 以兼容所有函数签名
     F extends (...args: any[]) => unknown,
-    T = ResultifySuccessType<F>,
-    E = ResultifyFailType<F>,
 >(
     api: F,
-): ResultifyValidAPI<F> extends true ? (...args: Parameters<F>) => AsyncResult<T, E> : never {
+): ResultifyValidAPI<F> extends true
+    ? (...args: Parameters<F>) => AsyncResult<ResultifySuccessType<F>, ResultifyFailType<F>>
+    : never {
+    type T = ResultifySuccessType<F>;
+    type E = ResultifyFailType<F>;
+
     return ((...args: Parameters<F>): AsyncResult<T, E> => {
         const future = new Future<Result<T, E>>();
 
@@ -99,11 +102,14 @@ export function asyncResultify<
 export function asyncIOResultify<
     // oxlint-disable-next-line typescript/no-explicit-any -- 函数泛型约束需要 any 以兼容所有函数签名
     F extends (...args: any[]) => unknown,
-    T = ResultifySuccessType<F>,
 >(
     api: F,
-): IOResultifyValidAPI<F> extends true ? (...args: Parameters<F>) => AsyncIOResult<T> : never {
-    const wrapped = asyncResultify<F, T, WechatMinigame.GeneralCallbackResult>(api);
+): IOResultifyValidAPI<F> extends true
+    ? (...args: Parameters<F>) => AsyncIOResult<ResultifySuccessType<F>>
+    : never {
+    type T = ResultifySuccessType<F>;
+
+    const wrapped = asyncResultify(api);
 
     return (async (...args: Parameters<F>): AsyncIOResult<T> => {
         const result = await wrapped(...args);

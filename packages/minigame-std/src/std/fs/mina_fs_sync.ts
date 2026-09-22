@@ -392,7 +392,7 @@ export function readJsonFileSync<T>(filePath: string): IOResult<T> {
  * @param data - 要序列化并写入的数据。
  * @returns 操作结果。
  */
-export function writeJsonFileSync<T>(filePath: string, data: T): VoidIOResult {
+export function writeJsonFileSync(filePath: string, data: unknown): VoidIOResult {
     const result = tryResult(JSON.stringify, data);
 
     return result.andThen(text => writeFileSync(filePath, text));
@@ -423,10 +423,7 @@ export function unzipSync(zipFilePath: string, destDir: string): VoidIOResult {
             const mkdirRes = mkdirSync(destDir + SEPARATOR + path.slice(1));
             if (mkdirRes.isErr()) return mkdirRes.asErr();
         } else {
-            const writeFileRes = writeFileSync(
-                destDir + SEPARATOR + path,
-                unzipped[path] as Uint8Array<ArrayBuffer>,
-            );
+            const writeFileRes = writeFileSync(destDir + SEPARATOR + path, unzipped[path]);
             if (writeFileRes.isErr()) return writeFileRes.asErr();
         }
     }
@@ -523,7 +520,7 @@ export function zipSync(
 
     return tryResult(() => compressSync(zippable)).andThen<Uint8Array<ArrayBuffer> | void>(
         bytesLike => {
-            const bytes = bytesLike as Uint8Array<ArrayBuffer>;
+            const bytes = bytesLike;
             // 有文件路径则写入文件
             return zipFilePath ? writeFileSync(zipFilePath, bytes) : Ok(bytes);
         },
@@ -539,7 +536,7 @@ function trySyncOp<T>(
     op: () => T,
     errToResult: (err: Error) => IOResult<T> = fileErrorToResult,
 ): IOResult<T> {
-    return tryResult<T, Error>(op).orElse(errToResult);
+    return tryResult<T>(op).orElse(errToResult);
 }
 
 /**

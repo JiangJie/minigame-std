@@ -98,16 +98,16 @@ async function testAsync() {
 
     {
         // Download a file to a temporary file
-        const downloadTask = fs.downloadFile(mockSingle);
-        const downloadRes = await downloadTask.result;
-        downloadRes.inspect(
+        const tempDownloadTask = fs.downloadFile(mockSingle);
+        const tempDownloadRes = await tempDownloadTask.result;
+        tempDownloadRes.inspect(
             (x: WechatMinigame.DownloadFileSuccessCallbackResult | { tempFilePath: string }) => {
                 // Maybe /tmp/xxx or /tmp_xxx
                 assert(x.tempFilePath.includes('/tmp'));
             },
         );
-        if (downloadRes.isOk()) {
-            await fs.remove(downloadRes.unwrap().tempFilePath);
+        if (tempDownloadRes.isOk()) {
+            await fs.remove(tempDownloadRes.unwrap().tempFilePath);
         }
     }
 
@@ -171,7 +171,7 @@ async function testAsync() {
     assert(jsonContent.name === 'minigame-std');
     assert(jsonContent.version === '1.0.0');
     assert(jsonContent.features.length === 3);
-    assert(jsonContent.config.debug === true);
+    assert(jsonContent.config.debug);
 
     // Test readFile with utf8 encoding
     await fs.writeFile('/test-utf8.txt', 'UTF-8 测试内容');
@@ -198,15 +198,15 @@ async function testAsync() {
     // Recursive stat should return FileStats array
     const statRecursive = await fs.stat('/stat-test', { recursive: true });
     assert(statRecursive.isOk());
-    const statsArr = statRecursive.unwrap() as WechatMinigame.FileStats[];
+    const statsArr = statRecursive.unwrap();
     assert(Array.isArray(statsArr));
     assert(statsArr.length >= 4); // At least: root dir, file1, sub1 dir, sub1/file2
 
     // Test exists with isFile/isDirectory options
-    assert((await fs.exists('/stat-test/file1.txt', { isFile: true })).unwrap() === true);
-    assert((await fs.exists('/stat-test/file1.txt', { isDirectory: true })).unwrap() === false);
-    assert((await fs.exists('/stat-test/sub1', { isDirectory: true })).unwrap() === true);
-    assert((await fs.exists('/stat-test/sub1', { isFile: true })).unwrap() === false);
+    assert((await fs.exists('/stat-test/file1.txt', { isFile: true })).unwrap());
+    assert(!(await fs.exists('/stat-test/file1.txt', { isDirectory: true })).unwrap());
+    assert((await fs.exists('/stat-test/sub1', { isDirectory: true })).unwrap());
+    assert(!(await fs.exists('/stat-test/sub1', { isFile: true })).unwrap());
 
     // Test error handling - read non-existent file
     const readNonExist = await fs.readFile('/non-existent-file.txt');
@@ -244,8 +244,8 @@ async function testAsync() {
     await fs.mkdir('/move-test/subdir');
     await fs.writeFile('/move-test/subdir/file.txt', 'move test');
     assert((await fs.move('/move-test', '/moved-dir')).isOk());
-    assert((await fs.exists('/move-test')).unwrap() === false);
-    assert((await fs.exists('/moved-dir/subdir/file.txt')).unwrap() === true);
+    assert(!(await fs.exists('/move-test')).unwrap());
+    assert((await fs.exists('/moved-dir/subdir/file.txt')).unwrap());
 
     // Test readDir empty directory
     await fs.emptyDir('/empty-dir-test');
@@ -255,7 +255,7 @@ async function testAsync() {
 
     // Test special characters in filename
     await fs.writeFile('/special-chars_文件名.txt', 'special content');
-    assert((await fs.exists('/special-chars_文件名.txt')).unwrap() === true);
+    assert((await fs.exists('/special-chars_文件名.txt')).unwrap());
     assert((await fs.readTextFile('/special-chars_文件名.txt')).unwrap() === 'special content');
 
     // ==================== 代码包路径测试 ====================
@@ -372,7 +372,7 @@ function testSync() {
     const jsonContent = readJsonRes.unwrap();
     assert(jsonContent.name === 'minigame-std-sync');
     assert(jsonContent.version === '2.0.0');
-    assert(jsonContent.enabled === true);
+    assert(jsonContent.enabled);
     assert(jsonContent.items.length === 3);
 
     // Test readFileSync with utf8 encoding
@@ -399,15 +399,15 @@ function testSync() {
     // Recursive stat
     const statRecursive = fs.statSync('/stat-test-sync', { recursive: true });
     assert(statRecursive.isOk());
-    const statsArr = statRecursive.unwrap() as WechatMinigame.FileStats[];
+    const statsArr = statRecursive.unwrap();
     assert(Array.isArray(statsArr));
     assert(statsArr.length >= 3);
 
     // Test existsSync with isFile/isDirectory options
-    assert(fs.existsSync('/stat-test-sync/file1.txt', { isFile: true }).unwrap() === true);
-    assert(fs.existsSync('/stat-test-sync/file1.txt', { isDirectory: true }).unwrap() === false);
-    assert(fs.existsSync('/stat-test-sync/sub1', { isDirectory: true }).unwrap() === true);
-    assert(fs.existsSync('/stat-test-sync/sub1', { isFile: true }).unwrap() === false);
+    assert(fs.existsSync('/stat-test-sync/file1.txt', { isFile: true }).unwrap());
+    assert(!fs.existsSync('/stat-test-sync/file1.txt', { isDirectory: true }).unwrap());
+    assert(fs.existsSync('/stat-test-sync/sub1', { isDirectory: true }).unwrap());
+    assert(!fs.existsSync('/stat-test-sync/sub1', { isFile: true }).unwrap());
 
     // Test error handling - read non-existent file
     const readNonExist = fs.readFileSync('/non-existent-sync.txt');
@@ -445,8 +445,8 @@ function testSync() {
     fs.mkdirSync('/move-test-sync/sub');
     fs.writeFileSync('/move-test-sync/sub/f.txt', 'mv');
     assert(fs.moveSync('/move-test-sync', '/moved-sync').isOk());
-    assert(fs.existsSync('/move-test-sync').unwrap() === false);
-    assert(fs.existsSync('/moved-sync/sub/f.txt').unwrap() === true);
+    assert(!fs.existsSync('/move-test-sync').unwrap());
+    assert(fs.existsSync('/moved-sync/sub/f.txt').unwrap());
 
     // Test readDirSync empty directory
     fs.emptyDirSync('/empty-dir-sync');
@@ -463,7 +463,7 @@ function testSync() {
 
     // Test special characters in filename (sync)
     fs.writeFileSync('/sync-特殊字符.txt', '同步特殊');
-    assert(fs.existsSync('/sync-特殊字符.txt').unwrap() === true);
+    assert(fs.existsSync('/sync-特殊字符.txt').unwrap());
     assert(fs.readTextFileSync('/sync-特殊字符.txt').unwrap() === '同步特殊');
 
     // ==================== 代码包路径同步测试 ====================

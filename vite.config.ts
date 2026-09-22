@@ -5,7 +5,10 @@ import { defineConfig } from 'vite-plus';
 export default defineConfig({
     lint: {
         plugins: ['typescript', 'oxc', 'eslint', 'import', 'unicorn', 'vitest'],
-        ignorePatterns: ['coverage', 'dist', 'docs'],
+        // game.js is the WeChat harness entry (host-global shims plus a side-effect
+        // require of the bundle), not library source; the host-shim style trips rules
+        // that assume normal module code. Also ignored by the formatter below.
+        ignorePatterns: ['coverage', 'dist', 'docs', 'packages/minigame-test/game.js'],
         options: {
             typeAware: true,
             typeCheck: true,
@@ -61,59 +64,52 @@ export default defineConfig({
             'vitest/no-disabled-tests': 'warn',
             'vitest/no-identical-title': 'error',
 
-            // Off — the rule fights this library's platform-bridge design.
-            // Platform shims wrap foreign APIs and legitimately stringify unknown values.
-            'typescript/no-base-to-string': 'off',
-            // `_env` and the mini-game shims assert on globals that only exist at runtime,
-            // and wx typings are looser than the runtime contract, so these type-shape
-            // rules flag bridging points that must stay in place:
-            // wx API presence probes (`wx.getDeviceInfo ? … : wx.getSystemInfoSync()`) keep
-            // older base libraries working, assertions narrow typings to runtime reality.
+            // Enabled on top of the category defaults (near-zero cost today):
+            // - `consistent-function-scoping` is relaxed for tests only (see overrides);
+            // - empty bodies stay acceptable for arrows and function declarations, not for
+            //   methods or classes;
+            // - `__MINIGAME_STD_MINA__` is a consumer-facing macro name.
+            'unicorn/consistent-function-scoping': 'error',
+            'no-shadow': 'error',
+            'no-empty-function': ['error', { allow: ['arrowFunctions', 'functions'] }],
+            'no-underscore-dangle': ['error', { allow: ['__MINIGAME_STD_MINA__'] }],
+
+            // Off — these rules fight the platform-bridge style this library is built on.
+            // wx typings are looser than the runtime, so API presence probes
+            // (`wx.getDeviceInfo ? … : wx.getSystemInfoSync()`) keep older base libraries
+            // working, and assertions narrow loose typings to runtime reality.
             'typescript/no-unsafe-type-assertion': 'off',
-            'typescript/no-unnecessary-type-assertion': 'off',
             'typescript/no-unnecessary-condition': 'off',
-            'typescript/no-unnecessary-boolean-literal-compare': 'off',
-            'typescript/restrict-template-expressions': 'off',
-            // Phantom generics: explicit type arguments exist for call-site inference.
-            'typescript/no-unnecessary-type-parameters': 'off',
-            'typescript/no-unnecessary-type-arguments': 'off',
-            // Returning `undefined` as "no error" is the established shape in the fs validators.
-            'typescript/consistent-return': 'off',
             // wx API methods are captured unbound and invoked by the platform with its own
             // receiver (`asyncResultify(wx.setStorage)`).
             'typescript/unbound-method': 'off',
-            // Mini-game side assigns `onX` handler properties; that is the platform idiom.
+            // The video/audio wrappers expose DOM-style `onX` properties on purpose, and the
+            // mini-game side has no `addEventListener` at all.
             'unicorn/prefer-add-event-listener': 'off',
-            // `sort`/`toSorted` and local helper placement are readability choices here.
-            'unicorn/no-array-sort': 'off',
-            'unicorn/consistent-function-scoping': 'off',
-            // `_internal` barrels re-export for side-effect-free aggregation.
-            'import/no-unassigned-import': 'off',
-            // `_env` module shape is a bare `declare const` by design.
-            'typescript/no-extraneous-class': 'off',
-            // `_`-prefixed names are the escape hatch for intentionally unused vars.
-            'no-underscore-dangle': 'off',
-            // Local closures shadowing outer names are idiomatic here.
-            'no-shadow': 'off',
         },
         overrides: [
             {
                 files: ['**/*.test.ts'],
                 rules: {
-                    'no-empty-function': ['error', { allow: ['arrowFunctions', 'functions'] }],
-                    // Deliberate test patterns: unawaited promises in race tests, unbound
-                    // method references passed to helpers, `expect` inside conditionals,
-                    // `=== true`/`=== false` assertions on unwrapped Results.
+                    // Deliberate patterns in tests, each verified to be load-bearing: dropping
+                    // any of them re-introduces diagnostics.
+                    // Unawaited promises in race tests, `expect` inside conditionals, and
+                    // tests whose only assertion lives in a helper.
                     'typescript/no-floating-promises': 'off',
-                    'typescript/unbound-method': 'off',
-                    'typescript/no-non-null-assertion': 'off',
                     'vitest/no-conditional-expect': 'off',
                     'vitest/expect-expect': 'off',
-                    'vitest/require-mock-type-parameters': 'off',
+                    // Non-null assertions on unwrapped Results, and throw-assertions without a
+                    // message, are idiomatic here.
+                    'typescript/no-non-null-assertion': 'off',
                     'vitest/require-to-throw-message': 'off',
+                    // Mocks are built with inferred type parameters throughout the suite.
+                    'vitest/require-mock-type-parameters': 'off',
                     // Tests spread platform objects and use `||` on fixture values on purpose.
                     'typescript/no-misused-spread': 'off',
                     'typescript/prefer-nullish-coalescing': 'off',
+                    // Per-`test` mock helpers are idiomatic here: hoisting them to module scope
+                    // would separate each test from the doubles it uses.
+                    'unicorn/consistent-function-scoping': 'off',
                 },
             },
         ],
@@ -126,7 +122,13 @@ export default defineConfig({
         semi: true,
         trailingComma: 'all',
         sortPackageJson: false,
-        ignorePatterns: ['coverage', 'dist', 'docs', 'pnpm-lock.yaml'],
+        ignorePatterns: [
+            'coverage',
+            'dist',
+            'docs',
+            'pnpm-lock.yaml',
+            'packages/minigame-test/game.js',
+        ],
         overrides: [
             {
                 files: ['**/*.json', '**/*.jsonc', '**/*.yaml', '**/*.yml'],

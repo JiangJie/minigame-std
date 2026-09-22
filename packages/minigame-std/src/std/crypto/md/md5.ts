@@ -77,8 +77,6 @@ export class Md5 {
         const blk = (i: number): number =>
             block[i] | (block[i + 1] << 8) | (block[i + 2] << 16) | (block[i + 3] << 24);
 
-        const rol32 = (x: number, n: number): number => (x << n) | (x >>> (32 - n));
-
         const x0 = blk(0);
         const x1 = blk(4);
         const x2 = blk(8);
@@ -251,3 +249,12 @@ export class Md5 {
         return encodeHex(this.digest());
     }
 }
+
+// #region Internal Functions
+
+/** 32 位循环左移。纯函数、与块数据无关，放在模块作用域避免每块重建闭包。 */
+function rol32(x: number, n: number): number {
+    return (x << n) | (x >>> (32 - n));
+}
+
+// #endregion

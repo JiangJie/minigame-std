@@ -367,7 +367,7 @@ describe('fileLog', () => {
         const files = filesResult.unwrap();
         const activeFile = files
             .filter(f => f.endsWith('.log'))
-            .sort()
+            .toSorted()
             .pop();
 
         expect(activeFile).toBeTruthy();
@@ -401,7 +401,7 @@ describe('fileLog', () => {
         expect(files.every(f => f.startsWith(testRootDir))).toBe(true);
 
         // Paths should be sorted
-        const sorted = [...files].sort();
+        const sorted = [...files].toSorted();
         expect(files).toEqual(sorted);
     });
 
@@ -741,7 +741,7 @@ describe('fileLog', () => {
         const files = filesResult.unwrap();
         const activeFile = files
             .filter(f => f.endsWith('.log'))
-            .sort()
+            .toSorted()
             .pop();
 
         if (activeFile) {
@@ -890,7 +890,7 @@ describe('fileLog', () => {
         expect(logFiles.length).toBeLessThanOrEqual(2);
 
         // Second session content should be readable
-        const activeFile = logFiles.sort().pop();
+        const activeFile = logFiles.toSorted().pop();
         if (activeFile) {
             const contentResult = await readTextFile(activeFile);
             expect(contentResult.unwrap()).toContain('second session');
@@ -933,7 +933,7 @@ describe('fileLog', () => {
         const files = filesResult.unwrap();
         const activeFile = files
             .filter(f => f.endsWith('.log'))
-            .sort()
+            .toSorted()
             .pop();
 
         if (activeFile) {
@@ -984,7 +984,7 @@ describe('fileLog', () => {
         const files = filesResult.unwrap();
         const activeFile = files
             .filter(f => f.endsWith('.log'))
-            .sort()
+            .toSorted()
             .pop();
 
         if (activeFile) {

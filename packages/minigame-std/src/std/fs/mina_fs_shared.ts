@@ -352,12 +352,15 @@ export function normalizeStats(
     recursive: boolean,
 ): WechatMinigame.Stats | WechatMinigame.FileStats[] {
     if (Array.isArray(statsOrFileStats)) {
-        return statsOrFileStats
-            .map(({ path, stats }) => ({
-                path: path.replace(/^\/+/, ''), // 返回相对路径, 去掉开头的 `/`(安卓子项目 path 不以 `/` 开头)
-                stats,
-            }))
-            .sort((a, b) => a.path.localeCompare(b.path)); // 按 path 排序
+        return (
+            statsOrFileStats
+                .map(({ path, stats }) => ({
+                    path: path.replace(/^\/+/, ''), // 返回相对路径, 去掉开头的 `/`(安卓子项目 path 不以 `/` 开头)
+                    stats,
+                }))
+                // oxlint-disable-next-line unicorn/no-array-sort -- toSorted 需要 ES2023，小游戏基础库与旧 WebView 不保证可用
+                .sort((a, b) => a.path.localeCompare(b.path))
+        ); // 按 path 排序
     }
 
     // 只要是 recursive 就返回数组(即使是文件或者空目录))
@@ -432,6 +435,8 @@ function validatePathType(path: unknown): IOResult<never> | undefined {
     if (typeof path !== 'string') {
         return Err(new TypeError(`Path must be a string but received ${typeof path}`));
     }
+
+    return undefined;
 }
 
 /**

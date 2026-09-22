@@ -404,7 +404,6 @@ export function readTextFile(filePath: string): AsyncIOResult<string> {
 
 /**
  * 将数据序列化为 JSON 并写入文件。
- * @typeParam T - 要写入数据的类型。
  * @param filePath - 文件路径。
  * @param data - 要写入的数据。
  * @returns 写入操作的异步结果。
@@ -417,7 +416,7 @@ export function readTextFile(filePath: string): AsyncIOResult<string> {
  * }
  * ```
  */
-export function writeJsonFile<T>(filePath: string, data: T): AsyncVoidIOResult {
+export function writeJsonFile(filePath: string, data: unknown): AsyncVoidIOResult {
     return (IS_MINA ? minaWriteJsonFile : webWriteJsonFile)(filePath, data);
 }
 

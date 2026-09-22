@@ -99,7 +99,7 @@ export async function testResultify(): Promise<void> {
     // 测试 syncIOResultify - 失败场景
     console.log('测试 syncIOResultify 失败场景...');
     const mockSyncFailApi = (_key: string): string => {
-        throw { errMsg: 'sync error message' } as WechatMinigame.GeneralCallbackResult;
+        throw { errMsg: 'sync error message' };
     };
 
     const wrappedSyncFail = syncIOResultify(mockSyncFailApi);

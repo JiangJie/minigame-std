@@ -13,7 +13,7 @@ const SUBPATHS = ENTRY_NAMES.filter(n => n !== 'main');
 // Only this script's own status lines are colored. Child process output
 // (publint/attw) is piped and stays plain — attw output is string-matched
 // below, so coloring it would break the classification logic.
-const useColor = process.stdout.isTTY === true && process.env['NO_COLOR'] === undefined;
+const useColor = process.stdout.isTTY && process.env['NO_COLOR'] === undefined;
 
 function colorize(code: number, s: string): string {
     return useColor ? `\u001b[${code}m${s}\u001b[0m` : s;
@@ -59,7 +59,7 @@ function depVersion(pkgPath: string, name: string): string {
         const version = pkg[section]?.[name];
         if (typeof version === 'string') return version;
     }
-    fail(`Cannot resolve "${name}" version from ${pkgPath}`);
+    return fail(`Cannot resolve "${name}" version from ${pkgPath}`);
 }
 
 const typescriptVersion = depVersion(join(ROOT_DIR, 'package.json'), 'typescript');
