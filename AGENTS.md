@@ -14,6 +14,7 @@ This is a **monorepo** containing:
 ### Key Concept: Platform Abstraction
 
 The core architecture uses a compile-time macro `__MINIGAME_STD_MINA__` to determine which platform code to include:
+
 - When `true`: bundles mini-game (Mina) platform code, excludes web code
 - When `false`: bundles web platform code, excludes mini-game code
 
@@ -22,6 +23,7 @@ This is defined in `packages/minigame-std/src/macros/env.ts` and used throughout
 ## Development Commands
 
 ### Package Manager
+
 This project uses **pnpm** as the package manager.
 
 ### Root-Level Commands (run from project root)
@@ -30,20 +32,17 @@ This project uses **pnpm** as the package manager.
 # Install dependencies
 pnpm install
 
-# Type checking for all packages (must pass before commits)
+# Format check + lint + type-aware type check for all packages (must pass before commits)
 pnpm run check
 
-# Linting (must pass before commits)
+# Linting only (oxlint, via Vite+)
 pnpm run lint
+
+# Formatting (oxfmt, via Vite+)
+pnpm run fmt
 
 # Run all tests (uses Vitest + Playwright in browser)
 pnpm test
-
-# Run tests in watch mode
-pnpm run test:watch
-
-# Run tests with UI
-pnpm run test:ui
 
 # Build all packages
 pnpm run build
@@ -76,7 +75,7 @@ pnpm --filter minigame-std verify:package   # release gate: build + tarball cons
 
 ### Testing Notes
 
-- Tests run in **Vitest** with two projects (configured via `test.projects` in `packages/minigame-std/vite.config.ts`):
+- Tests run in **Vitest** (bundled with Vite+, imported as `vite-plus/test`) with two projects (configured via `test.projects` in `packages/minigame-std/vite.config.ts`):
   - `browser`: **Playwright** provider (Chromium), runs all tests except `tests/event-non-dom.test.ts`
   - `node`: Node environment, runs only `tests/event-non-dom.test.ts` (non-DOM code paths that cannot be stubbed in a real browser); run it alone via `pnpm --filter minigame-std test:node`
 - First-time setup requires: `pnpm run playwright:install`
@@ -92,17 +91,14 @@ pnpm --filter minigame-std verify:package   # release gate: build + tarball cons
 ### Running Individual Tests
 
 ```bash
-# Run a specific test file (vitest config lives in the package, so run from there)
-pnpm --filter minigame-std exec vitest run tests/base64.test.ts
+# Run a specific test file (the vitest config lives in the package, so run from there)
+pnpm --filter minigame-std exec vp test run tests/base64.test.ts
 
 # Run tests matching a pattern
-pnpm --filter minigame-std exec vitest run --testNamePattern "base64"
-
-# Run tests in watch mode for a specific file
-pnpm --filter minigame-std exec vitest watch tests/crypto.test.ts
+pnpm --filter minigame-std exec vp test run -t "base64"
 
 # Skip the slowest suite (socket performs real WebSocket handshakes, ~30s)
-pnpm --filter minigame-std exec vitest run --exclude 'tests/socket.test.ts'
+pnpm --filter minigame-std exec vp test run --exclude 'tests/socket.test.ts'
 ```
 
 ## Code Architecture
@@ -143,12 +139,10 @@ packages/
 │   │       ├── utils/          # Common utilities
 │   │       └── video/          # Video playback
 │   ├── build_entries.ts        # Public entry list (single source of truth for subpath exports)
-│   ├── build.ts                # Multi-entry bundle script (one vite.build call per entry)
-│   ├── rollup.config.ts        # Declaration generation (one .d.ts per entry)
 │   ├── verify_package.ts       # Release gate: verifies the packed tarball in a temp consumer
-│   ├── vite.config.ts          # Test-only configuration (build config lives in build.ts)
+│   ├── vite.config.ts          # Test projects + pack (tsdown) configuration
 │   ├── tests/                  # Web platform tests (Vitest + Playwright)
-│   └── dist/                   # Build output: <name>.mjs/.cjs per entry + _internal chunk + types/<name>.d.ts
+│   └── dist/                   # Build output: <name>.mjs/.cjs + <name>.d.mts/.d.cts per entry, plus the _internal chunk
 └── minigame-test/              # Mini-game platform tests
     └── src/                    # Test code for WeChat DevTools
 ```
@@ -167,6 +161,7 @@ Each module follows a consistent pattern with three files:
 3. **`web_*.ts`** - Browser platform implementation using standard Web APIs
 
 **Example from `packages/minigame-std/src/std/codec/mod.ts`:**
+
 ```typescript
 // Most codec functions are re-exported directly from happy-codec
 export { decodeBase64, decodeByteString, decodeHex, encodeBase64, encodeByteString, encodeHex,
@@ -184,10 +179,12 @@ export function encodeUtf8(data: string): Uint8Array<ArrayBuffer> {
 When wrapping WeChat mini-game APIs that use callback-based patterns, use `asyncResultify`:
 
 **Requirements for `asyncResultify`:**
+
 - API must accept optional `success` and `fail` callbacks
 - API must return `void` or `Promise` (NOT Task objects like `RequestTask`, `DownloadTask`, `UploadTask`)
 
 **Example:**
+
 ```typescript
 // ✅ Good - wx.setStorage returns void
 export async function setItem(key: string, data: string): AsyncVoidIOResult {
@@ -206,6 +203,7 @@ export async function setItem(key: string, data: string): AsyncVoidIOResult {
 **APIs that return Task objects** (like `wx.request`, `wx.downloadFile`, `wx.uploadFile`) must use manual callback handling with `Future` because they need to support abort functionality and progress callbacks.
 
 **FetchTask Pattern for Task-returning APIs:**
+
 ```typescript
 // For APIs like wx.request that return Task objects with abort capability
 export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> {
@@ -228,30 +226,30 @@ export function minaFetch<T>(url: string, init?: MinaFetchInit): FetchTask<T> {
 
 ### Build System
 
-- **Bundler**: Vite (rolldown-vite) for bundling, Rollup + `rollup-plugin-dts` for TypeScript declarations
+- **Toolchain**: [Vite+](https://viteplus.dev) (`vite-plus`) is the single build/test/lint dependency; it bundles Vite 8 (Rolldown), Vitest, tsdown (`vp pack`), oxlint and oxfmt. There is no standalone `vite`/`vitest`/`rollup`/`eslint` dependency — `pnpm-workspace.yaml` aliases the `vite` peer to `@voidzero-dev/vite-plus-core`.
+- **`typescript` stays on 6.x** — TypeDoc consumes the TypeScript JS API, which TypeScript 7 removed (7.x ships CLI/LSP only). Type checking already runs on tsgo (the TypeScript 7 compiler) inside `vp check`, so upgrading the package adds no value.
 - **Configuration**:
+  - `vite.config.ts` (workspace root) - `lint` (oxlint + tsgolint) and `fmt` (oxfmt) blocks. Vite+ does not support nested lint/fmt config, so both live at the root.
   - `packages/minigame-std/build_entries.ts` - Single source of truth for public entries (`PUBLIC_ENTRIES`)
-  - `packages/minigame-std/build.ts` - Multi-entry bundling (one `vite.build` call per entry)
-  - `packages/minigame-std/rollup.config.ts` - Declaration generation (one `.d.ts` per entry)
-  - `packages/minigame-std/vite.config.ts` - **Test-only** configuration (build config lives in `build.ts`)
-- **Multi-entry layout**: Each public entry in `build_entries.ts` is bundled independently to `dist/<name>.mjs` + `dist/<name>.cjs`, with declarations at `dist/types/<name>.d.ts`. Cross-entry imports are externalized and rewritten via `output.paths` (e.g. `fs.mjs` imports `./path.mjs`), so no code is duplicated between entries.
+  - `packages/minigame-std/vite.config.ts` - `test` (Vitest projects) and `pack` (tsdown config array, one config per entry) blocks
+- **Multi-entry layout**: `vp pack` builds each public entry independently to `dist/<name>.mjs` + `dist/<name>.cjs` with paired declarations `dist/<name>.d.mts` / `dist/<name>.d.cts`. Cross-entry imports stay external (`deps.neverBundle` on resolved ids) and are rewritten to sibling files (`outputOptions.paths`, e.g. `fs.mjs` imports `./path.mjs`), so no code is duplicated between entries.
 - **Shared internal chunk**: `src/std/internal/` helpers are bundled once as `dist/_internal.mjs/.cjs`; all entries reference it via relative import. It is NOT declared in `package.json` exports (relative paths bypass exports resolution).
 - **`_env` must stay inlined**: `src/macros/env.ts` (the `IS_MINA` macro) is deliberately NOT externalized — externalizing it prevents rolldown from constant-folding `IS_MINA` inside each entry, which breaks DCE and retains the entire happy-rusty module as dead code.
-- **CJS export-star fixup**: `build.ts` ships a `renderChunk` plugin rewriting CJS `require("./std/xxx/mod.ts")` source paths to entry paths (workaround for rolldown#10402 — ESM honors `output.paths`, CJS does not).
-- **Tree-shaking**: `treeshake.moduleSideEffects: false` and `treeshake.propertyReadSideEffects: false` in `build.ts` for aggressive dead-code elimination
-- **Top-level declarations**: Bundles use `topLevelVar: false` in both CJS and ESM to preserve `const` declarations — this is what makes `/*#__PURE__*/` annotations on module-level calls effective for downstream bundlers
+- **Tree-shaking**: `treeshake.moduleSideEffects: false` and `treeshake.propertyReadSideEffects: false` in the shared pack config for aggressive dead-code elimination
+- **Top-level declarations**: Bundles use `outputOptions.topLevelVar: false` in both CJS and ESM to preserve `const` declarations — this is what makes `/*#__PURE__*/` annotations on module-level calls effective for downstream bundlers
 - **Side effects**: `"sideEffects": false` in package.json for optimal tree-shaking
 
 ### Build Process
 
 `pnpm --filter minigame-std build` runs these steps in order:
-1. Type checking and linting (`prebuild`: `pnpm run check && pnpm run lint`)
-2. Multi-entry Vite bundling (`node build.ts`)
-3. Rollup-based TypeScript declaration generation (`rollup --config rollup.config.ts`)
+
+1. Format check, linting and type-aware type check (`prebuild`: `pnpm run check`, i.e. `vp check`)
+2. Multi-entry bundling and declaration generation (`vp pack`, driven by the `pack` block in `packages/minigame-std/vite.config.ts`)
 
 `pnpm --filter minigame-std verify:package` is the release gate (also wired to `prepublishOnly`): it rebuilds, packs a tarball, installs it into a temp consumer fixture, and validates every subpath export across TS/ESM/CJS resolution matrices plus publint/attw checks. Fixture dependency versions are read from workspace `package.json` files at runtime (never hardcoded).
 
 The published bundles keep `__MINIGAME_STD_MINA__` as an **unresolved global** — downstream builds must define it as a **boolean literal** so `IS_MINA` constant-folds and the other platform's code is eliminated:
+
 - Set to `true` for mini-game builds (removes web platform code)
 - Set to `false` for web builds (removes mini-game platform code)
 
@@ -266,6 +264,7 @@ The published bundles keep `__MINIGAME_STD_MINA__` as an **unresolved global** �
 ### Type Compatibility Notes
 
 When updating `minigame-api-typings`, be aware that WeChat API types may change:
+
 - Check for deprecated types (e.g., `WechatMinigame.Error` → `WechatMinigame.ListenerError`)
 - Update affected files (usually in `packages/minigame-std/src/std/event/` and callback handlers)
 - Run `pnpm run check` to catch type errors early
@@ -273,15 +272,18 @@ When updating `minigame-api-typings`, be aware that WeChat API types may change:
 ## Code Conventions
 
 ### Import Paths
+
 - Always use `.ts` file extensions in imports
-- Use the `minigame-std` alias in tests (configured in `packages/minigame-std/vitest.config.ts`)
+- Use the `minigame-std` alias in tests (configured in `packages/minigame-std/vite.config.ts`)
 
 ### Type Safety
+
 - Return types must explicitly specify `Uint8Array<ArrayBuffer>` instead of generic `Uint8Array`
 - Use type assertions when necessary for platform compatibility
 - All code must pass strict TypeScript checks
 
 ### Error Handling
+
 - Use `happy-rusty` for Result types (Ok/Err pattern)
 - Async operations return `AsyncIOResult<T>` or `IOResult<T>`
 
@@ -301,9 +303,23 @@ The project provides several utilities for wrapping platform-specific APIs:
   - Converts WeChat mini-game error objects to standard Error objects or Results
 
 ### Exports
+
 - Module exports use namespace pattern for some modules: `export * as fs from './std/fs/mod.ts'`
 - This avoids naming conflicts (e.g., `cryptos` instead of `crypto` to avoid global conflict)
 - Every public module is also importable as a subpath (e.g. `minigame-std/fs`, `minigame-std/codec`). Adding a new public module requires syncing THREE places: `build_entries.ts` (`PUBLIC_ENTRIES`), `package.json` (`exports`), and `jsr.json` (`exports`).
+
+### Module Code Order
+
+Group module-level code in this order, separated with `// #region` / `// #endregion` markers:
+
+1. Internal Variables
+2. exported code
+3. Internal Types
+4. Internal Functions
+
+Class members follow the same spirit: public members first, private members after.
+
+Place a declaration by what it is, not by where it is used first — a helper function belongs to `Internal Functions` even when it is a one-line arrow — and never insert anything between a JSDoc block and the declaration it documents.
 
 ### Tree-shaking: PURE Annotations
 
@@ -317,11 +333,12 @@ Module-level function/constructor calls **must** be prefixed with `/*#__PURE__*/
   export const EMPTY_BYTES: Uint8Array<ArrayBuffer> = /*#__PURE__*/ new Uint8Array(0);
   export const ASYNC_RESULT_VOID = /*#__PURE__*/ Promise.resolve(RESULT_VOID);
   ```
-- Combined with `topLevelVar: false` in `vite.config.ts`, this enables per-symbol DCE for downstream consumers.
+- Combined with `topLevelVar: false` in the `pack` block of `packages/minigame-std/vite.config.ts`, this enables per-symbol DCE for downstream consumers.
 
 ## Dependencies
 
 ### Runtime Dependencies (minigame-std)
+
 - `@happy-ts/fetch-t` - Enhanced fetch implementation
 - `happy-rusty` - Rust-like Result types for error handling
 - `happy-codec` - Encoding/decoding utilities (Base64, Hex, ByteString, UTF-8)
@@ -332,15 +349,16 @@ Module-level function/constructor calls **must** be prefixed with `/*#__PURE__*/
 - `minigame-api-typings` - WeChat mini-game TypeScript definitions
 
 ### Build Tools (root)
-- `vite` for development and initial bundling
-- `rollup` + `rollup-plugin-dts` for final bundling and TypeScript declarations
-- `typescript` + `typescript-eslint` for type checking and linting
+
+- `vite-plus` - single toolchain dependency (Vite 8 + Rolldown, Vitest, tsdown, oxlint, oxfmt)
+- `typescript` - type checking; kept on 6.x because TypeDoc needs the TypeScript JS API
 - `typedoc` for API documentation generation
-- `vitest` + `playwright` for testing
+- `playwright` + `@vitest/browser-playwright` for browser testing
 
 ## Git Commit Conventions
 
-This project follows **Conventional Commits** specification. Common commit types:
+This project follows **Conventional Commits** specification, and commit messages are written in **English**. Common commit types:
+
 - `feat`: New features
 - `fix`: Bug fixes
 - `refactor`: Code refactoring
@@ -361,6 +379,7 @@ The project is dual-published to **npm** and **JSR**. Releases are coordinated b
 5. Push (manual confirmation required)
 
 Version bump policy (Semver, based on accumulated commits since last tag):
+
 - `feat!` / `BREAKING CHANGE` → major
 - `feat` → minor
 - `fix` / `perf` / others → patch
@@ -370,19 +389,24 @@ Style-only changes (e.g. `/*@__PURE__*/` ↔ `/*#__PURE__*/`) do not by themselv
 ## Common Pitfalls
 
 ### Type Assertions
+
 - Use explicit `Uint8Array<ArrayBuffer>` type annotations, not generic `Uint8Array`
 - WeChat API types may change between versions of `minigame-api-typings`
 
 ### Import Extensions
+
 - Always include `.ts` extensions in import statements
 - TypeScript doesn't auto-resolve extensions in this project
 
 ### Platform Detection
+
 - Use `IS_MINA` constant from `packages/minigame-std/src/macros/env.ts` for platform checks
 - Never use direct checks like `typeof wx !== 'undefined'` in library code
 
 ### pnpm 11 Reserved Subcommands
+
 pnpm 11 introduced built-in subcommands (e.g. `docs`) that shadow workspace scripts. When writing root scripts that delegate to workspace packages, **always include the `run` keyword** to disambiguate:
+
 ```jsonc
 // ❌ Bad — `docs` is parsed as pnpm's built-in command, --filter becomes an unknown option
 "docs": "pnpm --filter minigame-std docs"
@@ -398,14 +422,12 @@ pnpm 11 introduced built-in subcommands (e.g. `docs`) that shadow workspace scri
 - `packages/minigame-std/package.json` - Library package config (npm)
 - `packages/minigame-std/jsr.json` - Library package config (JSR); version must match `package.json`
 - `packages/minigame-std/build_entries.ts` - Public entry list (single source of truth for subpath exports)
-- `packages/minigame-std/build.ts` - Multi-entry bundle script
-- `packages/minigame-std/rollup.config.ts` - Declaration generation (one `.d.ts` per entry)
+- `packages/minigame-std/vite.config.ts` - Test projects (browser + node, coverage) and the `pack` (tsdown) build config
 - `packages/minigame-std/verify_package.ts` - Release gate: tarball consumer verification (run via `verify:package`)
-- `packages/minigame-std/vite.config.ts` - Test-only configuration (browser + node projects, coverage)
 - `packages/minigame-std/tsconfig.json` - TypeScript compiler options
-- `pnpm-workspace.yaml` - Declares `packages/*` as the workspace
+- `pnpm-workspace.yaml` - Declares `packages/*` as the workspace, pins the Vite+ catalog, and aliases `vite` to `@voidzero-dev/vite-plus-core`
 - `.npmrc` - pnpm install behavior tweaks
-- `eslint.config.mjs` - ESLint rules (root level)
+- `vite.config.ts` - Workspace lint (oxlint) and format (oxfmt) configuration
 - `CHANGELOG.md` - Release history (Keep a Changelog format, generated by `/changelog` skill)
 
 ## Documentation
