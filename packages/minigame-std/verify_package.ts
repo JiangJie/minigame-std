@@ -156,19 +156,21 @@ try {
     const sharedChunks = distFiles.filter(f => f.startsWith('mod-'));
     if (sharedChunks.length) fail(`Found shared declaration chunks: ${sharedChunks.join(', ')}`);
 
-    const expectedDtsCount = ENTRY_NAMES.length;
-    const dtsMts = distFiles.filter(f => f.endsWith('.d.mts'));
-    const dtsCts = distFiles.filter(f => f.endsWith('.d.cts'));
-    if (dtsMts.length !== expectedDtsCount)
-        fail(`Expected ${expectedDtsCount} .d.mts files, got ${dtsMts.length}`);
-    if (dtsCts.length !== expectedDtsCount)
-        fail(`Expected ${expectedDtsCount} .d.cts files, got ${dtsCts.length}`);
+    // Check declarations per entry instead of listing dist/, so nested subpaths
+    // (e.g. `cryptos/rsa` -> dist/cryptos/rsa.d.mts) stay covered.
+    const missingDeclarations = ENTRY_NAMES.flatMap(name =>
+        ['d.mts', 'd.cts']
+            .filter(ext => !existsSync(join(distDir, `${name}.${ext}`)))
+            .map(ext => `${name}.${ext}`),
+    );
+    if (missingDeclarations.length)
+        fail(`Missing declaration files: ${missingDeclarations.join(', ')}`);
     if (distFiles.some(f => f.startsWith('_internal.') && f.includes('.d.')))
         fail('_internal must not ship declaration files');
 
     console.log(
         dim(
-            `  ${exportKeys.length} exports, ${dtsMts.length} .d.mts + ${dtsCts.length} .d.cts, _internal present, _env inlined, no src, no shared chunks`,
+            `  ${exportKeys.length} exports, ${ENTRY_NAMES.length} entry declaration pairs, _internal present, _env inlined, no src, no shared chunks`,
         ),
     );
 
@@ -295,7 +297,7 @@ void fs.opfs;
     console.log(green(bold('\n✓ All package compatibility checks passed')));
     console.log(dim(`  ${exportKeys.length} exports verified`));
     console.log(dim(`  ${ENTRY_NAMES.length} ESM + CJS entries loaded`));
-    console.log(dim(`  ${dtsMts.length} .d.mts + ${dtsCts.length} .d.cts files verified`));
+    console.log(dim(`  ${ENTRY_NAMES.length} entries with paired .d.mts/.d.cts verified`));
     console.log(dim('  publint + attw completed'));
     console.log(dim('  TypeScript bundler type check passed'));
 } finally {

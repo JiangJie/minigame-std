@@ -10,6 +10,7 @@ export const PUBLIC_ENTRIES: readonly EntryConfig[] = [
     { name: 'clipboard', file: 'src/std/clipboard/mod.ts' },
     { name: 'codec', file: 'src/std/codec/mod.ts' },
     { name: 'cryptos', file: 'src/std/crypto/mod.ts' },
+    { name: 'cryptos/rsa', file: 'src/std/crypto/rsa/mod.ts' },
     { name: 'event', file: 'src/std/event/mod.ts' },
     { name: 'fetch', file: 'src/std/fetch/mod.ts' },
     { name: 'fs', file: 'src/std/fs/mod.ts' },

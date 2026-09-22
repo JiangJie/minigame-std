@@ -324,9 +324,10 @@ import { fs, encodeBase64 } from 'minigame-std';
 // Equivalent subpath imports
 import * as fs from 'minigame-std/fs';
 import { encodeBase64 } from 'minigame-std/codec';
+import { importPublicKey } from 'minigame-std/cryptos/rsa'; // same as cryptos.rsa.importPublicKey
 ```
 
-Available subpaths: `audio`, `clipboard`, `codec`, `cryptos`, `event`, `fetch`, `fs`, `image`, `lbs`, `logger`, `network`, `path`, `performance`, `platform`, `socket`, `storage`, `utils`, `video`. For JSR, use `@happy-js/minigame-std/<subpath>`, e.g. `@happy-js/minigame-std/fs`.
+Available subpaths: `audio`, `clipboard`, `codec`, `cryptos`, `cryptos/rsa`, `event`, `fetch`, `fs`, `image`, `lbs`, `logger`, `network`, `path`, `performance`, `platform`, `socket`, `storage`, `utils`, `video`. For JSR, use `@happy-js/minigame-std/<subpath>`, e.g. `@happy-js/minigame-std/fs`.
 
 Subpath imports rely on `__MINIGAME_STD_MINA__` for platform code pruning as well. For build tools with weaker tree-shaking support, subpath imports offer more explicit control over which modules end up in the bundle.
 

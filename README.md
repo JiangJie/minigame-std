@@ -328,9 +328,10 @@ import { fs, encodeBase64 } from 'minigame-std';
 // 等价的子路径导入
 import * as fs from 'minigame-std/fs';
 import { encodeBase64 } from 'minigame-std/codec';
+import { importPublicKey } from 'minigame-std/cryptos/rsa'; // 等价于 cryptos.rsa.importPublicKey
 ```
 
-可用子路径：`audio`、`clipboard`、`codec`、`cryptos`、`event`、`fetch`、`fs`、`image`、`lbs`、`logger`、`network`、`path`、`performance`、`platform`、`socket`、`storage`、`utils`、`video`。JSR 用户对应 `@happy-js/minigame-std/<subpath>`，如 `@happy-js/minigame-std/fs`。
+可用子路径：`audio`、`clipboard`、`codec`、`cryptos`、`cryptos/rsa`、`event`、`fetch`、`fs`、`image`、`lbs`、`logger`、`network`、`path`、`performance`、`platform`、`socket`、`storage`、`utils`、`video`。JSR 用户对应 `@happy-js/minigame-std/<subpath>`，如 `@happy-js/minigame-std/fs`。
 
 子路径导入同样依赖 `__MINIGAME_STD_MINA__` 裁剪平台代码；对于 tree-shaking 支持较弱的构建工具，子路径导入可以更明确地控制打入包内的模块。
 

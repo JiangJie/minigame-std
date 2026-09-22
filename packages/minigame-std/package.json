@@ -64,6 +64,17 @@
       },
       "default": "./dist/cryptos.mjs"
     },
+    "./cryptos/rsa": {
+      "import": {
+        "types": "./dist/cryptos/rsa.d.mts",
+        "default": "./dist/cryptos/rsa.mjs"
+      },
+      "require": {
+        "types": "./dist/cryptos/rsa.d.cts",
+        "default": "./dist/cryptos/rsa.cjs"
+      },
+      "default": "./dist/cryptos/rsa.mjs"
+    },
     "./event": {
       "import": {
         "types": "./dist/event.d.mts",

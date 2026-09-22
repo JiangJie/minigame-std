@@ -9,6 +9,7 @@
     "./clipboard": "./src/std/clipboard/mod.ts",
     "./codec": "./src/std/codec/mod.ts",
     "./cryptos": "./src/std/crypto/mod.ts",
+    "./cryptos/rsa": "./src/std/crypto/rsa/mod.ts",
     "./event": "./src/std/event/mod.ts",
     "./fetch": "./src/std/fetch/mod.ts",
     "./fs": "./src/std/fs/mod.ts",
