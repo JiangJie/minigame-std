@@ -35,6 +35,9 @@ pnpm install
 # Format check + lint + type-aware type check for all packages (must pass before commits)
 pnpm run check
 
+# Type checking only, per package with the local tsc (editor-consistent reference)
+pnpm run typecheck
+
 # Linting only (oxlint, via Vite+)
 pnpm run lint
 
