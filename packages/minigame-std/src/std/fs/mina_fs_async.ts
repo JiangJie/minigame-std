@@ -448,7 +448,7 @@ export async function readJsonFile<T>(filePath: string): AsyncIOResult<T> {
     const readFileRes = await readTextFile(filePath);
 
     return readFileRes.andThen(contents => {
-        return tryResult(JSON.parse, contents);
+        return tryResult(() => JSON.parse(contents));
     });
 }
 
@@ -916,8 +916,7 @@ function zipTo(zippable: AsyncZippable, zipFilePath?: string): AsyncZipIOResult 
         // 有文件路径则写入文件
         return zipFilePath
             ? writeFile(zipFilePath, bytes)
-            : // oxlint-disable-next-line typescript/no-unnecessary-type-assertion
-              (Promise.resolve(Ok(bytes)) as AsyncZipIOResult);
+            : (Promise.resolve(Ok(bytes)) as AsyncZipIOResult);
     });
 }
 

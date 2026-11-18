@@ -382,7 +382,7 @@ export function readJsonFileSync<T>(filePath: string): IOResult<T> {
     const readFileRes = readTextFileSync(filePath);
 
     return readFileRes.andThen(contents => {
-        return tryResult(JSON.parse, contents);
+        return tryResult(() => JSON.parse(contents));
     });
 }
 

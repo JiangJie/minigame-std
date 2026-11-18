@@ -1,11 +1,11 @@
 packages:
   - 'packages/*'
 catalog:
-  vite: npm:@voidzero-dev/vite-plus-core@0.3.3
-  vitest: 4.1.11
-  vite-plus: 0.3.3
-  '@vitest/browser-playwright': 4.1.11
-  '@vitest/coverage-v8': 4.1.11
+  vite: npm:@voidzero-dev/vite-plus-core@8.3.8000
+  vitest: 5.1.0
+  vite-plus: 1.7.0
+  '@vitest/browser-playwright': 5.1.0
+  '@vitest/coverage-v8': 5.1.0
 overrides:
   vite@*: 'catalog:'
   vitest@*: 'catalog:'
