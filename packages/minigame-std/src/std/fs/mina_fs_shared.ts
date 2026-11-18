@@ -346,16 +346,23 @@ export function accessExistsSync(path: string): IOResult<boolean> {
  * - `recursive=false`: 返回单个 `Stats` 或 `FileStats[]`
  * - `recursive=true`: 始终返回 `FileStats[]`，即使是单个文件或空目录
  *   - 如果是单个 `Stats`，包装成数组，path 设为 '' 表示当前项目
+ *
+ * 数组中的 `FileStats.path` 统一归一化为相对 `basePath` 的路径，兼容返回完整绝对路径的平台。
+ *
+ * @param statsOrFileStats - 平台 `stat` 返回的原始结果。
+ * @param recursive - 是否递归读取目录。
+ * @param basePath - 传给平台 `stat` 的、已归一化的路径，作为相对化基准。
  */
 export function normalizeStats(
     statsOrFileStats: WechatMinigame.Stats | WechatMinigame.FileStats[],
     recursive: boolean,
+    basePath: string,
 ): WechatMinigame.Stats | WechatMinigame.FileStats[] {
     if (Array.isArray(statsOrFileStats)) {
         return (
             statsOrFileStats
                 .map(({ path, stats }) => ({
-                    path: path.replace(/^\/+/, ''), // 返回相对路径, 去掉开头的 `/`(安卓子项目 path 不以 `/` 开头)
+                    path: toRelativeStatPath(path, basePath),
                     stats,
                 }))
                 // oxlint-disable-next-line unicorn/no-array-sort -- toSorted 需要 ES2023，小游戏基础库与旧 WebView 不保证可用
@@ -390,6 +397,26 @@ interface GetWriteFileContents {
 // #endregion
 
 // #region Internal Functions
+
+/**
+ * 将平台返回的 `FileStats.path` 归一化为相对 `basePath` 的路径。
+ *
+ * 部分平台返回以协议头开头的完整绝对路径，其余平台返回相对路径（可能带前导 `/`，安卓子项目不带）。
+ * 统一剥离协议头与基准目录前缀后输出不带前导 `/` 的相对条目路径，与 Web 侧 `stat` 契约一致；
+ * 目录自身归一化为 `''`。
+ */
+function toRelativeStatPath(path: string, basePath: string): string {
+    const root = rootPath.force();
+
+    // 先剥离协议头，否则 `://` 会干扰前缀比较
+    const entry = path.startsWith(root) ? path.slice(root.length) : path;
+    const base = basePath.startsWith(root) ? basePath.slice(root.length) : basePath;
+
+    // 绝对路径去掉基准目录前缀；相对路径（可能带前导 `/`）原样交给下面的去斜杠
+    const relative = entry.startsWith(base) ? entry.slice(base.length) : entry;
+
+    return relative.replace(/^\/+/, '');
+}
 
 /**
  * 标准化同步或异步的文件错误对象。

@@ -253,7 +253,7 @@ export async function stat(
         recursive,
     });
 
-    return statRes.map(x => normalizeStats(x.stats, recursive)).orElse(fileErrorToResult);
+    return statRes.map(x => normalizeStats(x.stats, recursive, path)).orElse(fileErrorToResult);
 }
 
 /**

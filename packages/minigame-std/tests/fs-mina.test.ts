@@ -221,12 +221,14 @@ function createMockFileSystemManager(): WechatMinigame.FileSystemManager {
             const stats = createMockStats(item.type, item.content);
 
             if (recursive) {
-                const fileStats: WechatMinigame.FileStats[] = [{ path: '', stats }];
+                const fileStats: WechatMinigame.FileStats[] = [
+                    { path: mockStatAbsolutePaths ? path : '', stats },
+                ];
                 for (const [filePath, fileItem] of mockFileSystem) {
                     if (filePath.startsWith(`${path}/`)) {
                         const relativePath = filePath.slice(path.length);
                         fileStats.push({
-                            path: relativePath,
+                            path: mockStatAbsolutePaths ? filePath : relativePath,
                             stats: createMockStats(fileItem.type, fileItem.content),
                         });
                     }
@@ -246,12 +248,14 @@ function createMockFileSystemManager(): WechatMinigame.FileSystemManager {
             const stats = createMockStats(item.type, item.content);
 
             if (recursive) {
-                const fileStats: WechatMinigame.FileStats[] = [{ path: '', stats }];
+                const fileStats: WechatMinigame.FileStats[] = [
+                    { path: mockStatAbsolutePaths ? path : '', stats },
+                ];
                 for (const [filePath, fileItem] of mockFileSystem) {
                     if (filePath.startsWith(`${path}/`)) {
                         const relativePath = filePath.slice(path.length);
                         fileStats.push({
-                            path: relativePath,
+                            path: mockStatAbsolutePaths ? filePath : relativePath,
                             stats: createMockStats(fileItem.type, fileItem.content),
                         });
                     }
@@ -311,6 +315,9 @@ function createMockStats(
     };
 }
 
+// 模拟部分平台 stat 返回完整绝对路径
+let mockStatAbsolutePaths = false;
+
 let mockFsManager: WechatMinigame.FileSystemManager;
 
 // Mock wx 对象
@@ -366,6 +373,7 @@ beforeEach(() => {
     mockFileSystem.clear();
     mockFileSystem.set('wxfile://usr', { type: 'directory' });
     mockFsManager = createMockFileSystemManager();
+    mockStatAbsolutePaths = false;
     vi.clearAllMocks();
 });
 
@@ -482,6 +490,28 @@ describe('mina fs async', () => {
         expect(result.isOk()).toBe(true);
         const statsArray = result.unwrap();
         expect(Array.isArray(statsArray)).toBe(true);
+    });
+
+    test('stat with recursive normalizes absolute paths returned by platform', async () => {
+        mockStatAbsolutePaths = true;
+        mockFileSystem.set('wxfile://usr/abs-dir', { type: 'directory' });
+        mockFileSystem.set('wxfile://usr/abs-dir/a.txt', { type: 'file', content: 'data' });
+        mockFileSystem.set('wxfile://usr/abs-dir/sub/b.txt', { type: 'file', content: 'data' });
+
+        const result = await minaFsAsync.stat('/abs-dir', { recursive: true });
+        expect(result.isOk()).toBe(true);
+        const paths = result.unwrap().map(x => x.path);
+        expect(paths).toEqual(['', 'a.txt', 'sub/b.txt']);
+    });
+
+    test('copy works when platform stat returns absolute paths', async () => {
+        mockStatAbsolutePaths = true;
+        mockFileSystem.set('wxfile://usr/abs-src', { type: 'directory' });
+        mockFileSystem.set('wxfile://usr/abs-src/a.txt', { type: 'file', content: 'data' });
+
+        const result = await minaFsAsync.copy('/abs-src', '/abs-dest');
+        expect(result.isOk()).toBe(true);
+        expect(mockFileSystem.has('wxfile://usr/abs-dest/a.txt')).toBe(true);
     });
 
     test('exists returns true for existing file', async () => {
@@ -651,6 +681,17 @@ describe('mina fs sync', () => {
 
         const result = minaFsSync.statSync('/sync-stat');
         expect(result.isOk()).toBe(true);
+    });
+
+    test('statSync with recursive normalizes absolute paths returned by platform', () => {
+        mockStatAbsolutePaths = true;
+        mockFileSystem.set('wxfile://usr/sync-abs-dir', { type: 'directory' });
+        mockFileSystem.set('wxfile://usr/sync-abs-dir/a.txt', { type: 'file', content: 'data' });
+
+        const result = minaFsSync.statSync('/sync-abs-dir', { recursive: true });
+        expect(result.isOk()).toBe(true);
+        const paths = result.unwrap().map(x => x.path);
+        expect(paths).toEqual(['', 'a.txt']);
     });
 
     test('statSync with recursive returns FileStats array', () => {

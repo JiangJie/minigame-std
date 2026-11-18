@@ -192,7 +192,7 @@ export function statSync(
     const { recursive = false } = options ?? {};
 
     return trySyncOp(() => getFs().statSync(path, recursive)).map(x =>
-        normalizeStats(x, recursive),
+        normalizeStats(x, recursive, path),
     );
 }
 

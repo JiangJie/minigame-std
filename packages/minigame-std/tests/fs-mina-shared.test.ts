@@ -181,7 +181,7 @@ describe('mina_fs_shared', () => {
                 },
             ];
 
-            const result = normalizeStats(fileStats, true) as WechatMinigame.FileStats[];
+            const result = normalizeStats(fileStats, true, '') as WechatMinigame.FileStats[];
 
             expect(Array.isArray(result)).toBe(true);
             expect(result).toHaveLength(2);
@@ -228,7 +228,7 @@ describe('mina_fs_shared', () => {
                 },
             ];
 
-            const result = normalizeStats(fileStats, true) as WechatMinigame.FileStats[];
+            const result = normalizeStats(fileStats, true, '') as WechatMinigame.FileStats[];
 
             expect(result).toHaveLength(3);
             // 父目录总是排在子目录/文件之前
@@ -264,7 +264,7 @@ describe('mina_fs_shared', () => {
                 },
             ];
 
-            const result = normalizeStats(fileStats, false) as WechatMinigame.FileStats[];
+            const result = normalizeStats(fileStats, false, '') as WechatMinigame.FileStats[];
 
             expect(Array.isArray(result)).toBe(true);
             expect(result).toHaveLength(2);
@@ -277,7 +277,7 @@ describe('mina_fs_shared', () => {
             // 测试空数组
             const fileStats: WechatMinigame.FileStats[] = [];
 
-            const result = normalizeStats(fileStats, true) as WechatMinigame.FileStats[];
+            const result = normalizeStats(fileStats, true, '') as WechatMinigame.FileStats[];
 
             expect(Array.isArray(result)).toBe(true);
             expect(result).toHaveLength(0);
@@ -294,7 +294,7 @@ describe('mina_fs_shared', () => {
                 isFile: () => false,
             };
 
-            const result = normalizeStats(stats, true) as WechatMinigame.FileStats[];
+            const result = normalizeStats(stats, true, '') as WechatMinigame.FileStats[];
 
             expect(Array.isArray(result)).toBe(true);
             expect(result).toHaveLength(1);
@@ -313,10 +313,58 @@ describe('mina_fs_shared', () => {
                 isFile: () => true,
             };
 
-            const result = normalizeStats(stats, false);
+            const result = normalizeStats(stats, false, '');
 
             expect(Array.isArray(result)).toBe(false);
             expect(result).toBe(stats);
+        });
+        test('normalizes absolute wxfile:// paths to paths relative to basePath', () => {
+            const stats: WechatMinigame.Stats = {
+                mode: 0,
+                size: 100,
+                lastAccessedTime: 0,
+                lastModifiedTime: 0,
+                isDirectory: () => false,
+                isFile: () => true,
+            };
+            const fileStats: WechatMinigame.FileStats[] = [
+                { path: 'wxfile://usr/test-dir/sub/b.txt', stats },
+                { path: 'wxfile://usr/test-dir', stats },
+                { path: 'wxfile://usr/test-dir/a.txt', stats },
+            ];
+
+            const result = normalizeStats(
+                fileStats,
+                true,
+                'wxfile://usr/test-dir',
+            ) as WechatMinigame.FileStats[];
+
+            // 目录自身归一化为 ''，其余为相对条目路径，并按 path 排序
+            expect(result.map(x => x.path)).toEqual(['', 'a.txt', 'sub/b.txt']);
+        });
+
+        test('normalizes mixed absolute and relative paths', () => {
+            const stats: WechatMinigame.Stats = {
+                mode: 0,
+                size: 100,
+                lastAccessedTime: 0,
+                lastModifiedTime: 0,
+                isDirectory: () => false,
+                isFile: () => true,
+            };
+            const fileStats: WechatMinigame.FileStats[] = [
+                { path: 'wxfile://usr/test-dir/z.txt', stats },
+                { path: '/b.txt', stats },
+                { path: 'a.txt', stats },
+            ];
+
+            const result = normalizeStats(
+                fileStats,
+                true,
+                'wxfile://usr/test-dir',
+            ) as WechatMinigame.FileStats[];
+
+            expect(result.map(x => x.path)).toEqual(['a.txt', 'b.txt', 'z.txt']);
         });
     });
 
